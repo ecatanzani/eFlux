@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from ROOT import TTree, TFile, TBranch
 import numpy as np
 from array import array
