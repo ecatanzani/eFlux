@@ -12,10 +12,10 @@ def main(args=None):
     parser = ArgumentParser(usage="Usage: %(prog)s [options]", description="nTuple to TTree converter")
     
     parser.add_argument("-i","--input",dest='input', help='ROOT nTuples directory')
-    parser.add_argument("-o","--output",default="myTree.root", type=str, dest='outputFile', help='name of output root TTree')
+    parser.add_argument("-o","--output",default="myTree.root", type=str, dest='output', help='name of output root TTree')
     parser.add_argument("-v","--verbose", action='store_true', default=False, dest='verbose', help='run in high verbosity mode')
-    parser.add_argument("-p","--pickle",action='store_true', default=False, dest='pickleFile', help='convert pickle files to TTree')
-    parser.add_argument("-r","--root",action='store_true', default=False, dest='rootFile', help='convert root files to TTree')
+    parser.add_argument("-p","--pickle",action='store_true', default=False, dest='pickle', help='convert pickle files to TTree')
+    parser.add_argument("-r","--root",action='store_true', default=False, dest='root', help='convert root files to TTree')
 
 
     opts = parser.parse_args(args)
