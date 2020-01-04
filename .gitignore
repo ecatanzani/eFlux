@@ -162,6 +162,9 @@ dmypy.json
 
 # End of https://www.gitignore.io/api/linux,macos,python,visualstudiocode
 
+# AnyOption Directory
+AnyOption
+
 # Debug and Release directories
 Debug
 Release
