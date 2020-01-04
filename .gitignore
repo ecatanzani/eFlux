@@ -164,3 +164,7 @@ dmypy.json
 
 # AnyOption Directory
 AnyOption
+
+# Debug and Release directories
+Debug
+Release
