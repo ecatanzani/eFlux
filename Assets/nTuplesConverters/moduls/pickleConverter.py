@@ -30,8 +30,8 @@ def convertPickle(opts):
     del energy
     del xtrl
 
-    myTree.Branch( 'eReco', t_energy, 'eReco[nevents]/F' )
-    myTree.Branch( 'xtrl', d, 'xtrl[nevents]/F' )
+    myTree.Branch( 'eReco', t_energy, 'eReco/F' )
+    myTree.Branch( 'xtrl', t_xtrl, 'xtrl/F' )
 
     myTree.Fill()
 
