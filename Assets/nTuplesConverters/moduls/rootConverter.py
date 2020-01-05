@@ -32,7 +32,7 @@ def convertROOT(opts):
     del xtrl
 
     myTree.Branch( 'eReco', t_energy, 'eReco[nevents]/F' )
-    myTree.Branch( 'xtrl', d, 'xtrl[nevents]/F' )
+    myTree.Branch( 'xtrl', t_xtrl, 'xtrl[nevents]/F' )
 
     myTree.Fill()
 
