@@ -165,3 +165,6 @@ dmypy.json
 # Debug and Release directories
 Debug
 Release
+
+# Local data dir
+data
