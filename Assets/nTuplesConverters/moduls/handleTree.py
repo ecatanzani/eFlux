@@ -45,6 +45,8 @@ def fillTreeChain(
     
     if opts.verbose:
         print("Filling output Tree...")
+        if opts.debug:
+            print('Debug mode activated... max mumber of events {}'.format(opts.debug))
 
     for idx,event in tqdm(enumerate(dChain)):
         t_totalEnergyCorr[0] = event.tt_bgoTotalEcorr_GeV/1000.
@@ -58,8 +60,16 @@ def fillTreeChain(
         t_satVelocityZ[0] = event.tt_sat_velocity_z
         myTree.Fill()
         if opts.verbose:
-            if (idx%kStep)==0:
-                print('\tProcessed event {} of {}'.format(idx,nevents))
+            if opts.debug:
+                if (idx%((opts.debug)/10))==0 and idx!=0:
+                    print('\tProcessed event {} of {}'.format(idx,nevents))
+                if idx==(opts.debug-1):
+                    print('\tProcessed event {} of {}'.format(idx+1,nevents))
+                    break
+            else:
+                if (idx%kStep)==0 and idx!=0:
+                    print('\tProcessed event {} of {}'.format(idx,nevents))
+            
 
 def fillTree(
                 opts,
