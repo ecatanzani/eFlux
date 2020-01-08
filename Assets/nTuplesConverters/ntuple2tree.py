@@ -11,12 +11,13 @@ def main(args=None):
     ### Parsing options
     parser = ArgumentParser(usage="Usage: %(prog)s [options]", description="nTuple to TTree converter")
     
-    parser.add_argument("-i","--input",dest='input', help='ROOT nTuples directory')
-    parser.add_argument("-o","--output",default="myTree.root", type=str, dest='output', help='name of output root TTree')
-    parser.add_argument("-v","--verbose", action='store_true', default=False, dest='verbose', help='run in high verbosity mode')
-    parser.add_argument("-p","--pickle",action='store_true', default=False, dest='pickle', help='convert pickle files to TTree')
-    parser.add_argument("-r","--root",action='store_true', default=False, dest='root', help='convert root files to TTree')
-
+    parser.add_argument("-i","--input", type=str, dest='input', help='ROOT nTuples directory')
+    parser.add_argument("-o","--output", type=str, dest='output', default="myTree.root" , help='name of output root TTree')
+    parser.add_argument("-v","--verbose", dest='verbose', default=False, action='store_true', help='run in high verbosity mode')
+    parser.add_argument("-p","--pickle", dest='pickle', default=False, action='store_true', help='convert pickle files to TTree')
+    parser.add_argument("-r","--root", dest='root', default=False, action='store_true', help='convert root files to TTree')
+    #parser.add_argument("-d","--debug", dest='debug', action='store_const', const=1000, help='activate debug mode')
+    parser.add_argument("-d","--debug", type=int, dest='debug', const=1000, nargs='?', help='activate debug mode')
 
     opts = parser.parse_args(args)
 
