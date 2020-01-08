@@ -1,4 +1,5 @@
 from tqdm import tqdm
+from stuff import getTotalEvents, eventProcess
 
 def branchTree(
                 opts,
@@ -59,16 +60,9 @@ def fillTreeChain(
         t_satVelocityY[0] = event.tt_sat_velocity_y
         t_satVelocityZ[0] = event.tt_sat_velocity_z
         myTree.Fill()
-        if opts.verbose:
-            if opts.debug:
-                if (idx%((opts.debug)/10))==0 and idx!=0:
-                    print('\tProcessed event {} of {}'.format(idx,nevents))
-                if idx==(opts.debug-1):
-                    print('\tProcessed event {} of {}'.format(idx+1,nevents))
-                    break
-            else:
-                if (idx%kStep)==0 and idx!=0:
-                    print('\tProcessed event {} of {}'.format(idx,nevents))
+        if eventProcess(opts,idx,nevents,kStep):
+            break
+        
             
 
 def fillTree(
@@ -88,6 +82,9 @@ def fillTree(
     if opts.verbose:
         print("Filling output Tree...")
     
+    nevents = getTotalEvents(opts)
+
+    prEvents = 0                                        #Number of processed events
     for file in tqdm(os.listdir(opts.input)):
         fNpath = str(opts.input) + "/" + str(file)
         data = np.load(fNpath,'r')
@@ -107,6 +104,6 @@ def fillTree(
 
             '''
             myTree.Fill()
-        if opts.verbose:
-            if (idx%kStep)==0:
-                print('\tProcessed event {} of {}'.format(idx,nevents))
+            if eventProcess(opts,prEvents,nevents):
+                break
+            prEvents +=1
