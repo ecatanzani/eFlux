@@ -1,6 +1,8 @@
 #include "MyHeader.h"
 #include "anyoption.h"
 
+#include <string>
+
 int main(int argc,char* argv[])
 {
     
@@ -21,9 +23,29 @@ int main(int argc,char* argv[])
 
     opt.processCommandArgs(argc,argv);
     
+    /*
+        Input variables
+
+    */
+
+    std::string inputPath;
+    std::string outputPath;
+    bool verbose = false;
+    
+   
     if(!opt.hasOptions()) 
         opt.printUsage();
+
+    if(opt.getFlag("help") || opt.getFlag('h'))
+        opt.printUsage();
+    if(opt.getValue("input") || opt.getValue('i'))
+        inputPath = opt.getValue('i');
+    if(opt.getValue("output") || opt.getValue('o'))
+        inputPath = opt.getValue('o');
+    if(opt.getFlag("verbose") || opt.getFlag('v'))
+        verbose = opt.getFlag('v');
     
-    
+    eCore(inputPath,outputPath,verbose);
+
     return 0;
 }
