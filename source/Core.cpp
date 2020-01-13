@@ -1,5 +1,7 @@
 #include "myHeader.h"
 
+#include "TTree.h"
+
 #include <vector>
 
 void eCore(
@@ -25,6 +27,13 @@ void eCore(
     unsigned nData = 9;
     std::vector<double> dataValues(nData,0);
 
-    readInputTree(inputPath,dataValues);
+    TTree* dTree = new TTree("collectionTree","Data Collection Tree");
+
+    readInputTree(inputPath,dataValues,dTree);
+    
+
+    //Cleanup memory ...
+
+    dTree->Delete();
 
 }
