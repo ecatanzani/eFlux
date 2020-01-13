@@ -17,7 +17,7 @@ extern void eCore(
                     const bool verbose
                 );
 
-extern void readInputTree(const std::string inputPath,std::vector<double> &dataValues);
+extern void readInputTree(const std::string inputPath,std::vector<double> &dataValues,TTree* dTree);
 extern void branchTree(TTree &myDataTree,std::vector<double> &dataValues);
 
 #endif
