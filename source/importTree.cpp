@@ -5,7 +5,7 @@
 
 #include <vector>
 
-void readInputTree(const std::string inputPath,std::vector<double> &dataValues)
+void readInputTree(const std::string inputPath,std::vector<double> &dataValues,TTree* dTree)
 {
     TFile inputTree(inputPath.c_str(),"READ");
     if(!inputTree.IsOpen())
@@ -13,9 +13,8 @@ void readInputTree(const std::string inputPath,std::vector<double> &dataValues)
         std::cerr << "\n\nError opening input TTree: " << inputPath;
         exit(123);
     }
-    TTree *myDataTree = nullptr;
-    inputTree.GetObject("collectionTree",myDataTree);
-    branchTree(*myDataTree,dataValues);
+    inputTree.GetObject("collectionTree",dTree);
+    branchTree(*dTree,dataValues);
 }
 
 void branchTree(TTree &myDataTree,std::vector<double> &dataValues)
