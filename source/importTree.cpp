@@ -1,10 +1,5 @@
 #include "myHeader.h"
 
-#include "TFile.h"
-#include "TTree.h"
-
-#include <vector>
-
 void readInputTree(const std::string inputPath,std::vector<double> &dataValues,TTree* dTree)
 {
     TFile inputTree(inputPath.c_str(),"READ");
