@@ -1,8 +1,6 @@
 #include "MyHeader.h"
 #include "anyoption.h"
 
-#include <string>
-
 int main(int argc,char* argv[])
 {
     
