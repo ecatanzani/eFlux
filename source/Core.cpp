@@ -7,10 +7,10 @@ void eCore(
             )
 {
     //Create output TFile
-    TFile outFile(uniqueTree(outputPath),"NEW","Analysis Output TTree");
+    TFile outFile(uniqueOutFile(outputPath),"NEW","Analysis Output File");
     if(!outFile.IsOpen())
     {
-        std::cerr << "\n\nError writing output TFile: " << uniqueTree(outputPath) << std::endl;
+        std::cerr << "\n\nError writing output TFile: " << uniqueOutFile(outputPath) << std::endl;
         exit(123);
     }
     
