@@ -7,7 +7,7 @@ def getTotalEvents(opts):
         totEvents += nRows
     return totEvents
 
-def eventProcess(opts,evIdx,totEvents,kStep=0):
+def eventProcess(opts,evIdx,totEvents,kStep=1):
     kBreak = False
     if opts.verbose:
         if opts.debug:
