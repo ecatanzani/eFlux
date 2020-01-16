@@ -45,7 +45,7 @@ def fillTreeChain(
                 ):
     
     if opts.verbose:
-        print("Filling output Tree...")
+        print("Filling output TTree...")
         if opts.debug:
             print('Debug mode activated... max mumber of events {}'.format(opts.debug))
 
@@ -80,7 +80,7 @@ def fillTree(
                 ):
     
     if opts.verbose:
-        print("Filling output Tree...")
+        print("Filling output TTree...")
     
     nevents = getTotalEvents(opts)
 
