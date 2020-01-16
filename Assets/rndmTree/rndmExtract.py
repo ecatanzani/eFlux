@@ -88,6 +88,12 @@ def branchTree(
     myTree.Branch( 'velocityZ', t_satVelocityZ, 'velocityZ/F' )
 
 def extractFromTree(opts):
+    
+    #Create output TFile
+    outFile = TFile(opts.output,"RECREATE")
+    if outFile.IsZombie():
+        print('Error writing output file {}'.format(opts.output))
+        sys.exit()
 
     # Create output TTree
     myTree = TTree("collectionTree","All Particle Tree - Rndm extracted")
@@ -132,15 +138,6 @@ def extractFromTree(opts):
                 t_satVelocityY,
                 t_satVelocityZ
                 )
-
-    #Create output TFile
-    outFile = TFile(opts.output,"RECREATE")
-    if outFile.IsZombie():
-        print('Error writing output file {}'.format(opts.output))
-        sys.exit()
-    
-    #Add output TTree to the TFile
-    myTree.Write()
 
     #Writing ouptput file
     outFile.Write()
