@@ -1,4 +1,4 @@
-#include "MyHeader.h"
+#include "myHeader.h"
 #include "anyoption.h"
 
 int main(int argc,char* argv[])
