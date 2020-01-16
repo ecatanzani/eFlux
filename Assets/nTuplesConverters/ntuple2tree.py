@@ -17,7 +17,7 @@ def main(args=None):
     parser.add_argument("-p","--pickle", dest='pickle', default=False, action='store_true', help='convert pickle files to TTree')
     parser.add_argument("-r","--root", dest='root', default=False, action='store_true', help='convert root files to TTree')
     #parser.add_argument("-d","--debug", dest='debug', action='store_const', const=1000, help='activate debug mode')
-    parser.add_argument("-d","--debug", type=int, dest='debug', const=1000, nargs='?', help='activate debug mode')
+    parser.add_argument("-d","--debug", type=int, dest='debug', const=1000, nargs='?', help='activate debug mode - const value 1000 events')
 
     opts = parser.parse_args(args)
 
