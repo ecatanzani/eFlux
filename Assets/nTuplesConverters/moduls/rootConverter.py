@@ -75,7 +75,7 @@ def convertROOT(opts):
                 kStep=1e+4
                 )
 
-    # Writing optput file
+    # Writing output file
     outFile.Write()
     outFile.Close()
    
