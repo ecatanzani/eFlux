@@ -35,4 +35,6 @@ extern void evLoop(
                     const double xtrlCut=8.5
                 );
 
+extern void buildAcceptance(TH1D &acceptance);
+
 #endif
