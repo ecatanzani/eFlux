@@ -1,12 +1,11 @@
 #include "myHeader.h"
 
 void evLoop(
-                    TFile &outFile,
-                    TH1D &inputHisto,
-                    const std::string inputPath,
-                    const bool eClassifier,
-                    const double xtrlCut
-                )
+                TH1D &inputHisto,
+                const std::string inputPath,
+                const bool eClassifier,
+                const double xtrlCut
+            )
 {
 
     /* TTree variables

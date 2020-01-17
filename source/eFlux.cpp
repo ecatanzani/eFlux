@@ -1,6 +1,6 @@
 #include "myHeader.h"
 
-void buildFlux(TFile &outFile,const std::string inputPath,const unsigned int lvTime)
+void buildFlux(const std::string inputPath,const unsigned int lvTime)
 {
     
     double minValue = 3e-10;
@@ -14,12 +14,11 @@ void buildFlux(TFile &outFile,const std::string inputPath,const unsigned int lvT
     
     std::vector<double> eCounts = createLinBinning(minValue,maxValue,nBins);
 
-    buildXtrlFlux(outFile,logEBins,eCounts,inputPath,lvTime);
+    buildXtrlFlux(logEBins,eCounts,inputPath,lvTime);
 
 }
 
 void buildXtrlFlux(
-                    TFile &outFile,
                     std::vector<double> &eBins,
                     std::vector<double> &cBins,
                     const std::string inputPath,
@@ -32,9 +31,22 @@ void buildXtrlFlux(
 
     TH1D eCounts("eCounts","All Electron counts - xtrl classifier",eBins.size(),&(eBins[0]));
     TH1D acceptance;
-    
-    evLoop(outFile,eCounts,inputPath,true);
+    TH1D* eFlux = nullptr;
+
+    evLoop(eCounts,inputPath,true);
     buildAcceptance(acceptance);
 
+    eFlux = (TH1D*)eCounts.Clone("eFlux");
+    eFlux->Sumw2();
+    eFlux->Reset();
+
+    //Building flux
+    for(int bIdx=1; bIdx<=eFlux->GetXaxis()->GetNbins(); ++bIdx)
+        eFlux->SetBinContent(bIdx,eCounts.GetBinContent(bIdx)/acceptance.GetBinContent(bIdx));
+    
+    //Scale flux for the live-time
+    eFlux->Scale(1/(double)lvTime);
+
+    eFlux->Write();
 
 }
