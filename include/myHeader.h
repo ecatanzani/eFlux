@@ -9,7 +9,7 @@
 
 #include "TTree.h"
 #include "TFile.h"
-#include "TH2D.h"
+#include "TH1D.h"
 
 #pragma once
 
@@ -23,8 +23,16 @@ extern void readInputTree(const std::string inputPath,std::vector<double> &dataV
 extern void branchTree(TTree &myDataTree,std::vector<double> &dataValues);
 extern const char* uniqueOutFile(const std::string outputPath);
 extern std::vector<double> createLogBinning(const double minValue,const double maxValue,const int nBins);
-extern void buildFlux(TFile &outFile);
-extern void buildXtrlFlux(TFile &outFile,std::vector<double> &logBins);
-extern void evLoop(TH2D &inputHisto,const bool eClassifier);
+extern std::vector<double> createLinBinning(const double minValue,const double maxValue,const int nBins);
+extern void buildFlux(TFile &outFile,const std::string inputPath);
+extern void buildXtrlFlux(TFile &outFile,std::vector<double> &eBins,std::vector<double> &cBins,const std::string inputPath);
+
+extern void evLoop(
+                    TFile &outFile,
+                    TH1D &inputHisto,
+                    const std::string inputPath,
+                    const bool eClassifier=false,
+                    const double xtrlCut=8.5
+                );
 
 #endif
