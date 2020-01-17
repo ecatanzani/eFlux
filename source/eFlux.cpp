@@ -1,6 +1,6 @@
 #include "myHeader.h"
 
-void buildFlux(TFile &outFile,const std::string inputPath)
+void buildFlux(TFile &outFile,const std::string inputPath,const unsigned int lvTime)
 {
     
     double minValue = 3e-10;
@@ -14,11 +14,17 @@ void buildFlux(TFile &outFile,const std::string inputPath)
     
     std::vector<double> eCounts = createLinBinning(minValue,maxValue,nBins);
 
-    buildXtrlFlux(outFile,logEBins,eCounts,inputPath);
+    buildXtrlFlux(outFile,logEBins,eCounts,inputPath,lvTime);
 
 }
 
-void buildXtrlFlux(TFile &outFile,std::vector<double> &eBins,std::vector<double> &cBins,const std::string inputPath)
+void buildXtrlFlux(
+                    TFile &outFile,
+                    std::vector<double> &eBins,
+                    std::vector<double> &cBins,
+                    const std::string inputPath,
+                    const unsigned int lvTime
+                )
 {
     /*
         All-Electron flux using xtrl as classifier

@@ -3,7 +3,8 @@
 void eCore(
             const std::string inputPath,
             const std::string outputPath,
-            const bool verbose
+            const bool verbose,
+            const unsigned int lvTime
             )
 {
     //Create output TFile
@@ -15,7 +16,7 @@ void eCore(
     }
     
     //Building eFLux
-    buildFlux(outFile,inputPath);
+    buildFlux(outFile,inputPath,lvTime);
 
     //Close output file ...
     outFile.Close();
