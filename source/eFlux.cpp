@@ -25,7 +25,10 @@ void buildXtrlFlux(TFile &outFile,std::vector<double> &eBins,std::vector<double>
     */
 
     TH1D eCounts("eCounts","All Electron counts - xtrl classifier",eBins.size(),&(eBins[0]));
+    TH1D acceptance;
+    
     evLoop(outFile,eCounts,inputPath,true);
+    buildAcceptance(acceptance);
 
 
 }
