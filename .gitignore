@@ -169,3 +169,6 @@ Release
 # Local data dir
 data
 AnyOption/anyoption.o
+
+# ROOT out and in files
+*.root
