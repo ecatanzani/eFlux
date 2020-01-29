@@ -1,6 +1,6 @@
 #include "myHeader.h"
 
-void readInputTree(const std::string inputPath,std::vector<double> &dataValues,TTree* dTree)
+void readInputTree(const std::string inputPath,std::vector<float> &dataValues,TTree* dTree)
 {
     TFile inputTree(inputPath.c_str(),"READ");
     if(!inputTree.IsOpen())
@@ -12,7 +12,7 @@ void readInputTree(const std::string inputPath,std::vector<double> &dataValues,T
     branchTree(*dTree,dataValues);
 }
 
-void branchTree(TTree &myDataTree,std::vector<double> &dataValues)
+void branchTree(TTree &myDataTree,std::vector<float> &dataValues)
 {
     myDataTree.SetBranchAddress("eReco",&dataValues[0]);
     myDataTree.SetBranchAddress("eRecoCorr",&dataValues[1]);
