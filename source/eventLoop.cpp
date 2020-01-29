@@ -1,8 +1,10 @@
 #include "myHeader.h"
+#include "TDirectory.h"
 
 void evLoop(
                 TH1D &inputHisto,
                 const std::string inputPath,
+                TFile &outFile,
                 const bool eClassifier,
                 const double xtrlCut
             )
@@ -26,7 +28,7 @@ void evLoop(
     */
 
     unsigned nData = 9;
-    std::vector<double> dataValues(nData,0);
+    std::vector<float> dataValues(nData,0);
 
     //Create data TTree
     TTree* dTree = new TTree("collectionTree","Data Collection Tree");
@@ -40,6 +42,11 @@ void evLoop(
             - Velocity of the satellite
     */
 
+    // Create TDirectory for telemetry data in output TTile
+
+    TDirectory *telemetryDir = outFile.mkdir("telemetryData");
+    telemetryDir->cd();
+
     TH1D satellitePosX("satellitePosX","satellite position X",1e+6,-8e+6,8e+6);
     TH1D satellitePosY("satellitePosY","satellite position Y",1e+6,-8e+6,8e+6);
     TH1D satellitePosZ("satellitePosZ","satellite position Z",1e+6,-8e+6,8e+6);
@@ -48,6 +55,14 @@ void evLoop(
     TH1D satelliteVelY("satelliteVelY","satellite velocity Y",1e+6,-8e+3,8e+3);
     TH1D satelliteVelZ("satelliteVelZ","satellite velocity Z",1e+6,-8e+3,8e+3);
 
+    /*
+    satellitePosX.SetDirectory(outFile);
+    satellitePosY.SetDirectory(outFile);
+    satellitePosZ.SetDirectory(outFile);
+    satelliteVelX.SetDirectory(outFile);
+    satelliteVelY.SetDirectory(outFile);
+    satelliteVelZ.SetDirectory(outFile);
+    */
 
     for(unsigned int evIdx=0; evIdx<dTree->GetEntries(); ++evIdx)
     {
@@ -70,6 +85,7 @@ void evLoop(
 
     //Write telemetry histos ...
 
+    /*
     satellitePosX.Write();
     satellitePosY.Write();
     satellitePosZ.Write();
@@ -77,5 +93,7 @@ void evLoop(
     satelliteVelX.Write();
     satelliteVelY.Write();
     satelliteVelZ.Write();
+    */
 
+    outFile.cd();
 }
