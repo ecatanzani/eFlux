@@ -1,41 +1,59 @@
 #include "myHeader.h"
 
-void buildFlux(const std::string inputPath,const unsigned int lvTime)
+void buildFlux(
+                const std::string inputPath,
+                const unsigned int lvTime,
+                TFile &outFile
+            )
 {
     
     double minValue = 3e-10;
     double maxValue = 5e+10;
-    const int nBins = 10;
+    const int nBinsE = 10;
+    const int nBinsC = 10;
 
-    std::vector<double> logEBins = createLogBinning(minValue,maxValue,nBins);
+    std::vector<float> logEBins = createLogBinning(minValue,maxValue,nBinsE);
     
-    minValue = 10;
+    #ifdef DEBUG
+    std::cout << "\nEnergy log binning...";
+    for(int idx=0; idx < logEBins.size(); ++idx)
+        std::cout << "\n" << logEBins[idx];
+    #endif
+
+    minValue = 0;
     maxValue = 1e+5;
     
-    std::vector<double> eCounts = createLinBinning(minValue,maxValue,nBins);
+    std::vector<float> eCounts = createLinBinning(minValue,maxValue,nBinsC);
+    
+    #ifdef DEBUG
+    std::cout << "\nCounts linear binning...";
+    for(int idx=0; idx < eCounts.size(); ++idx)
+        std::cout << "\n" << eCounts[idx];
+    #endif
 
-    buildXtrlFlux(logEBins,eCounts,inputPath,lvTime);
+    buildXtrlFlux(logEBins,eCounts,inputPath,lvTime,outFile);
 
 }
 
 void buildXtrlFlux(
-                    std::vector<double> &eBins,
-                    std::vector<double> &cBins,
+                    std::vector<float> &eBins,
+                    std::vector<float> &cBins,
                     const std::string inputPath,
-                    const unsigned int lvTime
+                    const unsigned int lvTime,
+                    TFile &outFile
                 )
 {
     /*
         All-Electron flux using xtrl as classifier
     */
 
-    TH1D eCounts("eCounts","All Electron counts - xtrl classifier",eBins.size(),&(eBins[0]));
+    TH1D eCounts("eCounts","All Electron counts - xtrl classifier",eBins.size()-1,&(eBins[0]));
     TH1D acceptance;
     TH1D* eFlux = nullptr;
 
-    evLoop(eCounts,inputPath,true);
-    buildAcceptance(acceptance);
-
+    evLoop(eCounts,inputPath,outFile,true);
+    buildAcceptance(acceptance,outFile);
+    
     eFlux = (TH1D*)eCounts.Clone("eFlux");
     eFlux->Sumw2();
     eFlux->Reset();
