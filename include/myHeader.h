@@ -15,7 +15,7 @@
 
 #pragma once
 
-#define nGFitLoops 1
+#define nGFitLoops 1000
 
 extern void eCore(
                     const std::string inputPath,
@@ -34,7 +34,8 @@ extern std::vector<float> createLinBinning(const double minValue,const double ma
 extern void buildFlux(
                         const std::string inputPath,
                         const unsigned int lvTime,
-                        TFile &outFile
+                        TFile &outFile,
+                        const bool verbose
                     );
 
 extern bool chechFlags(
@@ -49,7 +50,8 @@ extern void buildXtrlFlux(
                             std::vector<float> &cBins,
                             const std::string inputPath,
                             const unsigned int lvTime,
-                            TFile &outFile
+                            TFile &outFile,
+                            const bool verbose
                         );
 
 extern void evLoop(
@@ -60,9 +62,9 @@ extern void evLoop(
                     const double xtrlCut=8.5
                 );
 
-extern void buildAcceptance(TH1D &acceptance, TFile &outFile);
+extern void buildAcceptance(TH1D &acceptance, TFile &outFile,const bool verbose);
 
-extern void fitGFactor(TH1D *gFactor,TFile &outFile);
+extern void fitGFactor(TH1D *gFactor,TFile &outFile, const bool verbose);
 extern double logisticFunction(double *x, double *par);
 
 #endif
