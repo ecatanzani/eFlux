@@ -3,7 +3,8 @@
 void buildFlux(
                 const std::string inputPath,
                 const unsigned int lvTime,
-                TFile &outFile
+                TFile &outFile,
+                const bool verbose
             )
 {
     
@@ -14,24 +15,26 @@ void buildFlux(
 
     std::vector<float> logEBins = createLogBinning(minValue,maxValue,nBinsE);
     
-    #ifdef DEBUG
-    std::cout << "\nEnergy log binning...";
-    for(int idx=0; idx < logEBins.size(); ++idx)
-        std::cout << "\n" << logEBins[idx];
-    #endif
+    if(verbose)
+    {
+        std::cout << "\nEnergy log binning...";
+        for(unsigned int idx=0; idx < logEBins.size(); ++idx)
+            std::cout << "\n" << logEBins[idx];
+    }
 
     minValue = 0;
     maxValue = 1e+5;
     
     std::vector<float> eCounts = createLinBinning(minValue,maxValue,nBinsC);
     
-    #ifdef DEBUG
-    std::cout << "\nCounts linear binning...";
-    for(int idx=0; idx < eCounts.size(); ++idx)
-        std::cout << "\n" << eCounts[idx];
-    #endif
+    if(verbose)
+    {
+        std::cout << "\nCounts linear binning...";
+        for(unsigned int idx=0; idx < eCounts.size(); ++idx)
+            std::cout << "\n" << eCounts[idx];
+    }
 
-    buildXtrlFlux(logEBins,eCounts,inputPath,lvTime,outFile);
+    buildXtrlFlux(logEBins,eCounts,inputPath,lvTime,outFile,verbose);
 
 }
 
@@ -40,7 +43,8 @@ void buildXtrlFlux(
                     std::vector<float> &cBins,
                     const std::string inputPath,
                     const unsigned int lvTime,
-                    TFile &outFile
+                    TFile &outFile,
+                    const bool verbose
                 )
 {
     /*
@@ -52,7 +56,7 @@ void buildXtrlFlux(
     TH1D* eFlux = nullptr;
 
     evLoop(eCounts,inputPath,outFile,true);
-    buildAcceptance(acceptance,outFile);
+    buildAcceptance(acceptance,outFile,verbose);
     
     eFlux = (TH1D*)eCounts.Clone("eFlux");
     eFlux->Sumw2();
