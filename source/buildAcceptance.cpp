@@ -1,6 +1,6 @@
 #include "myHeader.h"
 
-void buildAcceptance(TH1D &acceptance, TFile &outFile)
+void buildAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
 {
     TH1D* gFactor = nullptr;
     TH1D* selEfficiency_beforeSelection = nullptr;
@@ -21,7 +21,7 @@ void buildAcceptance(TH1D &acceptance, TFile &outFile)
     gFactor = (TH1D*) geoFile.Get("Acc");
     gFactor->SetDirectory(0);
     geoFile.Close();
-    fitGFactor(gFactor,outFile);
+    fitGFactor(gFactor,outFile,verbose);
     
     TFile selFile(selFilePath,"READ");
     if(!selFile.IsOpen())
