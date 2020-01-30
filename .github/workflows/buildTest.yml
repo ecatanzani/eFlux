@@ -9,8 +9,12 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    - name: gettingBinaries
+      run: wget https://root.cern/download/root_v6.18.04.Linux-ubuntu18-x86_64-gcc7.4.tar.gz
+    - name: unpackingBinaries
+      run: tar -xvf root_v6.18.04.Linux-ubuntu18-x86_64-gcc7.4.tar.gz
     - name: linkingROOT
-      run: source deps/ROOT/Ubuntu/root/bin/thisroot.sh
+      run: source root/bin/thisroot.sh
     - name: building
       run: make rebuild
     - name: cleaning
