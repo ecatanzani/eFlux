@@ -9,6 +9,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    - name: linkingROOT
+      run: source deps/ROOT/Ubuntu/root/bin/thisroot.sh
     - name: building
       run: make rebuild
     - name: cleaning
