@@ -17,7 +17,7 @@ void eCore(
     }
     
     //Building eFLux
-    buildFlux(inputPath,lvTime,outFile);
+    buildFlux(inputPath,lvTime,outFile,verbose);
 
     //Close output file ...
     outFile.Close();
