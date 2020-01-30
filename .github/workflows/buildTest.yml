@@ -1,0 +1,15 @@
+name: C/C++ building test
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: building
+      run: make rebuild
+    - name: cleaning
+      run: make clean_all
