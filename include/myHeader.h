@@ -25,7 +25,12 @@ extern void eCore(
                     AnyOption &opt
                 );
 
-extern void readInputTree(const std::string inputPath,std::vector<float> &dataValues,TTree* dTree);
+extern void readInputTree(
+                            const std::string inputPath,
+                            std::vector<float> &dataValues,
+                            TTree &dTree
+                        );
+
 extern void branchTree(TTree &myDataTree,std::vector<float> &dataValues);
 extern const char* uniqueOutFile(const std::string outputPath,AnyOption &opt);
 extern std::vector<float> createLogBinning(const double minValue,const double maxValue,const int nBins);
@@ -58,6 +63,7 @@ extern void evLoop(
                     TH1D &inputHisto,
                     const std::string inputPath,
                     TFile &outFile,
+                    const bool verbose,
                     const bool eClassifier=false,
                     const double xtrlCut=8.5
                 );
