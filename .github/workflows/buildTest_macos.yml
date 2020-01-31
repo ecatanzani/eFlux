@@ -1,4 +1,4 @@
-name: buildTest_macos C/C++
+name: MacOS latest
 
 on: [push]
 

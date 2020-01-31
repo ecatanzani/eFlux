@@ -1,4 +1,4 @@
-name: buildTest_ubuntu C/C++
+name: Ubuntu latest
 
 on: [push]
 
