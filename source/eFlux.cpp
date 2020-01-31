@@ -1,5 +1,7 @@
 #include "myHeader.h"
 
+#include "TDirectory.h"
+
 void buildFlux(
                 const std::string inputPath,
                 const unsigned int lvTime,
@@ -69,6 +71,12 @@ void buildXtrlFlux(
     //Scale flux for the live-time
     eFlux->Scale(1/(double)lvTime);
 
+    // Creating a TDirectory for the flux histo
+    TDirectory *fDir = outFile.mkdir("Flux");
+    fDir->cd();
+
     eFlux->Write();
 
+    // Returning to main dir on the output TFile
+    outFile.cd();
 }
