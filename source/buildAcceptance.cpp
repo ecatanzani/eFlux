@@ -46,9 +46,9 @@ void buildAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
     */
     
     selEfficiency_alfterSelection->Divide(selEfficiency_beforeSelection);
-    //gFactor->Multiply(selEfficiency_alfterSelection);
+    selEfficiency_alfterSelection->Multiply(gFactor->GetFunction("gFitter"));
 
-    new (&acceptance) (TH1D) (*(TH1D*)gFactor->Clone("Acceptance"));
+    new (&acceptance) (TH1D) (*(TH1D*)selEfficiency_alfterSelection->Clone("Acceptance"));
     
 
 }
