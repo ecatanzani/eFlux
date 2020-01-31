@@ -15,7 +15,7 @@
 
 #pragma once
 
-#define nGFitLoops 1000
+#define nGFitLoops 100
 
 extern void eCore(
                     const std::string inputPath,
