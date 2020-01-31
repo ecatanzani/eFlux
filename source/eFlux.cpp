@@ -12,8 +12,8 @@ void buildFlux(
     
     double minValue = 3e-10;
     double maxValue = 5e+10;
-    const int nBinsE = 10;
-    const int nBinsC = 10;
+    const int nBinsE = 1000;
+    const int nBinsC = 1000;
 
     std::vector<float> logEBins = createLogBinning(minValue,maxValue,nBinsE);
     
@@ -57,7 +57,7 @@ void buildXtrlFlux(
     TH1D acceptance;
     TH1D* eFlux = nullptr;
 
-    evLoop(eCounts,inputPath,outFile,true);
+    evLoop(eCounts,inputPath,outFile,verbose,true);
     buildAcceptance(acceptance,outFile,verbose);
     
     eFlux = (TH1D*)eCounts.Clone("eFlux");
@@ -66,8 +66,9 @@ void buildXtrlFlux(
 
     //Building flux
     for(int bIdx=1; bIdx<=eFlux->GetXaxis()->GetNbins(); ++bIdx)
-        eFlux->SetBinContent(bIdx,eCounts.GetBinContent(bIdx)/acceptance.GetBinContent(bIdx));
-    
+        if(acceptance.GetBinContent(bIdx))
+            eFlux->SetBinContent(bIdx,eCounts.GetBinContent(bIdx)/acceptance.GetBinContent(bIdx));
+
     //Scale flux for the live-time
     eFlux->Scale(1/(double)lvTime);
 
@@ -75,6 +76,7 @@ void buildXtrlFlux(
     TDirectory *fDir = outFile.mkdir("Flux");
     fDir->cd();
 
+    eCounts.Write();
     eFlux->Write();
 
     // Returning to main dir on the output TFile
