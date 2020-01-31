@@ -1,6 +1,7 @@
 #include "myHeader.h"
 
-void readInputTree(const std::string inputPath,std::vector<float> &dataValues,TTree* dTree)
+/*
+void readInputTree(const std::string inputPath,std::vector<float> &dataValues,TTree &dTree)
 {
     TFile inputTree(inputPath.c_str(),"READ");
     if(!inputTree.IsOpen())
@@ -8,9 +9,11 @@ void readInputTree(const std::string inputPath,std::vector<float> &dataValues,TT
         std::cerr << "\n\nError opening input TTree: " << inputPath;
         exit(123);
     }
-    inputTree.GetObject("collectionTree",dTree);
-    branchTree(*dTree,dataValues);
+    TTree *dataTree = (TTree*) inputTree.Get("collectionTree");
+    new (&dTree) (TTree) (*(TTree*)dataTree->Clone("dataTree"));
+    branchTree(dTree,dataValues);
 }
+*/
 
 void branchTree(TTree &myDataTree,std::vector<float> &dataValues)
 {

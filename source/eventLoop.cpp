@@ -1,10 +1,13 @@
 #include "myHeader.h"
 #include "TDirectory.h"
 
+#define kStep 10000
+
 void evLoop(
                 TH1D &inputHisto,
                 const std::string inputPath,
                 TFile &outFile,
+                const bool verbose,
                 const bool eClassifier,
                 const double xtrlCut
             )
@@ -31,21 +34,26 @@ void evLoop(
     std::vector<float> dataValues(nData,0);
 
     //Create data TTree
-    TTree* dTree = new TTree("collectionTree","Data Collection Tree");
+    //TTree* dTree = new TTree("collectionTree","Data Collection Tree");
+    TTree* dTree = nullptr;
+
+    TFile inputTree(inputPath.c_str(),"READ");
+    if(!inputTree.IsOpen())
+    {
+        std::cerr << "\n\nError opening input TTree: " << inputPath;
+        exit(123);
+    }
+    inputTree.GetObject("collectionTree",dTree);
+    branchTree(*dTree,dataValues);
 
     //Linking input TTree
-    readInputTree(inputPath,dataValues,dTree);
+    //readInputTree(inputPath,dataValues,dTree);
     
     /*
         Telemetry information histos
             - Position of the satellite
             - Velocity of the satellite
     */
-
-    // Create TDirectory for telemetry data in output TTile
-
-    TDirectory *telemetryDir = outFile.mkdir("telemetryData");
-    telemetryDir->cd();
 
     TH1D satellitePosX("satellitePosX","satellite position X",1e+6,-8e+6,8e+6);
     TH1D satellitePosY("satellitePosY","satellite position Y",1e+6,-8e+6,8e+6);
@@ -55,16 +63,15 @@ void evLoop(
     TH1D satelliteVelY("satelliteVelY","satellite velocity Y",1e+6,-8e+3,8e+3);
     TH1D satelliteVelZ("satelliteVelZ","satellite velocity Z",1e+6,-8e+3,8e+3);
 
-    /*
-    satellitePosX.SetDirectory(outFile);
-    satellitePosY.SetDirectory(outFile);
-    satellitePosZ.SetDirectory(outFile);
-    satelliteVelX.SetDirectory(outFile);
-    satelliteVelY.SetDirectory(outFile);
-    satelliteVelZ.SetDirectory(outFile);
-    */
+    unsigned int nEvents = 0;
 
-    for(unsigned int evIdx=0; evIdx<dTree->GetEntries(); ++evIdx)
+    #ifdef DEBUG
+        nEvents = dTree->GetEntries();
+    #else
+        nEvents = 100000;
+    #endif
+
+    for(unsigned int evIdx=0; evIdx<nEvents; ++evIdx)
     {
         dTree->GetEntry(evIdx);
         if(dataValues[2]<xtrlCut)
@@ -78,14 +85,19 @@ void evLoop(
         satelliteVelY.Fill(dataValues[7]);
         satelliteVelZ.Fill(dataValues[8]);
 
+        if(verbose)
+            if((evIdx+1)%kStep)
+                std::cout << "\nProcessed event " << evIdx+1 << " of " << nEvents;
     }
 
-    //Cleanup memory ...
-    dTree->Delete();
+    // Cleanup memory ...
+    //dTree->Delete();
 
-    //Write telemetry histos ...
+    // Create TDirectory for telemetry data in output TTile
+    TDirectory *telemetryDir = outFile.mkdir("telemetryData");
+    telemetryDir->cd();
 
-    /*
+    // Write telemetry histos ...
     satellitePosX.Write();
     satellitePosY.Write();
     satellitePosZ.Write();
@@ -93,7 +105,6 @@ void evLoop(
     satelliteVelX.Write();
     satelliteVelY.Write();
     satelliteVelZ.Write();
-    */
 
     outFile.cd();
 }
