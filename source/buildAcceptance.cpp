@@ -5,6 +5,7 @@ void buildAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
     TH1D* gFactor = nullptr;
     TH1D* selEfficiency_beforeSelection = nullptr;
     TH1D* selEfficiency_alfterSelection = nullptr;
+    TH1D* selEff = nullptr;
 
     const char* geoFilePath = "effHistos/Acc_vs_Ekin_fid_ele_v600.root";
     const char* selFilePath = "effHistos/hist_tight_DNN_histograms_allElectron-v6r0p0_1GeV_10TeV.root";
@@ -46,9 +47,20 @@ void buildAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
     */
     
     selEfficiency_alfterSelection->Divide(selEfficiency_beforeSelection);
+    selEff = (TH1D*) selEfficiency_alfterSelection->Clone("selEff");
     selEfficiency_alfterSelection->Multiply(gFactor->GetFunction("gFitter"));
 
     new (&acceptance) (TH1D) (*(TH1D*)selEfficiency_alfterSelection->Clone("Acceptance"));
     
+    // Creating a TDirectory for the acceptance histo
+    TDirectory *aDir = outFile.mkdir("Acceptance");
+    aDir->cd();
 
+    selEfficiency_beforeSelection->Write();
+    selEfficiency_alfterSelection->Write();
+    selEff->Write();
+    acceptance.Write();
+    
+    // Returning to main dir on the output TFile
+    outFile.cd();
 }
