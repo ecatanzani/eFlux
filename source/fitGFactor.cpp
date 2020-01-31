@@ -17,6 +17,11 @@ void fitGFactor(TH1D *gFactor, TFile &outFile, const bool verbose)
 {
     int nPars = 6;
     
+    // Creating Chi2,Prob and NDF histos
+    TH1D chi2("chi2","#chi^2 - Geometric Factor Fit",100,0,10000);
+    TH1D prob("prob","Probability - Geometric Factor Fit",100,0,10);
+    TH1D ndf("ndf","NDF - Geometric Factor Fit",100,0,100);
+
     //TF1 gFitter("gFitter",logisticFunction,0,1e+4,nPars);
     TF1 gFitter("gFitter","[0] + ( [1] ) / ( 1 + TMath::Exp( - [2] * ( [3]*TMath::Power(x,2) + [4]*x +[5] ) ) ) ",0,1e+4);
 
@@ -30,15 +35,22 @@ void fitGFactor(TH1D *gFactor, TFile &outFile, const bool verbose)
         iters[fIdx] = fIdx;
         
         gFactor->Fit("gFitter","I");
-
+        
         for(int pIdx=0; pIdx<nPars; ++pIdx)
             fitPars[pIdx][fIdx] = gFitter.GetParameter(pIdx);
         
+        chi2.Fill(gFitter.GetChisquare());
+        prob.Fill(gFitter.GetProb());
+        ndf.Fill(gFitter.GetNDF());
+
         if(verbose)
         {
             std::cout << "\n\nIteration " << fIdx+1;
             for(int pIdx=0; pIdx<nPars; ++pIdx)
                 std::cout << "\nPar " << pIdx <<"\t-> " << gFitter.GetParameter(pIdx);
+            std::cout << "\n Chi2 \t-> " << gFitter.GetChisquare();
+            std::cout << "\n Prob \t-> " << gFitter.GetProb();
+            std::cout << "\n NDF \t-> " << gFitter.GetNDF() << std::endl;
         }
     }
     
@@ -61,6 +73,11 @@ void fitGFactor(TH1D *gFactor, TFile &outFile, const bool verbose)
     // Writing fitted Geometrical Factor
     gFactor->Write();
 
+    // Writing chi2,prob and NDF histos
+    chi2.Write();
+    prob.Write();
+    ndf.Write();
+    
     //Writing TGraphs
     for(int pIdx=0; pIdx<nPars; ++pIdx)
         grPar[pIdx]->Write();
