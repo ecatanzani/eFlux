@@ -3,6 +3,9 @@
 # Load DevToolSet-7 for c++14
 source /opt/rh/devtoolset-7/enable
 
+# Load DAMPE installation (needed by ROOT)
+source /cvmfs/dampe.cern.ch/centos7/etc/setup.sh
+
 # Create 'outFiles' dir if does not exist
 _DIRECTORY="/storage/gpfs_data/dampe/users/ecatanzani/myRepos/DAMPE/eFlux/condorJob/outFiles"
 if [[ ! -d "$_DIRECTORY" ]]
