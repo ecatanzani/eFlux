@@ -168,6 +168,7 @@ Release
 
 # Local data dir
 data
+condorJob/outFiles
 
 # AnyOption object file
 deps/AnyOption/anyoption.o
