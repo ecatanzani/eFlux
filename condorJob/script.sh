@@ -14,4 +14,4 @@ then
 fi
 
 # Run Script
-./storage/gpfs_data/dampe/users/ecatanzani/myRepos/DAMPE/eFlux/Release/eFLux -i /storage/gpfs_data/dampe/users/ecatanzani/Data/DAMPE/nTuples/Trees/myTree.root -d $_DIRECTORY -t 34900000 -v
+/storage/gpfs_data/dampe/users/ecatanzani/myRepos/DAMPE/eFlux/Release/eFlux -i /storage/gpfs_data/dampe/users/ecatanzani/Data/DAMPE/nTuples/Trees/myTree.root -d $_DIRECTORY -t 34900000 -v
