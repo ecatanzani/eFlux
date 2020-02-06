@@ -12,10 +12,13 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TH1D.h"
+#include "TF1.h"
+#include "TDirectory.h"
 
 #pragma once
 
-#define nGFitLoops 100
+#define nGFitLoops 1000000
+#define chiSQLLimit 0.000001
 
 extern void eCore(
                     const std::string inputPath,
@@ -70,7 +73,33 @@ extern void evLoop(
 
 extern void buildAcceptance(TH1D &acceptance, TFile &outFile,const bool verbose);
 
-extern void fitGFactor(TH1D *gFactor,TFile &outFile, const bool verbose);
-extern double logisticFunction(double *x, double *par);
+extern TF1 fitGFactor(TH1D *gFactor,TFile &outFile, const bool verbose);
+
+extern void tmpFit(
+                    TDirectory* geoFactorDir,
+                    TF1 &myFitter,
+                    TH1D* gFactor,
+                    const bool verbose,
+                    const bool baseFit = true,
+                    const unsigned int fitNumber = 0
+                );
+
+extern void setStartingParameters(
+                                    const TF1 &oldFitter,
+                                    TF1 &newFitter,
+                                    const unsigned int nOldPars,
+                                    const unsigned int nNewPars
+                                );
+
+// Fitting functions
+extern double logisticFunction_0(double *x, double *par);
+extern double logisticFunction_1(double *x, double *par);
+extern double logisticFunction_2(double *x, double *par);
+extern double logisticFunction_3(double *x, double *par);
+extern double logisticFunction_4(double *x, double *par);
+extern double logisticFunction_5(double *x, double *par);
+extern double logisticFunction_6(double *x, double *par);
+extern double logisticFunction_7(double *x, double *par);
+extern double logisticFunction_8(double *x, double *par);
 
 #endif
