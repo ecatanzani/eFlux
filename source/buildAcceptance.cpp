@@ -22,7 +22,7 @@ void buildAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
     gFactor = (TH1D*) geoFile.Get("Acc");
     gFactor->SetDirectory(0);
     geoFile.Close();
-    fitGFactor(gFactor,outFile,verbose);
+    auto fitter = fitGFactor(gFactor,outFile,verbose);
     
     TFile selFile(selFilePath,"READ");
     if(!selFile.IsOpen())
@@ -48,8 +48,8 @@ void buildAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
     
     selEfficiency_alfterSelection->Divide(selEfficiency_beforeSelection);
     selEff = (TH1D*) selEfficiency_alfterSelection->Clone("selEff");
-    selEfficiency_alfterSelection->Multiply(gFactor->GetFunction("gFitter"));
-
+    selEfficiency_alfterSelection->Multiply(gFactor->GetFunction(fitter.GetName()));
+    
     new (&acceptance) (TH1D) (*(TH1D*)selEfficiency_alfterSelection->Clone("Acceptance"));
     
     // Creating a TDirectory for the acceptance histo
