@@ -4,6 +4,6 @@ Build Tests
 
 | Ubuntu Build | macOS Build |
 |:--:|:--:|
-| ![buildTest_ubuntu C/C++](https://github.com/ecatanzani/eFlux/workflows/buildTest_ubuntu%20C/C++/badge.svg) | ![buildTest_macos C/C++](https://github.com/ecatanzani/eFlux/workflows/buildTest_macos%20C/C++/badge.svg) |
+| ![Ubuntu latest](https://github.com/ecatanzani/eFlux/workflows/Ubuntu%20latest/badge.svg) | ![MacOS latest](https://github.com/ecatanzani/eFlux/workflows/MacOS%20latest/badge.svg) |
 
 Electron Flux
