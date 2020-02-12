@@ -168,19 +168,23 @@ clean_all: clean_all_debug clean_all_release
 clean_debug:
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete debug obj files ]")
 	@rm -f -R $(O_DEBUG_DIR)
+	@rm -f $(ANYOPT_INC)/anyoption.o
 
 clean_release:
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete release obj files ]")
 	@rm -f -R $(O_RELEASE_DIR)
+	@rm -f $(ANYOPT_INC)/anyoption.o
 
 clean_all_debug:
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete debug obj files ]")
 	@rm -f -R $(O_DEBUG_DIR)
+	@rm -f $(ANYOPT_INC)/anyoption.o
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete debug executable files ]")
 	@rm -f -R $(O_DEBUG_PROG)
 
 clean_all_release:
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete release obj files ]")
 	@rm -f -R $(O_RELEASE_DIR)
+	@rm -f $(ANYOPT_INC)/anyoption.o
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete release executable files ]")
 	@rm -f -R $(O_RELEASE_PROG)
