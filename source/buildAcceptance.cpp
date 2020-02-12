@@ -2,6 +2,31 @@
 
 void buildAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
 {
+
+#if 1
+    
+    const char* accPath = "effHistos/acceptance.root";
+    TFile accFile(accPath,"READ");
+    if(!accFile.IsOpen())
+    {
+        std::cerr << "\n\nError opening geometric factor TFile: " << accPath << std::endl;
+        exit(123);
+    }
+    
+    new (&acceptance) (TH1D) (*(TH1D*)accFile.Get("Acc"));
+    accFile.Close();
+
+    // Creating a TDirectory for the acceptance histo
+    TDirectory *aDir = outFile.mkdir("Acceptance");
+    aDir->cd();
+
+    acceptance.Write();
+    
+    // Returning to main dir on the output TFile
+    outFile.cd();
+
+#else
+
     TH1D* gFactor = nullptr;
     TH1D* selEfficiency_beforeSelection = nullptr;
     TH1D* selEfficiency_alfterSelection = nullptr;
@@ -63,4 +88,7 @@ void buildAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
     
     // Returning to main dir on the output TFile
     outFile.cd();
+
+#endif
+
 }
