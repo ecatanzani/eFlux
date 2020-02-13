@@ -1,3 +1,5 @@
+name: CentOS - DAMPE framework
+
 on: [push]
 
 jobs:
