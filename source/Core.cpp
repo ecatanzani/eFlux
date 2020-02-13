@@ -5,10 +5,12 @@ void eCore(
             const std::string outputPath,
             const bool verbose,
             const unsigned int lvTime,
+            const bool myAcceptance,
+            const std::string accInputPath,
             AnyOption &opt
         )
 {
-    //Create output TFile
+    // Create output TFile
     TFile outFile(uniqueOutFile(outputPath,opt),"NEW","Analysis Output File");
     if(!outFile.IsOpen())
     {
@@ -16,10 +18,14 @@ void eCore(
         exit(123);
     }
     
-    //Building eFLux
+    // Building acceptance
+    if(myAcceptance)
+        buildAcceptance(accInputPath,verbose);
+
+    // Building eFLux
     buildFlux(inputPath,lvTime,outFile,verbose);
 
-    //Close output file ...
+    // Close output file ...
     outFile.Close();
 
 }
