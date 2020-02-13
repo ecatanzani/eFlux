@@ -5,7 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     name: DAMPE Framework Building Test
     steps:
-    - name: building
-      uses: ecatanzani/DAMPE_builder
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: getting local action
+      uses: ./.github/actions/DAMPE_builder
     - name: action steps
       uses: ./
