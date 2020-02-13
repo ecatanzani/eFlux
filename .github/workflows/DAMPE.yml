@@ -6,5 +6,6 @@ jobs:
     name: DAMPE Framnework Building Test
     steps:
     - name: building
-      id: hello
-      uses: actions/dampeSW@v1
+      uses: actions/dampeSW
+    - name: action steps
+      uses: ./
