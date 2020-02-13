@@ -1,0 +1,10 @@
+on: [push]
+
+jobs:
+  dampeFrame:
+    runs-on: ubuntu-latest
+    name: DAMPE Framnework Building Test
+    steps:
+    - name: building
+      id: hello
+      uses: actions/DAMPESW@v1
