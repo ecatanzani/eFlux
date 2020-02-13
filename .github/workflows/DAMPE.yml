@@ -6,6 +6,6 @@ jobs:
     name: DAMPE Framnework Building Test
     steps:
     - name: building
-      uses: actions/dampeSW
+      uses: actions/dampeSW/action.yml
     - name: action steps
       uses: ./
