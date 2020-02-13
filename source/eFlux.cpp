@@ -58,7 +58,7 @@ void buildXtrlFlux(
     TH1D* eFlux = nullptr;
 
     evLoop(eCounts,inputPath,outFile,verbose,true);
-    buildAcceptance(acceptance,outFile,verbose);
+    readAcceptance(acceptance,outFile,verbose);
     
     eFlux = (TH1D*)eCounts.Clone("eFlux");
     eFlux->Sumw2();
