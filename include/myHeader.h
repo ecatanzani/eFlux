@@ -25,6 +25,8 @@ extern void eCore(
                     const std::string outputPath,
                     const bool verbose,
                     const unsigned int lvTime,
+                    const bool myAcceptance,
+                    const std::string accInputPath,
                     AnyOption &opt
                 );
 
@@ -39,6 +41,7 @@ extern const char* uniqueOutFile(const std::string outputPath,AnyOption &opt);
 extern std::vector<float> createLogBinning(const double minValue,const double maxValue,const int nBins);
 extern std::vector<float> createLinBinning(const double minValue,const double maxValue,const int nBins);
 
+extern void buildAcceptance(const std::string accInputPath,const bool verbose);
 extern void buildFlux(
                         const std::string inputPath,
                         const unsigned int lvTime,
@@ -71,7 +74,7 @@ extern void evLoop(
                     const double xtrlCut=8.5
                 );
 
-extern void buildAcceptance(TH1D &acceptance, TFile &outFile,const bool verbose);
+extern void readAcceptance(TH1D &acceptance, TFile &outFile,const bool verbose);
 
 extern TF1 fitGFactor(TH1D *gFactor,TFile &outFile, const bool verbose);
 
