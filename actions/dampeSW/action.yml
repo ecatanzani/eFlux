@@ -1,6 +1,0 @@
-name: DAMPESW
-description: 'DAMPE Framework Building Test'
-
-runs:
-  using: 'docker'
-  image: 'Dockerfile'

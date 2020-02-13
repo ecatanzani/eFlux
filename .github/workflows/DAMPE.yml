@@ -3,9 +3,9 @@ on: [push]
 jobs:
   dampeFrame:
     runs-on: ubuntu-latest
-    name: DAMPE Framnework Building Test
+    name: DAMPE Framework Building Test
     steps:
     - name: building
-      uses: actions/dampeSW/action.yml
+      uses: ecatanzani/DAMPE_builder
     - name: action steps
       uses: ./
