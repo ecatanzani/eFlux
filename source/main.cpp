@@ -9,12 +9,13 @@ int main(int argc,char* argv[])
     
     opt.addUsage("Usage: ");
     opt.addUsage("");
-    opt.addUsage(" -h  --help                                       Prints this help ");
-    opt.addUsage(" -i  --input      <path_to_input_TTree>       (*) Input data TTree ");
-    opt.addUsage(" -o  --output     <path_to_output_TFile>          Output ROOT TFile");
-    opt.addUsage(" -d  --outputDir  <path_to_output_TFile_dir>      Output ROOT TFile directory");
-    opt.addUsage(" -t  --lvtime <live-time-value>               (*) DAMPE live-time  ");
-    opt.addUsage(" -v  --verbose                                    Verbose output   ");
+    opt.addUsage(" -h  --help                                           Prints this help ");
+    opt.addUsage(" -i  --input          <path_to_input_TTree>       (*) Input data TTree ");
+    opt.addUsage(" -o  --output         <path_to_output_TFile>          Output ROOT TFile");
+    opt.addUsage(" -d  --outputDir      <path_to_output_TFile_dir>      Output ROOT TFile directory");
+    opt.addUsage(" -t  --lvtime         <live-time-value>           (*) DAMPE live-time  ");
+    opt.addUsage(" -a  --acceptance     <Mpath_to_MC/Data_dir>          Acceptance calculation");
+    opt.addUsage(" -v  --verbose                                        Verbose output   ");
     opt.addUsage("");
     
     opt.setFlag("help",'h');
@@ -33,8 +34,10 @@ int main(int argc,char* argv[])
 
     std::string inputPath;
     std::string outputPath;
+    std::string accInputPath;
     stringstream str_lvTime;
     bool verbose = false;
+    bool myAcceptance = false;
     unsigned int lvTime = 0;
     
    
@@ -53,6 +56,11 @@ int main(int argc,char* argv[])
     {
         str_lvTime << opt.getValue('t');
         str_lvTime >> lvTime;
+    }
+    if(opt.getFlag("acceptance") || opt.getFlag('a'))
+    {
+        myAcceptance = true;
+        accInputPath = opt.getValue('a');
     }
     if(opt.getFlag("verbose") || opt.getFlag('v'))
         verbose = opt.getFlag('v');
@@ -74,7 +82,15 @@ int main(int argc,char* argv[])
 #else
 
     if(argc>=5)
-        eCore(inputPath,outputPath,verbose,lvTime,opt);
+        eCore(
+                inputPath,
+                outputPath,
+                verbose,
+                lvTime,
+                myAcceptance,
+                accInputPath,
+                opt
+            );
     else
     {
         std::cerr << "\n\t !!! Hey mate, insert all required fields ...\n\n";opt.printUsage();
