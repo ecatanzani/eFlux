@@ -14,6 +14,12 @@
 #include "TH1D.h"
 #include "TF1.h"
 #include "TDirectory.h"
+#include "TChain.h"
+
+// DAMPESW includes
+
+#include "DmpChain.h"
+
 
 #pragma once
 
@@ -42,6 +48,11 @@ extern std::vector<float> createLogBinning(const double minValue,const double ma
 extern std::vector<float> createLinBinning(const double minValue,const double maxValue,const int nBins);
 
 extern void buildAcceptance(const std::string accInputPath,const bool verbose);
+extern DmpChain* aggregateEventsDmpChain(const std::string accInputPath,const bool verbose);
+extern TChain* aggregateEventsTChain(const std::string accInputPath,const bool verbose);
+
+extern std::string getListPath(const std::string accInputPath,const bool MC=false);
+
 extern void buildFlux(
                         const std::string inputPath,
                         const unsigned int lvTime,
