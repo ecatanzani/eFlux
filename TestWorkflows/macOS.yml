@@ -1,0 +1,20 @@
+name: MacOS latest
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: getROOT
+      run: wget https://root.cern/download/root_v6.18.04.macosx64-10.14-clang100.tar.gz
+    - name: unpackROOT
+      run: tar -xvf root_v6.18.04.macosx64-10.14-clang100.tar.gz
+    - name: build
+      run: source root/bin/thisroot.sh && make
+    - name: clean
+      run: make clean_all
+

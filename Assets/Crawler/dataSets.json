@@ -1,0 +1,72 @@
+[
+    {
+        "geometry": "6r0p0",
+        "particle": "e",
+        "eMin": "100",
+        "eMax": "10000",
+        "dSet": "allElectron-v6r0p0_100GeV_10TeV"
+    },
+    {
+        "geometry": "6r0p0",
+        "particle": "e",
+        "eMin": "100",
+        "eMax": "10000",
+        "dSet": "allElectron-v6r0p0_100GeV_10TeV-p2"
+    },
+    {
+        "geometry": "6r0p0",
+        "particle": "e",
+        "eMin": "100",
+        "eMax": "10000",
+        "dSet": "allElectron-v6r0p0_100GeV_10TeV-p3"
+    },
+    {
+        "geometry": "6r0p0",
+        "particle": "e",
+        "eMin": "1",
+        "eMax": "100",
+        "dSet": "allElectron-v6r0p0_1GeV_100GeV"
+    },
+    {
+        "geometry": "6r0p0",
+        "particle": "e",
+        "eMin": "1",
+        "eMax": "15",
+        "dSet": "allElectron-v6r0p0_1GeV_15GeV"
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "e",
+        "eMin": "100",
+        "eMax": "10000",
+        "dSet": "allElectron-v6r0p10_100GeV_10TeV"
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "e",
+        "eMin": "100",
+        "eMax": "1000",
+        "dSet": "allElectron-v6r0p10_100GeV_1TeV_QGSP"
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "e",
+        "eMin": "10000",
+        "eMax": "20000",
+        "dSet": "allElectron-v6r0p10_10TeV_20TeV_FTFP"
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "e",
+        "eMin": "1",
+        "eMax": "100",
+        "dSet": "allElectron-v6r0p10_1GeV_100GeV_FTFP_HP"
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "e",
+        "eMin": "1000",
+        "eMax": "10000",
+        "dSet": "allElectron-v6r0p10_1TeV_10TeV_FTFP"
+    }
+]

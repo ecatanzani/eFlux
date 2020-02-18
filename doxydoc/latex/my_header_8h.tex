@@ -1,0 +1,473 @@
+\hypertarget{my_header_8h}{}\doxysection{include/my\+Header.h File Reference}
+\label{my_header_8h}\index{include/myHeader.h@{include/myHeader.h}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include \char`\"{}anyoption.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Tree.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+File.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+H1\+D.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+F1.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Directory.\+h\char`\"{}}\newline
+Include dependency graph for my\+Header.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{my_header_8h_aaf14d23eb76a8fd8811676ed5d4cbd61}{n\+G\+Fit\+Loops}}~1000000
+\item 
+\#define \mbox{\hyperlink{my_header_8h_a469ed96cf991b8dccff1b4ce29f4ba0d}{chi\+S\+Q\+L\+Limit}}~0.\+000001
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{my_header_8h_abc65ea8e349ad9c2e2b3fc61f30c338f}{e\+Core}} (const std\+::string input\+Path, const std\+::string output\+Path, const bool verbose, const unsigned int lv\+Time, const bool my\+Acceptance, const std\+::string acc\+Input\+Path, Any\+Option \&opt)
+\item 
+void \mbox{\hyperlink{my_header_8h_a4c8f36c25015830285ef0a3faff6dd24}{read\+Input\+Tree}} (const std\+::string input\+Path, std\+::vector$<$ float $>$ \&data\+Values, T\+Tree \&d\+Tree)
+\item 
+void \mbox{\hyperlink{my_header_8h_a8e13cd50cd08af67ca77de2bf8b17cb9}{branch\+Tree}} (T\+Tree \&my\+Data\+Tree, std\+::vector$<$ float $>$ \&data\+Values)
+\item 
+const char $\ast$ \mbox{\hyperlink{my_header_8h_ac8c15c211fe8da7c31f877410cdfe221}{unique\+Out\+File}} (const std\+::string output\+Path, Any\+Option \&opt)
+\item 
+std\+::vector$<$ float $>$ \mbox{\hyperlink{my_header_8h_a9a86a38e2e0fb1a02efa4a64c5c4cca2}{create\+Log\+Binning}} (const double min\+Value, const double max\+Value, const int n\+Bins)
+\item 
+std\+::vector$<$ float $>$ \mbox{\hyperlink{my_header_8h_ae342ec9263cea2bf6e4516f1031caa2e}{create\+Lin\+Binning}} (const double min\+Value, const double max\+Value, const int n\+Bins)
+\item 
+void \mbox{\hyperlink{my_header_8h_a6f416bc7ffa1dcd5eba26866b3873c5d}{build\+Acceptance}} (const std\+::string acc\+Input\+Path, const bool verbose)
+\item 
+void \mbox{\hyperlink{my_header_8h_a3ed4ac3482c4a19d7142b82ac3042cd6}{build\+Flux}} (const std\+::string input\+Path, const unsigned int lv\+Time, T\+File \&out\+File, const bool verbose)
+\item 
+bool \mbox{\hyperlink{my_header_8h_aa6da1ce26a9c7d3e66ba3f0d1732034a}{chech\+Flags}} (Any\+Option \&opt, const std\+::string input\+Path, const std\+::string output\+Path, const unsigned int lv\+Time)
+\item 
+void \mbox{\hyperlink{my_header_8h_a9475470dfc7868052e501424c4a020d1}{build\+Xtrl\+Flux}} (std\+::vector$<$ float $>$ \&e\+Bins, std\+::vector$<$ float $>$ \&c\+Bins, const std\+::string input\+Path, const unsigned int lv\+Time, T\+File \&out\+File, const bool verbose)
+\item 
+void \mbox{\hyperlink{my_header_8h_a837d16efbf277c8d5c87654d68d7a93d}{ev\+Loop}} (T\+H1D \&input\+Histo, const std\+::string input\+Path, T\+File \&out\+File, const bool verbose, const bool e\+Classifier=false, const double xtrl\+Cut=8.\+5)
+\item 
+void \mbox{\hyperlink{my_header_8h_a55dfe724c91c0ca9406d465bfb4ee8e4}{read\+Acceptance}} (T\+H1D \&acceptance, T\+File \&out\+File, const bool verbose)
+\item 
+T\+F1 \mbox{\hyperlink{my_header_8h_af77e2251afc8a3b5fedee9f7a241071e}{fit\+G\+Factor}} (T\+H1D $\ast$g\+Factor, T\+File \&out\+File, const bool verbose)
+\item 
+void \mbox{\hyperlink{my_header_8h_ab008bc03c8adc662b5b5896bb350005e}{tmp\+Fit}} (T\+Directory $\ast$geo\+Factor\+Dir, T\+F1 \&my\+Fitter, T\+H1D $\ast$g\+Factor, const bool verbose, const bool base\+Fit=true, const unsigned int fit\+Number=0)
+\item 
+void \mbox{\hyperlink{my_header_8h_aedf77a4ac0f37f1a467d8288929baa4b}{set\+Starting\+Parameters}} (const T\+F1 \&old\+Fitter, T\+F1 \&new\+Fitter, const unsigned int n\+Old\+Pars, const unsigned int n\+New\+Pars)
+\item 
+double \mbox{\hyperlink{my_header_8h_a9656782f90704c51e17fc1d0f97edebf}{logistic\+Function\+\_\+0}} (double $\ast$x, double $\ast$par)
+\item 
+double \mbox{\hyperlink{my_header_8h_aa7f3f7180911cf6f02068d6ba01f583a}{logistic\+Function\+\_\+1}} (double $\ast$x, double $\ast$par)
+\item 
+double \mbox{\hyperlink{my_header_8h_a76ea66fed6a23278ae834f7a8a91390f}{logistic\+Function\+\_\+2}} (double $\ast$x, double $\ast$par)
+\item 
+double \mbox{\hyperlink{my_header_8h_a59624b0d469d7a13969d2ddf9f5ec243}{logistic\+Function\+\_\+3}} (double $\ast$x, double $\ast$par)
+\item 
+double \mbox{\hyperlink{my_header_8h_a1c1472403eb885b4cd4ff192056fce55}{logistic\+Function\+\_\+4}} (double $\ast$x, double $\ast$par)
+\item 
+double \mbox{\hyperlink{my_header_8h_a37e804bfbb2fcae97fdfe5adc062bd51}{logistic\+Function\+\_\+5}} (double $\ast$x, double $\ast$par)
+\item 
+double \mbox{\hyperlink{my_header_8h_a2eea4eb64236d38a92961099ecc35042}{logistic\+Function\+\_\+6}} (double $\ast$x, double $\ast$par)
+\item 
+double \mbox{\hyperlink{my_header_8h_a9b9ffe445aeab8514427a96eea205bf9}{logistic\+Function\+\_\+7}} (double $\ast$x, double $\ast$par)
+\item 
+double \mbox{\hyperlink{my_header_8h_a71f32019178d7970c5df0c73fb3494f2}{logistic\+Function\+\_\+8}} (double $\ast$x, double $\ast$par)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{my_header_8h_a469ed96cf991b8dccff1b4ce29f4ba0d}\label{my_header_8h_a469ed96cf991b8dccff1b4ce29f4ba0d}} 
+\index{myHeader.h@{myHeader.h}!chiSQLLimit@{chiSQLLimit}}
+\index{chiSQLLimit@{chiSQLLimit}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{chiSQLLimit}{chiSQLLimit}}
+{\footnotesize\ttfamily \#define chi\+S\+Q\+L\+Limit~0.\+000001}
+
+\mbox{\Hypertarget{my_header_8h_aaf14d23eb76a8fd8811676ed5d4cbd61}\label{my_header_8h_aaf14d23eb76a8fd8811676ed5d4cbd61}} 
+\index{myHeader.h@{myHeader.h}!nGFitLoops@{nGFitLoops}}
+\index{nGFitLoops@{nGFitLoops}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{nGFitLoops}{nGFitLoops}}
+{\footnotesize\ttfamily \#define n\+G\+Fit\+Loops~1000000}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{my_header_8h_a8e13cd50cd08af67ca77de2bf8b17cb9}\label{my_header_8h_a8e13cd50cd08af67ca77de2bf8b17cb9}} 
+\index{myHeader.h@{myHeader.h}!branchTree@{branchTree}}
+\index{branchTree@{branchTree}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{branchTree()}{branchTree()}}
+{\footnotesize\ttfamily void branch\+Tree (\begin{DoxyParamCaption}\item[{T\+Tree \&}]{my\+Data\+Tree,  }\item[{std\+::vector$<$ float $>$ \&}]{data\+Values }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a8e13cd50cd08af67ca77de2bf8b17cb9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a6f416bc7ffa1dcd5eba26866b3873c5d}\label{my_header_8h_a6f416bc7ffa1dcd5eba26866b3873c5d}} 
+\index{myHeader.h@{myHeader.h}!buildAcceptance@{buildAcceptance}}
+\index{buildAcceptance@{buildAcceptance}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{buildAcceptance()}{buildAcceptance()}}
+{\footnotesize\ttfamily void build\+Acceptance (\begin{DoxyParamCaption}\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=322pt]{my_header_8h_a6f416bc7ffa1dcd5eba26866b3873c5d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a3ed4ac3482c4a19d7142b82ac3042cd6}\label{my_header_8h_a3ed4ac3482c4a19d7142b82ac3042cd6}} 
+\index{myHeader.h@{myHeader.h}!buildFlux@{buildFlux}}
+\index{buildFlux@{buildFlux}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{buildFlux()}{buildFlux()}}
+{\footnotesize\ttfamily void build\+Flux (\begin{DoxyParamCaption}\item[{const std\+::string}]{input\+Path,  }\item[{const unsigned int}]{lv\+Time,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a3ed4ac3482c4a19d7142b82ac3042cd6_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=289pt]{my_header_8h_a3ed4ac3482c4a19d7142b82ac3042cd6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a9475470dfc7868052e501424c4a020d1}\label{my_header_8h_a9475470dfc7868052e501424c4a020d1}} 
+\index{myHeader.h@{myHeader.h}!buildXtrlFlux@{buildXtrlFlux}}
+\index{buildXtrlFlux@{buildXtrlFlux}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{buildXtrlFlux()}{buildXtrlFlux()}}
+{\footnotesize\ttfamily void build\+Xtrl\+Flux (\begin{DoxyParamCaption}\item[{std\+::vector$<$ float $>$ \&}]{e\+Bins,  }\item[{std\+::vector$<$ float $>$ \&}]{c\+Bins,  }\item[{const std\+::string}]{input\+Path,  }\item[{const unsigned int}]{lv\+Time,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a9475470dfc7868052e501424c4a020d1_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a9475470dfc7868052e501424c4a020d1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_aa6da1ce26a9c7d3e66ba3f0d1732034a}\label{my_header_8h_aa6da1ce26a9c7d3e66ba3f0d1732034a}} 
+\index{myHeader.h@{myHeader.h}!chechFlags@{chechFlags}}
+\index{chechFlags@{chechFlags}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{chechFlags()}{chechFlags()}}
+{\footnotesize\ttfamily bool chech\+Flags (\begin{DoxyParamCaption}\item[{Any\+Option \&}]{opt,  }\item[{const std\+::string}]{input\+Path,  }\item[{const std\+::string}]{output\+Path,  }\item[{const unsigned int}]{lv\+Time }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=221pt]{my_header_8h_aa6da1ce26a9c7d3e66ba3f0d1732034a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_ae342ec9263cea2bf6e4516f1031caa2e}\label{my_header_8h_ae342ec9263cea2bf6e4516f1031caa2e}} 
+\index{myHeader.h@{myHeader.h}!createLinBinning@{createLinBinning}}
+\index{createLinBinning@{createLinBinning}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{createLinBinning()}{createLinBinning()}}
+{\footnotesize\ttfamily std\+::vector$<$float$>$ create\+Lin\+Binning (\begin{DoxyParamCaption}\item[{const double}]{min\+Value,  }\item[{const double}]{max\+Value,  }\item[{const int}]{n\+Bins }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_ae342ec9263cea2bf6e4516f1031caa2e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a9a86a38e2e0fb1a02efa4a64c5c4cca2}\label{my_header_8h_a9a86a38e2e0fb1a02efa4a64c5c4cca2}} 
+\index{myHeader.h@{myHeader.h}!createLogBinning@{createLogBinning}}
+\index{createLogBinning@{createLogBinning}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{createLogBinning()}{createLogBinning()}}
+{\footnotesize\ttfamily std\+::vector$<$float$>$ create\+Log\+Binning (\begin{DoxyParamCaption}\item[{const double}]{min\+Value,  }\item[{const double}]{max\+Value,  }\item[{const int}]{n\+Bins }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a9a86a38e2e0fb1a02efa4a64c5c4cca2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_abc65ea8e349ad9c2e2b3fc61f30c338f}\label{my_header_8h_abc65ea8e349ad9c2e2b3fc61f30c338f}} 
+\index{myHeader.h@{myHeader.h}!eCore@{eCore}}
+\index{eCore@{eCore}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{eCore()}{eCore()}}
+{\footnotesize\ttfamily void e\+Core (\begin{DoxyParamCaption}\item[{const std\+::string}]{input\+Path,  }\item[{const std\+::string}]{output\+Path,  }\item[{const bool}]{verbose,  }\item[{const unsigned int}]{lv\+Time,  }\item[{const bool}]{my\+Acceptance,  }\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{Any\+Option \&}]{opt }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_abc65ea8e349ad9c2e2b3fc61f30c338f_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=197pt]{my_header_8h_abc65ea8e349ad9c2e2b3fc61f30c338f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a837d16efbf277c8d5c87654d68d7a93d}\label{my_header_8h_a837d16efbf277c8d5c87654d68d7a93d}} 
+\index{myHeader.h@{myHeader.h}!evLoop@{evLoop}}
+\index{evLoop@{evLoop}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{evLoop()}{evLoop()}}
+{\footnotesize\ttfamily void ev\+Loop (\begin{DoxyParamCaption}\item[{T\+H1D \&}]{input\+Histo,  }\item[{const std\+::string}]{input\+Path,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose,  }\item[{const bool}]{e\+Classifier = {\ttfamily false},  }\item[{const double}]{xtrl\+Cut = {\ttfamily 8.5} }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=232pt]{my_header_8h_a837d16efbf277c8d5c87654d68d7a93d_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a837d16efbf277c8d5c87654d68d7a93d_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_af77e2251afc8a3b5fedee9f7a241071e}\label{my_header_8h_af77e2251afc8a3b5fedee9f7a241071e}} 
+\index{myHeader.h@{myHeader.h}!fitGFactor@{fitGFactor}}
+\index{fitGFactor@{fitGFactor}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{fitGFactor()}{fitGFactor()}}
+{\footnotesize\ttfamily T\+F1 fit\+G\+Factor (\begin{DoxyParamCaption}\item[{T\+H1D $\ast$}]{g\+Factor,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=291pt]{my_header_8h_af77e2251afc8a3b5fedee9f7a241071e_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_af77e2251afc8a3b5fedee9f7a241071e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a9656782f90704c51e17fc1d0f97edebf}\label{my_header_8h_a9656782f90704c51e17fc1d0f97edebf}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_0@{logisticFunction\_0}}
+\index{logisticFunction\_0@{logisticFunction\_0}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_0()}{logisticFunction\_0()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+0 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a9656782f90704c51e17fc1d0f97edebf_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_aa7f3f7180911cf6f02068d6ba01f583a}\label{my_header_8h_aa7f3f7180911cf6f02068d6ba01f583a}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_1@{logisticFunction\_1}}
+\index{logisticFunction\_1@{logisticFunction\_1}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_1()}{logisticFunction\_1()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+1 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_aa7f3f7180911cf6f02068d6ba01f583a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a76ea66fed6a23278ae834f7a8a91390f}\label{my_header_8h_a76ea66fed6a23278ae834f7a8a91390f}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_2@{logisticFunction\_2}}
+\index{logisticFunction\_2@{logisticFunction\_2}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_2()}{logisticFunction\_2()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+2 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a76ea66fed6a23278ae834f7a8a91390f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a59624b0d469d7a13969d2ddf9f5ec243}\label{my_header_8h_a59624b0d469d7a13969d2ddf9f5ec243}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_3@{logisticFunction\_3}}
+\index{logisticFunction\_3@{logisticFunction\_3}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_3()}{logisticFunction\_3()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+3 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a59624b0d469d7a13969d2ddf9f5ec243_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a1c1472403eb885b4cd4ff192056fce55}\label{my_header_8h_a1c1472403eb885b4cd4ff192056fce55}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_4@{logisticFunction\_4}}
+\index{logisticFunction\_4@{logisticFunction\_4}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_4()}{logisticFunction\_4()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+4 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a1c1472403eb885b4cd4ff192056fce55_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a37e804bfbb2fcae97fdfe5adc062bd51}\label{my_header_8h_a37e804bfbb2fcae97fdfe5adc062bd51}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_5@{logisticFunction\_5}}
+\index{logisticFunction\_5@{logisticFunction\_5}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_5()}{logisticFunction\_5()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+5 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a37e804bfbb2fcae97fdfe5adc062bd51_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a2eea4eb64236d38a92961099ecc35042}\label{my_header_8h_a2eea4eb64236d38a92961099ecc35042}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_6@{logisticFunction\_6}}
+\index{logisticFunction\_6@{logisticFunction\_6}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_6()}{logisticFunction\_6()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+6 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a2eea4eb64236d38a92961099ecc35042_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a9b9ffe445aeab8514427a96eea205bf9}\label{my_header_8h_a9b9ffe445aeab8514427a96eea205bf9}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_7@{logisticFunction\_7}}
+\index{logisticFunction\_7@{logisticFunction\_7}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_7()}{logisticFunction\_7()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+7 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a9b9ffe445aeab8514427a96eea205bf9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a71f32019178d7970c5df0c73fb3494f2}\label{my_header_8h_a71f32019178d7970c5df0c73fb3494f2}} 
+\index{myHeader.h@{myHeader.h}!logisticFunction\_8@{logisticFunction\_8}}
+\index{logisticFunction\_8@{logisticFunction\_8}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{logisticFunction\_8()}{logisticFunction\_8()}}
+{\footnotesize\ttfamily double logistic\+Function\+\_\+8 (\begin{DoxyParamCaption}\item[{double $\ast$}]{x,  }\item[{double $\ast$}]{par }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{my_header_8h_a55dfe724c91c0ca9406d465bfb4ee8e4}\label{my_header_8h_a55dfe724c91c0ca9406d465bfb4ee8e4}} 
+\index{myHeader.h@{myHeader.h}!readAcceptance@{readAcceptance}}
+\index{readAcceptance@{readAcceptance}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{readAcceptance()}{readAcceptance()}}
+{\footnotesize\ttfamily void read\+Acceptance (\begin{DoxyParamCaption}\item[{T\+H1D \&}]{acceptance,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a55dfe724c91c0ca9406d465bfb4ee8e4_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_a55dfe724c91c0ca9406d465bfb4ee8e4_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_a4c8f36c25015830285ef0a3faff6dd24}\label{my_header_8h_a4c8f36c25015830285ef0a3faff6dd24}} 
+\index{myHeader.h@{myHeader.h}!readInputTree@{readInputTree}}
+\index{readInputTree@{readInputTree}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{readInputTree()}{readInputTree()}}
+{\footnotesize\ttfamily void read\+Input\+Tree (\begin{DoxyParamCaption}\item[{const std\+::string}]{input\+Path,  }\item[{std\+::vector$<$ float $>$ \&}]{data\+Values,  }\item[{T\+Tree \&}]{d\+Tree }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{my_header_8h_aedf77a4ac0f37f1a467d8288929baa4b}\label{my_header_8h_aedf77a4ac0f37f1a467d8288929baa4b}} 
+\index{myHeader.h@{myHeader.h}!setStartingParameters@{setStartingParameters}}
+\index{setStartingParameters@{setStartingParameters}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{setStartingParameters()}{setStartingParameters()}}
+{\footnotesize\ttfamily void set\+Starting\+Parameters (\begin{DoxyParamCaption}\item[{const T\+F1 \&}]{old\+Fitter,  }\item[{T\+F1 \&}]{new\+Fitter,  }\item[{const unsigned int}]{n\+Old\+Pars,  }\item[{const unsigned int}]{n\+New\+Pars }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_aedf77a4ac0f37f1a467d8288929baa4b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_ab008bc03c8adc662b5b5896bb350005e}\label{my_header_8h_ab008bc03c8adc662b5b5896bb350005e}} 
+\index{myHeader.h@{myHeader.h}!tmpFit@{tmpFit}}
+\index{tmpFit@{tmpFit}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{tmpFit()}{tmpFit()}}
+{\footnotesize\ttfamily void tmp\+Fit (\begin{DoxyParamCaption}\item[{T\+Directory $\ast$}]{geo\+Factor\+Dir,  }\item[{T\+F1 \&}]{my\+Fitter,  }\item[{T\+H1D $\ast$}]{g\+Factor,  }\item[{const bool}]{verbose,  }\item[{const bool}]{base\+Fit = {\ttfamily true},  }\item[{const unsigned int}]{fit\+Number = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{my_header_8h_ab008bc03c8adc662b5b5896bb350005e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{my_header_8h_ac8c15c211fe8da7c31f877410cdfe221}\label{my_header_8h_ac8c15c211fe8da7c31f877410cdfe221}} 
+\index{myHeader.h@{myHeader.h}!uniqueOutFile@{uniqueOutFile}}
+\index{uniqueOutFile@{uniqueOutFile}!myHeader.h@{myHeader.h}}
+\doxysubsubsection{\texorpdfstring{uniqueOutFile()}{uniqueOutFile()}}
+{\footnotesize\ttfamily const char$\ast$ unique\+Out\+File (\begin{DoxyParamCaption}\item[{const std\+::string}]{output\+Path,  }\item[{Any\+Option \&}]{opt }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=311pt]{my_header_8h_ac8c15c211fe8da7c31f877410cdfe221_icgraph}
+\end{center}
+\end{figure}

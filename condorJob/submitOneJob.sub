@@ -1,0 +1,8 @@
+universe = vanilla 
+executable = /storage/gpfs_data/dampe/users/ecatanzani/myRepos/DAMPE/eFlux/condorJob/script.sh
+output = outputFile.out 
+error = errorFile.err
+log = logFile.log 
+ShouldTransferFiles = YES 
+WhenToTransferOutput = ON_EXIT 
+queue 1

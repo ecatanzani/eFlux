@@ -1,3 +1,5 @@
+Electron Flux
+=======
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/ecatanzani/eFlux/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
@@ -35,3 +37,10 @@ Your Pages site will use the layout and styles from the Jekyll theme you have se
 ### Support or Contact
 
 Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+
+Build Tests
+
+| CentOS |
+|:--:|
+| ![CentOS - DAMPE framework](https://github.com/ecatanzani/eFlux/workflows/CentOS%20-%20DAMPE%20framework/badge.svg) |
+

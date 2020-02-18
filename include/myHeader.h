@@ -7,42 +7,102 @@
 #include <string>
 #include <vector>
 
+#include "anyoption.h"
+
 #include "TTree.h"
 #include "TFile.h"
 #include "TH1D.h"
+#include "TF1.h"
+#include "TDirectory.h"
 
 #pragma once
+
+#define nGFitLoops 1000000
+#define chiSQLLimit 0.000001
 
 extern void eCore(
                     const std::string inputPath,
                     const std::string outputPath,
                     const bool verbose,
-                    const unsigned int lvTime
+                    const unsigned int lvTime,
+                    const bool myAcceptance,
+                    const std::string accInputPath,
+                    AnyOption &opt
                 );
 
-extern void readInputTree(const std::string inputPath,std::vector<double> &dataValues,TTree* dTree);
-extern void branchTree(TTree &myDataTree,std::vector<double> &dataValues);
-extern const char* uniqueOutFile(const std::string outputPath);
-extern std::vector<double> createLogBinning(const double minValue,const double maxValue,const int nBins);
-extern std::vector<double> createLinBinning(const double minValue,const double maxValue,const int nBins);
-extern void buildFlux(TFile &outFile,const std::string inputPath,const unsigned int lvTime);
+extern void readInputTree(
+                            const std::string inputPath,
+                            std::vector<float> &dataValues,
+                            TTree &dTree
+                        );
+
+extern void branchTree(TTree &myDataTree,std::vector<float> &dataValues);
+extern const char* uniqueOutFile(const std::string outputPath,AnyOption &opt);
+extern std::vector<float> createLogBinning(const double minValue,const double maxValue,const int nBins);
+extern std::vector<float> createLinBinning(const double minValue,const double maxValue,const int nBins);
+
+extern void buildAcceptance(const std::string accInputPath,const bool verbose);
+extern void buildFlux(
+                        const std::string inputPath,
+                        const unsigned int lvTime,
+                        TFile &outFile,
+                        const bool verbose
+                    );
+
+extern bool chechFlags(
+                        AnyOption &opt,
+                        const std::string inputPath,
+                        const std::string outputPath,
+                        const unsigned int lvTime
+                    );
 
 extern void buildXtrlFlux(
-                            TFile &outFile,
-                            std::vector<double> &eBins,
-                            std::vector<double> &cBins,
+                            std::vector<float> &eBins,
+                            std::vector<float> &cBins,
                             const std::string inputPath,
-                            const unsigned int lvTime
+                            const unsigned int lvTime,
+                            TFile &outFile,
+                            const bool verbose
                         );
 
 extern void evLoop(
-                    TFile &outFile,
                     TH1D &inputHisto,
                     const std::string inputPath,
+                    TFile &outFile,
+                    const bool verbose,
                     const bool eClassifier=false,
                     const double xtrlCut=8.5
                 );
 
-extern void buildAcceptance(TH1D &acceptance);
+extern void readAcceptance(TH1D &acceptance, TFile &outFile,const bool verbose);
+
+extern TF1 fitGFactor(TH1D *gFactor,TFile &outFile, const bool verbose);
+
+extern void tmpFit(
+                    TDirectory* geoFactorDir,
+                    TF1 &myFitter,
+                    TH1D* gFactor,
+                    const bool verbose,
+                    const bool baseFit = true,
+                    const unsigned int fitNumber = 0
+                );
+
+extern void setStartingParameters(
+                                    const TF1 &oldFitter,
+                                    TF1 &newFitter,
+                                    const unsigned int nOldPars,
+                                    const unsigned int nNewPars
+                                );
+
+// Fitting functions
+extern double logisticFunction_0(double *x, double *par);
+extern double logisticFunction_1(double *x, double *par);
+extern double logisticFunction_2(double *x, double *par);
+extern double logisticFunction_3(double *x, double *par);
+extern double logisticFunction_4(double *x, double *par);
+extern double logisticFunction_5(double *x, double *par);
+extern double logisticFunction_6(double *x, double *par);
+extern double logisticFunction_7(double *x, double *par);
+extern double logisticFunction_8(double *x, double *par);
 
 #endif

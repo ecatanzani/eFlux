@@ -1,3 +1,3 @@
 [submodule "AnyOption"]
-	path = AnyOption
+	path = deps/AnyOption
 	url = git@github.com:hackorama/AnyOption.git

@@ -17,12 +17,20 @@ DIPS_INCLUDE = $(shell root-config --cflags)
 #DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) -lMinuit -lRooFit -lRooFitCore
 DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
 
+DAMPE_INC="/dampe/releases/DmpSoftware-6-0-10/include"
+DAMPE_LIB="/dampe/releases/DmpSoftware-6-0-10/lib"	
+
+ifeq ($(wildcard $(DAMPE_INC)),"")
+	DAMPE_INC="/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include"
+	DAMPE_LIB="/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib"	
+endif
+
 
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
 
-ANYOPT_SRC = $(TOP)/AnyOption/anyoption.cpp
-ANYOPT_INC = $(TOP)/AnyOption
+ANYOPT_SRC = $(TOP)/deps/AnyOption/anyoption.cpp
+ANYOPT_INC = $(TOP)/deps/AnyOption
 
 DEBUG_DIR    = Debug/obj
 RELEASE_DIR  = Release/obj
@@ -41,7 +49,7 @@ SUB_DIRS := $(subst $(S_DIR)/,,$(SUB_DIRS))
 # C FLAGS
 C_FLAGS = -fPIC -D_FORCE_INLINES
 # CPP FLAGS
-CC_FLAGS = -std=c++14 -I$(S_INC) -I$(ANYOPT_DIR)
+CC_FLAGS = -std=c++14 -I$(S_INC) #-I$(ANYOPT_INC)
 # RELEASE_FLAGS
 RELEASE_FLAGS = -O3
 # DEBUG_FLAGS
@@ -50,8 +58,8 @@ DEBUG_FLAGS = -g -D_DEBUG -Wall -Wno-unknown-pragmas
 LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
-	CC_FLAGS+= -I$(DIPS_INCLUDE) -I$(ANYOPT_INC)
-	LDFLAGS += $(DIPS_LIBS)
+	CC_FLAGS+= -I$(DIPS_INCLUDE) -I$(ANYOPT_INC) -I$(DAMPE_INC)
+	LDFLAGS += $(DIPS_LIBS) -L$(DAMPE_LIB) -lDmpEvent
 endif
 ####################################################
 # Flags by OS
@@ -168,19 +176,23 @@ clean_all: clean_all_debug clean_all_release
 clean_debug:
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete debug obj files ]")
 	@rm -f -R $(O_DEBUG_DIR)
+	@rm -f $(ANYOPT_INC)/anyoption.o
 
 clean_release:
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete release obj files ]")
 	@rm -f -R $(O_RELEASE_DIR)
+	@rm -f $(ANYOPT_INC)/anyoption.o
 
 clean_all_debug:
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete debug obj files ]")
 	@rm -f -R $(O_DEBUG_DIR)
+	@rm -f $(ANYOPT_INC)/anyoption.o
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete debug executable files ]")
 	@rm -f -R $(O_DEBUG_PROG)
 
 clean_all_release:
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete release obj files ]")
 	@rm -f -R $(O_RELEASE_DIR)
+	@rm -f $(ANYOPT_INC)/anyoption.o
 	$(call colorecho,$(COLOR_MAGENTA),"[ Delete release executable files ]")
 	@rm -f -R $(O_RELEASE_PROG)

@@ -168,4 +168,10 @@ Release
 
 # Local data dir
 data
-AnyOption/anyoption.o
+condorJob/outFiles
+
+# AnyOption object file
+deps/AnyOption/anyoption.o
+
+# ROOT out and in files
+*.root
