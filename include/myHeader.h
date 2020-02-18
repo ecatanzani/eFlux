@@ -42,7 +42,6 @@ extern std::vector<float> createLogBinning(const double minValue,const double ma
 extern std::vector<float> createLinBinning(const double minValue,const double maxValue,const int nBins);
 
 extern void buildAcceptance(const std::string accInputPath,const bool verbose);
-extern void aggregateReco(const std::string accInputPath,const bool verbose);
 extern void buildFlux(
                         const std::string inputPath,
                         const unsigned int lvTime,
