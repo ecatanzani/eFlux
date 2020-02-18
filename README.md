@@ -27,7 +27,7 @@ Syntax highlighted code block
 
 [Link to Doxygen](./docs/index.html) and ![Image](src)
 ```
-[Link to Doxygen](./docs/index.html)
+[Link to Doxygen](./docs/html/index.html)
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
