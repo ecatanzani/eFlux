@@ -14,7 +14,7 @@ int main(int argc,char* argv[])
     opt.addUsage(" -o  --output         <path_to_output_TFile>          Output ROOT TFile");
     opt.addUsage(" -d  --outputDir      <path_to_output_TFile_dir>      Output ROOT TFile directory");
     opt.addUsage(" -t  --lvtime         <live-time-value>           (*) DAMPE live-time  ");
-    opt.addUsage(" -a  --acceptance     <Mpath_to_MC/Data_dir>          Acceptance calculation");
+    opt.addUsage(" -a  --acceptance     <path_to_MC/Data_list_dir>      Acceptance calculation");
     opt.addUsage(" -v  --verbose                                        Verbose output   ");
     opt.addUsage("");
     
