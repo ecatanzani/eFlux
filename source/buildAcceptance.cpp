@@ -1,3 +1,7 @@
+/*
+    Consider this repo as a manual: https://github.com/DAMPEEU/DmpTools/blob/master/HE_skimmer/code/app/main.cc#L318
+*/
+
 #include "myHeader.h"
 
 #include <fstream>
