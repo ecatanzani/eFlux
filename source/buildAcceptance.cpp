@@ -49,12 +49,13 @@ DmpChain* aggregateEventsDmpChain(const std::string accInputPath,const bool verb
     return dmpch;
 }
 
-TChain* aggregateEventsTChain(const std::string accInputPath,const bool verbose)
+std::shared_ptr < TChain > aggregateEventsTChain(const std::string accInputPath,const bool verbose)
 {   
     // ****** Access data using ROOT TChain ******
 
     // Create TChain object
-    TChain* dmpch = new TChain("CollectionTree");
+    //TChain* dmpch = new TChain("CollectionTree");
+    std::shared_ptr < TChain > dmpch = std::make_shared < TChain > ("CollectionTree");
 
     // Reading list of MC files
     std::ifstream input_file(getListPath(accInputPath,true).c_str());
@@ -72,6 +73,7 @@ TChain* aggregateEventsTChain(const std::string accInputPath,const bool verbose)
         if(verbose)
             std::cout << "\nAdding " << tmp_str << " to the chain ..." << std::endl;
     }
+
     return dmpch;
 }
 
@@ -88,11 +90,13 @@ void buildAcceptance(
     auto dmpch = aggregateEventsTChain(accInputPath,verbose);
     
     // Register BGO constainer
-    DmpEvtBgoHits* bgohits  = new  DmpEvtBgoHits();
+    //DmpEvtBgoHits* bgohits  = new  DmpEvtBgoHits();
+    std::shared_ptr < DmpEvtBgoHits > bgohits = std::make_shared < DmpEvtBgoHits > ();
     dmpch->SetBranchAddress("DmpEvtBgoHits",&bgohits);
 
     // Register BGO REC constainer
-    DmpEvtBgoRec* bgorec  = new  DmpEvtBgoRec();
+    //DmpEvtBgoRec* bgorec  = new  DmpEvtBgoRec();
+    std::shared_ptr < DmpEvtBgoRec > bgorec = std::make_shared < DmpEvtBgoRec > ();
     dmpch->SetBranchAddress("DmpEvtBgoRec",&bgorec);
 
     // Event loop
@@ -225,14 +229,14 @@ void buildAcceptance(
     }
 
     // Cleaning memory
-    delete dmpch;
-    delete bgohits;
-    delete bgorec;
+    //delete dmpch;
+    //delete bgohits;
+    //delete bgorec;
 
     exit(123);
 }
 
-bool maxElater_cut(DmpEvtBgoRec* bgorec, const double egyLayerRatio, const double bgoTotalE)
+bool maxElater_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, const double egyLayerRatio, const double bgoTotalE)
 {
     // Get energy maximum along X and Y views
     double ELayer_max_XZ = 0;
@@ -265,7 +269,7 @@ bool maxElater_cut(DmpEvtBgoRec* bgorec, const double egyLayerRatio, const doubl
     return passed_maxELayerTotalE_cut;
 }
 
-bool maxBarLayer_cut(DmpEvtBgoHits* bgohits, const int nBgoHits)
+bool maxBarLayer_cut(std::shared_ptr < DmpEvtBgoHits > bgohits, const int nBgoHits)
 {
     bool  passed_maxBarLayer_cut = true;
     std::vector < short > barNumberMaxEBarLay1_2_3(3,-1);      // Bar number of maxE bar in layer 1, 2, 3
@@ -293,7 +297,7 @@ bool maxBarLayer_cut(DmpEvtBgoHits* bgohits, const int nBgoHits)
     return passed_maxBarLayer_cut;
 }
 
-bool BGOTrackContainment_cut(DmpEvtBgoRec* bgorec, bool passEvent)
+bool BGOTrackContainment_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, bool passEvent)
 {
     bool passed_bgo_containment_cut = false;
     double BGO_TopZ = 46;

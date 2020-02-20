@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "anyoption.h"
 
@@ -60,11 +61,11 @@ extern void buildAcceptance(
                             );
 
 extern DmpChain* aggregateEventsDmpChain(const std::string accInputPath,const bool verbose);
-extern TChain* aggregateEventsTChain(const std::string accInputPath,const bool verbose);
+extern std::shared_ptr < TChain > aggregateEventsTChain(const std::string accInputPath,const bool verbose);
 
-extern bool maxElater_cut(DmpEvtBgoRec* bgorec, const double egyLayerRatio, const double bgoTotalE);
-extern bool maxBarLayer_cut(DmpEvtBgoHits* bgohits, const int nBgoHits);
-extern bool BGOTrackContainment_cut(DmpEvtBgoRec* bgorec, bool passEvent);
+extern bool maxElater_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, const double egyLayerRatio, const double bgoTotalE);
+extern bool maxBarLayer_cut(std::shared_ptr < DmpEvtBgoHits > bgohits, const int nBgoHits);
+extern bool BGOTrackContainment_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, bool passEvent);
 
 extern std::string getListPath(const std::string accInputPath,const bool MC=false);
 
