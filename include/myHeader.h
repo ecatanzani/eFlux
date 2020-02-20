@@ -62,6 +62,10 @@ extern void buildAcceptance(
 extern DmpChain* aggregateEventsDmpChain(const std::string accInputPath,const bool verbose);
 extern TChain* aggregateEventsTChain(const std::string accInputPath,const bool verbose);
 
+extern bool maxElater_cut(DmpEvtBgoRec* bgorec, const double egyLayerRatio, const double bgoTotalE);
+extern bool maxBarLayer_cut(DmpEvtBgoHits* bgohits, const int nBgoHits);
+extern bool BGOTrackContainment_cut(DmpEvtBgoRec* bgorec, bool passEvent);
+
 extern std::string getListPath(const std::string accInputPath,const bool MC=false);
 
 extern void buildFlux(
