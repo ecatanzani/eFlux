@@ -16,6 +16,7 @@ int main(int argc,char* argv[])
     opt.addUsage(" -t  --lvtime         <live-time-value>           (*) DAMPE live-time  ");
     opt.addUsage(" -a  --acceptance     <path_to_MC/Data_list_dir>      Acceptance calculation");
     opt.addUsage(" -v  --verbose                                        Verbose output   ");
+    opt.addUsage(" -p  --pedantic                                       Pedantic output   ");
     opt.addUsage("");
     
     opt.setFlag("help",'h');
@@ -23,7 +24,9 @@ int main(int argc,char* argv[])
     opt.setOption("output",'o');
     opt.setOption("outputDir",'d');
     opt.setOption("lvtime", 't');
+    opt.setOption("acceptance",'a');
     opt.setFlag("verbose",'v');
+    opt.setFlag("pedantic",'p');
 
     opt.processCommandArgs(argc,argv);
     
@@ -37,6 +40,7 @@ int main(int argc,char* argv[])
     std::string accInputPath;
     stringstream str_lvTime;
     bool verbose = false;
+    bool pedantic = false;
     bool myAcceptance = false;
     unsigned int lvTime = 0;
     
@@ -57,13 +61,15 @@ int main(int argc,char* argv[])
         str_lvTime << opt.getValue('t');
         str_lvTime >> lvTime;
     }
-    if(opt.getFlag("acceptance") || opt.getFlag('a'))
+    if(opt.getValue("acceptance") || opt.getValue('a'))
     {
         myAcceptance = true;
         accInputPath = opt.getValue('a');
     }
     if(opt.getFlag("verbose") || opt.getFlag('v'))
         verbose = opt.getFlag('v');
+    if(opt.getFlag("pedantic") || opt.getFlag('p'))
+        pedantic = opt.getFlag('p');
 
 #ifdef DEBUG
 
@@ -80,24 +86,17 @@ int main(int argc,char* argv[])
     }
 
 #else
-
-    if(argc>=5)
-        eCore(
-                inputPath,
-                outputPath,
-                verbose,
-                lvTime,
-                myAcceptance,
-                accInputPath,
-                opt
-            );
-    else
-    {
-        std::cerr << "\n\t !!! Hey mate, insert all required fields ...\n\n";opt.printUsage();
-    }
-
+    eCore(
+            inputPath,
+            outputPath,
+            verbose,
+            pedantic,
+            lvTime,
+            myAcceptance,
+            accInputPath,
+            opt
+        );
 #endif
-
 
     return 0;
 }

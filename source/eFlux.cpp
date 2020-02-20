@@ -6,7 +6,10 @@ void buildFlux(
                 const std::string inputPath,
                 const unsigned int lvTime,
                 TFile &outFile,
-                const bool verbose
+                const bool verbose,
+                const bool pedantic,
+                const std::string accInputPath,
+                const bool myAcceptance
             )
 {
     
@@ -16,25 +19,29 @@ void buildFlux(
     const int nBinsC = 1000;
 
     std::vector<float> logEBins = createLogBinning(minValue,maxValue,nBinsE);
-    
-    if(verbose)
+
+    if(pedantic)
     {
         std::cout << "\nEnergy log binning...";
         for(unsigned int idx=0; idx < logEBins.size(); ++idx)
             std::cout << "\n" << logEBins[idx];
     }
-
+    
     minValue = 0;
     maxValue = 1e+5;
     
     std::vector<float> eCounts = createLinBinning(minValue,maxValue,nBinsC);
     
-    if(verbose)
+    if(pedantic)
     {
         std::cout << "\nCounts linear binning...";
         for(unsigned int idx=0; idx < eCounts.size(); ++idx)
             std::cout << "\n" << eCounts[idx];
     }
+
+    // Building acceptance
+    if(myAcceptance)
+        buildAcceptance(accInputPath,verbose,logEBins);
 
     buildXtrlFlux(logEBins,eCounts,inputPath,lvTime,outFile,verbose);
 

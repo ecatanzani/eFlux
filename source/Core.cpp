@@ -4,6 +4,7 @@ void eCore(
             const std::string inputPath,
             const std::string outputPath,
             const bool verbose,
+            const bool pedantic,
             const unsigned int lvTime,
             const bool myAcceptance,
             const std::string accInputPath,
@@ -17,13 +18,9 @@ void eCore(
         std::cerr << "\n\nError writing output TFile: " << uniqueOutFile(outputPath,opt) << std::endl;
         exit(123);
     }
-    
-    // Building acceptance
-    if(myAcceptance)
-        buildAcceptance(accInputPath,verbose);
 
     // Building eFLux
-    buildFlux(inputPath,lvTime,outFile,verbose);
+    buildFlux(inputPath,lvTime,outFile,verbose,pedantic,accInputPath,myAcceptance);
 
     // Close output file ...
     outFile.Close();
