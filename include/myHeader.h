@@ -26,10 +26,16 @@
 #define nGFitLoops 1000000
 #define chiSQLLimit 0.000001
 
+// DAMPE struct
+
+#define DAMPE_bgo_nLayers 14
+
+
 extern void eCore(
                     const std::string inputPath,
                     const std::string outputPath,
                     const bool verbose,
+                    const bool pedantic,
                     const unsigned int lvTime,
                     const bool myAcceptance,
                     const std::string accInputPath,
@@ -47,7 +53,12 @@ extern const char* uniqueOutFile(const std::string outputPath,AnyOption &opt);
 extern std::vector<float> createLogBinning(const double minValue,const double maxValue,const int nBins);
 extern std::vector<float> createLinBinning(const double minValue,const double maxValue,const int nBins);
 
-extern void buildAcceptance(const std::string accInputPath,const bool verbose);
+extern void buildAcceptance(
+                                const std::string accInputPath,
+                                const bool verbose,
+                                const std::vector<float> &logEBins
+                            );
+
 extern DmpChain* aggregateEventsDmpChain(const std::string accInputPath,const bool verbose);
 extern TChain* aggregateEventsTChain(const std::string accInputPath,const bool verbose);
 
@@ -57,7 +68,10 @@ extern void buildFlux(
                         const std::string inputPath,
                         const unsigned int lvTime,
                         TFile &outFile,
-                        const bool verbose
+                        const bool verbose,
+                        const bool pedantic,
+                        const std::string accInputPath,
+                        const bool myAcceptance
                     );
 
 extern bool chechFlags(
