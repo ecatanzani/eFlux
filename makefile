@@ -17,12 +17,12 @@ DIPS_INCLUDE = $(shell root-config --cflags)
 #DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) -lMinuit -lRooFit -lRooFitCore
 DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
 
-DAMPE_INC="/dampe/releases/DmpSoftware-6-0-10/include"
-DAMPE_LIB="/dampe/releases/DmpSoftware-6-0-10/lib"	
+DAMPE_INC=/dampe/releases/DmpSoftware-6-0-10/include
+DAMPE_LIB=/dampe/releases/DmpSoftware-6-0-10/lib
 
 ifeq ($(wildcard $(DAMPE_INC)),"")
-	DAMPE_INC="/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include"
-	DAMPE_LIB="/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib"	
+	DAMPE_INC=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include
+	DAMPE_LIB=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib
 endif
 
 
