@@ -13,8 +13,9 @@ void buildFlux(
             )
 {
     
-    double minValue = 3e-10;
-    double maxValue = 5e+10;
+    // max and min value of the energy (in GeV)
+    double minValue = 1;
+    double maxValue = 1e+4;
     const int nBinsE = 1000;
     const int nBinsC = 1000;
 
@@ -22,9 +23,10 @@ void buildFlux(
 
     if(pedantic)
     {
-        std::cout << "\nEnergy log binning...";
+        std::cout << "\nEnergy log binning..." << std::scientific;
         for(unsigned int idx=0; idx < logEBins.size(); ++idx)
             std::cout << "\n" << logEBins[idx];
+        std::cout << std::defaultfloat;
     }
     
     minValue = 0;
