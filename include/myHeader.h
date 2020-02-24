@@ -20,6 +20,8 @@
 // DAMPESW includes
 
 #include "DmpChain.h"
+#include "DmpEvtBgoHits.h"
+#include "DmpEvtBgoRec.h"
 
 
 #pragma once
@@ -60,7 +62,7 @@ extern void buildAcceptance(
                                 const std::vector<float> &logEBins
                             );
 
-extern DmpChain* aggregateEventsDmpChain(const std::string accInputPath,const bool verbose);
+extern std::shared_ptr < DmpChain > aggregateEventsDmpChain(const std::string accInputPath,const bool verbose);
 extern std::shared_ptr < TChain > aggregateEventsTChain(const std::string accInputPath,const bool verbose);
 
 extern bool maxElater_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, const double egyLayerRatio, const double bgoTotalE);
