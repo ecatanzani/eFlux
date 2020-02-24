@@ -34,12 +34,12 @@ std::string getListPath(const std::string accInputPath,const bool MC)
     return MClist;
 }   
 
-DmpChain* aggregateEventsDmpChain(const std::string accInputPath,const bool verbose)
+std::shared_ptr < DmpChain > aggregateEventsDmpChain(const std::string accInputPath,const bool verbose)
 {
     // ****** Access data using DAMPE Chain ******
 
     // Create DmpChain object
-    DmpChain* dmpch = new DmpChain("CollectionTree");
+    std::shared_ptr < DmpChain > dmpch = std::make_shared < DmpChain > ("CollectionTree");
 
     // Add MC file list to DmpChain
     dmpch->AddFromList(getListPath(accInputPath,true).c_str());
@@ -56,6 +56,7 @@ std::shared_ptr < TChain > aggregateEventsTChain(const std::string accInputPath,
     // Create TChain object
     //TChain* dmpch = new TChain("CollectionTree");
     std::shared_ptr < TChain > dmpch = std::make_shared < TChain > ("CollectionTree");
+    //std::shared_ptr < TChain >  dmpch( new TChain("CollectionTree") );
 
     // Reading list of MC files
     std::ifstream input_file(getListPath(accInputPath,true).c_str());
@@ -73,7 +74,7 @@ std::shared_ptr < TChain > aggregateEventsTChain(const std::string accInputPath,
         if(verbose)
             std::cout << "\nAdding " << tmp_str << " to the chain ..." << std::endl;
     }
-
+    
     return dmpch;
 }
 
@@ -86,6 +87,7 @@ void buildAcceptance(
         
     gSystem->Load("libDmpEvent.so");
 
+    
     //auto dmpch = aggregateEventsDmpChain(accInputPath,verbose);
     auto dmpch = aggregateEventsTChain(accInputPath,verbose);
     
@@ -104,6 +106,10 @@ void buildAcceptance(
     if(verbose)
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
     
+    // Particle acceptance counter
+    unsigned int accEvtCounter = 0;
+
+
     for(unsigned int evIdx=0; evIdx < nevents; ++evIdx)
     {   
         // Get chain event
@@ -114,6 +120,10 @@ void buildAcceptance(
 
         // Get event total energy
         double bgoTotalE = bgorec->GetTotalEnergy();
+        // Don't process events that didn't hit the detector
+        if(!bgoTotalE)
+            continue;
+
         std::vector< std::vector<short> > layerBarIndex (DAMPE_bgo_nLayers, std::vector<short>());       // arrange BGO hits by layer
         std::vector< std::vector<short> > layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>());       // arrange BGO bars by layer
         
@@ -137,11 +147,13 @@ void buildAcceptance(
         std::vector<double> eCoreLayer  (DAMPE_bgo_nLayers,0);
         std::vector<double> eCoreCoord  (DAMPE_bgo_nLayers,0);    
         double sumRms = 0;
-
+        
         for(int lay = 0; lay <DAMPE_bgo_nLayers; ++lay) 
         {
             // Setting default value for maximum bar index and energy for each layer
-            int imax = layerBarIndex[lay][0];
+            int imax = -1;
+            if(layerBarIndex[lay].size())
+                imax = layerBarIndex[lay].at(0);
             double maxE = (bgohits->fEnergy)[0];
 
             // Find the maximum of the nergy release in a certain layer, together with the bar ID
@@ -203,17 +215,10 @@ void buildAcceptance(
             }
             sumRms += rmsLayer[lay];
         }
-
+        
         // Build XTR
         auto Xtr=pow(sumRms,4)*fracLayer[13]/8000000.;
-
-        /* 
-            Start event filtering
-        */
-
-        // Particle acceptance counter
-        unsigned int accEvtCounter = 0;
-
+        
         /*
             ***** event filter cuts *****
         */
@@ -222,11 +227,15 @@ void buildAcceptance(
     
         /* ********************************* */
 
-        maxElater_cut(bgorec,egyLayerRatio,bgoTotalE);
-        maxBarLayer_cut(bgohits,nBgoHits);
-        BGOTrackContainment_cut(bgorec,passEvent);
+        if(maxElater_cut(bgorec,egyLayerRatio,bgoTotalE))
+            if(maxBarLayer_cut(bgohits,nBgoHits))
+                if(BGOTrackContainment_cut(bgorec,passEvent))
+                    ++accEvtCounter;
         
     }
+
+    if(verbose)
+        std::cout << "\n\nFiltered events: " << accEvtCounter << "/" << nevents << "\n\n";
 
     // Cleaning memory
     //delete dmpch;
