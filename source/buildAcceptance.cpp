@@ -77,6 +77,51 @@ std::shared_ptr < TChain > aggregateEventsTChain(const std::string accInputPath,
     
     return dmpch;
 }
+ 
+inline int binarySearch(const std::vector < float > &vector, int l, int r, const double x) 
+{ 
+    if (r >= l) 
+    { 
+        int mid = l + (r - l) / 2;
+        if ( x > vector[mid] && x < vector[mid+1] ) 
+            return mid; 
+        if ( vector[mid] > x )
+            return binarySearch(vector, l, mid - 1, x); 
+        return binarySearch(vector, mid + 1, r, x); 
+    } 
+    return -1; 
+} 
+
+inline void allocateParticleEnergy(
+                                    std::vector < unsigned int > &gFactorCounts,
+                                    const std::vector < float > &logEBins, 
+                                    const double bgoTotalE
+                                )
+                                {
+                                    /*
+                                        BINARY SEARCH
+                                    */
+                                    
+                                    const double energy = bgoTotalE / 1000; 
+                                    int idx = binarySearch(logEBins,0,logEBins.size()-1,energy);
+                                    if ( !(energy > logEBins[idx] && energy < logEBins[idx+1]) ) 
+                                        std:: cout << "\n Idx: " << idx << "\tLow(" << logEBins[idx] << "): " << idx << "\tHigh(" << logEBins[idx+1] << "): " << idx+1 << "\tEgy: " << energy;
+                                    
+                                    /*
+                                        ALL VECTOR SCAN
+                                    */
+                                    /*
+                                    double energy = bgoTotalE / 1000; 
+                                    unsigned int idx = 0;
+                                    for(int vIdx = 0; vIdx < logEBins.size()-1; ++vIdx)
+                                        if(energy > logEBins[vIdx] && energy < logEBins[vIdx +1])
+                                        {
+                                            idx = vIdx;
+                                            break;
+                                        }
+                                    std::cout << "\nEnergy: " << energy << "\tLow: " << logEBins[idx] << "\tHigh: " << logEBins[idx+1];
+                                    */
+                                }
 
 void buildAcceptance(
                         const std::string accInputPath,
@@ -92,12 +137,10 @@ void buildAcceptance(
     auto dmpch = aggregateEventsTChain(accInputPath,verbose);
     
     // Register BGO constainer
-    //DmpEvtBgoHits* bgohits  = new  DmpEvtBgoHits();
     std::shared_ptr < DmpEvtBgoHits > bgohits = std::make_shared < DmpEvtBgoHits > ();
     dmpch->SetBranchAddress("DmpEvtBgoHits",&bgohits);
 
     // Register BGO REC constainer
-    //DmpEvtBgoRec* bgorec  = new  DmpEvtBgoRec();
     std::shared_ptr < DmpEvtBgoRec > bgorec = std::make_shared < DmpEvtBgoRec > ();
     dmpch->SetBranchAddress("DmpEvtBgoRec",&bgorec);
 
@@ -109,6 +152,8 @@ void buildAcceptance(
     // Particle acceptance counter
     unsigned int accEvtCounter = 0;
 
+    // Initialize the particle counter for each energy bin
+    std::vector < unsigned int > gFactorCounts(logEBins.size(),0);
 
     for(unsigned int evIdx=0; evIdx < nevents; ++evIdx)
     {   
@@ -119,7 +164,7 @@ void buildAcceptance(
         bool passEvent = true;
 
         // Get event total energy
-        double bgoTotalE = bgorec->GetTotalEnergy();
+        double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in GeV
         // Don't process events that didn't hit the detector
         if(!bgoTotalE)
             continue;
@@ -230,17 +275,16 @@ void buildAcceptance(
         if(maxElater_cut(bgorec,egyLayerRatio,bgoTotalE))
             if(maxBarLayer_cut(bgohits,nBgoHits))
                 if(BGOTrackContainment_cut(bgorec,passEvent))
+                {
                     ++accEvtCounter;
-        
+                    allocateParticleEnergy(gFactorCounts,logEBins,bgoTotalE);
+                }
     }
 
     if(verbose)
         std::cout << "\n\nFiltered events: " << accEvtCounter << "/" << nevents << "\n\n";
-
-    // Cleaning memory
-    //delete dmpch;
-    //delete bgohits;
-    //delete bgorec;
+    
+    
 
     exit(123);
 }
