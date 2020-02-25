@@ -30,19 +30,16 @@ void load_acceptance_struct(acceptance_conf &acceptance_cuts)
         if(!strcmp(tmp_str.c_str(),"event_energy"))
         {
             input_stream>>tmp_str;
-            std::cout << "\n" << tmp_str << "\n";
             acceptance_cuts.event_energy = stod(tmp_str,&sz);
         }
         if(!strcmp(tmp_str.c_str(),"energy_lRatio"))
         {
             input_stream>>tmp_str;
-            std::cout << "\n" << tmp_str << "\n";
             acceptance_cuts.energy_lRatio = stod(tmp_str,&sz);
         }
         if(!strcmp(tmp_str.c_str(),"shower_axis_delta"))
         {
             input_stream>>tmp_str;
-            std::cout << "\n" << tmp_str << "\n";
             acceptance_cuts.shower_axis_delta = stoi(tmp_str,&sz);
         }
     }
