@@ -3,6 +3,7 @@
 */
 
 #include "myHeader.h"
+#include "acceptance.h"
 
 #include <fstream>
 #include <sstream>
