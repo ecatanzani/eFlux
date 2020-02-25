@@ -1,4 +1,5 @@
 #include "myHeader.h"
+#include "acceptanceFit.h"
 
 void readAcceptance(TH1D &acceptance, TFile &outFile, const bool verbose)
 {
