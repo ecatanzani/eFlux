@@ -1,4 +1,5 @@
 #include "myHeader.h"
+#include "acceptanceFit.h"
 
 #include "TGraph.h"
 #include "TString.h"
