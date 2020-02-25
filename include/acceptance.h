@@ -42,7 +42,7 @@ extern std::shared_ptr < TChain > aggregateEventsTChain(
 
 extern bool maxElater_cut(
                             std::shared_ptr < DmpEvtBgoRec > bgorec, 
-                            const double egyLayerRatio, 
+                            const acceptance_conf &acceptance_cuts, 
                             const double bgoTotalE
                         );
 
@@ -53,6 +53,7 @@ extern bool maxBarLayer_cut(
 
 extern bool BGOTrackContainment_cut(
                                         std::shared_ptr < DmpEvtBgoRec > bgorec, 
+                                        const acceptance_conf &acceptance_cuts,
                                         bool passEvent
                                     );
 

@@ -185,11 +185,11 @@ void buildAcceptance(
         // Get event total energy
         double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in GeV
         // Don't process events that didn't hit the detector
-        if(!bgoTotalE)
+        if(bgoTotalE < (acceptance_cuts.event_energy*1000))
             continue;
 
-        std::vector< std::vector<short> > layerBarIndex (DAMPE_bgo_nLayers, std::vector<short>());       // arrange BGO hits by layer
-        std::vector< std::vector<short> > layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>());       // arrange BGO bars by layer
+        std::vector< std::vector <short> > layerBarIndex (DAMPE_bgo_nLayers, std::vector<short>());       // arrange BGO hits by layer
+        std::vector< std::vector <short> > layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>());       // arrange BGO bars by layer
         
         // Get the number of BGO hits
         int nBgoHits = bgohits->GetHittedBarNumber();
@@ -282,18 +282,12 @@ void buildAcceptance(
         
         // Build XTR
         auto Xtr=pow(sumRms,4)*fracLayer[13]/8000000.;
-        
-        /*
-            ***** event filter cuts *****
-        */
-
-        const double egyLayerRatio = 0.35;
     
         /* ********************************* */
 
-        if(maxElater_cut(bgorec,egyLayerRatio,bgoTotalE))
+        if(maxElater_cut(bgorec,acceptance_cuts,bgoTotalE))
             if(maxBarLayer_cut(bgohits,nBgoHits))
-                if(BGOTrackContainment_cut(bgorec,passEvent))
+                if(BGOTrackContainment_cut(bgorec,acceptance_cuts,passEvent))
                 {
                     ++accEvtCounter;
                     allocateParticleEnergy(gFactorCounts,logEBins,bgoTotalE);
@@ -308,7 +302,11 @@ void buildAcceptance(
     exit(123);
 }
 
-bool maxElater_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, const double egyLayerRatio, const double bgoTotalE)
+bool maxElater_cut(
+                    std::shared_ptr < DmpEvtBgoRec > bgorec, 
+                    const acceptance_conf &acceptance_cuts, 
+                    const double bgoTotalE
+                )
 {
     // Get energy maximum along X and Y views
     double ELayer_max_XZ = 0;
@@ -335,13 +333,16 @@ bool maxElater_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, const double egyLaye
     else 
         MaxELayer = ELayer_max_YZ;
     double rMaxELayerTotalE = MaxELayer/bgoTotalE;
-    if(rMaxELayerTotalE>egyLayerRatio) 
+    if(rMaxELayerTotalE > acceptance_cuts.energy_lRatio) 
         passed_maxELayerTotalE_cut = false;
 
     return passed_maxELayerTotalE_cut;
 }
 
-bool maxBarLayer_cut(std::shared_ptr < DmpEvtBgoHits > bgohits, const int nBgoHits)
+bool maxBarLayer_cut(
+                        std::shared_ptr < DmpEvtBgoHits > bgohits, 
+                        const int nBgoHits
+                    )
 {
     bool  passed_maxBarLayer_cut = true;
     std::vector < short > barNumberMaxEBarLay1_2_3(3,-1);      // Bar number of maxE bar in layer 1, 2, 3
@@ -369,7 +370,11 @@ bool maxBarLayer_cut(std::shared_ptr < DmpEvtBgoHits > bgohits, const int nBgoHi
     return passed_maxBarLayer_cut;
 }
 
-bool BGOTrackContainment_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, bool passEvent)
+bool BGOTrackContainment_cut(
+                                std::shared_ptr < DmpEvtBgoRec > bgorec, 
+                                const acceptance_conf &acceptance_cuts,
+                                bool passEvent
+                            )
 {
     bool passed_bgo_containment_cut = false;
     double BGO_TopZ = 46;
@@ -393,7 +398,7 @@ bool BGOTrackContainment_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, bool passE
     double bottomX = bgoRec_slope[1]*BGO_BottomZ + bgoRec_intercept[1];
     double bottomY = bgoRec_slope[0]*BGO_BottomZ + bgoRec_intercept[0];
 
-    if(fabs(topX)<280 && fabs(topY)<280 && fabs(bottomX)<280 &&  fabs(bottomY)<280) 
+    if(fabs(topX)<acceptance_cuts.shower_axis_delta && fabs(topY)<acceptance_cuts.shower_axis_delta && fabs(bottomX)<acceptance_cuts.shower_axis_delta &&  fabs(bottomY)<acceptance_cuts.shower_axis_delta) 
         passed_bgo_containment_cut = true;
 
     return passed_bgo_containment_cut;
