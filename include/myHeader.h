@@ -23,7 +23,6 @@
 #include "DmpEvtBgoHits.h"
 #include "DmpEvtBgoRec.h"
 
-
 #pragma once
 
 #define nGFitLoops 1000000
@@ -55,19 +54,6 @@ extern void branchTree(TTree &myDataTree,std::vector<float> &dataValues);
 extern const char* uniqueOutFile(const std::string outputPath,AnyOption &opt);
 extern std::vector<float> createLogBinning(const double minValue,const double maxValue,const int nBins);
 extern std::vector<float> createLinBinning(const double minValue,const double maxValue,const int nBins);
-
-extern void buildAcceptance(
-                                const std::string accInputPath,
-                                const bool verbose,
-                                const std::vector<float> &logEBins
-                            );
-
-extern std::shared_ptr < DmpChain > aggregateEventsDmpChain(const std::string accInputPath,const bool verbose);
-extern std::shared_ptr < TChain > aggregateEventsTChain(const std::string accInputPath,const bool verbose);
-
-extern bool maxElater_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, const double egyLayerRatio, const double bgoTotalE);
-extern bool maxBarLayer_cut(std::shared_ptr < DmpEvtBgoHits > bgohits, const int nBgoHits);
-extern bool BGOTrackContainment_cut(std::shared_ptr < DmpEvtBgoRec > bgorec, bool passEvent);
 
 extern std::string getListPath(const std::string accInputPath,const bool MC=false);
 
@@ -107,34 +93,5 @@ extern void evLoop(
                 );
 
 extern void readAcceptance(TH1D &acceptance, TFile &outFile,const bool verbose);
-
-extern TF1 fitGFactor(TH1D *gFactor,TFile &outFile, const bool verbose);
-
-extern void tmpFit(
-                    TDirectory* geoFactorDir,
-                    TF1 &myFitter,
-                    TH1D* gFactor,
-                    const bool verbose,
-                    const bool baseFit = true,
-                    const unsigned int fitNumber = 0
-                );
-
-extern void setStartingParameters(
-                                    const TF1 &oldFitter,
-                                    TF1 &newFitter,
-                                    const unsigned int nOldPars,
-                                    const unsigned int nNewPars
-                                );
-
-// Fitting functions
-extern double logisticFunction_0(double *x, double *par);
-extern double logisticFunction_1(double *x, double *par);
-extern double logisticFunction_2(double *x, double *par);
-extern double logisticFunction_3(double *x, double *par);
-extern double logisticFunction_4(double *x, double *par);
-extern double logisticFunction_5(double *x, double *par);
-extern double logisticFunction_6(double *x, double *par);
-extern double logisticFunction_7(double *x, double *par);
-extern double logisticFunction_8(double *x, double *par);
 
 #endif
