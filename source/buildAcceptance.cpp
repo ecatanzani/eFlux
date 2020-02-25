@@ -5,12 +5,6 @@
 #include "myHeader.h"
 #include "acceptance.h"
 
-#include <fstream>
-#include <sstream>
-
-#include "TSystem.h"
-#include "TVector3.h"
-
 /**
  * @brief 
  * 
@@ -79,19 +73,45 @@ std::shared_ptr < TChain > aggregateEventsTChain(const std::string accInputPath,
     return dmpch;
 }
  
-inline int binarySearch(const std::vector < float > &vector, int l, int r, const double x) 
+inline int binarySearch(const std::vector < float > &logEBins, int l, int r, const double energy) 
 { 
+    /*
+        ****** BINARY SEARCH ******
+    */
+    
     if (r >= l) 
     { 
         int mid = l + (r - l) / 2;
-        if ( x > vector[mid] && x < vector[mid+1] ) 
+        if ( energy > logEBins[mid] && energy < logEBins[mid+1] ) 
             return mid; 
-        if ( vector[mid] > x )
-            return binarySearch(vector, l, mid - 1, x); 
-        return binarySearch(vector, mid + 1, r, x); 
+        if ( logEBins[mid] > energy )
+            return binarySearch(logEBins, l, mid - 1, energy); 
+        return binarySearch(logEBins, mid + 1, r, energy); 
     } 
     return -1; 
 } 
+
+inline int linearSearch(const std::vector < float > &logEBins, const double energy)
+{
+    /*
+        ****** ALL VECTOR SCAN ******
+    */
+    
+    unsigned int lIdx = 0;
+    bool found_interval = false;
+    for(unsigned int vIdx = 0; vIdx < logEBins.size()-1; ++vIdx)
+        if(energy > logEBins[vIdx] && energy < logEBins[vIdx +1])
+        {
+            lIdx = vIdx;
+            found_interval = true;
+            break;
+        }
+    //std::cout << "\nEnergy: " << energy << "\tLow: " << logEBins[idx] << "\tHigh: " << logEBins[idx+1];
+    if(found_interval)
+        return lIdx;
+    else
+        return -1;
+}
 
 inline void allocateParticleEnergy(
                                     std::vector < unsigned int > &gFactorCounts,
@@ -99,29 +119,23 @@ inline void allocateParticleEnergy(
                                     const double bgoTotalE
                                 )
                                 {
-                                    /*
-                                        BINARY SEARCH
-                                    */
-                                    
                                     const double energy = bgoTotalE / 1000; 
-                                    int idx = binarySearch(logEBins,0,logEBins.size()-1,energy);
-                                    if ( !(energy > logEBins[idx] && energy < logEBins[idx+1]) ) 
-                                        std:: cout << "\n Idx: " << idx << "\tLow(" << logEBins[idx] << "): " << idx << "\tHigh(" << logEBins[idx+1] << "): " << idx+1 << "\tEgy: " << energy;
-                                    
+                                    auto idx = binarySearch(logEBins,0,logEBins.size()-1,energy);   //More efficient vector search respect to the linear one
+                                    //auto idx = linearSearch(logEBins,energy);
+                                    if(idx!=-1)
+                                    {
+                                        /*
+                                        if ( !(energy > logEBins[idx] && energy < logEBins[idx+1]) ) 
+                                            std:: cout << "\n Idx: " << idx << "\tLow(" << logEBins[idx] << "): " << idx << "\tHigh(" << logEBins[idx+1] << "): " << idx+1 << "\tEgy: " << energy;
+                                        */
+                                        ++gFactorCounts[idx];
+                                    }
+                                    else
+                                        std::cerr << "\nWARNING: Could not find energy bin for current event: " << energy << " GeV";
+
                                     /*
-                                        ALL VECTOR SCAN
-                                    */
-                                    /*
-                                    double energy = bgoTotalE / 1000; 
-                                    unsigned int idx = 0;
-                                    for(int vIdx = 0; vIdx < logEBins.size()-1; ++vIdx)
-                                        if(energy > logEBins[vIdx] && energy < logEBins[vIdx +1])
-                                        {
-                                            idx = vIdx;
-                                            break;
-                                        }
-                                    std::cout << "\nEnergy: " << energy << "\tLow: " << logEBins[idx] << "\tHigh: " << logEBins[idx+1];
-                                    */
+                                        USE EXPECTIONS FOR THAT
+                                    */  
                                 }
 
 void buildAcceptance(
@@ -155,6 +169,10 @@ void buildAcceptance(
 
     // Initialize the particle counter for each energy bin
     std::vector < unsigned int > gFactorCounts(logEBins.size(),0);
+
+    // Create and load acceptance events cuts from config file
+    acceptance_conf acceptance_cuts;
+    load_acceptance_struct(acceptance_cuts);
 
     for(unsigned int evIdx=0; evIdx < nevents; ++evIdx)
     {   
