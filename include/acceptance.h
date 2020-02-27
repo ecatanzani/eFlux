@@ -7,6 +7,8 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <functional>
+#include <algorithm>
 
 #include "DmpChain.h"
 #include "DmpEvtBgoHits.h"

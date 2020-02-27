@@ -115,11 +115,11 @@ inline int linearSearch(const std::vector<float> &logEBins, const double energy)
 }
 
 inline void allocateParticleEnergy(
-    std::vector<unsigned int> &gFactorCounts,
+    std::vector<double> &gFactorCounts,
     const std::vector<float> &logEBins,
     const double bgoTotalE)
 {
-    const double energy = bgoTotalE / 1000;
+    const double energy = bgoTotalE / 1000;                            // Scale energy in GeV - binning is in GeV !!
     auto idx = binarySearch(logEBins, 0, logEBins.size() - 1, energy); //More efficient vector search respect to the linear one
     //auto idx = linearSearch(logEBins,energy);
     if (idx != -1)
@@ -172,12 +172,11 @@ void buildAcceptance(
     if (verbose)
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
 
-    // Particle acceptance counter
     unsigned int accEvtCounter = 0;
 
     // Initialize the particle counter for each energy bin
-    std::vector<unsigned int> gFactorCounts(logEBins.size(), 0);
-    std::vector<unsigned int> gen_gFactorCounts(logEBins.size(),0);
+    std::vector<double> gFactorCounts(logEBins.size()-1, 0);
+    std::vector<double> gen_gFactorCounts(logEBins.size()-1, 0);
 
     // Create and load acceptance events cuts from config file
     acceptance_conf acceptance_cuts;
@@ -192,14 +191,16 @@ void buildAcceptance(
         bool passEvent = true;
 
         // Get event total energy
-        //double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in MeV
-        double bgoTotalE = bgorec->GetElectronEcor(); // Returns corrected energy assuming this was an electron (MeV)
+        //double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in MeV - not corrected
+        double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
-        // Don't process events that didn't hit the detector
+        allocateParticleEnergy(gen_gFactorCounts, logEBins, simuEnergy);
+
+        // Don't process events that didn't hit the detector - for this I need to use the reco energy
         if (bgoTotalE < (acceptance_cuts.event_energy * 1000))
             continue;
-        
+
         std::vector<std::vector<short>> layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>());  // arrange BGO hits by layer
         std::vector<std::vector<short>> layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>()); // arrange BGO bars by layer
 
@@ -302,7 +303,8 @@ void buildAcceptance(
                 if (BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent))
                 {
                     ++accEvtCounter;
-                    allocateParticleEnergy(gFactorCounts, logEBins, bgoTotalE);
+                    // Use the simu energy as a reference to build the acceptance
+                    allocateParticleEnergy(gFactorCounts, logEBins, simuEnergy);
                     //std::cout << "\nSimuEnergy: " << simuEnergy << "\t RecoEnergy: " << bgoTotalE;
                 }
     }
@@ -310,7 +312,11 @@ void buildAcceptance(
     if (verbose)
         std::cout << "\n\nFiltered events: " << accEvtCounter << "/" << nevents << "\n\n";
 
-    double genSurface = 4*TMath::Pi()*pow(acceptance_cuts.vertex_radius,2)/2;
+    double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
+    std::transform(gFactorCounts.begin(), gFactorCounts.end(), gFactorCounts.begin(), [&genSurface](auto &elm) { return elm * genSurface; });
+    std::vector<double> gFactor;
+    const std::size_t vSize = std::min(gFactorCounts.size(), gen_gFactorCounts.size());
+    std::transform(std::begin(gFactorCounts), std::begin(gFactorCounts) + vSize, std::begin(gen_gFactorCounts), std::back_inserter(gFactor), std::divides<double>{});
 
     exit(123);
 }
