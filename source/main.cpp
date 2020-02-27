@@ -2,11 +2,11 @@
 
 #include <sstream>
 
-int main(int argc,char* argv[])
+int main(int argc, char *argv[])
 {
-    
+
     AnyOption opt;
-    
+
     opt.addUsage("Usage: ");
     opt.addUsage("");
     opt.addUsage(" -h  --help                                           Prints this help ");
@@ -18,18 +18,18 @@ int main(int argc,char* argv[])
     opt.addUsage(" -v  --verbose                                        Verbose output   ");
     opt.addUsage(" -p  --pedantic                                       Pedantic output   ");
     opt.addUsage("");
-    
-    opt.setFlag("help",'h');
-    opt.setOption("input",'i');
-    opt.setOption("output",'o');
-    opt.setOption("outputDir",'d');
-    opt.setOption("lvtime", 't');
-    opt.setOption("acceptance",'a');
-    opt.setFlag("verbose",'v');
-    opt.setFlag("pedantic",'p');
 
-    opt.processCommandArgs(argc,argv);
-    
+    opt.setFlag("help", 'h');
+    opt.setOption("input", 'i');
+    opt.setOption("output", 'o');
+    opt.setOption("outputDir", 'd');
+    opt.setOption("lvtime", 't');
+    opt.setOption("acceptance", 'a');
+    opt.setFlag("verbose", 'v');
+    opt.setFlag("pedantic", 'p');
+
+    opt.processCommandArgs(argc, argv);
+
     /*
         Input variables
 
@@ -43,59 +43,58 @@ int main(int argc,char* argv[])
     bool pedantic = false;
     bool myAcceptance = false;
     unsigned int lvTime = 0;
-    
-   
-    if(!opt.hasOptions()) 
+
+    if (!opt.hasOptions())
         opt.printUsage();
 
-    if(opt.getFlag("help") || opt.getFlag('h'))
+    if (opt.getFlag("help") || opt.getFlag('h'))
         opt.printUsage();
-    if(opt.getValue("input") || opt.getValue('i'))
+    if (opt.getValue("input") || opt.getValue('i'))
         inputPath = opt.getValue('i');
-    if(opt.getValue("output") || opt.getValue('o'))
+    if (opt.getValue("output") || opt.getValue('o'))
         outputPath = opt.getValue('o');
-    if(opt.getValue("outputDir") || opt.getValue('d'))
+    if (opt.getValue("outputDir") || opt.getValue('d'))
         outputPath = opt.getValue('d');
-    if(opt.getValue("lvtime") || opt.getValue('t'))
+    if (opt.getValue("lvtime") || opt.getValue('t'))
     {
         str_lvTime << opt.getValue('t');
         str_lvTime >> lvTime;
     }
-    if(opt.getValue("acceptance") || opt.getValue('a'))
+    if (opt.getValue("acceptance") || opt.getValue('a'))
     {
         myAcceptance = true;
         accInputPath = opt.getValue('a');
     }
-    if(opt.getFlag("verbose") || opt.getFlag('v'))
+    if (opt.getFlag("verbose") || opt.getFlag('v'))
         verbose = opt.getFlag('v');
-    if(opt.getFlag("pedantic") || opt.getFlag('p'))
+    if (opt.getFlag("pedantic") || opt.getFlag('p'))
         pedantic = opt.getFlag('p');
 
 #ifdef DEBUG
 
-    if(argc>=5)
+    if (argc >= 5)
     {
-        if(chechFlags(opt,inputPath,outputPath,lvTime))
+        if (chechFlags(opt, inputPath, outputPath, lvTime))
         {
-            eCore(inputPath,outputPath,verbose,lvTime,opt);
+            eCore(inputPath, outputPath, verbose, lvTime, opt);
         }
     }
     else
     {
-        std::cerr << "\n\t !!! Hey mate, insert all required fields ...\n";opt.printUsage();
+        std::cerr << "\n\t !!! Hey mate, insert all required fields ...\n";
+        opt.printUsage();
     }
 
 #else
     eCore(
-            inputPath,
-            outputPath,
-            verbose,
-            pedantic,
-            lvTime,
-            myAcceptance,
-            accInputPath,
-            opt
-        );
+        inputPath,
+        outputPath,
+        verbose,
+        pedantic,
+        lvTime,
+        myAcceptance,
+        accInputPath,
+        opt);
 #endif
 
     return 0;

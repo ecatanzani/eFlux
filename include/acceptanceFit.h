@@ -7,22 +7,20 @@
 #include "TDirectory.h"
 
 extern void setStartingParameters(
-                                    const TF1 &oldFitter,
-                                    TF1 &newFitter,
-                                    const unsigned int nOldPars,
-                                    const unsigned int nNewPars
-                                );
+    const TF1 &oldFitter,
+    TF1 &newFitter,
+    const unsigned int nOldPars,
+    const unsigned int nNewPars);
 
-extern TF1 fitGFactor(TH1D *gFactor,TFile &outFile, const bool verbose);
+extern TF1 fitGFactor(TH1D *gFactor, TFile &outFile, const bool verbose);
 
 extern void tmpFit(
-                    TDirectory* geoFactorDir,
-                    TF1 &myFitter,
-                    TH1D* gFactor,
-                    const bool verbose,
-                    const bool baseFit = true,
-                    const unsigned int fitNumber = 0
-                );
+    TDirectory *geoFactorDir,
+    TF1 &myFitter,
+    TH1D *gFactor,
+    const bool verbose,
+    const bool baseFit = true,
+    const unsigned int fitNumber = 0);
 
 // Fitting functions
 extern double logisticFunction_0(double *x, double *par);

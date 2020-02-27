@@ -15,15 +15,15 @@ void readInputTree(const std::string inputPath,std::vector<float> &dataValues,TT
 }
 */
 
-void branchTree(TTree &myDataTree,std::vector<float> &dataValues)
+void branchTree(TTree &myDataTree, std::vector<float> &dataValues)
 {
-    myDataTree.SetBranchAddress("eReco",&dataValues[0]);
-    myDataTree.SetBranchAddress("eRecoCorr",&dataValues[1]);
-    myDataTree.SetBranchAddress("xtrl",&dataValues[2]);
-    myDataTree.SetBranchAddress("posizionX",&dataValues[3]);
-    myDataTree.SetBranchAddress("posizionY",&dataValues[4]);
-    myDataTree.SetBranchAddress("posizionZ",&dataValues[5]);
-    myDataTree.SetBranchAddress("velocityX",&dataValues[6]);
-    myDataTree.SetBranchAddress("velocityY",&dataValues[7]);
-    myDataTree.SetBranchAddress("velocityZ",&dataValues[8]);
+    myDataTree.SetBranchAddress("eReco", &dataValues[0]);
+    myDataTree.SetBranchAddress("eRecoCorr", &dataValues[1]);
+    myDataTree.SetBranchAddress("xtrl", &dataValues[2]);
+    myDataTree.SetBranchAddress("posizionX", &dataValues[3]);
+    myDataTree.SetBranchAddress("posizionY", &dataValues[4]);
+    myDataTree.SetBranchAddress("posizionZ", &dataValues[5]);
+    myDataTree.SetBranchAddress("velocityX", &dataValues[6]);
+    myDataTree.SetBranchAddress("velocityY", &dataValues[7]);
+    myDataTree.SetBranchAddress("velocityZ", &dataValues[8]);
 }

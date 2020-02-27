@@ -1,20 +1,20 @@
 #include "myHeader.h"
 
-std::vector<float> createLogBinning(const double minValue,const double maxValue,const int nBins)
+std::vector<float> createLogBinning(const double minValue, const double maxValue, const int nBins)
 {
     std::vector<float> binning;
 
     const double minLog = std::log(minValue);
     const double maxLog = std::log(maxValue);
 
-    binning.resize(nBins+1);
+    binning.resize(nBins + 1);
 
-    const double logIncrement = (maxLog - minLog)/nBins;
+    const double logIncrement = (maxLog - minLog) / nBins;
 
-    double value = minValue ;
-    double logValue = minLog ;
-    
-    for(int bIdx = 0 ; bIdx<nBins ; ++bIdx )
+    double value = minValue;
+    double logValue = minLog;
+
+    for (int bIdx = 0; bIdx < nBins; ++bIdx)
     {
         binning[bIdx] = value;
         logValue += logIncrement;
@@ -25,16 +25,16 @@ std::vector<float> createLogBinning(const double minValue,const double maxValue,
     return binning;
 }
 
-std::vector<float> createLinBinning(const double minValue,const double maxValue,const int nBins)
+std::vector<float> createLinBinning(const double minValue, const double maxValue, const int nBins)
 {
     std::vector<float> binning;
 
-    binning.resize(nBins+1);
-    
-    const double linIncrement = (maxValue - minValue)/nBins;
+    binning.resize(nBins + 1);
+
+    const double linIncrement = (maxValue - minValue) / nBins;
     double value = minValue;
-    
-    for(int bIdx = 0 ; bIdx<nBins ; ++bIdx )
+
+    for (int bIdx = 0; bIdx < nBins; ++bIdx)
     {
         binning[bIdx] = value;
         value += linIncrement;
@@ -45,36 +45,31 @@ std::vector<float> createLinBinning(const double minValue,const double maxValue,
 }
 
 bool chechFlags(
-                    AnyOption &opt,
-                    const std::string inputPath,
-                    const std::string outputPath,
-                    const unsigned int lvTime
-                )
-{   
+    AnyOption &opt,
+    const std::string inputPath,
+    const std::string outputPath,
+    const unsigned int lvTime)
+{
     bool status = true;
 
-    if(opt.getValue("input") || opt.getValue('i'))
-        
-    
-    
-    
-    
-    if(inputPath.empty())
+    if (opt.getValue("input") || opt.getValue('i'))
+
+        if (inputPath.empty())
+        {
+            status *= false;
+            std::cerr << "\n\t !!! Empty input value !\n";
+            opt.printUsage();
+        }
+    if (outputPath.empty())
     {
         status *= false;
-        std::cerr << "\n\t !!! Empty input value !\n";
-        opt.printUsage();
-    }
-    if(outputPath.empty())
-    {   
-        status *= false;
-        if(opt.getValue("outputDir") || opt.getValue('d'))
+        if (opt.getValue("outputDir") || opt.getValue('d'))
             std::cerr << "\n\t Empty output directory value -- this value is needed if `-d` flag is used \n";
-        if(opt.getValue("output") || opt.getValue('o'))
+        if (opt.getValue("output") || opt.getValue('o'))
             std::cerr << "\n\t !!! Empty output value -- Set to the default value `myAnalysisOut` !\n";
         opt.printUsage();
     }
-    if(lvTime==0)
+    if (lvTime == 0)
     {
         status *= false;
         std::cerr << "\n\t !!! Empty live-time value !\n";
