@@ -115,12 +115,12 @@ inline int linearSearch(const std::vector<float> &logEBins, const double energy)
 }
 
 inline void allocateParticleEnergy(
-    std::vector<double> &gFactorCounts,
+    std::vector<double> &counts,
     const std::vector<float> &logEBins,
-    const double bgoTotalE)
+    const double totalE)
 {
-    const double energy = bgoTotalE / 1000;                            // Scale energy in GeV - binning is in GeV !!
-    auto idx = binarySearch(logEBins, 0, logEBins.size() - 1, energy); //More efficient vector search respect to the linear one
+    const double energy = totalE / 1000;                                // Scale energy in GeV - binning is in GeV !!
+    auto idx = binarySearch(logEBins, 0, logEBins.size() - 1, energy);  //More efficient vector search respect to the linear one
     //auto idx = linearSearch(logEBins,energy);
     if (idx != -1)
     {
@@ -128,7 +128,7 @@ inline void allocateParticleEnergy(
         if ( !(energy > logEBins[idx] && energy < logEBins[idx+1]) ) 
             std:: cout << "\n Idx: " << idx << "\tLow(" << logEBins[idx] << "): " << idx << "\tHigh(" << logEBins[idx+1] << "): " << idx+1 << "\tEgy: " << energy;
         */
-        ++gFactorCounts[idx];
+        ++counts[idx];
     }
     else
         std::cerr << "\nWARNING: Could not find energy bin for current event: " << energy << " GeV";
