@@ -155,6 +155,10 @@ void buildAcceptance(
     //auto dmpch = aggregateEventsDmpChain(accInputPath,verbose);
     auto dmpch = aggregateEventsTChain(accInputPath, verbose);
 
+    // SimuPrimaries container
+    std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::make_shared<DmpEvtSimuPrimaries>();
+    dmpch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
+
     // Register BGO constainer
     std::shared_ptr<DmpEvtBgoHits> bgohits = std::make_shared<DmpEvtBgoHits>();
     dmpch->SetBranchAddress("DmpEvtBgoHits", &bgohits);
@@ -173,6 +177,7 @@ void buildAcceptance(
 
     // Initialize the particle counter for each energy bin
     std::vector<unsigned int> gFactorCounts(logEBins.size(), 0);
+    std::vector<unsigned int> gen_gFactorCounts(logEBins.size(),0);
 
     // Create and load acceptance events cuts from config file
     acceptance_conf acceptance_cuts;
@@ -187,11 +192,14 @@ void buildAcceptance(
         bool passEvent = true;
 
         // Get event total energy
-        double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in GeV
+        //double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in MeV
+        double bgoTotalE = bgorec->GetElectronEcor(); // Returns corrected energy assuming this was an electron (MeV)
+        double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
+
         // Don't process events that didn't hit the detector
         if (bgoTotalE < (acceptance_cuts.event_energy * 1000))
             continue;
-
+        
         std::vector<std::vector<short>> layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>());  // arrange BGO hits by layer
         std::vector<std::vector<short>> layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>()); // arrange BGO bars by layer
 
@@ -295,11 +303,14 @@ void buildAcceptance(
                 {
                     ++accEvtCounter;
                     allocateParticleEnergy(gFactorCounts, logEBins, bgoTotalE);
+                    //std::cout << "\nSimuEnergy: " << simuEnergy << "\t RecoEnergy: " << bgoTotalE;
                 }
     }
 
     if (verbose)
         std::cout << "\n\nFiltered events: " << accEvtCounter << "/" << nevents << "\n\n";
+
+    double genSurface = 4*TMath::Pi()*pow(acceptance_cuts.vertex_radius,2)/2;
 
     exit(123);
 }
