@@ -15,8 +15,8 @@ void buildFlux(
 
     // max and min value of the energy (in GeV)
     double minValue = 1;
-    double maxValue = 1e+4;
-    const int nBinsE = 1000;
+    double maxValue = 100;
+    const int nBinsE = 10;
     const int nBinsC = 1000;
 
     std::vector<float> logEBins = createLogBinning(minValue, maxValue, nBinsE);
