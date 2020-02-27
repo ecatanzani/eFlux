@@ -11,6 +11,7 @@
 #include "DmpChain.h"
 #include "DmpEvtBgoHits.h"
 #include "DmpEvtBgoRec.h"
+#include "DmpEvtSimuPrimaries.h"
 #include "TSystem.h"
 #include "TVector3.h"
 
@@ -21,6 +22,7 @@ struct acceptance_conf
     double event_energy;
     double energy_lRatio;
     int shower_axis_delta;
+    double vertex_radius;
 };
 
 extern void buildAcceptance(

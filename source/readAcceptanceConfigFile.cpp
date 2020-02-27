@@ -43,5 +43,10 @@ void load_acceptance_struct(acceptance_conf &acceptance_cuts)
             input_stream >> tmp_str;
             acceptance_cuts.shower_axis_delta = stoi(tmp_str, &sz);
         }
+        if (!strcmp(tmp_str.c_str(), "generation_vertex_radius"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.vertex_radius = stod(tmp_str, &sz);
+        }
     }
 }

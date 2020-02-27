@@ -1,5 +1,6 @@
 ######### Acceptance Config File #########
 
-event_energy            20
-energy_lRatio           0.35
-shower_axis_delta       280
+event_energy                20
+energy_lRatio               0.35
+shower_axis_delta           280
+generation_vertex_radius    1.381976597885342
