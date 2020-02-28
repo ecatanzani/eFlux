@@ -45,7 +45,7 @@ void buildFlux(
 
     // Building acceptance
     if (myAcceptance)
-        buildAcceptance(accInputPath, verbose, logEBins);
+        buildAcceptance(accInputPath, verbose, logEBins, outFile);
 
     buildXtrlFlux(logEBins, eCounts, inputPath, lvTime, outFile, verbose);
 }
