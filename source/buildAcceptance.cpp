@@ -119,8 +119,8 @@ inline void allocateParticleEnergy(
     const std::vector<float> &logEBins,
     const double totalE)
 {
-    const double energy = totalE / 1000;                                // Scale energy in GeV - binning is in GeV !!
-    auto idx = binarySearch(logEBins, 0, logEBins.size() - 1, energy);  //More efficient vector search respect to the linear one
+    const double energy = totalE / 1000;                               // Scale energy in GeV - binning is in GeV !!
+    auto idx = binarySearch(logEBins, 0, logEBins.size() - 1, energy); //More efficient vector search respect to the linear one
     //auto idx = linearSearch(logEBins,energy);
     if (idx != -1)
     {
@@ -138,16 +138,32 @@ inline void allocateParticleEnergy(
     */
 }
 
-inline double wtsydp(Double_t minene, Double_t maxene, Double_t index)
+inline double wtsydp(
+    const float minene,
+    const float maxene,
+    const float index,
+    const bool exp = false)
 {
-    double dene = maxene - minene;
-    return pow(fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * (dene))), 1. / (index));
+    if (index != -1)
+    {
+        float dene = maxene - minene;
+        if (exp==true)
+            return pow(fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene)), 1. / index);
+        else
+            return fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene));
+    }
+    else
+    {
+        std::cerr << "\nERROR: -1 index as power-law energy spectrum is INVALID";
+        exit(123);
+    }
 }
 
 void buildAcceptance(
     const std::string accInputPath,
     const bool verbose,
-    const std::vector<float> &logEBins)
+    const std::vector<float> &logEBins,
+    TFile &outFile)
 {
 
     gSystem->Load("libDmpEvent.so");
@@ -175,8 +191,8 @@ void buildAcceptance(
     unsigned int accEvtCounter = 0;
 
     // Initialize the particle counter for each energy bin
-    std::vector<double> gFactorCounts(logEBins.size()-1, 0);
-    std::vector<double> gen_gFactorCounts(logEBins.size()-1, 0);
+    std::vector<double> gFactorCounts(logEBins.size() - 1, 0);
+    std::vector<double> gen_gFactorCounts(logEBins.size() - 1, 0);
 
     // Create and load acceptance events cuts from config file
     acceptance_conf acceptance_cuts;
@@ -317,7 +333,30 @@ void buildAcceptance(
     std::vector<double> gFactor;
     const std::size_t vSize = std::min(gFactorCounts.size(), gen_gFactorCounts.size());
     std::transform(std::begin(gFactorCounts), std::begin(gFactorCounts) + vSize, std::begin(gen_gFactorCounts), std::back_inserter(gFactor), std::divides<double>{});
+    std::vector<double> energyValues(gFactor.size(), 0);
+    const bool energyW = false;
+    for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
+    {
+        auto index = std::distance(logEBins.begin(), it);
+        if (energyW==true)
+            energyValues[index] = wtsydp(*it, *(it + 1), -3);
+        else
+            energyValues[index] = .5 * (*it + *(it + 1));
+        std::cout << std::endl
+                  << *it << "\t" << energyValues[index] << "\t" << *(it + 1) << std::endl;
+    }
+    // Create acceptance TGRaph
+    TGraph acceptanceGr(gFactor.size(), &energyValues[0], &gFactor[0]);
+    
+    // Create output acceptance dir in the output TFile
+    auto acceptanceDIr = outFile.mkdir("Acceptance");
+    acceptanceDIr->cd();
 
+    // Write final TGraph
+    acceptanceGr.Write();
+
+    // Return to main TFile directory
+    outFile.cd();
     exit(123);
 }
 
