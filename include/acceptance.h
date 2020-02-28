@@ -9,15 +9,18 @@
 #include <sstream>
 #include <functional>
 #include <algorithm>
+#include <unistd.h>
 
 #include "DmpChain.h"
 #include "DmpEvtBgoHits.h"
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtSimuPrimaries.h"
+
+#include "TDirectory.h"
 #include "TSystem.h"
 #include "TVector3.h"
+#include "TGraph.h"
 
-#include <unistd.h>
 #define GetCurrentDir getcwd
 struct acceptance_conf
 {
@@ -30,7 +33,8 @@ struct acceptance_conf
 extern void buildAcceptance(
     const std::string accInputPath,
     const bool verbose,
-    const std::vector<float> &logEBins);
+    const std::vector<float> &logEBins,
+    TFile &outFile);
 
 extern void load_acceptance_struct(acceptance_conf &acceptance_cuts);
 
