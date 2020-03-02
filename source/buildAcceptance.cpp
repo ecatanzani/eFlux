@@ -101,13 +101,13 @@ inline double wtsydp(
 }
 
 inline std::shared_ptr<TH1D> buildHistoFromVector(
-    const std::vector<double> &energyValues, 
-    const std::vector <double> &consgFactor)
+    const std::vector<double> &energyValues,
+    const std::vector<double> &consgFactor)
 {
-    std::shared_ptr<TH1D> histo = std::make_shared<TH1D>("histo","histoTitle",consgFactor.size(),energyValues[0],energyValues[energyValues.size()-1]);
-    for(auto idx=1; idx<=histo->GetNbinsX(); ++idx)
-        histo->SetBinContent(idx,consgFactor[idx-1]);
-    
+    std::shared_ptr<TH1D> histo = std::make_shared<TH1D>("histo", "histoTitle", consgFactor.size(), energyValues[0], energyValues[energyValues.size() - 1]);
+    for (auto idx = 1; idx <= histo->GetNbinsX(); ++idx)
+        histo->SetBinContent(idx, consgFactor[idx - 1]);
+
     return histo;
 }
 
@@ -163,12 +163,15 @@ void buildAcceptance(
         double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
-        // Don't process events that didn't hit the detector - for this I need to use the reco energy
-        if (bgoTotalE < (acceptance_cuts.event_energy * 1000))
+        // Don't accept events outside the selected energy window
+        if (simuEnergy < (acceptance_cuts.event_energy * 1000))
             continue;
-        
-        // Register the energy of the event even if it does not hit the detector
+
         allocateParticleEnergy(gen_gFactorCounts, logEBins, simuEnergy);
+
+        // Don't process events that didn't hit the detector - for this I need to use the reco energy
+        if (!bgoTotalE)
+            continue;
 
         std::vector<std::vector<short>> layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>());  // arrange BGO hits by layer
         std::vector<std::vector<short>> layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>()); // arrange BGO bars by layer
@@ -297,8 +300,7 @@ void buildAcceptance(
             energyValues[index] = wtsydp(*it, *(it + 1), -3);
         else
             energyValues[index] = .5 * (*it + *(it + 1));
-        std::cout << std::endl
-                  << *it << "\t" << energyValues[index] << "\t" << *(it + 1) << std::endl;
+        //std::cout << std::endl << *it << "\t" << energyValues[index] << "\t" << *(it + 1) << std::endl;
     }
     if (!strcmp(_memType, "graph"))
     {
