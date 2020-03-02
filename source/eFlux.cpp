@@ -1,5 +1,7 @@
 #include "myHeader.h"
 #include "acceptance.h"
+#include "flux.h"
+#include "dataLoop.h"
 
 #include "TDirectory.h"
 
@@ -12,67 +14,69 @@ void buildFlux(
     const std::string accInputPath,
     const bool myAcceptance)
 {
+    // Reading flux config from file
+    flux_conf fluxParams;
+    load_flux_struct(fluxParams);
 
-    // max and min value of the energy (in GeV)
-    double minValue = 1;
-    double maxValue = 100;
-    const int nBinsE = 10;
-    const int nBinsC = 1000;
-
-    std::vector<float> logEBins = createLogBinning(minValue, maxValue, nBinsE);
+    auto logEBins = createLogBinning(fluxParams);
 
     if (pedantic)
     {
         std::cout << "\nEnergy log binning..." << std::scientific;
-        for (unsigned int idx = 0; idx < logEBins.size(); ++idx)
+        for (auto it = logEBins.begin(); it != logEBins.end(); ++it)
             std::cout << "\n"
-                      << logEBins[idx];
+                      << *it;
         std::cout << std::defaultfloat;
-    }
-
-    minValue = 0;
-    maxValue = 1e+5;
-
-    std::vector<float> eCounts = createLinBinning(minValue, maxValue, nBinsC);
-
-    if (pedantic)
-    {
-        std::cout << "\nCounts linear binning...";
-        for (unsigned int idx = 0; idx < eCounts.size(); ++idx)
-            std::cout << "\n"
-                      << eCounts[idx];
     }
 
     // Building acceptance
     if (myAcceptance)
-        buildAcceptance(accInputPath, verbose, logEBins, outFile);
+        buildAcceptance(
+            accInputPath,
+            verbose,
+            logEBins,
+            outFile);
 
-    buildXtrlFlux(logEBins, eCounts, inputPath, lvTime, outFile, verbose);
+    buildXtrlFlux(
+        logEBins,
+        inputPath,
+        lvTime,
+        outFile,
+        verbose,
+        myAcceptance);
 }
 
+/*
+    All-Electron flux using xtrl as classifier
+*/
 void buildXtrlFlux(
-    std::vector<float> &eBins,
-    std::vector<float> &cBins,
+    const std::vector<float> &eBins,
     const std::string inputPath,
     const unsigned int lvTime,
     TFile &outFile,
-    const bool verbose)
+    const bool verbose,
+    const bool myAcceptance)
 {
+    auto e_dataCounts =
+        evLoop(
+            eBins,
+            inputPath,
+            outFile,
+            verbose,
+            true);
+
+    auto acceptance_tf1 = readAcceptance(
+        outFile,
+        verbose,
+        myAcceptance);
+
     /*
-        All-Electron flux using xtrl as classifier
-    */
-
-    TH1D eCounts("eCounts", "All Electron counts - xtrl classifier", eBins.size() - 1, &(eBins[0]));
-    TH1D acceptance;
     TH1D *eFlux = nullptr;
-
-    evLoop(eCounts, inputPath, outFile, verbose, true);
-    readAcceptance(acceptance, outFile, verbose);
-
     eFlux = (TH1D *)eCounts.Clone("eFlux");
     eFlux->Sumw2();
     eFlux->Reset();
-
+    */
+   /*
     //Building flux
     for (int bIdx = 1; bIdx <= eFlux->GetXaxis()->GetNbins(); ++bIdx)
         if (acceptance.GetBinContent(bIdx))
@@ -90,4 +94,27 @@ void buildXtrlFlux(
 
     // Returning to main dir on the output TFile
     outFile.cd();
+    */
+}
+
+std::vector<float> createLogBinning(const flux_conf flux_params)
+{
+    std::vector<float> binning(flux_params.n_energy_bins + 1, 0);
+
+    const double minLog = std::log(flux_params.min_energy);
+    const double maxLog = std::log(flux_params.max_energy);
+    const double logIncrement = (maxLog - minLog) / flux_params.n_energy_bins;
+    double value = flux_params.min_energy;
+    double logValue = minLog;
+
+    for (auto it = binning.begin(); it != (binning.end() - 1); ++it)
+    {
+        auto bIdx = std::distance(binning.begin(), it);
+        binning[bIdx] = value;
+        logValue += logIncrement;
+        value = std::exp(logValue);
+    }
+    binning[flux_params.n_energy_bins] = value;
+
+    return binning;
 }
