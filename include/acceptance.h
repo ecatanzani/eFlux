@@ -20,8 +20,8 @@
 #include "TSystem.h"
 #include "TVector3.h"
 #include "TGraph.h"
-#include "TH1D.h"
 
+#define GetCurrentDir getcwd
 struct acceptance_conf
 {
     double event_energy;
@@ -29,9 +29,6 @@ struct acceptance_conf
     int shower_axis_delta;
     double vertex_radius;
 };
-
-#define _memType "graph"
-//#define _memType "histo"
 
 extern void buildAcceptance(
     const std::string accInputPath,
@@ -62,10 +59,5 @@ extern bool BGOTrackContainment_cut(
     std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf &acceptance_cuts,
     bool passEvent);
-
-extern TF1 readAcceptance( 
-    TFile &outFile, 
-    const bool verbose,
-    const bool myAcceptance);
 
 #endif
