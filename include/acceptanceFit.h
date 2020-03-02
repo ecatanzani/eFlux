@@ -3,21 +3,48 @@
 
 #include "TF1.h"
 #include "TH1D.h"
+#include "TH1F.h"
 #include "TFile.h"
+#include "TGraph.h"
 #include "TDirectory.h"
 
-extern void setStartingParameters(
-    const TF1 &oldFitter,
-    TF1 &newFitter,
-    const unsigned int nOldPars,
-    const unsigned int nNewPars);
+template <typename InputDataType> extern TF1 fitAcceptance(
+    InputDataType *gFactor, 
+    TFile &outFile, 
+    const bool verbose);
 
-extern TF1 fitGFactor(TH1D *gFactor, TFile &outFile, const bool verbose);
+extern template TF1 fitAcceptance(TH1F *gFactor,TFile &outFile,const bool verbose);
+extern template TF1 fitAcceptance(TH1D *gFactor,TFile &outFile,const bool verbose);
+extern template TF1 fitAcceptance(TGraph *gFactor,TFile &outFile,const bool verbose);
 
-extern void tmpFit(
+template <typename InputDataType> extern void tmpFit( 
+    TDirectory *geoFactorDir,
+    TF1 &myFitter,
+    InputDataType *gFactor,
+    const bool verbose,
+    const bool baseFit = true,
+    const unsigned int fitNumber = 0);
+
+extern template void tmpFit(
     TDirectory *geoFactorDir,
     TF1 &myFitter,
     TH1D *gFactor,
+    const bool verbose,
+    const bool baseFit = true,
+    const unsigned int fitNumber = 0);
+
+extern template void tmpFit(
+    TDirectory *geoFactorDir,
+    TF1 &myFitter,
+    TH1F *gFactor,
+    const bool verbose,
+    const bool baseFit = true,
+    const unsigned int fitNumber = 0);
+
+extern template void tmpFit(
+    TDirectory *geoFactorDir,
+    TF1 &myFitter,
+    TGraph *gFactor,
     const bool verbose,
     const bool baseFit = true,
     const unsigned int fitNumber = 0);
