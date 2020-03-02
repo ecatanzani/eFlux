@@ -4,6 +4,7 @@
 
 #include "myHeader.h"
 #include "acceptance.h"
+#include "energyMatch.h"
 
 /**
  * @brief 
@@ -29,7 +30,9 @@ std::string getListPath(const std::string accInputPath, const bool MC)
     return MClist;
 }
 
-std::shared_ptr<DmpChain> aggregateEventsDmpChain(const std::string accInputPath, const bool verbose)
+std::shared_ptr<DmpChain> aggregateEventsDmpChain(
+    const std::string accInputPath,
+    const bool verbose)
 {
     // ****** Access data using DAMPE Chain ******
 
@@ -44,7 +47,9 @@ std::shared_ptr<DmpChain> aggregateEventsDmpChain(const std::string accInputPath
     return dmpch;
 }
 
-std::shared_ptr<TChain> aggregateEventsTChain(const std::string accInputPath, const bool verbose)
+std::shared_ptr<TChain> aggregateEventsTChain(
+    const std::string accInputPath,
+    const bool verbose)
 {
     // ****** Access data using ROOT TChain ******
 
@@ -74,70 +79,6 @@ std::shared_ptr<TChain> aggregateEventsTChain(const std::string accInputPath, co
     return dmpch;
 }
 
-inline int binarySearch(const std::vector<float> &logEBins, int l, int r, const double energy)
-{
-    /*
-        ****** BINARY SEARCH ******
-    */
-
-    if (r >= l)
-    {
-        int mid = l + (r - l) / 2;
-        if (energy > logEBins[mid] && energy < logEBins[mid + 1])
-            return mid;
-        if (logEBins[mid] > energy)
-            return binarySearch(logEBins, l, mid - 1, energy);
-        return binarySearch(logEBins, mid + 1, r, energy);
-    }
-    return -1;
-}
-
-inline int linearSearch(const std::vector<float> &logEBins, const double energy)
-{
-    /*
-        ****** ALL VECTOR SCAN ******
-    */
-
-    unsigned int lIdx = 0;
-    bool found_interval = false;
-    for (unsigned int vIdx = 0; vIdx < logEBins.size() - 1; ++vIdx)
-        if (energy > logEBins[vIdx] && energy < logEBins[vIdx + 1])
-        {
-            lIdx = vIdx;
-            found_interval = true;
-            break;
-        }
-    //std::cout << "\nEnergy: " << energy << "\tLow: " << logEBins[idx] << "\tHigh: " << logEBins[idx+1];
-    if (found_interval)
-        return lIdx;
-    else
-        return -1;
-}
-
-inline void allocateParticleEnergy(
-    std::vector<double> &counts,
-    const std::vector<float> &logEBins,
-    const double totalE)
-{
-    const double energy = totalE / 1000;                               // Scale energy in GeV - binning is in GeV !!
-    auto idx = binarySearch(logEBins, 0, logEBins.size() - 1, energy); //More efficient vector search respect to the linear one
-    //auto idx = linearSearch(logEBins,energy);
-    if (idx != -1)
-    {
-        /*
-        if ( !(energy > logEBins[idx] && energy < logEBins[idx+1]) ) 
-            std:: cout << "\n Idx: " << idx << "\tLow(" << logEBins[idx] << "): " << idx << "\tHigh(" << logEBins[idx+1] << "): " << idx+1 << "\tEgy: " << energy;
-        */
-        ++counts[idx];
-    }
-    else
-        std::cerr << "\nWARNING: Could not find energy bin for current event: " << energy << " GeV";
-
-    /*
-        USE EXPECTIONS FOR THAT
-    */
-}
-
 inline double wtsydp(
     const float minene,
     const float maxene,
@@ -147,7 +88,7 @@ inline double wtsydp(
     if (index != -1)
     {
         float dene = maxene - minene;
-        if (exp==true)
+        if (exp == true)
             return pow(fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene)), 1. / index);
         else
             return fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene));
@@ -157,6 +98,17 @@ inline double wtsydp(
         std::cerr << "\nERROR: -1 index as power-law energy spectrum is INVALID";
         exit(123);
     }
+}
+
+inline std::shared_ptr<TH1D> buildHistoFromVector(
+    const std::vector<double> &energyValues, 
+    const std::vector <double> &consgFactor)
+{
+    std::shared_ptr<TH1D> histo = std::make_shared<TH1D>("histo","histoTitle",consgFactor.size(),energyValues[0],energyValues[energyValues.size()-1]);
+    for(auto idx=1; idx<=histo->GetNbinsX(); ++idx)
+        histo->SetBinContent(idx,consgFactor[idx-1]);
+    
+    return histo;
 }
 
 void buildAcceptance(
@@ -191,8 +143,8 @@ void buildAcceptance(
     unsigned int accEvtCounter = 0;
 
     // Initialize the particle counter for each energy bin
-    std::vector<double> gFactorCounts(logEBins.size() - 1, 0);
-    std::vector<double> gen_gFactorCounts(logEBins.size() - 1, 0);
+    std::vector<unsigned int> gFactorCounts(logEBins.size() - 1, 0);
+    std::vector<unsigned int> gen_gFactorCounts(logEBins.size() - 1, 0);
 
     // Create and load acceptance events cuts from config file
     acceptance_conf acceptance_cuts;
@@ -310,7 +262,7 @@ void buildAcceptance(
         }
 
         // Build XTR
-        auto Xtr = pow(sumRms, 4) * fracLayer[13] / 8000000.;
+        //auto Xtr = pow(sumRms, 4) * fracLayer[13] / 8000000.;
 
         /* ********************************* */
 
@@ -329,35 +281,54 @@ void buildAcceptance(
         std::cout << "\n\nFiltered events: " << accEvtCounter << "/" << nevents << "\n\n";
 
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
-    std::transform(gFactorCounts.begin(), gFactorCounts.end(), gFactorCounts.begin(), [&genSurface](auto &elm) { return elm * genSurface; });
+    std::vector<double> d_gFactorCounts(gFactorCounts.begin(), gFactorCounts.end());
+    std::vector<double> d_gen_gFactorCounts(gen_gFactorCounts.begin(), gen_gFactorCounts.end());
+    std::transform(d_gFactorCounts.begin(), d_gFactorCounts.end(), d_gFactorCounts.begin(), [&genSurface](auto &elm) { return elm * genSurface; });
     std::vector<double> gFactor;
-    const std::size_t vSize = std::min(gFactorCounts.size(), gen_gFactorCounts.size());
-    std::transform(std::begin(gFactorCounts), std::begin(gFactorCounts) + vSize, std::begin(gen_gFactorCounts), std::back_inserter(gFactor), std::divides<double>{});
+    const std::size_t vSize = std::min(d_gFactorCounts.size(), d_gen_gFactorCounts.size());
+    std::transform(std::begin(d_gFactorCounts), std::begin(d_gFactorCounts) + vSize, std::begin(d_gen_gFactorCounts), std::back_inserter(gFactor), std::divides<double>{});
     std::vector<double> energyValues(gFactor.size(), 0);
     const bool energyW = false;
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
-        if (energyW==true)
+        if (energyW == true)
             energyValues[index] = wtsydp(*it, *(it + 1), -3);
         else
             energyValues[index] = .5 * (*it + *(it + 1));
         std::cout << std::endl
                   << *it << "\t" << energyValues[index] << "\t" << *(it + 1) << std::endl;
     }
-    // Create acceptance TGRaph
-    TGraph acceptanceGr(gFactor.size(), &energyValues[0], &gFactor[0]);
-    
-    // Create output acceptance dir in the output TFile
-    auto acceptanceDIr = outFile.mkdir("Acceptance");
-    acceptanceDIr->cd();
+    if (!strcmp(_memType, "graph"))
+    {
+        // Create acceptance TGraph
+        TGraph acceptanceGr(gFactor.size(), &energyValues[0], &gFactor[0]);
+        acceptanceGr.SetName("acceptance");
+        acceptanceGr.SetTitle("Acceptance");
 
-    // Write final TGraph
-    acceptanceGr.Write();
+        // Create output acceptance dir in the output TFile
+        auto acceptanceDIr = outFile.mkdir("Acceptance");
+        acceptanceDIr->cd();
+
+        // Write final TGraph
+        acceptanceGr.Write();
+    }
+    else
+    {
+        auto acceptanceHisto = buildHistoFromVector(energyValues, gFactor);
+        acceptanceHisto->SetName("acceptance");
+        acceptanceHisto->SetTitle("acceptance");
+
+        // Create output acceptance dir in the output TFile
+        auto acceptanceDIr = outFile.mkdir("Acceptance");
+        acceptanceDIr->cd();
+
+        // Write final TGraph
+        acceptanceHisto->Write();
+    }
 
     // Return to main TFile directory
     outFile.cd();
-    exit(123);
 }
 
 bool maxElater_cut(
