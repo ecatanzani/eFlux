@@ -1,14 +1,6 @@
 #include "acceptance.h"
 #include "myHeader.h"
 
-std::string GetCurrentWorkingDir(void)
-{
-    char buff[FILENAME_MAX];
-    GetCurrentDir(buff, FILENAME_MAX);
-    std::string current_working_dir(buff);
-    return current_working_dir;
-}
-
 void load_acceptance_struct(acceptance_conf &acceptance_cuts)
 {
     std::string cwd = GetCurrentWorkingDir();
