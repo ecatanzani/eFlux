@@ -163,11 +163,12 @@ void buildAcceptance(
         double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
-        allocateParticleEnergy(gen_gFactorCounts, logEBins, simuEnergy);
-
         // Don't process events that didn't hit the detector - for this I need to use the reco energy
         if (bgoTotalE < (acceptance_cuts.event_energy * 1000))
             continue;
+        
+        // Register the energy of the event even if it does not hit the detector
+        allocateParticleEnergy(gen_gFactorCounts, logEBins, simuEnergy);
 
         std::vector<std::vector<short>> layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>());  // arrange BGO hits by layer
         std::vector<std::vector<short>> layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>()); // arrange BGO bars by layer
