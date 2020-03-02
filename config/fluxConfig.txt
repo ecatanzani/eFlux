@@ -1,0 +1,5 @@
+######### Flux Config File #########
+
+min_energy              20
+max_energy              100
+number_energy_bins      10
