@@ -1,4 +1,5 @@
 #include "myHeader.h"
+#include "flux.h"
 
 void eCore(
     const std::string inputPath,
@@ -19,7 +20,14 @@ void eCore(
     }
 
     // Building eFLux
-    buildFlux(inputPath, lvTime, outFile, verbose, pedantic, accInputPath, myAcceptance);
+    buildFlux(
+        inputPath, 
+        lvTime, 
+        outFile, 
+        verbose, 
+        pedantic, 
+        accInputPath, 
+        myAcceptance);
 
     // Close output file ...
     outFile.Close();
