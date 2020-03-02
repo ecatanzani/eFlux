@@ -1,19 +1,22 @@
-#include "myHeader.h"
+#include "dataLoop.h"
 
-/*
-void readInputTree(const std::string inputPath,std::vector<float> &dataValues,TTree &dTree)
+std::shared_ptr<TTree> getDataTree(
+    const std::string inputPath,
+    std::vector<float> &dataValues)
 {
-    TFile inputTree(inputPath.c_str(),"READ");
-    if(!inputTree.IsOpen())
+    TFile inputTreeFile(inputPath.c_str(), "READ");
+    if (!inputTreeFile.IsOpen())
     {
         std::cerr << "\n\nError opening input TTree: " << inputPath;
         exit(123);
     }
-    TTree *dataTree = (TTree*) inputTree.Get("collectionTree");
-    new (&dTree) (TTree) (*(TTree*)dataTree->Clone("dataTree"));
-    branchTree(dTree,dataValues);
+    auto myDataTree = std::shared_ptr<TTree>( static_cast <TTree *> (inputTreeFile.Get("collectionTree")) );
+    inputTreeFile.Close();
+    // Branch input Data Tree
+    branchTree(*myDataTree, dataValues);
+
+    return myDataTree;
 }
-*/
 
 void branchTree(TTree &myDataTree, std::vector<float> &dataValues)
 {

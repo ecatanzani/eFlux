@@ -1,10 +1,9 @@
-#include "myHeader.h"
-#include "TDirectory.h"
+#include "dataLoop.h"
+#include "acceptance.h"
+#include "energyMatch.h"
 
-#define kStep 10000
-
-void evLoop(
-    TH1D &inputHisto,
+std::vector<unsigned int> evLoop(
+    const std::vector<float> &eBins,
     const std::string inputPath,
     TFile &outFile,
     const bool verbose,
@@ -31,22 +30,10 @@ void evLoop(
 
     unsigned nData = 9;
     std::vector<float> dataValues(nData, 0);
+    std::vector<unsigned int> e_counts(eBins.size()-1,0);
 
-    //Create data TTree
-    //TTree* dTree = new TTree("collectionTree","Data Collection Tree");
-    TTree *dTree = nullptr;
-
-    TFile inputTree(inputPath.c_str(), "READ");
-    if (!inputTree.IsOpen())
-    {
-        std::cerr << "\n\nError opening input TTree: " << inputPath;
-        exit(123);
-    }
-    inputTree.GetObject("collectionTree", dTree);
-    branchTree(*dTree, dataValues);
-
-    //Linking input TTree
-    //readInputTree(inputPath,dataValues,dTree);
+    // Get input TTree from file
+    auto dTree = getDataTree(inputPath, dataValues);
 
     /*
         Telemetry information histos
@@ -74,7 +61,7 @@ void evLoop(
     {
         dTree->GetEntry(evIdx);
         if (dataValues[2] < xtrlCut)
-            inputHisto.Fill(dataValues[1]);
+            allocateParticleEnergy(e_counts,eBins,dataValues[1]);
 
         satellitePosX.Fill(dataValues[3]);
         satellitePosY.Fill(dataValues[4]);
@@ -106,4 +93,6 @@ void evLoop(
     satelliteVelZ.Write();
 
     outFile.cd();
+
+    return e_counts;
 }
