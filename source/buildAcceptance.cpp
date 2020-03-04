@@ -146,8 +146,8 @@ void buildAcceptance(
 
         // Event printout
         if (verbose)
-            if (((evIdx+1)%_kStep)==0)
-                std::cout << "\nProcessed " << evIdx+1 << " events / " << nevents;
+            if (((evIdx + 1) % _kStep) == 0)
+                std::cout << "\nProcessed " << evIdx + 1 << " events / " << nevents;
 
         // GOOD EVENT variable
         bool passEvent = true;
@@ -158,7 +158,7 @@ void buildAcceptance(
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
         // Don't accept events outside the selected energy window
-        if ( simuEnergy*_GeV < acceptance_cuts.min_event_energy || simuEnergy*_GeV > acceptance_cuts.max_event_energy )
+        if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
             continue;
 
         allocateParticleEnergy(gen_gFactorCounts, logEBins, simuEnergy);
@@ -277,6 +277,12 @@ void buildAcceptance(
         unsigned int ev_counter = 0;
         std::cout << "\n\nFiltered events: " << std::accumulate(gFactorCounts.begin(), gFactorCounts.end(), ev_counter) << "/" << nevents << "\n\n";
     }
+    for (auto it = gen_gFactorCounts.begin(); it != gen_gFactorCounts.end(); ++it)
+        if (*it == 0)
+        {
+            auto index = std::distance(gen_gFactorCounts.begin(), it);
+            gen_gFactorCounts[index] = 1;
+        }
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
     std::vector<double> d_gFactorCounts(gFactorCounts.begin(), gFactorCounts.end());
     std::vector<double> d_gen_gFactorCounts(gen_gFactorCounts.begin(), gen_gFactorCounts.end());
@@ -288,7 +294,7 @@ void buildAcceptance(
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
-        energyValues[index] = wtsydp(*it, *(it + 1),-1);
+        energyValues[index] = wtsydp(*it, *(it + 1), -1);
         //std::cout << std::endl << *it << "\t" << energyValues[index] << "\t" << *(it + 1) << std::endl;
     }
     if (!strcmp(_memType, "graph"))
