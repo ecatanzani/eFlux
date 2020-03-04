@@ -82,22 +82,13 @@ std::shared_ptr<TChain> aggregateEventsTChain(
 inline double wtsydp(
     const float minene,
     const float maxene,
-    const float index,
-    const bool exp = false)
+    const float index)
 {
+    float dene = maxene - minene;
     if (index != -1)
-    {
-        float dene = maxene - minene;
-        if (exp == true)
-            return pow(fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene)), 1. / index);
-        else
-            return fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene));
-    }
+        return pow(fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene)), 1. / index);
     else
-    {
-        std::cerr << "\nERROR: -1 index as power-law energy spectrum is INVALID";
-        exit(123);
-    }
+        return dene / log(maxene / minene);
 }
 
 inline std::shared_ptr<TH1D> buildHistoFromVector(
@@ -118,8 +109,6 @@ void buildAcceptance(
     TFile &outFile)
 {
 
-    gSystem->Load("libDmpEvent.so");
-
     //auto dmpch = aggregateEventsDmpChain(accInputPath,verbose);
     auto dmpch = aggregateEventsTChain(accInputPath, verbose);
 
@@ -139,8 +128,6 @@ void buildAcceptance(
     auto nevents = dmpch->GetEntries();
     if (verbose)
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
-
-    unsigned int accEvtCounter = 0;
 
     // Initialize the particle counter for each energy bin
     std::vector<unsigned int> gFactorCounts(logEBins.size() - 1, 0);
@@ -164,13 +151,13 @@ void buildAcceptance(
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
         // Don't accept events outside the selected energy window
-        if (simuEnergy < (acceptance_cuts.event_energy * 1000))
+        if (simuEnergy >= (acceptance_cuts.min_event_energy * 1000) && simuEnergy <= (acceptance_cuts.max_event_energy * 1000))
             continue;
 
         allocateParticleEnergy(gen_gFactorCounts, logEBins, simuEnergy);
 
         // Don't process events that didn't hit the detector - for this I need to use the reco energy
-        if (!bgoTotalE)
+        if (bgoTotalE == 0)
             continue;
 
         std::vector<std::vector<short>> layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>());  // arrange BGO hits by layer
@@ -206,9 +193,9 @@ void buildAcceptance(
             double maxE = (bgohits->fEnergy)[0];
 
             // Find the maximum of the nergy release in a certain layer, together with the bar ID
-            for (unsigned int ind = 0; ind < layerBarNumber[lay].size(); ++ind)
+            for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
             {
-                int ihit = layerBarIndex[lay][ind];
+                int ihit = *it;
                 double hitE = (bgohits->fEnergy)[ihit];
                 if (hitE > maxE)
                 {
@@ -233,9 +220,9 @@ void buildAcceptance(
                 // Consider the nearest bar respect to the max one in order to better interpolate the position
                 if (iBarMax > 0 && iBarMax < 21)
                 {
-                    for (unsigned int ind = 0; ind < layerBarNumber[lay].size(); ++ind)
+                    for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
                     {
-                        auto ihit = layerBarIndex[lay][ind];
+                        auto ihit = *it;
                         auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
                         if (iBar - iBarMax == 1 || iBar - iBarMax == -1)
                         {
@@ -249,9 +236,9 @@ void buildAcceptance(
                 // Get the CoG coordinate of the max energy bar cluster
                 eCoreCoord[lay] /= eCoreLayer[lay];
                 // Get the energy RMS of a layer
-                for (unsigned int ind = 0; ind < layerBarNumber[lay].size(); ++ind)
+                for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
                 {
-                    auto ihit = layerBarIndex[lay][ind];
+                    auto ihit = *it;
                     auto hitE = (bgohits->fEnergy)[ihit];
                     auto thisCoord = lay % 2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
                     eLayer[lay] += hitE;
@@ -273,17 +260,16 @@ void buildAcceptance(
         if (maxElater_cut(bgorec, acceptance_cuts, bgoTotalE))
             if (maxBarLayer_cut(bgohits, nBgoHits))
                 if (BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent))
-                {
-                    ++accEvtCounter;
                     // Use the simu energy as a reference to build the acceptance
                     allocateParticleEnergy(gFactorCounts, logEBins, simuEnergy);
-                    //std::cout << "\nSimuEnergy: " << simuEnergy << "\t RecoEnergy: " << bgoTotalE;
-                }
+        //std::cout << "\nSimuEnergy: " << simuEnergy << "\t RecoEnergy: " << bgoTotalE;
     }
 
     if (verbose)
-        std::cout << "\n\nFiltered events: " << accEvtCounter << "/" << nevents << "\n\n";
-
+    {
+        unsigned int ev_counter = 0;
+        std::cout << "\n\nFiltered events: " << std::accumulate(gFactorCounts.begin(), gFactorCounts.end(), ev_counter) << "/" << nevents << "\n\n";
+    }
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
     std::vector<double> d_gFactorCounts(gFactorCounts.begin(), gFactorCounts.end());
     std::vector<double> d_gen_gFactorCounts(gen_gFactorCounts.begin(), gen_gFactorCounts.end());
@@ -292,14 +278,10 @@ void buildAcceptance(
     const std::size_t vSize = std::min(d_gFactorCounts.size(), d_gen_gFactorCounts.size());
     std::transform(std::begin(d_gFactorCounts), std::begin(d_gFactorCounts) + vSize, std::begin(d_gen_gFactorCounts), std::back_inserter(gFactor), std::divides<double>{});
     std::vector<double> energyValues(gFactor.size(), 0);
-    const bool energyW = false;
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
-        if (energyW == true)
-            energyValues[index] = wtsydp(*it, *(it + 1), -3);
-        else
-            energyValues[index] = .5 * (*it + *(it + 1));
+        energyValues[index] = wtsydp(*it, *(it + 1), -3);
         //std::cout << std::endl << *it << "\t" << energyValues[index] << "\t" << *(it + 1) << std::endl;
     }
     if (!strcmp(_memType, "graph"))
@@ -316,7 +298,7 @@ void buildAcceptance(
         // Write final TGraph
         acceptanceGr.Write();
     }
-    else
+    else if (!strcmp(_memType, "histo"))
     {
         auto acceptanceHisto = buildHistoFromVector(energyValues, gFactor);
         acceptanceHisto->SetName("acceptance");
@@ -328,6 +310,11 @@ void buildAcceptance(
 
         // Write final TGraph
         acceptanceHisto->Write();
+    }
+    else
+    {
+        std::cerr << "\n\nERROR: incorrect memtype: " << _memType;
+        exit(123);
     }
 
     // Return to main TFile directory
