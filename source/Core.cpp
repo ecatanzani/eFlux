@@ -7,7 +7,6 @@ void eCore(
     const bool verbose,
     const bool pedantic,
     const unsigned int lvTime,
-    const bool myAcceptance,
     const std::string accInputPath,
     AnyOption &opt)
 {
@@ -18,16 +17,27 @@ void eCore(
         std::cerr << "\n\nError writing output TFile: " << uniqueOutFile(outputPath, opt) << std::endl;
         exit(123);
     }
+    
+    // Create energy log-binning
+    energy_cuts eCuts;
+    load_energy_struct(eCuts);
+    auto logEBins = createLogBinning(eCuts);
+    if (pedantic)
+    {
+        std::cout << "\nEnergy log binning..." << std::scientific;
+        for (auto it = logEBins.begin(); it != logEBins.end(); ++it)
+            std::cout << "\n" << *it;
+        std::cout << std::defaultfloat;
+    }
 
-    // Building eFLux
-    buildFlux(
-        inputPath, 
-        lvTime, 
-        outFile, 
-        verbose, 
-        pedantic, 
-        accInputPath, 
-        myAcceptance);
+    // All-Electron flux using xtrl as classifier
+    buildXtrlFlux(
+        logEBins,
+        inputPath,
+        lvTime,
+        outFile,
+        verbose,
+        accInputPath);
 
     // Close output file ...
     outFile.Close();
