@@ -36,6 +36,7 @@ struct acceptance_conf
 
 #define _memType "graph"
 //#define _memType "histo"
+#define _kStep 10000
 
 extern void computeAcceptance(
     const std::string accInputPath,
