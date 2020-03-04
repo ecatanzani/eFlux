@@ -42,3 +42,25 @@ bool chechFlags(
 
     return status;
 }
+
+std::vector<float> createLogBinning(const energy_cuts e_cuts)
+{
+    std::vector<float> binning(e_cuts.e_bins + 1, 0);
+
+    const double minLog = std::log(e_cuts.cut_min_energy);
+    const double maxLog = std::log(e_cuts.cut_max_energy);
+    const double logIncrement = (maxLog - minLog) / e_cuts.e_bins;
+    double value = e_cuts.cut_min_energy;
+    double logValue = minLog;
+
+    for (auto it = binning.begin(); it != (binning.end() - 1); ++it)
+    {
+        auto bIdx = std::distance(binning.begin(), it);
+        binning[bIdx] = value;
+        logValue += logIncrement;
+        value = std::exp(logValue);
+    }
+    binning[e_cuts.e_bins] = value;
+
+    return binning;
+}
