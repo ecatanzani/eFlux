@@ -33,6 +33,15 @@
 #define DAMPE_bgo_nLayers 14
 
 #define GetCurrentDir getcwd
+struct energy_cuts
+{
+    double cut_min_energy;
+    double cut_max_energy;
+    unsigned int e_bins;
+};
+
+extern void load_energy_struct(energy_cuts &e_cuts);
+extern std::vector<float> createLogBinning(const energy_cuts e_cuts);
 
 extern void eCore(
     const std::string inputPath,
@@ -40,7 +49,6 @@ extern void eCore(
     const bool verbose,
     const bool pedantic,
     const unsigned int lvTime,
-    const bool myAcceptance,
     const std::string accInputPath,
     AnyOption &opt);
 
