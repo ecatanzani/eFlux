@@ -34,8 +34,8 @@ struct acceptance_conf
     double vertex_radius;
 };
 
-#define _memType "graph"
-//#define _memType "histo"
+//#define _memType "graph"
+#define _memType "histo"
 #define _kStep 10000
 
 extern void computeAcceptance(
