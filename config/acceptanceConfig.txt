@@ -1,6 +1,6 @@
 ######### Acceptance Config File #########
 
-min_event_energy            20
+min_event_energy            10
 max_event_energy            100
 energy_lRatio               0.35
 shower_axis_delta           280

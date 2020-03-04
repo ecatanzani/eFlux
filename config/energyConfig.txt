@@ -1,5 +1,5 @@
 ######### Energy Config File #########
 
-cut_min_energy          20
+cut_min_energy          1
 cut_max_energy          100
 e_bins                  10
