@@ -10,6 +10,7 @@
 #include <functional>
 #include <algorithm>
 #include <unistd.h>
+#include <numeric>
 
 #include "DmpChain.h"
 #include "DmpEvtBgoHits.h"
@@ -22,9 +23,12 @@
 #include "TGraph.h"
 #include "TH1D.h"
 
+#include "anyoption.h"
+
 struct acceptance_conf
 {
-    double event_energy;
+    double min_event_energy;
+    double max_event_energy;
     double energy_lRatio;
     int shower_axis_delta;
     double vertex_radius;
@@ -32,6 +36,13 @@ struct acceptance_conf
 
 #define _memType "graph"
 //#define _memType "histo"
+
+extern void computeAcceptance(
+    const std::string accInputPath,
+    const bool verbose,
+    const bool pedantic,
+    const std::string outputPath,
+    AnyOption &opt);
 
 extern void buildAcceptance(
     const std::string accInputPath,
@@ -66,6 +77,11 @@ extern bool BGOTrackContainment_cut(
 extern TF1 readAcceptance( 
     TFile &outFile, 
     const bool verbose,
-    const bool myAcceptance);
+    const std::string accInputPath);
+
+extern void computeAcceptance(
+    const std::string accInputPath,
+    const bool verbose,
+    const bool pedantic);
 
 #endif
