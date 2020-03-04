@@ -4,8 +4,9 @@
 TF1 readAcceptance(
     TFile &outFile, 
     const bool verbose,
-    const bool myAcceptance)
+    const std::string accInputPath)
 {
+    /*
     // Reading acceptance
     if (myAcceptance)
     {
@@ -42,6 +43,7 @@ TF1 readAcceptance(
         selEfficiency_beforeSelection->SetDirectory(0);
         selEfficiency_alfterSelection->SetDirectory(0);
         selFile.Close();
+        */
         /*
         Sumw2() just applied to each single histo when they have been computed. WARNING !!! This changes if other files will be used
 
@@ -49,6 +51,7 @@ TF1 readAcceptance(
         selEfficiency_beforeSelection->Sumw2();
         selEfficiency_alfterSelection->Sumw2();
         */
+        /*
         // Compute the final efficiency
         auto selEff = (static_cast<TH1D*> (selEfficiency_alfterSelection->Clone("selEff")));
         selEff->Divide(selEfficiency_beforeSelection);
@@ -66,4 +69,5 @@ TF1 readAcceptance(
         outFile.cd();
         return fitter;
     }
+    */
 }
