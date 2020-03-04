@@ -73,7 +73,7 @@ std::shared_ptr<TChain> aggregateEventsTChain(
     {
         dmpch->Add(tmp_str.c_str());
         if (verbose)
-            std::cout << "\nAdding " << tmp_str << " to the chain ..." << std::endl;
+            std::cout << "\nAdding " << tmp_str << " to the chain ...";
     }
 
     return dmpch;
@@ -137,10 +137,17 @@ void buildAcceptance(
     acceptance_conf acceptance_cuts;
     load_acceptance_struct(acceptance_cuts);
 
+    double _GeV = 0.001;
+
     for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
     {
         // Get chain event
         dmpch->GetEvent(evIdx);
+
+        // Event printout
+        if (verbose)
+            if (((evIdx+1)%_kStep)==0)
+                std::cout << "\nProcessed " << evIdx+1 << " events / " << nevents;
 
         // GOOD EVENT variable
         bool passEvent = true;
@@ -151,7 +158,7 @@ void buildAcceptance(
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
         // Don't accept events outside the selected energy window
-        if (simuEnergy >= (acceptance_cuts.min_event_energy * 1000) && simuEnergy <= (acceptance_cuts.max_event_energy * 1000))
+        if ( simuEnergy*_GeV < acceptance_cuts.min_event_energy || simuEnergy*_GeV > acceptance_cuts.max_event_energy )
             continue;
 
         allocateParticleEnergy(gen_gFactorCounts, logEBins, simuEnergy);
