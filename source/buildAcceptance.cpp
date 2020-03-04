@@ -281,7 +281,7 @@ void buildAcceptance(
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
-        energyValues[index] = wtsydp(*it, *(it + 1), -3);
+        energyValues[index] = wtsydp(*it, *(it + 1),-1);
         //std::cout << std::endl << *it << "\t" << energyValues[index] << "\t" << *(it + 1) << std::endl;
     }
     if (!strcmp(_memType, "graph"))
