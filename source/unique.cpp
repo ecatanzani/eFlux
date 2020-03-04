@@ -3,7 +3,9 @@
 #include <ctime>
 #include <sstream>
 
-const char *uniqueOutFile(const std::string outputPath, AnyOption &opt)
+const char *uniqueOutFile(
+    const std::string outputPath, 
+    AnyOption &opt)
 {
     std::time_t ctime = std::time(0);
     std::stringstream fPath;
