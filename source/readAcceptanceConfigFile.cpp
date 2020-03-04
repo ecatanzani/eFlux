@@ -20,10 +20,15 @@ void load_acceptance_struct(acceptance_conf &acceptance_cuts)
     std::string::size_type sz;
     while (input_stream >> tmp_str)
     {
-        if (!strcmp(tmp_str.c_str(), "event_energy"))
+        if (!strcmp(tmp_str.c_str(), "min_event_energy"))
         {
             input_stream >> tmp_str;
-            acceptance_cuts.event_energy = stod(tmp_str, &sz);
+            acceptance_cuts.min_event_energy = stod(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "max_event_energy"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.max_event_energy = stod(tmp_str, &sz);
         }
         if (!strcmp(tmp_str.c_str(), "energy_lRatio"))
         {
