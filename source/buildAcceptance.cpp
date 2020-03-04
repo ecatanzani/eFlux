@@ -40,7 +40,8 @@ std::shared_ptr<DmpChain> aggregateEventsDmpChain(
     std::shared_ptr<DmpChain> dmpch = std::make_shared<DmpChain>("CollectionTree");
 
     // Add MC file list to DmpChain
-    dmpch->AddFromList(getListPath(accInputPath, true).c_str());
+    //dmpch->AddFromList(getListPath(accInputPath, true).c_str());
+    dmpch->AddFromList(accInputPath.c_str());
     if (verbose)
         dmpch->GetListOfFiles()->Print();
 
@@ -56,10 +57,11 @@ std::shared_ptr<TChain> aggregateEventsTChain(
     // Create TChain object
     //TChain* dmpch = new TChain("CollectionTree");
     std::shared_ptr<TChain> dmpch = std::make_shared<TChain>("CollectionTree");
-    //std::shared_ptr < TChain >  dmpch( new TChain("CollectionTree") );
+    //std::shared_ptr<TChain> dmpch( new TChain("CollectionTree") );
 
     // Reading list of MC files
-    std::ifstream input_file(getListPath(accInputPath, true).c_str());
+    //std::ifstream input_file(getListPath(accInputPath, true).c_str());
+    std::ifstream input_file(accInputPath.c_str());
     if (!input_file.is_open())
     {
         std::cerr << "\nERROR 100! File not open " << getListPath(accInputPath, true) << "\n\n";
