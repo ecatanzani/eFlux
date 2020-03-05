@@ -1,6 +1,3 @@
-[submodule "AnyOption"]
-	path = deps/AnyOption
-	url = git@github.com:hackorama/AnyOption.git
 [submodule "deps/CondorHelper"]
 	path = deps/CondorHelper
 	url = git@github.com:ecatanzani/CondorHelper.git
