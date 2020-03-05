@@ -51,6 +51,12 @@ extern void buildAcceptance(
     const std::vector<float> &logEBins,
     TFile &outFile);
 
+extern void buildAcceptance_vector(
+    const std::string accInputPath,
+    const bool verbose,
+    const std::vector<float> &logEBins,
+    TFile &outFile);
+
 extern void load_acceptance_struct(acceptance_conf &acceptance_cuts);
 
 extern std::shared_ptr<DmpChain> aggregateEventsDmpChain(

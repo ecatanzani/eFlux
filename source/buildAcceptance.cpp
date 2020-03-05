@@ -131,6 +131,233 @@ void buildAcceptance(
     if (verbose)
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
 
+    // Cut histos
+    TH1D h_incoming("h_incoming","Energy Distribution of the incoming particles",logEBins.size()-1,&(logEBins[0]));
+    TH1D h_maxElateral_cut("h_maxElateral_cut","Energy Distribution - maxElateral cut ",logEBins.size()-1,&(logEBins[0]));
+    TH1D h_maxBarLayer_cut("h_maxBarLayer_cut","Energy Distribution - maxBarLayer cut ",logEBins.size()-1,&(logEBins[0]));
+    TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut","Energy Distribution - BGOTrackContainment cut ",logEBins.size()-1,&(logEBins[0]));
+    TH1D h_all_cut("h_all_cut","Energy Distribution - All cut ",logEBins.size()-1,&(logEBins[0]));
+
+    h_incoming.Sumw2();
+    h_maxElateral_cut.Sumw2();
+    h_maxBarLayer_cut.Sumw2();
+    h_BGOTrackContainment_cut.Sumw2();
+    h_all_cut.Sumw2();
+
+    // Create and load acceptance events cuts from config file
+    acceptance_conf acceptance_cuts;
+    load_acceptance_struct(acceptance_cuts);
+
+    double _GeV = 0.001;
+
+    for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
+    {
+        // Get chain event
+        dmpch->GetEvent(evIdx);
+
+        // GOOD EVENT variable
+        bool passEvent = true;
+
+        // Event printout
+        if (verbose)
+            if (((evIdx + 1) % _kStep) == 0)
+                std::cout << "\nProcessed " << evIdx + 1 << " events / " << nevents;
+       
+        // Get event total energy
+        //double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in MeV - not corrected
+        double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
+        double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
+
+        // Don't accept events outside the selected energy window
+        if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
+            continue;
+
+        h_incoming.Fill(simuEnergy*_GeV);
+
+        // Don't process events that didn't hit the detector - for this I need to use the reco energy
+        if (bgoTotalE == 0)
+            continue;
+
+        std::vector<std::vector<short>> layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>());  // arrange BGO hits by layer
+        std::vector<std::vector<short>> layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>()); // arrange BGO bars by layer
+
+        // Get the number of BGO hits
+        int nBgoHits = bgohits->GetHittedBarNumber();
+
+        // Scan BGO hits
+        for (int ihit = 0; ihit < nBgoHits; ++ihit)
+        {
+            // Get layer ID
+            auto layerID = bgohits->GetLayerID(ihit);
+            // Get bar global ID
+            auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
+            layerBarIndex[layerID].push_back(ihit);
+            layerBarNumber[layerID].push_back(iBar);
+        }
+
+        std::vector<double> rmsLayer(DAMPE_bgo_nLayers, 0);
+        std::vector<double> fracLayer(DAMPE_bgo_nLayers, 0);
+        std::vector<double> eLayer(DAMPE_bgo_nLayers, 0);
+        std::vector<double> eCoreLayer(DAMPE_bgo_nLayers, 0);
+        std::vector<double> eCoreCoord(DAMPE_bgo_nLayers, 0);
+        double sumRms = 0;
+
+        for (int lay = 0; lay < DAMPE_bgo_nLayers; ++lay)
+        {
+            // Setting default value for maximum bar index and energy for each layer
+            int imax = -1;
+            if (layerBarIndex[lay].size())
+                imax = layerBarIndex[lay].at(0);
+            double maxE = (bgohits->fEnergy)[0];
+
+            // Find the maximum of the nergy release in a certain layer, together with the bar ID
+            for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
+            {
+                int ihit = *it;
+                double hitE = (bgohits->fEnergy)[ihit];
+                if (hitE > maxE)
+                {
+                    maxE = hitE;
+                    imax = ihit;
+                }
+            }
+
+            rmsLayer[lay] = 0;
+            fracLayer[lay] = 0;
+            eLayer[lay] = 0;
+
+            if (maxE)
+            {
+                // Find the bar index regarding the maximum energy release in a certain layer
+                auto iBarMax = ((bgohits->fGlobalBarID)[imax] >> 6) & 0x1f;
+                // Register the maximum energy release of a layer
+                eCoreLayer[lay] = maxE;
+                // Find the coordinate (weighted by the nergy release) of the bar with the biggest energy release in a certain layer
+                auto coordMax = lay % 2 ? bgohits->GetHitX(imax) : bgohits->GetHitY(imax);
+                eCoreCoord[lay] = maxE * coordMax;
+                // Consider the nearest bar respect to the max one in order to better interpolate the position
+                if (iBarMax > 0 && iBarMax < 21)
+                {
+                    for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
+                    {
+                        auto ihit = *it;
+                        auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
+                        if (iBar - iBarMax == 1 || iBar - iBarMax == -1)
+                        {
+                            double hitE = (bgohits->fEnergy)[ihit];
+                            double thisCoord = lay % 2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
+                            eCoreLayer[lay] += hitE;
+                            eCoreCoord[lay] += hitE * thisCoord;
+                        }
+                    }
+                }
+                // Get the CoG coordinate of the max energy bar cluster
+                eCoreCoord[lay] /= eCoreLayer[lay];
+                // Get the energy RMS of a layer
+                for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
+                {
+                    auto ihit = *it;
+                    auto hitE = (bgohits->fEnergy)[ihit];
+                    auto thisCoord = lay % 2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
+                    eLayer[lay] += hitE;
+                    rmsLayer[lay] += hitE * (thisCoord - eCoreCoord[lay]) * (thisCoord - eCoreCoord[lay]);
+                }
+                rmsLayer[lay] = sqrt(rmsLayer[lay] / eLayer[lay]);
+                fracLayer[lay] = eLayer[lay] / bgoTotalE;
+                if (layerBarNumber[lay].size() <= 1)
+                    rmsLayer[lay] = 0;
+            }
+            sumRms += rmsLayer[lay];
+        }
+
+        // Build XTR
+        //auto Xtr = pow(sumRms, 4) * fracLayer[13] / 8000000.;
+
+        /* ********************************* */
+        
+        bool filter_maxElater_cut = maxElater_cut(bgorec, acceptance_cuts, bgoTotalE);
+        bool filter_maxBarLayer_cut = maxBarLayer_cut(bgohits, nBgoHits);
+        bool filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
+        
+        if (filter_maxElater_cut)
+            h_maxElateral_cut.Fill(simuEnergy*_GeV);
+        if (filter_maxBarLayer_cut)
+            h_maxBarLayer_cut.Fill(simuEnergy*_GeV);
+        if (filter_BGOTrackContainment_cut)
+            h_BGOTrackContainment_cut.Fill(simuEnergy*_GeV);
+        
+        if (filter_maxElater_cut)
+            if (filter_maxBarLayer_cut)
+                if (filter_BGOTrackContainment_cut)
+                    h_all_cut.Fill(simuEnergy*_GeV);
+
+    }
+
+    if (verbose)
+        std::cout << "\n\nFiltered events: " << h_all_cut.GetEntries() << "/" << nevents << "\n\n";
+    
+    double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
+
+    auto h_acceptance = static_cast<TH1D*>(h_all_cut.Clone("h_acceptance"));
+    h_acceptance->SetTitle("Acceptance");
+    h_acceptance->Scale(genSurface);
+    h_acceptance->Divide(&h_incoming);
+    std::vector<double> energyValues(h_acceptance->GetXaxis()->GetNbins(), 0);
+    std::vector<double> acceptanceValues(energyValues.size(),0);
+    for (auto it=logEBins.begin(); it!=logEBins.end(); ++it)
+    {
+        auto index = std::distance(logEBins.begin(), it);
+        energyValues[index] = wtsydp(*it, *(it + 1), -1);
+        acceptanceValues[index] = h_acceptance->GetBinContent(index+1);
+    }
+
+    TGraph acceptanceGr(acceptanceValues.size(), &energyValues[0], &acceptanceValues[0]);
+    acceptanceGr.SetName("acceptance");
+    acceptanceGr.SetTitle("Acceptance");
+
+    // Write histos to file
+    h_maxElateral_cut.Write();
+    h_maxBarLayer_cut.Write();
+    h_BGOTrackContainment_cut.Write();
+    h_all_cut.Write();
+
+    // Create output acceptance dir in the output TFile
+    auto acceptanceDIr = outFile.mkdir("Acceptance");
+    acceptanceDIr->cd();
+    // Write final TGraph
+    acceptanceGr.Write();
+    
+    // Return to main TFile directory
+    outFile.cd();
+}
+
+void buildAcceptance_vector(
+    const std::string accInputPath,
+    const bool verbose,
+    const std::vector<float> &logEBins,
+    TFile &outFile)
+{
+
+    //auto dmpch = aggregateEventsDmpChain(accInputPath,verbose);
+    auto dmpch = aggregateEventsTChain(accInputPath, verbose);
+
+    // SimuPrimaries container
+    std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::make_shared<DmpEvtSimuPrimaries>();
+    dmpch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
+
+    // Register BGO constainer
+    std::shared_ptr<DmpEvtBgoHits> bgohits = std::make_shared<DmpEvtBgoHits>();
+    dmpch->SetBranchAddress("DmpEvtBgoHits", &bgohits);
+
+    // Register BGO REC constainer
+    std::shared_ptr<DmpEvtBgoRec> bgorec = std::make_shared<DmpEvtBgoRec>();
+    dmpch->SetBranchAddress("DmpEvtBgoRec", &bgorec);
+
+    // Event loop
+    auto nevents = dmpch->GetEntries();
+    if (verbose)
+        std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
+
     // Initialize the particle counter for each energy bin
     std::vector<unsigned int> gFactorCounts(logEBins.size() - 1, 0);
     std::vector<unsigned int> gen_gFactorCounts(logEBins.size() - 1, 0);
