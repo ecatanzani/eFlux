@@ -19,11 +19,8 @@ DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
 
 DAMPE_INC=/dampe/releases/DmpSoftware-6-0-10/include
 DAMPE_LIB=/dampe/releases/DmpSoftware-6-0-10/lib
-
-ifeq ($(wildcard $(DAMPE_INC)),"")
-	DAMPE_INC=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include
-	DAMPE_LIB=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib
-endif
+DAMPE_INC_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include
+DAMPE_LIB_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib
 
 
 S_DIR  = $(TOP)/source/
@@ -58,8 +55,8 @@ DEBUG_FLAGS = -g -D_DEBUG -Wall -Wno-unknown-pragmas
 LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
-	CC_FLAGS+= -I$(DIPS_INCLUDE) -I$(ANYOPT_INC) -I$(DAMPE_INC)
-	LDFLAGS += $(DIPS_LIBS) -L$(DAMPE_LIB) -lDmpEvent
+	CC_FLAGS+= -I$(DIPS_INCLUDE) -I$(ANYOPT_INC) -I$(DAMPE_INC) -I$(DAMPE_INC_CNAF)
+	LDFLAGS += $(DIPS_LIBS) -L$(DAMPE_LIB) -L$(DAMPE_LIB_CNAF) -lDmpEvent
 endif
 ####################################################
 # Flags by OS
