@@ -1,9 +1,12 @@
 #include "acceptance.h"
 #include "myHeader.h"
 
-void load_acceptance_struct(acceptance_conf &acceptance_cuts)
+void load_acceptance_struct(
+    acceptance_conf &acceptance_cuts, 
+    const std::string wd)
 {
-    std::string cwd = GetCurrentWorkingDir();
+    //std::string cwd = GetCurrentWorkingDir();
+    std::string cwd = wd;
     std::size_t index = cwd.find("eFlux");
     std::string configPath = cwd.substr(0, index + 5);
     configPath += "/config/acceptanceConfig.txt";

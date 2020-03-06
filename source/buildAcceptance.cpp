@@ -108,7 +108,8 @@ void buildAcceptance(
     const std::string accInputPath,
     const bool verbose,
     const std::vector<float> &logEBins,
-    TFile &outFile)
+    TFile &outFile,
+    const std::string wd)
 {
 
     //auto dmpch = aggregateEventsDmpChain(accInputPath,verbose);
@@ -146,7 +147,7 @@ void buildAcceptance(
 
     // Create and load acceptance events cuts from config file
     acceptance_conf acceptance_cuts;
-    load_acceptance_struct(acceptance_cuts);
+    load_acceptance_struct(acceptance_cuts, wd);
 
     double _GeV = 0.001;
 
@@ -335,7 +336,8 @@ void buildAcceptance_vector(
     const std::string accInputPath,
     const bool verbose,
     const std::vector<float> &logEBins,
-    TFile &outFile)
+    TFile &outFile,
+    const std::string wd)
 {
 
     //auto dmpch = aggregateEventsDmpChain(accInputPath,verbose);
@@ -364,7 +366,7 @@ void buildAcceptance_vector(
 
     // Create and load acceptance events cuts from config file
     acceptance_conf acceptance_cuts;
-    load_acceptance_struct(acceptance_cuts);
+    load_acceptance_struct(acceptance_cuts, wd);
 
     double _GeV = 0.001;
 

@@ -44,6 +44,7 @@ int main(int argc, char **argv)
     std::string outputPath;
     std::string accInputPath;
     std::string fluxInputPath;
+    std::string wd = getWorkingDir(argv[0]);
     stringstream str_lvTime;
 
     bool verbose = false;
@@ -91,7 +92,8 @@ int main(int argc, char **argv)
             verbose,
             pedantic,
             outputPath,
-            opt);
+            opt,
+            wd);
 
     if (myFlux)
         eCore(
@@ -101,7 +103,8 @@ int main(int argc, char **argv)
             pedantic,
             lvTime,
             accInputPath,
-            opt);
+            opt,
+            wd);
 
     return 0;
 }

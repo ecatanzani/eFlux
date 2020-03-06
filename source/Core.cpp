@@ -8,7 +8,8 @@ void eCore(
     const bool pedantic,
     const unsigned int lvTime,
     const std::string accInputPath,
-    AnyOption &opt)
+    AnyOption &opt,
+    const std::string wd)
 {
     // Create output TFile
     TFile outFile(uniqueOutFile(outputPath, opt), "NEW", "Analysis Output File");
@@ -20,7 +21,7 @@ void eCore(
     
     // Create energy log-binning
     energy_cuts eCuts;
-    load_energy_struct(eCuts);
+    load_energy_struct(eCuts, wd);
     auto logEBins = createLogBinning(eCuts);
     if (pedantic)
     {

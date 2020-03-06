@@ -43,21 +43,26 @@ extern void computeAcceptance(
     const bool verbose,
     const bool pedantic,
     const std::string outputPath,
-    AnyOption &opt);
+    AnyOption &opt,
+    const std::string wd);
 
 extern void buildAcceptance(
     const std::string accInputPath,
     const bool verbose,
     const std::vector<float> &logEBins,
-    TFile &outFile);
+    TFile &outFile,
+    const std::string wd);
 
 extern void buildAcceptance_vector(
     const std::string accInputPath,
     const bool verbose,
     const std::vector<float> &logEBins,
-    TFile &outFile);
+    TFile &outFile,
+    const std::string wd);
 
-extern void load_acceptance_struct(acceptance_conf &acceptance_cuts);
+extern void load_acceptance_struct(
+    acceptance_conf &acceptance_cuts,
+    const std::string wd);
 
 extern std::shared_ptr<DmpChain> aggregateEventsDmpChain(
     const std::string accInputPath,
@@ -81,8 +86,8 @@ extern bool BGOTrackContainment_cut(
     const acceptance_conf &acceptance_cuts,
     bool passEvent);
 
-extern TF1 readAcceptance( 
-    TFile &outFile, 
+extern TF1 readAcceptance(
+    TFile &outFile,
     const bool verbose,
     const std::string accInputPath);
 

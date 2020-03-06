@@ -3,9 +3,10 @@
 #include <fstream>
 #include <sstream>
 
-void load_energy_struct(energy_cuts &e_cuts)
+void load_energy_struct(energy_cuts &e_cuts, const std::string wd)
 {
-    std::string cwd = GetCurrentWorkingDir();
+    //std::string cwd = GetCurrentWorkingDir();
+    std::string cwd = wd;
     std::size_t index = cwd.find("eFlux");
     std::string configPath = cwd.substr(0, index + 5);
     configPath += "/config/energyConfig.txt";
