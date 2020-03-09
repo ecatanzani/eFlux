@@ -133,16 +133,20 @@ void buildAcceptance(
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
 
     // Cut histos
-    TH1D h_incoming("h_incoming","Energy Distribution of the incoming particles",logEBins.size()-1,&(logEBins[0]));
-    TH1D h_maxElateral_cut("h_maxElateral_cut","Energy Distribution - maxElateral cut ",logEBins.size()-1,&(logEBins[0]));
-    TH1D h_maxBarLayer_cut("h_maxBarLayer_cut","Energy Distribution - maxBarLayer cut ",logEBins.size()-1,&(logEBins[0]));
-    TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut","Energy Distribution - BGOTrackContainment cut ",logEBins.size()-1,&(logEBins[0]));
-    TH1D h_all_cut("h_all_cut","Energy Distribution - All cut ",logEBins.size()-1,&(logEBins[0]));
+    TH1D h_incoming("h_incoming", "Energy Distribution of the incoming particles", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_maxElateral_cut("h_maxElateral_cut", "Energy Distribution - maxElateral cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_maxBarLayer_cut("h_maxBarLayer_cut", "Energy Distribution - maxBarLayer cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_nBarLayer13_cut("h_nBarLayer13_cut", "Energy Distribution - nBarLayer13 cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_maxRms_cut("h_maxRms_cut", "Energy Distribution - maxRms cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
     h_incoming.Sumw2();
     h_maxElateral_cut.Sumw2();
     h_maxBarLayer_cut.Sumw2();
     h_BGOTrackContainment_cut.Sumw2();
+    h_nBarLayer13_cut.Sumw2();
+    h_maxRms_cut.Sumw2();
     h_all_cut.Sumw2();
 
     // Create and load acceptance events cuts from config file
@@ -163,7 +167,7 @@ void buildAcceptance(
         if (verbose)
             if (((evIdx + 1) % _kStep) == 0)
                 std::cout << "\nProcessed " << evIdx + 1 << " events / " << nevents;
-       
+
         // Get event total energy
         //double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in MeV - not corrected
         double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
@@ -173,7 +177,7 @@ void buildAcceptance(
         if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
             continue;
 
-        h_incoming.Fill(simuEnergy*_GeV);
+        h_incoming.Fill(simuEnergy * _GeV);
 
         // Don't process events that didn't hit the detector - for this I need to use the reco energy
         if (bgoTotalE == 0)
@@ -275,41 +279,48 @@ void buildAcceptance(
         //auto Xtr = pow(sumRms, 4) * fracLayer[13] / 8000000.;
 
         /* ********************************* */
-        
+
         bool filter_maxElater_cut = maxElater_cut(bgorec, acceptance_cuts, bgoTotalE);
         bool filter_maxBarLayer_cut = maxBarLayer_cut(bgohits, nBgoHits);
         bool filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
-        
+        bool filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
+        bool filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
+
         if (filter_maxElater_cut)
-            h_maxElateral_cut.Fill(simuEnergy*_GeV);
+            h_maxElateral_cut.Fill(simuEnergy * _GeV);
         if (filter_maxBarLayer_cut)
-            h_maxBarLayer_cut.Fill(simuEnergy*_GeV);
+            h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
         if (filter_BGOTrackContainment_cut)
-            h_BGOTrackContainment_cut.Fill(simuEnergy*_GeV);
-        
+            h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
+        if (filter_nBarLayer13_cut)
+            h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
+        if (filter_maxRms_cut)
+            h_maxRms_cut.Fill(simuEnergy * _GeV);
+
         if (filter_maxElater_cut)
             if (filter_maxBarLayer_cut)
                 if (filter_BGOTrackContainment_cut)
-                    h_all_cut.Fill(simuEnergy*_GeV);
-
+                    if (filter_nBarLayer13_cut)
+                        if (filter_maxRms_cut)
+                            h_all_cut.Fill(simuEnergy * _GeV);
     }
 
     if (verbose)
         std::cout << "\n\nFiltered events: " << h_all_cut.GetEntries() << "/" << nevents << "\n\n";
-    
+
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
 
-    auto h_acceptance = static_cast<TH1D*>(h_all_cut.Clone("h_acceptance"));
+    auto h_acceptance = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance"));
     h_acceptance->SetTitle("Acceptance");
     h_acceptance->Scale(genSurface);
     h_acceptance->Divide(&h_incoming);
     std::vector<double> energyValues(h_acceptance->GetXaxis()->GetNbins(), 0);
-    std::vector<double> acceptanceValues(energyValues.size(),0);
-    for (auto it=logEBins.begin(); it!=logEBins.end(); ++it)
+    std::vector<double> acceptanceValues(energyValues.size(), 0);
+    for (auto it = logEBins.begin(); it != logEBins.end(); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
         energyValues[index] = wtsydp(*it, *(it + 1), -1);
-        acceptanceValues[index] = h_acceptance->GetBinContent(index+1);
+        acceptanceValues[index] = h_acceptance->GetBinContent(index + 1);
     }
 
     TGraph acceptanceGr(acceptanceValues.size(), &energyValues[0], &acceptanceValues[0]);
@@ -317,9 +328,12 @@ void buildAcceptance(
     acceptanceGr.SetTitle("Acceptance");
 
     // Write histos to file
+    h_incoming.Write();
     h_maxElateral_cut.Write();
     h_maxBarLayer_cut.Write();
     h_BGOTrackContainment_cut.Write();
+    h_nBarLayer13_cut.Write();
+    h_maxRms_cut.Write();
     h_all_cut.Write();
 
     // Create output acceptance dir in the output TFile
@@ -327,7 +341,7 @@ void buildAcceptance(
     acceptanceDIr->cd();
     // Write final TGraph
     acceptanceGr.Write();
-    
+
     // Return to main TFile directory
     outFile.cd();
 }
@@ -566,7 +580,7 @@ void buildAcceptance_vector(
 }
 
 bool maxElater_cut(
-    std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf &acceptance_cuts,
     const double bgoTotalE)
 {
@@ -602,7 +616,7 @@ bool maxElater_cut(
 }
 
 bool maxBarLayer_cut(
-    std::shared_ptr<DmpEvtBgoHits> bgohits,
+    const std::shared_ptr<DmpEvtBgoHits> bgohits,
     const int nBgoHits)
 {
     bool passed_maxBarLayer_cut = true;
@@ -632,9 +646,9 @@ bool maxBarLayer_cut(
 }
 
 bool BGOTrackContainment_cut(
-    std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf &acceptance_cuts,
-    bool passEvent)
+    bool &passEvent)
 {
     bool passed_bgo_containment_cut = false;
     double BGO_TopZ = 46;
@@ -662,4 +676,51 @@ bool BGOTrackContainment_cut(
         passed_bgo_containment_cut = true;
 
     return passed_bgo_containment_cut;
+}
+
+bool nBarLayer13_cut(
+    const std::shared_ptr<DmpEvtBgoHits> bgohits,
+    const std::vector<short> &layerBarNumber,
+    const double bgoTotalE)
+{
+    bool passed_nBarLayer13_cut = false;
+    unsigned int nTriggeredBGO_13_bars = 0;
+    double _GeV = 0.001;
+
+    for (auto it = layerBarNumber.begin(); it != layerBarNumber.end(); ++it)
+    {
+        auto ihit = *it;
+        auto hitE = (bgohits->fEnergy)[ihit];
+        if (hitE > 10)
+            ++nTriggeredBGO_13_bars;
+    }
+    double nBar13_threshold = 8 * log10(bgoTotalE * _GeV) - 5;
+    if (nTriggeredBGO_13_bars < nBar13_threshold)
+        passed_nBarLayer13_cut = true;
+
+    return passed_nBarLayer13_cut;
+}
+
+bool maxRms_cut(
+    const std::vector<std::vector<short>> &layerBarNumber, 
+    const std::vector<double> &rmsLayer, 
+    const double bgoTotalE,
+    const acceptance_conf &acceptance_cuts)
+{
+    bool passed_maxRms_cut = false;
+    auto max_rms = rmsLayer[0];
+    auto eCut = bgoTotalE/100.;
+
+    for (auto lIdx=0; lIdx<DAMPE_bgo_nLayers; ++lIdx)
+    {
+        double layerTotEnergy = 0;
+        std::accumulate(layerBarNumber[lIdx].begin(), layerBarNumber[lIdx].end(), layerTotEnergy);
+        if (layerTotEnergy>eCut)
+            if (rmsLayer[lIdx]>max_rms)
+                max_rms = rmsLayer[lIdx];
+    }
+    if (max_rms<acceptance_cuts.max_rms_shower_width)
+        passed_maxRms_cut=true;
+
+    return passed_maxRms_cut;
 }
