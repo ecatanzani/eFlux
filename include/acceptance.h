@@ -32,6 +32,7 @@ struct acceptance_conf
     double energy_lRatio;
     int shower_axis_delta;
     double vertex_radius;
+    int max_rms_shower_width;
 };
 
 //#define _memType "graph"
@@ -60,6 +61,16 @@ extern void buildAcceptance_vector(
     TFile &outFile,
     const std::string wd);
 
+extern TF1 readAcceptance(
+    TFile &outFile,
+    const bool verbose,
+    const std::string accInputPath);
+
+extern void computeAcceptance(
+    const std::string accInputPath,
+    const bool verbose,
+    const bool pedantic);
+
 extern void load_acceptance_struct(
     acceptance_conf &acceptance_cuts,
     const std::string wd);
@@ -73,27 +84,28 @@ extern std::shared_ptr<TChain> aggregateEventsTChain(
     const bool verbose);
 
 extern bool maxElater_cut(
-    std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf &acceptance_cuts,
     const double bgoTotalE);
 
 extern bool maxBarLayer_cut(
-    std::shared_ptr<DmpEvtBgoHits> bgohits,
+    const std::shared_ptr<DmpEvtBgoHits> bgohits,
     const int nBgoHits);
 
 extern bool BGOTrackContainment_cut(
-    std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf &acceptance_cuts,
-    bool passEvent);
+    bool &passEvent);
 
-extern TF1 readAcceptance(
-    TFile &outFile,
-    const bool verbose,
-    const std::string accInputPath);
+extern bool nBarLayer13_cut(
+    const std::shared_ptr<DmpEvtBgoHits> bgohits,
+    const std::vector<short> &layerBarNumber,
+    const double bgoTotalE);
 
-extern void computeAcceptance(
-    const std::string accInputPath,
-    const bool verbose,
-    const bool pedantic);
+extern bool maxRms_cut(
+    const std::vector<std::vector<short>> &layerBarNumber, 
+    const std::vector<double> &rmsLayer, 
+    const double bgoTotalE,
+    const acceptance_conf &acceptance_cuts);
 
 #endif
