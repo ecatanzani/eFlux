@@ -43,6 +43,11 @@ void load_acceptance_struct(
             input_stream >> tmp_str;
             acceptance_cuts.shower_axis_delta = stoi(tmp_str, &sz);
         }
+        if (!strcmp(tmp_str.c_str(), "max_rms_shower_width"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.max_rms_shower_width = stoi(tmp_str, &sz);
+        }
         if (!strcmp(tmp_str.c_str(), "generation_vertex_radius"))
         {
             input_stream >> tmp_str;
