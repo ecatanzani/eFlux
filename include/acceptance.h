@@ -39,6 +39,11 @@ struct acceptance_conf
 #define _memType "histo"
 #define _kStep 10000
 
+extern double wtsydp(
+    const float minene,
+    const float maxene,
+    const float index);
+    
 extern void computeAcceptance(
     const std::string accInputPath,
     const bool verbose,

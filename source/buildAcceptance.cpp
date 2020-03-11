@@ -80,8 +80,8 @@ std::shared_ptr<TChain> aggregateEventsTChain(
 
     return dmpch;
 }
-
-inline double wtsydp(
+ 
+double wtsydp(
     const float minene,
     const float maxene,
     const float index)
