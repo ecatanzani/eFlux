@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     opt.addUsage(" -d  --outputDir      <path_to_output_TFile_dir>              Output ROOT TFile directory");
     opt.addUsage(" -t  --lvtime         <live_time-value>                   (*) DAMPE live-time ");
     opt.addUsage(" -a  --acceptance     <path_to_MC_list>                   (*) Acceptance calculation");
+    opt.addUsage(" -c  --collect        <path_to_complete_histo>            (*) Generate TGraph from final histo");
     opt.addUsage(" -f  --flux           <path_to_DATA_list_dir>             (*) Flux calculation");
     opt.addUsage(" -g  --geometry       <path_to_acceptance_ROOT_file>      (*) Acceptance file - flux calculation only");
     opt.addUsage(" -v  --verbose                                                Verbose output");
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
     opt.setOption("acceptance", 'a');
     opt.setOption("flux", 'f');
     opt.setOption("geometry", 'g');
+    opt.setOption("collect", 'c');
     opt.setFlag("verbose", 'v');
     opt.setFlag("pedantic", 'p');
 
@@ -45,6 +47,7 @@ int main(int argc, char **argv)
     std::string accInputPath;
     std::string fluxInputPath;
     std::string wd = getWorkingDir(argv[0]);
+    std::string inputCompleteHisto;
     stringstream str_lvTime;
 
     bool verbose = false;
@@ -52,6 +55,7 @@ int main(int argc, char **argv)
     bool myAcceptance = false;
     bool myFlux = false;
     unsigned int lvTime = 0;
+    bool genGraph = true;
 
     if (!opt.hasOptions())
         opt.printUsage();
@@ -83,6 +87,11 @@ int main(int argc, char **argv)
         accInputPath = opt.getValue('g');
     if (opt.getFlag("verbose") || opt.getFlag('v'))
         verbose = opt.getFlag('v');
+    if (opt.getFlag("collect") || opt.getFlag('c'))
+    {
+        genGraph = true;
+        inputCompleteHisto = opt.getFlag('c');
+    }
     if (opt.getFlag("pedantic") || opt.getFlag('p'))
         pedantic = opt.getFlag('p');
 
@@ -93,6 +102,14 @@ int main(int argc, char **argv)
             pedantic,
             outputPath,
             opt,
+            wd);
+
+    if (genGraph)
+        generateFinalGraph(
+            verbose,
+            pedantic,
+            outputPath, 
+            inputCompleteHisto,
             wd);
 
     if (myFlux)
