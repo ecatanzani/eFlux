@@ -87,7 +87,7 @@ int main(int argc, char **argv)
         accInputPath = opt.getValue('g');
     if (opt.getFlag("verbose") || opt.getFlag('v'))
         verbose = opt.getFlag('v');
-    if (opt.getFlag("collect") || opt.getFlag('c'))
+    if (opt.getValue("collect") || opt.getValue('c'))
     {
         genGraph = true;
         inputCompleteHisto = opt.getFlag('c');
