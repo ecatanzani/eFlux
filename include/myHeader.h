@@ -70,4 +70,11 @@ extern bool chechFlags(
     const std::string outputPath,
     const unsigned int lvTime);
 
+extern void generateFinalGraph(
+    const bool verbose,
+    const bool pedantic,
+    const std::string outputPath,
+    const std::string complete_histo_path,
+    const std::string wd);
+
 #endif
