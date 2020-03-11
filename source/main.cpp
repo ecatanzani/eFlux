@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     if (opt.getValue("collect") || opt.getValue('c'))
     {
         genGraph = true;
-        inputCompleteHisto = opt.getFlag('c');
+        inputCompleteHisto = opt.getValue('c');
     }
     if (opt.getFlag("pedantic") || opt.getFlag('p'))
         pedantic = opt.getFlag('p');
