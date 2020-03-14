@@ -4,7 +4,10 @@
 
 #include "myHeader.h"
 #include "acceptance.h"
+#include "acceptance_cuts.h"
 #include "energyMatch.h"
+
+#include "TClonesArray.h"
 
 /**
  * @brief 
@@ -127,6 +130,24 @@ void buildAcceptance(
     std::shared_ptr<DmpEvtBgoRec> bgorec = std::make_shared<DmpEvtBgoRec>();
     dmpch->SetBranchAddress("DmpEvtBgoRec", &bgorec);
 
+    // Register STK container
+    TClonesArray* stkclusters = new TClonesArray("DmpStkSiCluster");
+    dmpch->SetBranchAddress("StkClusterCollection",&stkclusters);
+
+    // Check if STK tracks collection exists 
+    bool fStkKalmanTracksFound = false;
+    for(int brIdx=0; brIdx<dmpch->GetListOfBranches()->GetEntries(); ++brIdx)
+        if (strcmp(dmpch->GetListOfBranches()->At(brIdx)->GetName(),"StkKalmanTracks"))
+        {
+            fStkKalmanTracksFound = true;
+            break;
+        }
+    
+    // Register STK tracks collection
+    std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack", 200);
+    if(fStkKalmanTracksFound)
+        dmpch->SetBranchAddress("StkKalmanTracks",&stktracks);
+    
     // Event loop
     auto nevents = dmpch->GetEntries();
     if (verbose)
@@ -285,6 +306,7 @@ void buildAcceptance(
         bool filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
         bool filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
         bool filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
+        bool filter_track_selection_cut = track_selection_cut(bgorec, stkclusters, stktracks, acceptance_cuts);
 
         if (filter_maxElater_cut)
             h_maxElateral_cut.Fill(simuEnergy * _GeV);
@@ -344,6 +366,9 @@ void buildAcceptance(
 
     // Return to main TFile directory
     outFile.cd();
+
+    // Clean memory
+    delete stkclusters;
 }
 
 void buildAcceptance_vector(
@@ -577,150 +602,4 @@ void buildAcceptance_vector(
 
     // Return to main TFile directory
     outFile.cd();
-}
-
-bool maxElater_cut(
-    const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    const acceptance_conf &acceptance_cuts,
-    const double bgoTotalE)
-{
-    // Get energy maximum along X and Y views
-    double ELayer_max_XZ = 0;
-    double ELayer_max_YZ = 0;
-
-    for (int lIdx = 1; lIdx < DAMPE_bgo_nLayers; lIdx += 2)
-    {
-        auto lEgy = bgorec->GetELayer(lIdx);
-        if (lEgy > ELayer_max_XZ)
-            ELayer_max_XZ = lEgy;
-    }
-
-    for (int lIdx = 1; lIdx < DAMPE_bgo_nLayers; lIdx += 1)
-    {
-        auto lEgy = bgorec->GetELayer(lIdx);
-        if (lEgy > ELayer_max_YZ)
-            ELayer_max_YZ = lEgy;
-    }
-
-    bool passed_maxELayerTotalE_cut = true;
-    double MaxELayer;
-    if (ELayer_max_XZ > ELayer_max_YZ)
-        MaxELayer = ELayer_max_XZ;
-    else
-        MaxELayer = ELayer_max_YZ;
-    double rMaxELayerTotalE = MaxELayer / bgoTotalE;
-    if (rMaxELayerTotalE > acceptance_cuts.energy_lRatio)
-        passed_maxELayerTotalE_cut = false;
-
-    return passed_maxELayerTotalE_cut;
-}
-
-bool maxBarLayer_cut(
-    const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    const int nBgoHits)
-{
-    bool passed_maxBarLayer_cut = true;
-    std::vector<short> barNumberMaxEBarLay1_2_3(3, -1); // Bar number of maxE bar in layer 1, 2, 3
-    std::vector<double> MaxEBarLay1_2_3(3, 0);          // E of maxE bar in layer 1, 2, 3
-
-    for (int ihit = 0; ihit < nBgoHits; ++ihit)
-    {
-        auto hitE = (bgohits->fEnergy)[ihit];
-        auto lay = bgohits->GetLayerID(ihit);
-        if (lay == 1 || lay == 2 || lay == 3)
-        {
-            if (hitE > MaxEBarLay1_2_3[lay - 1])
-            {
-                auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
-                MaxEBarLay1_2_3[lay - 1] = hitE;
-                barNumberMaxEBarLay1_2_3[lay - 1] = iBar;
-            }
-        }
-    }
-
-    for (int j = 0; j < 3; ++j)
-        if (barNumberMaxEBarLay1_2_3[j] <= 0 || barNumberMaxEBarLay1_2_3[j] == 21)
-            passed_maxBarLayer_cut = false;
-
-    return passed_maxBarLayer_cut;
-}
-
-bool BGOTrackContainment_cut(
-    const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    const acceptance_conf &acceptance_cuts,
-    bool &passEvent)
-{
-    bool passed_bgo_containment_cut = false;
-    double BGO_TopZ = 46;
-    double BGO_BottomZ = 448;
-    std::vector<double> bgoRec_slope(2);
-    std::vector<double> bgoRec_intercept(2);
-    bgoRec_slope[1] = bgorec->GetSlopeXZ();
-    bgoRec_slope[0] = bgorec->GetSlopeYZ();
-    bgoRec_intercept[1] = bgorec->GetInterceptXZ();
-    bgoRec_intercept[0] = bgorec->GetInterceptYZ();
-
-    if ((bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0) ||
-        (bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0))
-        passEvent = false;
-
-    TVector3 bgoRecEntrance;
-    TVector3 bgoRecExit;
-
-    double topX = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
-    double topY = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
-    double bottomX = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
-    double bottomY = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
-
-    if (fabs(topX) < acceptance_cuts.shower_axis_delta && fabs(topY) < acceptance_cuts.shower_axis_delta && fabs(bottomX) < acceptance_cuts.shower_axis_delta && fabs(bottomY) < acceptance_cuts.shower_axis_delta)
-        passed_bgo_containment_cut = true;
-
-    return passed_bgo_containment_cut;
-}
-
-bool nBarLayer13_cut(
-    const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    const std::vector<short> &layerBarNumber,
-    const double bgoTotalE)
-{
-    bool passed_nBarLayer13_cut = false;
-    unsigned int nTriggeredBGO_13_bars = 0;
-    double _GeV = 0.001;
-
-    for (auto it = layerBarNumber.begin(); it != layerBarNumber.end(); ++it)
-    {
-        auto ihit = *it;
-        auto hitE = (bgohits->fEnergy)[ihit];
-        if (hitE > 10)
-            ++nTriggeredBGO_13_bars;
-    }
-    double nBar13_threshold = 8 * log10(bgoTotalE * _GeV) - 5;
-    if (nTriggeredBGO_13_bars < nBar13_threshold)
-        passed_nBarLayer13_cut = true;
-
-    return passed_nBarLayer13_cut;
-}
-
-bool maxRms_cut(
-    const std::vector<std::vector<short>> &layerBarNumber, 
-    const std::vector<double> &rmsLayer, 
-    const double bgoTotalE,
-    const acceptance_conf &acceptance_cuts)
-{
-    bool passed_maxRms_cut = false;
-    auto max_rms = rmsLayer[0];
-    auto eCut = bgoTotalE/100.;
-
-    for (auto lIdx=0; lIdx<DAMPE_bgo_nLayers; ++lIdx)
-    {
-        double layerTotEnergy = 0;
-        std::accumulate(layerBarNumber[lIdx].begin(), layerBarNumber[lIdx].end(), layerTotEnergy);
-        if (layerTotEnergy>eCut)
-            if (rmsLayer[lIdx]>max_rms)
-                max_rms = rmsLayer[lIdx];
-    }
-    if (max_rms<acceptance_cuts.max_rms_shower_width)
-        passed_maxRms_cut=true;
-
-    return passed_maxRms_cut;
 }
