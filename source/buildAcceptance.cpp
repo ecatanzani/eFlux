@@ -362,6 +362,7 @@ void buildAcceptance(
     h_BGOTrackContainment_cut.Write();
     h_nBarLayer13_cut.Write();
     h_maxRms_cut.Write();
+    h_track_selection_cut.Write();
     h_all_cut.Write();
 
     // Create output acceptance dir in the output TFile
