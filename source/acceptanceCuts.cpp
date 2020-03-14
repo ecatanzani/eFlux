@@ -147,7 +147,7 @@ bool maxRms_cut(
 bool track_selection_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     TClonesArray* stkclusters,
-    const std::shared_ptr<TClonesArray> stktracks,
+    TClonesArray* stktracks,
     const acceptance_conf &acceptance_cuts)
 {
     bool passed_track_selection_cut = false;

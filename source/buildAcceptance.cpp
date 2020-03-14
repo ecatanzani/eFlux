@@ -83,7 +83,7 @@ std::shared_ptr<TChain> aggregateEventsTChain(
 
     return dmpch;
 }
- 
+
 double wtsydp(
     const float minene,
     const float maxene,
@@ -131,23 +131,24 @@ void buildAcceptance(
     dmpch->SetBranchAddress("DmpEvtBgoRec", &bgorec);
 
     // Register STK container
-    TClonesArray* stkclusters = new TClonesArray("DmpStkSiCluster");
-    dmpch->SetBranchAddress("StkClusterCollection",&stkclusters);
+    TClonesArray *stkclusters = new TClonesArray("DmpStkSiCluster");
+    dmpch->SetBranchAddress("StkClusterCollection", &stkclusters);
 
-    // Check if STK tracks collection exists 
+    // Check if STK tracks collection exists
     bool fStkKalmanTracksFound = false;
-    for(int brIdx=0; brIdx<dmpch->GetListOfBranches()->GetEntries(); ++brIdx)
-        if (strcmp(dmpch->GetListOfBranches()->At(brIdx)->GetName(),"StkKalmanTracks"))
+    for (int brIdx = 0; brIdx < dmpch->GetListOfBranches()->GetEntries(); ++brIdx)
+        if (strcmp(dmpch->GetListOfBranches()->At(brIdx)->GetName(), "StkKalmanTracks"))
         {
             fStkKalmanTracksFound = true;
             break;
         }
     
     // Register STK tracks collection
-    std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack", 200);
-    if(fStkKalmanTracksFound)
-        dmpch->SetBranchAddress("StkKalmanTracks",&stktracks);
-    
+    //std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack", 200);
+    TClonesArray* stktracks = new TClonesArray("DmpStkTrack", 200);
+    if (fStkKalmanTracksFound)
+        dmpch->SetBranchAddress("StkKalmanTracks", &stktracks);
+
     // Event loop
     auto nevents = dmpch->GetEntries();
     if (verbose)
@@ -160,6 +161,7 @@ void buildAcceptance(
     TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_nBarLayer13_cut("h_nBarLayer13_cut", "Energy Distribution - nBarLayer13 cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxRms_cut("h_maxRms_cut", "Energy Distribution - maxRms cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_track_selection_cut("h_track_selection_cut", "Energy Distribution - track selection cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
     h_incoming.Sumw2();
@@ -168,6 +170,7 @@ void buildAcceptance(
     h_BGOTrackContainment_cut.Sumw2();
     h_nBarLayer13_cut.Sumw2();
     h_maxRms_cut.Sumw2();
+    h_track_selection_cut.Sumw2();
     h_all_cut.Sumw2();
 
     // Create and load acceptance events cuts from config file
@@ -318,13 +321,16 @@ void buildAcceptance(
             h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
         if (filter_maxRms_cut)
             h_maxRms_cut.Fill(simuEnergy * _GeV);
+        if (filter_track_selection_cut)
+            h_track_selection_cut.Fill(simuEnergy * _GeV);
 
         if (filter_maxElater_cut)
             if (filter_maxBarLayer_cut)
                 if (filter_BGOTrackContainment_cut)
                     if (filter_nBarLayer13_cut)
                         if (filter_maxRms_cut)
-                            h_all_cut.Fill(simuEnergy * _GeV);
+                            if (filter_track_selection_cut)
+                                h_all_cut.Fill(simuEnergy * _GeV);
     }
 
     if (verbose)
@@ -369,6 +375,7 @@ void buildAcceptance(
 
     // Clean memory
     delete stkclusters;
+    delete stktracks;
 }
 
 void buildAcceptance_vector(
