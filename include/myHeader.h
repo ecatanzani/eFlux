@@ -28,10 +28,6 @@
 #define nGFitLoops 1000000
 #define chiSQLLimit 0.000001
 
-// DAMPE struct
-
-#define DAMPE_bgo_nLayers 14
-
 #define GetCurrentDir getcwd
 struct energy_cuts
 {
