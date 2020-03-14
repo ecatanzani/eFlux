@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     bool myAcceptance = false;
     bool myFlux = false;
     unsigned int lvTime = 0;
-    bool genGraph = true;
+    bool genGraph = false;
 
     if (!opt.hasOptions())
         opt.printUsage();
