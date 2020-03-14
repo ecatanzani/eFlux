@@ -13,9 +13,6 @@
 #include <numeric>
 
 #include "DmpChain.h"
-#include "DmpEvtBgoHits.h"
-#include "DmpEvtBgoRec.h"
-#include "DmpEvtSimuPrimaries.h"
 
 #include "TDirectory.h"
 #include "TSystem.h"
@@ -33,6 +30,12 @@ struct acceptance_conf
     int shower_axis_delta;
     double vertex_radius;
     int max_rms_shower_width;
+    int track_X_clusters;
+    int track_Y_clusters;
+    int track_missingHit_X;
+    int track_missingHit_Y;
+    int STK_BGO_delta_track;
+    int STK_BGO_delta_position;
 };
 
 //#define _memType "graph"
@@ -87,30 +90,5 @@ extern std::shared_ptr<DmpChain> aggregateEventsDmpChain(
 extern std::shared_ptr<TChain> aggregateEventsTChain(
     const std::string accInputPath,
     const bool verbose);
-
-extern bool maxElater_cut(
-    const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    const acceptance_conf &acceptance_cuts,
-    const double bgoTotalE);
-
-extern bool maxBarLayer_cut(
-    const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    const int nBgoHits);
-
-extern bool BGOTrackContainment_cut(
-    const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    const acceptance_conf &acceptance_cuts,
-    bool &passEvent);
-
-extern bool nBarLayer13_cut(
-    const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    const std::vector<short> &layerBarNumber,
-    const double bgoTotalE);
-
-extern bool maxRms_cut(
-    const std::vector<std::vector<short>> &layerBarNumber, 
-    const std::vector<double> &rmsLayer, 
-    const double bgoTotalE,
-    const acceptance_conf &acceptance_cuts);
 
 #endif

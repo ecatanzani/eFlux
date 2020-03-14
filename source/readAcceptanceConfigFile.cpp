@@ -53,5 +53,35 @@ void load_acceptance_struct(
             input_stream >> tmp_str;
             acceptance_cuts.vertex_radius = stod(tmp_str, &sz);
         }
+        if (!strcmp(tmp_str.c_str(), "track_X_clusters"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.track_X_clusters = stoi(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "track_Y_clusters"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.track_Y_clusters = stoi(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "track_missingHit_X"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.track_missingHit_X = stoi(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "track_missingHit_Y"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.track_missingHit_Y = stoi(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "STK_BGO_delta_track"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.STK_BGO_delta_track = stoi(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "STK_BGO_delta_position"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.STK_BGO_delta_position = stoi(tmp_str, &sz);
+        }
     }
 }

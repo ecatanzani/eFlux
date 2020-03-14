@@ -7,6 +7,12 @@ max_event_energy            100
 energy_lRatio               0.35
 shower_axis_delta           280
 max_rms_shower_width        100
+track_X_clusters            4
+track_Y_clusters            4
+track_missingHit_X          1
+track_missingHit_Y          1
+STK_BGO_delta_track         10
+STK_BGO_delta_position      40
 
 ## Simu Params
 
