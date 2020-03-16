@@ -146,14 +146,14 @@ bool maxRms_cut(
 
 bool track_selection_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    TClonesArray* stkclusters,
-    TClonesArray* stktracks,
+    TClonesArray *stkclusters,
+    TClonesArray *stktracks,
     const acceptance_conf &acceptance_cuts)
 {
     bool passed_track_selection_cut = false;
-    std::vector<DmpStkTrack*> result = std::vector<DmpStkTrack*> ();
+    std::vector<DmpStkTrack *> result = std::vector<DmpStkTrack *>();
     TVector3 angle_BGO(bgorec->GetSlopeXZ(), bgorec->GetSlopeYZ(), 1);
-    
+
     // Get BGO top impact point
     double BGO_TopZ = 46;
     std::vector<double> bgoRec_slope(2);
@@ -226,4 +226,30 @@ bool track_selection_cut(
         passed_track_selection_cut = true;
 
     return passed_track_selection_cut;
+}
+
+bool xtrl_cut(
+    const double sumRms,
+    const std::vector<double> fracLayer,
+    const acceptance_conf &acceptance_cuts)
+{
+    bool passed_xtrl_cut = false;
+    unsigned int last_layer_idx = 0;
+
+    // Find the last layer with an energy release
+    for (auto it = fracLayer.begin(); it != fracLayer.end(); ++it)
+        if (*it)
+        {
+            auto index = std::distance(fracLayer.begin(), it);
+            last_layer_idx = index;
+        }
+
+    // Build XTRL
+    double xtrl = 0.1251e-8 * pow(sumRms, 4) * fracLayer[last_layer_idx];
+
+    // Filter XTRL
+    if (xtrl < acceptance_cuts.xtrl)
+        passed_xtrl_cut = true;
+
+    return passed_xtrl_cut;
 }
