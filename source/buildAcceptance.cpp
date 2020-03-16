@@ -107,6 +107,36 @@ inline std::shared_ptr<TH1D> buildHistoFromVector(
     return histo;
 }
 
+inline std::vector<bool> build_list_of_active_filters(
+    const acceptance_active_cuts active_cuts,
+    const bool filter_maxElater_cut,
+    const bool filter_maxBarLayer_cut,
+    const bool filter_BGOTrackContainment_cut,
+    const bool filter_nBarLayer13_cut,
+    const bool filter_maxRms_cut,
+    const bool filter_track_selection_cut,
+    const bool filter_xtrl_cut)
+{
+    std::vector<bool> list_of_filters;
+    
+    if (active_cuts.maxElater)
+        list_of_filters.push_back(filter_maxElater_cut);
+    if (active_cuts.maxBarLayer)
+        list_of_filters.push_back(filter_maxBarLayer_cut);
+    if (active_cuts.BGOTrackContainment)
+        list_of_filters.push_back(filter_BGOTrackContainment_cut);
+    if (active_cuts.nBarLayer13)
+        list_of_filters.push_back(filter_nBarLayer13_cut);
+    if (active_cuts.maxRms)
+        list_of_filters.push_back(filter_maxRms_cut);
+    if (active_cuts.track_selection)
+        list_of_filters.push_back(filter_track_selection_cut);
+    if (active_cuts.xtrl)
+        list_of_filters.push_back(filter_xtrl_cut);
+
+    return list_of_filters;
+}
+
 void buildAcceptance(
     const std::string accInputPath,
     const bool verbose,
@@ -142,10 +172,10 @@ void buildAcceptance(
             fStkKalmanTracksFound = true;
             break;
         }
-    
+
     // Register STK tracks collection
     //std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack", 200);
-    TClonesArray* stktracks = new TClonesArray("DmpStkTrack", 200);
+    TClonesArray *stktracks = new TClonesArray("DmpStkTrack", 200);
     if (fStkKalmanTracksFound)
         dmpch->SetBranchAddress("StkKalmanTracks", &stktracks);
 
@@ -177,7 +207,8 @@ void buildAcceptance(
 
     // Create and load acceptance events cuts from config file
     acceptance_conf acceptance_cuts;
-    load_acceptance_struct(acceptance_cuts, wd);
+    acceptance_active_cuts active_cuts;
+    load_acceptance_struct(acceptance_cuts, active_cuts, wd);
 
     double _GeV = 0.001;
 
@@ -329,14 +360,26 @@ void buildAcceptance(
         if (filter_xtrl_cut)
             h_xtrl_cut.Fill(simuEnergy * _GeV);
 
-        if (filter_maxElater_cut)
-            if (filter_maxBarLayer_cut)
-                if (filter_BGOTrackContainment_cut)
-                    if (filter_nBarLayer13_cut)
-                        if (filter_maxRms_cut)
-                            if (filter_track_selection_cut)
-                                if (filter_xtrl_cut)
-                                    h_all_cut.Fill(simuEnergy * _GeV);
+        std::vector<bool> list_of_filters =
+            build_list_of_active_filters(
+                active_cuts,
+                filter_maxElater_cut,
+                filter_maxBarLayer_cut,
+                filter_BGOTrackContainment_cut,
+                filter_nBarLayer13_cut,
+                filter_maxRms_cut,
+                filter_track_selection_cut,
+                filter_xtrl_cut);
+        
+        bool all_event_filter = true;
+        for (auto it=list_of_filters.begin(); it!=list_of_filters.end(); ++it)
+            if (!*it)
+            {
+                all_event_filter = false;
+                break;
+            }
+        if (all_event_filter)
+            h_all_cut.Fill(simuEnergy * _GeV);
     }
 
     if (verbose)
@@ -386,6 +429,7 @@ void buildAcceptance(
     delete stktracks;
 }
 
+#if 0
 void buildAcceptance_vector(
     const std::string accInputPath,
     const bool verbose,
@@ -618,3 +662,4 @@ void buildAcceptance_vector(
     // Return to main TFile directory
     outFile.cd();
 }
+#endif

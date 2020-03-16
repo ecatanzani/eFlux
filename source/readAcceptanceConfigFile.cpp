@@ -2,7 +2,8 @@
 #include "myHeader.h"
 
 void load_acceptance_struct(
-    acceptance_conf &acceptance_cuts, 
+    acceptance_conf &acceptance_cuts,
+    acceptance_active_cuts &active_cuts,
     const std::string wd)
 {
     //std::string cwd = GetCurrentWorkingDir();
@@ -23,6 +24,7 @@ void load_acceptance_struct(
     std::string::size_type sz;
     while (input_stream >> tmp_str)
     {
+        // Load cuts variables
         if (!strcmp(tmp_str.c_str(), "min_event_energy"))
         {
             input_stream >> tmp_str;
@@ -87,6 +89,50 @@ void load_acceptance_struct(
         {
             input_stream >> tmp_str;
             acceptance_cuts.xtrl = stod(tmp_str, &sz);
+        }
+
+        // Load cuts
+        if (!strcmp(tmp_str.c_str(), "maxElater"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                active_cuts.maxElater = true;
+        }
+        if (!strcmp(tmp_str.c_str(), "maxBarLayer"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                active_cuts.maxBarLayer = true;
+        }
+        if (!strcmp(tmp_str.c_str(), "BGOTrackContainment"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                active_cuts.BGOTrackContainment = true;
+        }
+        if (!strcmp(tmp_str.c_str(), "nBarLayer13"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                active_cuts.nBarLayer13 = true;
+        }
+        if (!strcmp(tmp_str.c_str(), "maxRms"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                active_cuts.maxRms = true;
+        }
+        if (!strcmp(tmp_str.c_str(), "track_selection"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                active_cuts.track_selection = true;
+        }
+        if (!strcmp(tmp_str.c_str(), "xtrl"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                active_cuts.xtrl = true;
         }
     }
 }

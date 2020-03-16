@@ -39,6 +39,17 @@ struct acceptance_conf
     double xtrl;
 };
 
+struct acceptance_active_cuts
+{
+    bool maxElater = false;
+    bool maxBarLayer = false;
+    bool BGOTrackContainment = false;
+    bool nBarLayer13 = false;
+    bool maxRms = false;
+    bool track_selection = false;
+    bool xtrl = false;
+};
+
 //#define _memType "graph"
 #define _memType "histo"
 #define _kStep 10000
@@ -82,6 +93,7 @@ extern void computeAcceptance(
 
 extern void load_acceptance_struct(
     acceptance_conf &acceptance_cuts,
+    acceptance_active_cuts &active_cuts,
     const std::string wd);
 
 extern std::shared_ptr<DmpChain> aggregateEventsDmpChain(

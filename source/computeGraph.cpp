@@ -23,7 +23,8 @@ void generateFinalGraph(
     
     // Create and load acceptance events cuts from config file
     acceptance_conf acceptance_cuts;
-    load_acceptance_struct(acceptance_cuts, wd);
+    acceptance_active_cuts active_cuts;
+    load_acceptance_struct(acceptance_cuts, active_cuts, wd);
 
     // Open input complete histos
     TFile inHisto(complete_histo_path.c_str(),"READ");
