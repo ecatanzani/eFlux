@@ -36,6 +36,7 @@ struct acceptance_conf
     int track_missingHit_Y;
     int STK_BGO_delta_track;
     int STK_BGO_delta_position;
+    double xtrl;
 };
 
 //#define _memType "graph"
