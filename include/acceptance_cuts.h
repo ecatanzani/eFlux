@@ -46,4 +46,9 @@ extern bool track_selection_cut(
     TClonesArray* stktracks, 
     const acceptance_conf &acceptance_cuts);
     
+extern bool xtrl_cut(
+    const double sumRms,
+    const std::vector<double> fracLayer,
+    const acceptance_conf &acceptance_cuts);
+    
 #endif
