@@ -13,6 +13,7 @@ track_missingHit_X          1
 track_missingHit_Y          1
 STK_BGO_delta_track         10
 STK_BGO_delta_position      40
+xtrl                        8.5
 
 ## Simu Params
 
