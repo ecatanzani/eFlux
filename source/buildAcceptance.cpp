@@ -162,6 +162,7 @@ void buildAcceptance(
     TH1D h_nBarLayer13_cut("h_nBarLayer13_cut", "Energy Distribution - nBarLayer13 cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxRms_cut("h_maxRms_cut", "Energy Distribution - maxRms cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_track_selection_cut("h_track_selection_cut", "Energy Distribution - track selection cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_xtrl_cut("h_xtrl_cut", "Energy Distribution - xtrl cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
     h_incoming.Sumw2();
@@ -171,6 +172,7 @@ void buildAcceptance(
     h_nBarLayer13_cut.Sumw2();
     h_maxRms_cut.Sumw2();
     h_track_selection_cut.Sumw2();
+    h_xtrl_cut.Sumw2();
     h_all_cut.Sumw2();
 
     // Create and load acceptance events cuts from config file
@@ -310,6 +312,7 @@ void buildAcceptance(
         bool filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
         bool filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
         bool filter_track_selection_cut = track_selection_cut(bgorec, stkclusters, stktracks, acceptance_cuts);
+        bool filter_xtrl_cut = xtrl_cut(sumRms, fracLayer, acceptance_cuts);
 
         if (filter_maxElater_cut)
             h_maxElateral_cut.Fill(simuEnergy * _GeV);
@@ -323,6 +326,8 @@ void buildAcceptance(
             h_maxRms_cut.Fill(simuEnergy * _GeV);
         if (filter_track_selection_cut)
             h_track_selection_cut.Fill(simuEnergy * _GeV);
+        if (filter_xtrl_cut)
+            h_xtrl_cut.Fill(simuEnergy * _GeV);
 
         if (filter_maxElater_cut)
             if (filter_maxBarLayer_cut)
@@ -330,7 +335,8 @@ void buildAcceptance(
                     if (filter_nBarLayer13_cut)
                         if (filter_maxRms_cut)
                             if (filter_track_selection_cut)
-                                h_all_cut.Fill(simuEnergy * _GeV);
+                                if (filter_xtrl_cut)
+                                    h_all_cut.Fill(simuEnergy * _GeV);
     }
 
     if (verbose)
@@ -363,6 +369,7 @@ void buildAcceptance(
     h_nBarLayer13_cut.Write();
     h_maxRms_cut.Write();
     h_track_selection_cut.Write();
+    h_xtrl_cut.Write();
     h_all_cut.Write();
 
     // Create output acceptance dir in the output TFile
