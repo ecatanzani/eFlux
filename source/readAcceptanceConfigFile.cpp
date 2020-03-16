@@ -83,5 +83,10 @@ void load_acceptance_struct(
             input_stream >> tmp_str;
             acceptance_cuts.STK_BGO_delta_position = stoi(tmp_str, &sz);
         }
+        if (!strcmp(tmp_str.c_str(), "xtrl"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.xtrl = stod(tmp_str, &sz);
+        }
     }
 }
