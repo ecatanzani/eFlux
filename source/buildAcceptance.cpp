@@ -115,7 +115,8 @@ inline std::vector<bool> build_list_of_active_filters(
     const bool filter_nBarLayer13_cut,
     const bool filter_maxRms_cut,
     const bool filter_track_selection_cut,
-    const bool filter_xtrl_cut)
+    const bool filter_xtrl_cut,
+    const bool filter_psd_charge_cut)
 {
     std::vector<bool> list_of_filters;
     
@@ -133,6 +134,8 @@ inline std::vector<bool> build_list_of_active_filters(
         list_of_filters.push_back(filter_track_selection_cut);
     if (active_cuts.xtrl)
         list_of_filters.push_back(filter_xtrl_cut);
+    if (active_cuts.psd_charge)
+        list_of_filters.push_back(filter_psd_charge_cut);
 
     return list_of_filters;
 }
@@ -179,6 +182,10 @@ void buildAcceptance(
     if (fStkKalmanTracksFound)
         dmpch->SetBranchAddress("StkKalmanTracks", &stktracks);
 
+    // Register PSD container
+    std::shared_ptr<DmpEvtPsdHits> psdhits = std::make_shared<DmpEvtPsdHits>();
+    dmpch->SetBranchAddress("DmpPsdHits", &psdhits);
+
     // Event loop
     auto nevents = dmpch->GetEntries();
     if (verbose)
@@ -193,6 +200,7 @@ void buildAcceptance(
     TH1D h_maxRms_cut("h_maxRms_cut", "Energy Distribution - maxRms cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_track_selection_cut("h_track_selection_cut", "Energy Distribution - track selection cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_xtrl_cut("h_xtrl_cut", "Energy Distribution - xtrl cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_psd_charge_cut("h_psd_charge_cut", "Energy Distribution - psd charge cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
     h_incoming.Sumw2();
@@ -203,6 +211,7 @@ void buildAcceptance(
     h_maxRms_cut.Sumw2();
     h_track_selection_cut.Sumw2();
     h_xtrl_cut.Sumw2();
+    h_psd_charge_cut.Sumw2();
     h_all_cut.Sumw2();
 
     // Create and load acceptance events cuts from config file
@@ -344,6 +353,7 @@ void buildAcceptance(
         bool filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
         bool filter_track_selection_cut = track_selection_cut(bgorec, stkclusters, stktracks, acceptance_cuts);
         bool filter_xtrl_cut = xtrl_cut(sumRms, fracLayer, acceptance_cuts);
+        bool filter_psd_charge_cut = psd_charge_cut(psdhits, acceptance_cuts);
 
         if (filter_maxElater_cut)
             h_maxElateral_cut.Fill(simuEnergy * _GeV);
@@ -359,6 +369,8 @@ void buildAcceptance(
             h_track_selection_cut.Fill(simuEnergy * _GeV);
         if (filter_xtrl_cut)
             h_xtrl_cut.Fill(simuEnergy * _GeV);
+        if (filter_psd_charge_cut)
+            h_psd_charge_cut.Fill(simuEnergy * _GeV);
 
         std::vector<bool> list_of_filters =
             build_list_of_active_filters(
@@ -369,7 +381,8 @@ void buildAcceptance(
                 filter_nBarLayer13_cut,
                 filter_maxRms_cut,
                 filter_track_selection_cut,
-                filter_xtrl_cut);
+                filter_xtrl_cut,
+                filter_psd_charge_cut);
         
         bool all_event_filter = true;
         for (auto it=list_of_filters.begin(); it!=list_of_filters.end(); ++it)
@@ -413,6 +426,7 @@ void buildAcceptance(
     h_maxRms_cut.Write();
     h_track_selection_cut.Write();
     h_xtrl_cut.Write();
+    h_psd_charge_cut.Write();
     h_all_cut.Write();
 
     // Create output acceptance dir in the output TFile
