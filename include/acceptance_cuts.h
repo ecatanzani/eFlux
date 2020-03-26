@@ -51,4 +51,8 @@ extern bool xtrl_cut(
     const std::vector<double> fracLayer,
     const acceptance_conf &acceptance_cuts);
     
+extern bool psd_charge_cut(
+    const std::shared_ptr<DmpEvtPsdHits> psdhits, 
+    const acceptance_conf &acceptance_cuts);
+    
 #endif
