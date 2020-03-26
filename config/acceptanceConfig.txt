@@ -16,6 +16,8 @@ track_missingHit_Y                  1
 STK_BGO_delta_track                 10                  deg
 STK_BGO_delta_position              40                  mm
 xtrl                                8.5
+STK_PSD_delta_position              40                  mm
+PSD_bar_min_energy_release          0.5                 MeV
 
 **** CUT ****                **** ACTIVE ****
 
@@ -26,6 +28,7 @@ nBarLayer13                         YES
 maxRms                              YES
 track_selection                     YES
 xtrl                                YES
+psd_charge                          YES
 
 ## Simu Params
 
