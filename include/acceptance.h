@@ -37,6 +37,8 @@ struct acceptance_conf
     int STK_BGO_delta_track;
     int STK_BGO_delta_position;
     double xtrl;
+    int STK_PSD_delta_position;
+    double PSD_bar_min_energy_release;
 };
 
 struct acceptance_active_cuts
@@ -48,6 +50,7 @@ struct acceptance_active_cuts
     bool maxRms = false;
     bool track_selection = false;
     bool xtrl = false;
+    bool psd_charge = false;
 };
 
 //#define _memType "graph"
