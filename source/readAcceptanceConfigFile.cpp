@@ -90,6 +90,16 @@ void load_acceptance_struct(
             input_stream >> tmp_str;
             acceptance_cuts.xtrl = stod(tmp_str, &sz);
         }
+        if (!strcmp(tmp_str.c_str(), "STK_PSD_delta_position"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.STK_PSD_delta_position = stoi(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "PSD_bar_min_energy_release"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.PSD_bar_min_energy_release = stod(tmp_str, &sz);
+        }
 
         // Load cuts
         if (!strcmp(tmp_str.c_str(), "maxElater"))
@@ -133,6 +143,12 @@ void load_acceptance_struct(
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
                 active_cuts.xtrl = true;
+        }
+        if (!strcmp(tmp_str.c_str(), "psd_charge"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                active_cuts.psd_charge = true;
         }
     }
 }
