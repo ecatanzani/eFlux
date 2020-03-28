@@ -12,6 +12,6 @@ jobs:
     - name: remote building
       uses: JimCronqvist/action-ssh@master
       with:
-        hosts: 'enrico@ecatanzani.ddns.net'
+        hosts: 'pi@ecatanzani.ddns.net:23785'
         privateKey: ${{ secrets.KEY }}
         command: ls -lah
