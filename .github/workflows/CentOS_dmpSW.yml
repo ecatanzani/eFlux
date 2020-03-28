@@ -10,10 +10,8 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
     - name: remote building
-      uses: appleboy/ssh-action@master
+      uses: JimCronqvist/action-ssh@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
-        script: whoami
+        hosts: 'enrico@ecatanzani.ddns.net'
+        privateKey: ${{ secrets.KEY }}
+        command: ls -lah
