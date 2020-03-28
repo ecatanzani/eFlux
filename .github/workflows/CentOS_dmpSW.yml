@@ -12,11 +12,8 @@ jobs:
     - name: remote building
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
+        host: ${{ secrets.PROXY_HOST }}
+        username: ${{ secrets.PROXY_USERNAME }}
         key: ${{ secrets.PROXY_KEY }}
-        proxy_host: ${{ secrets.PROXY_HOST }}
-        proxy_username: ${{ secrets.PROXY_USERNAME }}
-        proxy_key: ${{ secrets.PROXY_KEY }}
-        proxy_port: ${{ secrets.PROXY_PORT }}
+        port: ${{ secrets.PROXY_PORT }}
         script: whoami
