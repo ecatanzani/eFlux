@@ -1,8 +1,10 @@
 \hypertarget{build_acceptance_8cpp}{}\doxysection{source/build\+Acceptance.cpp File Reference}
 \label{build_acceptance_8cpp}\index{source/buildAcceptance.cpp@{source/buildAcceptance.cpp}}
 {\ttfamily \#include \char`\"{}my\+Header.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}T\+System.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}Dmp\+Chain.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}acceptance.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}acceptance\+\_\+cuts.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}energy\+Match.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Clones\+Array.\+h\char`\"{}}\newline
 Include dependency graph for build\+Acceptance.\+cpp\+:
 \nopagebreak
 \begin{figure}[H]
@@ -14,22 +16,125 @@ Include dependency graph for build\+Acceptance.\+cpp\+:
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{build_acceptance_8cpp_a6f416bc7ffa1dcd5eba26866b3873c5d}{build\+Acceptance}} (const std\+::string acc\+Input\+Path, const bool verbose)
+std\+::string \mbox{\hyperlink{build_acceptance_8cpp_a82bf350eb56e02245ab54ceb93ab19f6}{get\+List\+Path}} (const std\+::string acc\+Input\+Path, const bool MC)
+\item 
+std\+::shared\+\_\+ptr$<$ Dmp\+Chain $>$ \mbox{\hyperlink{build_acceptance_8cpp_aa41abf6d0935d384436d3840532d8d07}{aggregate\+Events\+Dmp\+Chain}} (const std\+::string acc\+Input\+Path, const bool verbose)
+\item 
+std\+::shared\+\_\+ptr$<$ T\+Chain $>$ \mbox{\hyperlink{build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8}{aggregate\+Events\+T\+Chain}} (const std\+::string acc\+Input\+Path, const bool verbose)
+\item 
+double \mbox{\hyperlink{build_acceptance_8cpp_a0adb448f323cb9b6eeed125b8a8815fc}{wtsydp}} (const float minene, const float maxene, const float index)
+\item 
+std\+::shared\+\_\+ptr$<$ T\+H1D $>$ \mbox{\hyperlink{build_acceptance_8cpp_a01e2cec35edb98c9c63c586af57b5c8c}{build\+Histo\+From\+Vector}} (const std\+::vector$<$ double $>$ \&energy\+Values, const std\+::vector$<$ double $>$ \&consg\+Factor)
+\item 
+std\+::vector$<$ bool $>$ \mbox{\hyperlink{build_acceptance_8cpp_a8c9b662d6e82013d6f0713947e85a359}{build\+\_\+list\+\_\+of\+\_\+active\+\_\+filters}} (const \mbox{\hyperlink{structacceptance__active__cuts}{acceptance\+\_\+active\+\_\+cuts}} active\+\_\+cuts, const bool filter\+\_\+max\+Elater\+\_\+cut, const bool filter\+\_\+max\+Bar\+Layer\+\_\+cut, const bool filter\+\_\+\+B\+G\+O\+Track\+Containment\+\_\+cut, const bool filter\+\_\+n\+Bar\+Layer13\+\_\+cut, const bool filter\+\_\+max\+Rms\+\_\+cut, const bool filter\+\_\+track\+\_\+selection\+\_\+cut, const bool filter\+\_\+xtrl\+\_\+cut, const bool filter\+\_\+psd\+\_\+charge\+\_\+cut)
+\item 
+void \mbox{\hyperlink{build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557}{build\+Acceptance}} (const std\+::string acc\+Input\+Path, const bool verbose, const std\+::vector$<$ float $>$ \&log\+E\+Bins, T\+File \&out\+File, const std\+::string wd)
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{build_acceptance_8cpp_a6f416bc7ffa1dcd5eba26866b3873c5d}\label{build_acceptance_8cpp_a6f416bc7ffa1dcd5eba26866b3873c5d}} 
-\index{buildAcceptance.cpp@{buildAcceptance.cpp}!buildAcceptance@{buildAcceptance}}
-\index{buildAcceptance@{buildAcceptance}!buildAcceptance.cpp@{buildAcceptance.cpp}}
-\doxysubsubsection{\texorpdfstring{buildAcceptance()}{buildAcceptance()}}
-{\footnotesize\ttfamily void build\+Acceptance (\begin{DoxyParamCaption}\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{build_acceptance_8cpp_aa41abf6d0935d384436d3840532d8d07}\label{build_acceptance_8cpp_aa41abf6d0935d384436d3840532d8d07}} 
+\index{buildAcceptance.cpp@{buildAcceptance.cpp}!aggregateEventsDmpChain@{aggregateEventsDmpChain}}
+\index{aggregateEventsDmpChain@{aggregateEventsDmpChain}!buildAcceptance.cpp@{buildAcceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{aggregateEventsDmpChain()}{aggregateEventsDmpChain()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$Dmp\+Chain$>$ aggregate\+Events\+Dmp\+Chain (\begin{DoxyParamCaption}\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8}\label{build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8}} 
+\index{buildAcceptance.cpp@{buildAcceptance.cpp}!aggregateEventsTChain@{aggregateEventsTChain}}
+\index{aggregateEventsTChain@{aggregateEventsTChain}!buildAcceptance.cpp@{buildAcceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{aggregateEventsTChain()}{aggregateEventsTChain()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$T\+Chain$>$ aggregate\+Events\+T\+Chain (\begin{DoxyParamCaption}\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=306pt]{build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{build_acceptance_8cpp_a8c9b662d6e82013d6f0713947e85a359}\label{build_acceptance_8cpp_a8c9b662d6e82013d6f0713947e85a359}} 
+\index{buildAcceptance.cpp@{buildAcceptance.cpp}!build\_list\_of\_active\_filters@{build\_list\_of\_active\_filters}}
+\index{build\_list\_of\_active\_filters@{build\_list\_of\_active\_filters}!buildAcceptance.cpp@{buildAcceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{build\_list\_of\_active\_filters()}{build\_list\_of\_active\_filters()}}
+{\footnotesize\ttfamily std\+::vector$<$bool$>$ build\+\_\+list\+\_\+of\+\_\+active\+\_\+filters (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structacceptance__active__cuts}{acceptance\+\_\+active\+\_\+cuts}}}]{active\+\_\+cuts,  }\item[{const bool}]{filter\+\_\+max\+Elater\+\_\+cut,  }\item[{const bool}]{filter\+\_\+max\+Bar\+Layer\+\_\+cut,  }\item[{const bool}]{filter\+\_\+\+B\+G\+O\+Track\+Containment\+\_\+cut,  }\item[{const bool}]{filter\+\_\+n\+Bar\+Layer13\+\_\+cut,  }\item[{const bool}]{filter\+\_\+max\+Rms\+\_\+cut,  }\item[{const bool}]{filter\+\_\+track\+\_\+selection\+\_\+cut,  }\item[{const bool}]{filter\+\_\+xtrl\+\_\+cut,  }\item[{const bool}]{filter\+\_\+psd\+\_\+charge\+\_\+cut }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
 Here is the caller graph for this function\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=322pt]{build_acceptance_8cpp_a6f416bc7ffa1dcd5eba26866b3873c5d_icgraph}
+\includegraphics[width=350pt]{build_acceptance_8cpp_a8c9b662d6e82013d6f0713947e85a359_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557}\label{build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557}} 
+\index{buildAcceptance.cpp@{buildAcceptance.cpp}!buildAcceptance@{buildAcceptance}}
+\index{buildAcceptance@{buildAcceptance}!buildAcceptance.cpp@{buildAcceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{buildAcceptance()}{buildAcceptance()}}
+{\footnotesize\ttfamily void build\+Acceptance (\begin{DoxyParamCaption}\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const bool}]{verbose,  }\item[{const std\+::vector$<$ float $>$ \&}]{log\+E\+Bins,  }\item[{T\+File \&}]{out\+File,  }\item[{const std\+::string}]{wd }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{build_acceptance_8cpp_a01e2cec35edb98c9c63c586af57b5c8c}\label{build_acceptance_8cpp_a01e2cec35edb98c9c63c586af57b5c8c}} 
+\index{buildAcceptance.cpp@{buildAcceptance.cpp}!buildHistoFromVector@{buildHistoFromVector}}
+\index{buildHistoFromVector@{buildHistoFromVector}!buildAcceptance.cpp@{buildAcceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{buildHistoFromVector()}{buildHistoFromVector()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$T\+H1D$>$ build\+Histo\+From\+Vector (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{energy\+Values,  }\item[{const std\+::vector$<$ double $>$ \&}]{consg\+Factor }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{build_acceptance_8cpp_a82bf350eb56e02245ab54ceb93ab19f6}\label{build_acceptance_8cpp_a82bf350eb56e02245ab54ceb93ab19f6}} 
+\index{buildAcceptance.cpp@{buildAcceptance.cpp}!getListPath@{getListPath}}
+\index{getListPath@{getListPath}!buildAcceptance.cpp@{buildAcceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{getListPath()}{getListPath()}}
+{\footnotesize\ttfamily std\+::string get\+List\+Path (\begin{DoxyParamCaption}\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const bool}]{MC }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em acc\+Input\+Path} & \\
+\hline
+{\em verbose} & \\
+\hline
+\end{DoxyParams}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{build_acceptance_8cpp_a82bf350eb56e02245ab54ceb93ab19f6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{build_acceptance_8cpp_a0adb448f323cb9b6eeed125b8a8815fc}\label{build_acceptance_8cpp_a0adb448f323cb9b6eeed125b8a8815fc}} 
+\index{buildAcceptance.cpp@{buildAcceptance.cpp}!wtsydp@{wtsydp}}
+\index{wtsydp@{wtsydp}!buildAcceptance.cpp@{buildAcceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{wtsydp()}{wtsydp()}}
+{\footnotesize\ttfamily double wtsydp (\begin{DoxyParamCaption}\item[{const float}]{minene,  }\item[{const float}]{maxene,  }\item[{const float}]{index }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{build_acceptance_8cpp_a0adb448f323cb9b6eeed125b8a8815fc_icgraph}
 \end{center}
 \end{figure}

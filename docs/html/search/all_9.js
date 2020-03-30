@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ngfitloops_32',['nGFitLoops',['../my_header_8h.html#aaf14d23eb76a8fd8811676ed5d4cbd61',1,'myHeader.h']]]
+  ['kstep_53',['kStep',['../data_loop_8h.html#a2c8017d08c79eb55d2eba8da32c91644',1,'dataLoop.h']]]
 ];

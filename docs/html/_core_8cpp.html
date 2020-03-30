@@ -73,35 +73,45 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="my_header_8h_source.html">myHeader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="flux_8h_source.html">flux.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for Core.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="_core_8cpp__incl.png" border="0" usemap="#source_2_core_8cpp" alt=""/></div>
 <map name="source_2_core_8cpp" id="source_2_core_8cpp">
-<area shape="rect" title=" " alt="" coords="419,5,538,31"/>
-<area shape="rect" href="my_header_8h.html" title=" " alt="" coords="432,79,526,104"/>
-<area shape="rect" title=" " alt="" coords="5,152,78,177"/>
-<area shape="rect" title=" " alt="" coords="102,152,163,177"/>
-<area shape="rect" title=" " alt="" coords="187,152,251,177"/>
-<area shape="rect" title=" " alt="" coords="275,152,329,177"/>
-<area shape="rect" title=" " alt="" coords="353,152,410,177"/>
-<area shape="rect" title=" " alt="" coords="434,152,524,177"/>
-<area shape="rect" title=" " alt="" coords="548,152,615,177"/>
-<area shape="rect" title=" " alt="" coords="640,152,702,177"/>
-<area shape="rect" title=" " alt="" coords="727,152,794,177"/>
-<area shape="rect" title=" " alt="" coords="817,152,874,177"/>
-<area shape="rect" title=" " alt="" coords="898,152,991,177"/>
+<area shape="rect" title=" " alt="" coords="573,5,692,31"/>
+<area shape="rect" href="my_header_8h.html" title=" " alt="" coords="905,79,998,104"/>
+<area shape="rect" href="flux_8h.html" title=" " alt="" coords="288,79,341,104"/>
+<area shape="rect" title=" " alt="" coords="1434,152,1506,177"/>
+<area shape="rect" title=" " alt="" coords="1531,152,1591,177"/>
+<area shape="rect" title=" " alt="" coords="1616,152,1679,177"/>
+<area shape="rect" title=" " alt="" coords="287,152,341,177"/>
+<area shape="rect" title=" " alt="" coords="365,152,423,177"/>
+<area shape="rect" title=" " alt="" coords="1703,152,1773,177"/>
+<area shape="rect" title=" " alt="" coords="1797,152,1887,177"/>
+<area shape="rect" title=" " alt="" coords="534,152,601,177"/>
+<area shape="rect" title=" " alt="" coords="447,152,509,177"/>
+<area shape="rect" title=" " alt="" coords="626,152,693,177"/>
+<area shape="rect" title=" " alt="" coords="717,152,773,177"/>
+<area shape="rect" title=" " alt="" coords="797,152,890,177"/>
+<area shape="rect" title=" " alt="" coords="914,152,989,177"/>
+<area shape="rect" title=" " alt="" coords="1013,152,1109,177"/>
+<area shape="rect" title=" " alt="" coords="1132,152,1259,177"/>
+<area shape="rect" title=" " alt="" coords="1283,152,1410,177"/>
+<area shape="rect" title=" " alt="" coords="5,152,71,177"/>
+<area shape="rect" title=" " alt="" coords="95,152,163,177"/>
+<area shape="rect" title=" " alt="" coords="187,152,263,177"/>
 </map>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:abc65ea8e349ad9c2e2b3fc61f30c338f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_core_8cpp.html#abc65ea8e349ad9c2e2b3fc61f30c338f">eCore</a> (const std::string inputPath, const std::string outputPath, const bool verbose, const unsigned int lvTime, const bool myAcceptance, const std::string accInputPath, AnyOption &amp;opt)</td></tr>
-<tr class="separator:abc65ea8e349ad9c2e2b3fc61f30c338f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f79155bb90ee5ac3e90d1981ae7e009"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_core_8cpp.html#a7f79155bb90ee5ac3e90d1981ae7e009">eCore</a> (const std::string inputPath, const std::string outputPath, const bool verbose, const bool pedantic, const unsigned int lvTime, const std::string accInputPath, AnyOption &amp;opt, const std::string wd)</td></tr>
+<tr class="separator:a7f79155bb90ee5ac3e90d1981ae7e009"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="abc65ea8e349ad9c2e2b3fc61f30c338f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abc65ea8e349ad9c2e2b3fc61f30c338f">&#9670;&nbsp;</a></span>eCore()</h2>
+<a id="a7f79155bb90ee5ac3e90d1981ae7e009"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f79155bb90ee5ac3e90d1981ae7e009">&#9670;&nbsp;</a></span>eCore()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -127,14 +137,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const unsigned int&#160;</td>
-          <td class="paramname"><em>lvTime</em>, </td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>pedantic</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>myAcceptance</em>, </td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>lvTime</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -146,7 +156,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">AnyOption &amp;&#160;</td>
-          <td class="paramname"><em>opt</em>&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>wd</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -158,38 +174,28 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="_core_8cpp_abc65ea8e349ad9c2e2b3fc61f30c338f_cgraph.png" border="0" usemap="#_core_8cpp_abc65ea8e349ad9c2e2b3fc61f30c338f_cgraph" alt=""/></div>
-<map name="_core_8cpp_abc65ea8e349ad9c2e2b3fc61f30c338f_cgraph" id="_core_8cpp_abc65ea8e349ad9c2e2b3fc61f30c338f_cgraph">
-<area shape="rect" title=" " alt="" coords="5,252,63,277"/>
-<area shape="rect" href="build_acceptance_8cpp.html#a6f416bc7ffa1dcd5eba26866b3873c5d" title=" " alt="" coords="111,203,230,228"/>
-<area shape="rect" href="e_flux_8cpp.html#a3ed4ac3482c4a19d7142b82ac3042cd6" title=" " alt="" coords="133,252,208,277"/>
-<area shape="rect" href="unique_8cpp.html#ac8c15c211fe8da7c31f877410cdfe221" title=" " alt="" coords="118,301,223,327"/>
-<area shape="rect" href="e_flux_8cpp.html#a9475470dfc7868052e501424c4a020d1" title=" " alt="" coords="293,203,388,228"/>
-<area shape="rect" href="_gear_8cpp.html#ae342ec9263cea2bf6e4516f1031caa2e" title=" " alt="" coords="280,252,401,277"/>
-<area shape="rect" href="_gear_8cpp.html#a9a86a38e2e0fb1a02efa4a64c5c4cca2" title=" " alt="" coords="278,301,403,327"/>
-<area shape="rect" href="event_loop_8cpp.html#a3d34e0ff818b51c00829a839218395fa" title=" " alt="" coords="478,179,543,204"/>
-<area shape="rect" href="read_acceptance_8cpp.html#a55dfe724c91c0ca9406d465bfb4ee8e4" title=" " alt="" coords="451,228,569,253"/>
-<area shape="rect" href="import_tree_8cpp.html#a8e13cd50cd08af67ca77de2bf8b17cb9" title=" " alt="" coords="617,179,706,204"/>
-<area shape="rect" href="fit_g_factor_8cpp.html#af77e2251afc8a3b5fedee9f7a241071e" title=" " alt="" coords="622,228,701,253"/>
-<area shape="rect" href="fitting_functions_8cpp.html#a9656782f90704c51e17fc1d0f97edebf" title=" " alt="" coords="767,5,895,31"/>
-<area shape="rect" href="fitting_functions_8cpp.html#aa7f3f7180911cf6f02068d6ba01f583a" title=" " alt="" coords="767,55,895,80"/>
-<area shape="rect" href="fitting_functions_8cpp.html#a76ea66fed6a23278ae834f7a8a91390f" title=" " alt="" coords="767,104,895,129"/>
-<area shape="rect" href="fitting_functions_8cpp.html#a59624b0d469d7a13969d2ddf9f5ec243" title=" " alt="" coords="767,153,895,179"/>
-<area shape="rect" href="fitting_functions_8cpp.html#a1c1472403eb885b4cd4ff192056fce55" title=" " alt="" coords="767,203,895,228"/>
-<area shape="rect" href="fitting_functions_8cpp.html#a37e804bfbb2fcae97fdfe5adc062bd51" title=" " alt="" coords="767,252,895,277"/>
-<area shape="rect" href="fitting_functions_8cpp.html#a2eea4eb64236d38a92961099ecc35042" title=" " alt="" coords="767,301,895,327"/>
-<area shape="rect" href="fitting_functions_8cpp.html#a9b9ffe445aeab8514427a96eea205bf9" title=" " alt="" coords="767,351,895,376"/>
-<area shape="rect" href="fit_g_factor_8cpp.html#aedf77a4ac0f37f1a467d8288929baa4b" title=" " alt="" coords="754,400,908,425"/>
-<area shape="rect" href="fit_g_factor_8cpp.html#a6370be0d40c37ba2f6f08fa56454c9e3" title=" " alt="" coords="802,449,860,475"/>
+<div class="center"><img src="_core_8cpp_a7f79155bb90ee5ac3e90d1981ae7e009_cgraph.png" border="0" usemap="#_core_8cpp_a7f79155bb90ee5ac3e90d1981ae7e009_cgraph" alt=""/></div>
+<map name="_core_8cpp_a7f79155bb90ee5ac3e90d1981ae7e009_cgraph" id="_core_8cpp_a7f79155bb90ee5ac3e90d1981ae7e009_cgraph">
+<area shape="rect" title=" " alt="" coords="5,152,63,177"/>
+<area shape="rect" href="e_flux_8cpp.html#a1f5f24865e651ac7d408fbd288ec981a" title=" " alt="" coords="131,77,226,103"/>
+<area shape="rect" href="_gear_8cpp.html#ad732bcd19ee64efdf379ba7d27d3d6b1" title=" " alt="" coords="116,127,241,152"/>
+<area shape="rect" href="load_energy_cuts_8cpp.html#ad889f0f00e1776a9279fe1a0d75e70c5" title=" " alt="" coords="111,176,246,201"/>
+<area shape="rect" href="unique_8cpp.html#ac8c15c211fe8da7c31f877410cdfe221" title=" " alt="" coords="126,225,231,251"/>
+<area shape="rect" href="event_loop_8cpp.html#ae44cad95edd62aeab8e3bba259e6b407" title=" " alt="" coords="320,53,385,79"/>
+<area shape="rect" href="read_acceptance_8cpp.html#a46216dfc75952b65a213b24c21594dd1" title=" " alt="" coords="294,103,411,128"/>
+<area shape="rect" href="energy_match_8cpp.html#a34d36e25adbe5a3d2b5cfe314a4a5855" title=" " alt="" coords="459,29,613,55"/>
+<area shape="rect" href="import_tree_8cpp.html#a4dad2fa5c3f831b6073a04c9ab7314e5" title=" " alt="" coords="489,79,584,104"/>
+<area shape="rect" href="energy_match_8cpp.html#aa8c258e3d89ab6d38a354cfb25c74559" title=" " alt="" coords="661,29,761,55"/>
+<area shape="rect" href="import_tree_8cpp.html#a8e13cd50cd08af67ca77de2bf8b17cb9" title=" " alt="" coords="667,79,756,104"/>
 </map>
 </div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="_core_8cpp_abc65ea8e349ad9c2e2b3fc61f30c338f_icgraph.png" border="0" usemap="#_core_8cpp_abc65ea8e349ad9c2e2b3fc61f30c338f_icgraph" alt=""/></div>
-<map name="_core_8cpp_abc65ea8e349ad9c2e2b3fc61f30c338f_icgraph" id="_core_8cpp_abc65ea8e349ad9c2e2b3fc61f30c338f_icgraph">
+<div class="center"><img src="_core_8cpp_a7f79155bb90ee5ac3e90d1981ae7e009_icgraph.png" border="0" usemap="#_core_8cpp_a7f79155bb90ee5ac3e90d1981ae7e009_icgraph" alt=""/></div>
+<map name="_core_8cpp_a7f79155bb90ee5ac3e90d1981ae7e009_icgraph" id="_core_8cpp_a7f79155bb90ee5ac3e90d1981ae7e009_icgraph">
 <area shape="rect" title=" " alt="" coords="104,5,161,31"/>
-<area shape="rect" href="main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,56,31"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,5,56,31"/>
 </map>
 </div>
 

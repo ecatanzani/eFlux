@@ -12,11 +12,13 @@ Include dependency graph for Gear.\+cpp\+:
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-std\+::vector$<$ float $>$ \mbox{\hyperlink{_gear_8cpp_a9a86a38e2e0fb1a02efa4a64c5c4cca2}{create\+Log\+Binning}} (const double min\+Value, const double max\+Value, const int n\+Bins)
+std\+::string \mbox{\hyperlink{_gear_8cpp_accfa55758057dab85ca768e50554b4fa}{get\+Working\+Dir}} (const char $\ast$exe\+Path)
 \item 
-std\+::vector$<$ float $>$ \mbox{\hyperlink{_gear_8cpp_ae342ec9263cea2bf6e4516f1031caa2e}{create\+Lin\+Binning}} (const double min\+Value, const double max\+Value, const int n\+Bins)
+std\+::string \mbox{\hyperlink{_gear_8cpp_a7770cb36d4f4c6e78ff68516ecb2123c}{Get\+Current\+Working\+Dir}} (void)
 \item 
 bool \mbox{\hyperlink{_gear_8cpp_aa6da1ce26a9c7d3e66ba3f0d1732034a}{chech\+Flags}} (Any\+Option \&opt, const std\+::string input\+Path, const std\+::string output\+Path, const unsigned int lv\+Time)
+\item 
+std\+::vector$<$ float $>$ \mbox{\hyperlink{_gear_8cpp_ad732bcd19ee64efdf379ba7d27d3d6b1}{create\+Log\+Binning}} (const \mbox{\hyperlink{structenergy__cuts}{energy\+\_\+cuts}} e\+\_\+cuts)
 \end{DoxyCompactItemize}
 
 
@@ -27,39 +29,37 @@ bool \mbox{\hyperlink{_gear_8cpp_aa6da1ce26a9c7d3e66ba3f0d1732034a}{chech\+Flags
 \doxysubsubsection{\texorpdfstring{chechFlags()}{chechFlags()}}
 {\footnotesize\ttfamily bool chech\+Flags (\begin{DoxyParamCaption}\item[{Any\+Option \&}]{opt,  }\item[{const std\+::string}]{input\+Path,  }\item[{const std\+::string}]{output\+Path,  }\item[{const unsigned int}]{lv\+Time }\end{DoxyParamCaption})}
 
-Here is the caller graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=221pt]{_gear_8cpp_aa6da1ce26a9c7d3e66ba3f0d1732034a_icgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{_gear_8cpp_ae342ec9263cea2bf6e4516f1031caa2e}\label{_gear_8cpp_ae342ec9263cea2bf6e4516f1031caa2e}} 
-\index{Gear.cpp@{Gear.cpp}!createLinBinning@{createLinBinning}}
-\index{createLinBinning@{createLinBinning}!Gear.cpp@{Gear.cpp}}
-\doxysubsubsection{\texorpdfstring{createLinBinning()}{createLinBinning()}}
-{\footnotesize\ttfamily std\+::vector$<$float$>$ create\+Lin\+Binning (\begin{DoxyParamCaption}\item[{const double}]{min\+Value,  }\item[{const double}]{max\+Value,  }\item[{const int}]{n\+Bins }\end{DoxyParamCaption})}
-
-Here is the caller graph for this function\+:
-\nopagebreak
-\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[width=350pt]{_gear_8cpp_ae342ec9263cea2bf6e4516f1031caa2e_icgraph}
-\end{center}
-\end{figure}
-\mbox{\Hypertarget{_gear_8cpp_a9a86a38e2e0fb1a02efa4a64c5c4cca2}\label{_gear_8cpp_a9a86a38e2e0fb1a02efa4a64c5c4cca2}} 
+\mbox{\Hypertarget{_gear_8cpp_ad732bcd19ee64efdf379ba7d27d3d6b1}\label{_gear_8cpp_ad732bcd19ee64efdf379ba7d27d3d6b1}} 
 \index{Gear.cpp@{Gear.cpp}!createLogBinning@{createLogBinning}}
 \index{createLogBinning@{createLogBinning}!Gear.cpp@{Gear.cpp}}
 \doxysubsubsection{\texorpdfstring{createLogBinning()}{createLogBinning()}}
-{\footnotesize\ttfamily std\+::vector$<$float$>$ create\+Log\+Binning (\begin{DoxyParamCaption}\item[{const double}]{min\+Value,  }\item[{const double}]{max\+Value,  }\item[{const int}]{n\+Bins }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily std\+::vector$<$float$>$ create\+Log\+Binning (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structenergy__cuts}{energy\+\_\+cuts}}}]{e\+\_\+cuts }\end{DoxyParamCaption})}
 
 Here is the caller graph for this function\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{_gear_8cpp_a9a86a38e2e0fb1a02efa4a64c5c4cca2_icgraph}
+\includegraphics[width=350pt]{_gear_8cpp_ad732bcd19ee64efdf379ba7d27d3d6b1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{_gear_8cpp_a7770cb36d4f4c6e78ff68516ecb2123c}\label{_gear_8cpp_a7770cb36d4f4c6e78ff68516ecb2123c}} 
+\index{Gear.cpp@{Gear.cpp}!GetCurrentWorkingDir@{GetCurrentWorkingDir}}
+\index{GetCurrentWorkingDir@{GetCurrentWorkingDir}!Gear.cpp@{Gear.cpp}}
+\doxysubsubsection{\texorpdfstring{GetCurrentWorkingDir()}{GetCurrentWorkingDir()}}
+{\footnotesize\ttfamily std\+::string Get\+Current\+Working\+Dir (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{_gear_8cpp_accfa55758057dab85ca768e50554b4fa}\label{_gear_8cpp_accfa55758057dab85ca768e50554b4fa}} 
+\index{Gear.cpp@{Gear.cpp}!getWorkingDir@{getWorkingDir}}
+\index{getWorkingDir@{getWorkingDir}!Gear.cpp@{Gear.cpp}}
+\doxysubsubsection{\texorpdfstring{getWorkingDir()}{getWorkingDir()}}
+{\footnotesize\ttfamily std\+::string get\+Working\+Dir (\begin{DoxyParamCaption}\item[{const char $\ast$}]{exe\+Path }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=233pt]{_gear_8cpp_accfa55758057dab85ca768e50554b4fa_icgraph}
 \end{center}
 \end{figure}

@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['kstep_19',['kStep',['../event_loop_8cpp.html#a2c8017d08c79eb55d2eba8da32c91644',1,'eventLoop.cpp']]]
+  ['fitacceptance_41',['fitAcceptance',['../fit_acceptance_8cpp.html#a443c0d51723dc5db9529d40c4b490c68',1,'fitAcceptance(InputDataType *gFactor, TFile &amp;outFile, const bool verbose):&#160;fitAcceptance.cpp'],['../fit_acceptance_8cpp.html#a5bbe427e2f020c80cfde8400619cc82e',1,'fitAcceptance(TH1F *gFactor, TFile &amp;outFile, const bool verbose):&#160;fitAcceptance.cpp'],['../fit_acceptance_8cpp.html#a8ebcc290637b79559e412912f1cc3a42',1,'fitAcceptance(TH1D *gFactor, TFile &amp;outFile, const bool verbose):&#160;fitAcceptance.cpp'],['../fit_acceptance_8cpp.html#a52ee75ddf693a85459b6729d70a63f04',1,'fitAcceptance(TGraph *gFactor, TFile &amp;outFile, const bool verbose):&#160;fitAcceptance.cpp'],['../acceptance_fit_8h.html#a443c0d51723dc5db9529d40c4b490c68',1,'fitAcceptance(InputDataType *gFactor, TFile &amp;outFile, const bool verbose):&#160;fitAcceptance.cpp'],['../acceptance_fit_8h.html#a5bbe427e2f020c80cfde8400619cc82e',1,'fitAcceptance(TH1F *gFactor, TFile &amp;outFile, const bool verbose):&#160;acceptanceFit.h'],['../acceptance_fit_8h.html#a8ebcc290637b79559e412912f1cc3a42',1,'fitAcceptance(TH1D *gFactor, TFile &amp;outFile, const bool verbose):&#160;acceptanceFit.h'],['../acceptance_fit_8h.html#a52ee75ddf693a85459b6729d70a63f04',1,'fitAcceptance(TGraph *gFactor, TFile &amp;outFile, const bool verbose):&#160;acceptanceFit.h']]],
+  ['fitacceptance_2ecpp_42',['fitAcceptance.cpp',['../fit_acceptance_8cpp.html',1,'']]],
+  ['fittingfunctions_2ecpp_43',['fittingFunctions.cpp',['../fitting_functions_8cpp.html',1,'']]],
+  ['flux_2eh_44',['flux.h',['../flux_8h.html',1,'']]]
 ];

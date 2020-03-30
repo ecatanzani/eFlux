@@ -73,45 +73,104 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="my_header_8h_source.html">myHeader.h</a>&quot;</code><br />
-<code>#include &quot;TSystem.h&quot;</code><br />
-<code>#include &quot;DmpChain.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="acceptance_8h_source.html">acceptance.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="acceptance__cuts_8h_source.html">acceptance_cuts.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="energy_match_8h_source.html">energyMatch.h</a>&quot;</code><br />
+<code>#include &quot;TClonesArray.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for buildAcceptance.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="build_acceptance_8cpp__incl.png" border="0" usemap="#source_2build_acceptance_8cpp" alt=""/></div>
 <map name="source_2build_acceptance_8cpp" id="source_2build_acceptance_8cpp">
-<area shape="rect" title=" " alt="" coords="498,5,686,31"/>
-<area shape="rect" href="my_header_8h.html" title=" " alt="" coords="432,79,526,104"/>
-<area shape="rect" title=" " alt="" coords="550,79,635,104"/>
-<area shape="rect" title=" " alt="" coords="659,79,755,104"/>
-<area shape="rect" title=" " alt="" coords="5,152,78,177"/>
-<area shape="rect" title=" " alt="" coords="102,152,163,177"/>
-<area shape="rect" title=" " alt="" coords="187,152,251,177"/>
-<area shape="rect" title=" " alt="" coords="275,152,329,177"/>
-<area shape="rect" title=" " alt="" coords="353,152,410,177"/>
-<area shape="rect" title=" " alt="" coords="434,152,524,177"/>
-<area shape="rect" title=" " alt="" coords="548,152,615,177"/>
-<area shape="rect" title=" " alt="" coords="640,152,702,177"/>
-<area shape="rect" title=" " alt="" coords="727,152,794,177"/>
-<area shape="rect" title=" " alt="" coords="817,152,874,177"/>
-<area shape="rect" title=" " alt="" coords="898,152,991,177"/>
+<area shape="rect" title=" " alt="" coords="1484,5,1672,31"/>
+<area shape="rect" href="my_header_8h.html" title=" " alt="" coords="1574,152,1668,177"/>
+<area shape="rect" href="acceptance_8h.html" title=" " alt="" coords="871,152,971,177"/>
+<area shape="rect" href="acceptance__cuts_8h.html" title=" " alt="" coords="1324,79,1456,104"/>
+<area shape="rect" href="energy_match_8h.html" title=" " alt="" coords="1793,152,1902,177"/>
+<area shape="rect" title=" " alt="" coords="1666,79,1779,104"/>
+<area shape="rect" title=" " alt="" coords="2419,225,2492,251"/>
+<area shape="rect" title=" " alt="" coords="1508,225,1569,251"/>
+<area shape="rect" title=" " alt="" coords="1673,225,1737,251"/>
+<area shape="rect" title=" " alt="" coords="894,225,948,251"/>
+<area shape="rect" title=" " alt="" coords="1592,225,1650,251"/>
+<area shape="rect" title=" " alt="" coords="971,225,1041,251"/>
+<area shape="rect" title=" " alt="" coords="1065,225,1155,251"/>
+<area shape="rect" title=" " alt="" coords="1760,225,1828,251"/>
+<area shape="rect" title=" " alt="" coords="1853,225,1915,251"/>
+<area shape="rect" title=" " alt="" coords="1179,225,1247,251"/>
+<area shape="rect" title=" " alt="" coords="1938,225,1994,251"/>
+<area shape="rect" title=" " alt="" coords="1270,225,1363,251"/>
+<area shape="rect" title=" " alt="" coords="2018,225,2093,251"/>
+<area shape="rect" title=" " alt="" coords="1388,225,1483,251"/>
+<area shape="rect" title=" " alt="" coords="2118,225,2244,251"/>
+<area shape="rect" title=" " alt="" coords="2268,225,2395,251"/>
+<area shape="rect" title=" " alt="" coords="5,225,71,251"/>
+<area shape="rect" title=" " alt="" coords="95,225,163,251"/>
+<area shape="rect" title=" " alt="" coords="187,225,265,251"/>
+<area shape="rect" title=" " alt="" coords="289,225,366,251"/>
+<area shape="rect" title=" " alt="" coords="390,225,458,251"/>
+<area shape="rect" title=" " alt="" coords="481,225,550,251"/>
+<area shape="rect" title=" " alt="" coords="574,225,659,251"/>
+<area shape="rect" title=" " alt="" coords="785,225,870,251"/>
+<area shape="rect" title=" " alt="" coords="683,225,761,251"/>
+<area shape="rect" title=" " alt="" coords="1384,152,1551,177"/>
 </map>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6f416bc7ffa1dcd5eba26866b3873c5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="build_acceptance_8cpp.html#a6f416bc7ffa1dcd5eba26866b3873c5d">buildAcceptance</a> (const std::string accInputPath, const bool verbose)</td></tr>
-<tr class="separator:a6f416bc7ffa1dcd5eba26866b3873c5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82bf350eb56e02245ab54ceb93ab19f6"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="build_acceptance_8cpp.html#a82bf350eb56e02245ab54ceb93ab19f6">getListPath</a> (const std::string accInputPath, const bool MC)</td></tr>
+<tr class="separator:a82bf350eb56e02245ab54ceb93ab19f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa41abf6d0935d384436d3840532d8d07"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; DmpChain &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="build_acceptance_8cpp.html#aa41abf6d0935d384436d3840532d8d07">aggregateEventsDmpChain</a> (const std::string accInputPath, const bool verbose)</td></tr>
+<tr class="separator:aa41abf6d0935d384436d3840532d8d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1543f215faba333f06aaf1bc617285a8"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; TChain &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="build_acceptance_8cpp.html#a1543f215faba333f06aaf1bc617285a8">aggregateEventsTChain</a> (const std::string accInputPath, const bool verbose)</td></tr>
+<tr class="separator:a1543f215faba333f06aaf1bc617285a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0adb448f323cb9b6eeed125b8a8815fc"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="build_acceptance_8cpp.html#a0adb448f323cb9b6eeed125b8a8815fc">wtsydp</a> (const float minene, const float maxene, const float index)</td></tr>
+<tr class="separator:a0adb448f323cb9b6eeed125b8a8815fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01e2cec35edb98c9c63c586af57b5c8c"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; TH1D &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="build_acceptance_8cpp.html#a01e2cec35edb98c9c63c586af57b5c8c">buildHistoFromVector</a> (const std::vector&lt; double &gt; &amp;energyValues, const std::vector&lt; double &gt; &amp;consgFactor)</td></tr>
+<tr class="separator:a01e2cec35edb98c9c63c586af57b5c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c9b662d6e82013d6f0713947e85a359"><td class="memItemLeft" align="right" valign="top">std::vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="build_acceptance_8cpp.html#a8c9b662d6e82013d6f0713947e85a359">build_list_of_active_filters</a> (const <a class="el" href="structacceptance__active__cuts.html">acceptance_active_cuts</a> active_cuts, const bool filter_maxElater_cut, const bool filter_maxBarLayer_cut, const bool filter_BGOTrackContainment_cut, const bool filter_nBarLayer13_cut, const bool filter_maxRms_cut, const bool filter_track_selection_cut, const bool filter_xtrl_cut, const bool filter_psd_charge_cut)</td></tr>
+<tr class="separator:a8c9b662d6e82013d6f0713947e85a359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a927f2b69720afb25b4ac3602f7f23557"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="build_acceptance_8cpp.html#a927f2b69720afb25b4ac3602f7f23557">buildAcceptance</a> (const std::string accInputPath, const bool verbose, const std::vector&lt; float &gt; &amp;logEBins, TFile &amp;outFile, const std::string wd)</td></tr>
+<tr class="separator:a927f2b69720afb25b4ac3602f7f23557"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a6f416bc7ffa1dcd5eba26866b3873c5d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f416bc7ffa1dcd5eba26866b3873c5d">&#9670;&nbsp;</a></span>buildAcceptance()</h2>
+<a id="aa41abf6d0935d384436d3840532d8d07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa41abf6d0935d384436d3840532d8d07">&#9670;&nbsp;</a></span>aggregateEventsDmpChain()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void buildAcceptance </td>
+          <td class="memname">std::shared_ptr&lt;DmpChain&gt; aggregateEventsDmpChain </td>
+          <td>(</td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>accInputPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>verbose</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1543f215faba333f06aaf1bc617285a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1543f215faba333f06aaf1bc617285a8">&#9670;&nbsp;</a></span>aggregateEventsTChain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;TChain&gt; aggregateEventsTChain </td>
           <td>(</td>
           <td class="paramtype">const std::string&#160;</td>
           <td class="paramname"><em>accInputPath</em>, </td>
@@ -130,13 +189,318 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_cgraph.png" border="0" usemap="#build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_cgraph" alt=""/></div>
+<map name="build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_cgraph" id="build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_cgraph">
+<area shape="rect" title=" " alt="" coords="5,5,170,31"/>
+<area shape="rect" href="build_acceptance_8cpp.html#a82bf350eb56e02245ab54ceb93ab19f6" title=" " alt="" coords="218,5,307,31"/>
+</map>
+</div>
+<div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="build_acceptance_8cpp_a6f416bc7ffa1dcd5eba26866b3873c5d_icgraph.png" border="0" usemap="#build_acceptance_8cpp_a6f416bc7ffa1dcd5eba26866b3873c5d_icgraph" alt=""/></div>
-<map name="build_acceptance_8cpp_a6f416bc7ffa1dcd5eba26866b3873c5d_icgraph" id="build_acceptance_8cpp_a6f416bc7ffa1dcd5eba26866b3873c5d_icgraph">
-<area shape="rect" title=" " alt="" coords="209,5,328,31"/>
-<area shape="rect" href="my_header_8h.html#abc65ea8e349ad9c2e2b3fc61f30c338f" title=" " alt="" coords="104,5,161,31"/>
-<area shape="rect" href="main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title=" " alt="" coords="5,5,56,31"/>
+<div class="center"><img src="build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_icgraph.png" border="0" usemap="#build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_icgraph" alt=""/></div>
+<map name="build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_icgraph" id="build_acceptance_8cpp_a1543f215faba333f06aaf1bc617285a8_icgraph">
+<area shape="rect" title=" " alt="" coords="461,5,626,31"/>
+<area shape="rect" href="acceptance_8h.html#a927f2b69720afb25b4ac3602f7f23557" title=" " alt="" coords="294,5,413,31"/>
+<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,5,246,31"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,5,56,31"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a8c9b662d6e82013d6f0713947e85a359"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c9b662d6e82013d6f0713947e85a359">&#9670;&nbsp;</a></span>build_list_of_active_filters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;bool&gt; build_list_of_active_filters </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structacceptance__active__cuts.html">acceptance_active_cuts</a>&#160;</td>
+          <td class="paramname"><em>active_cuts</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>filter_maxElater_cut</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>filter_maxBarLayer_cut</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>filter_BGOTrackContainment_cut</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>filter_nBarLayer13_cut</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>filter_maxRms_cut</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>filter_track_selection_cut</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>filter_xtrl_cut</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>filter_psd_charge_cut</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="build_acceptance_8cpp_a8c9b662d6e82013d6f0713947e85a359_icgraph.png" border="0" usemap="#build_acceptance_8cpp_a8c9b662d6e82013d6f0713947e85a359_icgraph" alt=""/></div>
+<map name="build_acceptance_8cpp_a8c9b662d6e82013d6f0713947e85a359_icgraph" id="build_acceptance_8cpp_a8c9b662d6e82013d6f0713947e85a359_icgraph">
+<area shape="rect" title=" " alt="" coords="461,5,595,44"/>
+<area shape="rect" href="acceptance_8h.html#a927f2b69720afb25b4ac3602f7f23557" title=" " alt="" coords="294,12,413,37"/>
+<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,12,246,37"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,12,56,37"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a927f2b69720afb25b4ac3602f7f23557"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a927f2b69720afb25b4ac3602f7f23557">&#9670;&nbsp;</a></span>buildAcceptance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void buildAcceptance </td>
+          <td>(</td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>accInputPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>verbose</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
+          <td class="paramname"><em>logEBins</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TFile &amp;&#160;</td>
+          <td class="paramname"><em>outFile</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>wd</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_cgraph.png" border="0" usemap="#build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_cgraph" alt=""/></div>
+<map name="build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_cgraph" id="build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_cgraph">
+<area shape="rect" title=" " alt="" coords="5,291,125,316"/>
+<area shape="rect" href="build_acceptance_8cpp.html#a1543f215faba333f06aaf1bc617285a8" title=" " alt="" coords="182,5,347,31"/>
+<area shape="rect" href="acceptance_cuts_8cpp.html#a78911980d946ac66cba4c2f53686446a" title=" " alt="" coords="173,55,357,80"/>
+<area shape="rect" href="build_acceptance_8cpp.html#a8c9b662d6e82013d6f0713947e85a359" title=" " alt="" coords="198,104,332,143"/>
+<area shape="rect" href="read_acceptance_config_file_8cpp.html#aa26493707c28f7a88366428966fffd3d" title=" " alt="" coords="184,167,346,192"/>
+<area shape="rect" href="acceptance_cuts_8cpp.html#a836c2135b163aaba2b7cdb5d067e22a1" title=" " alt="" coords="202,216,328,241"/>
+<area shape="rect" href="acceptance_cuts_8cpp.html#ac0901bf2f8e6f7f093cd391274310b75" title=" " alt="" coords="212,265,318,291"/>
+<area shape="rect" href="acceptance_cuts_8cpp.html#a5838ccbd4939ebf3a0a56e27616d465f" title=" " alt="" coords="215,315,314,340"/>
+<area shape="rect" href="acceptance_cuts_8cpp.html#aa4fd5f5f5b518390b85e58eb381cac0a" title=" " alt="" coords="203,364,326,389"/>
+<area shape="rect" href="acceptance_cuts_8cpp.html#abba1ca98a40fca550048c5d2192e85fe" title=" " alt="" coords="207,413,323,439"/>
+<area shape="rect" href="acceptance_cuts_8cpp.html#a0be42c053ace45416699a40d84840005" title=" " alt="" coords="197,463,333,488"/>
+<area shape="rect" href="build_acceptance_8cpp.html#a0adb448f323cb9b6eeed125b8a8815fc" title=" " alt="" coords="233,512,296,537"/>
+<area shape="rect" href="acceptance_cuts_8cpp.html#a55df7ca64786b164d0420bfb2e165574" title=" " alt="" coords="233,561,297,587"/>
+<area shape="rect" href="build_acceptance_8cpp.html#a82bf350eb56e02245ab54ceb93ab19f6" title=" " alt="" coords="405,5,493,31"/>
+</map>
+</div>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_icgraph.png" border="0" usemap="#build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_icgraph" alt=""/></div>
+<map name="build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_icgraph" id="build_acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_icgraph">
+<area shape="rect" title=" " alt="" coords="294,5,413,31"/>
+<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,5,246,31"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,5,56,31"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a01e2cec35edb98c9c63c586af57b5c8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01e2cec35edb98c9c63c586af57b5c8c">&#9670;&nbsp;</a></span>buildHistoFromVector()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;TH1D&gt; buildHistoFromVector </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>energyValues</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>consgFactor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a82bf350eb56e02245ab54ceb93ab19f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82bf350eb56e02245ab54ceb93ab19f6">&#9670;&nbsp;</a></span>getListPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string getListPath </td>
+          <td>(</td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>accInputPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>MC</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">accInputPath</td><td></td></tr>
+    <tr><td class="paramname">verbose</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="build_acceptance_8cpp_a82bf350eb56e02245ab54ceb93ab19f6_icgraph.png" border="0" usemap="#build_acceptance_8cpp_a82bf350eb56e02245ab54ceb93ab19f6_icgraph" alt=""/></div>
+<map name="build_acceptance_8cpp_a82bf350eb56e02245ab54ceb93ab19f6_icgraph" id="build_acceptance_8cpp_a82bf350eb56e02245ab54ceb93ab19f6_icgraph">
+<area shape="rect" title=" " alt="" coords="674,5,762,31"/>
+<area shape="rect" href="acceptance_8h.html#a1543f215faba333f06aaf1bc617285a8" title=" " alt="" coords="461,5,626,31"/>
+<area shape="rect" href="acceptance_8h.html#a927f2b69720afb25b4ac3602f7f23557" title=" " alt="" coords="294,5,413,31"/>
+<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,5,246,31"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,5,56,31"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a0adb448f323cb9b6eeed125b8a8815fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0adb448f323cb9b6eeed125b8a8815fc">&#9670;&nbsp;</a></span>wtsydp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double wtsydp </td>
+          <td>(</td>
+          <td class="paramtype">const float&#160;</td>
+          <td class="paramname"><em>minene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float&#160;</td>
+          <td class="paramname"><em>maxene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="build_acceptance_8cpp_a0adb448f323cb9b6eeed125b8a8815fc_icgraph.png" border="0" usemap="#build_acceptance_8cpp_a0adb448f323cb9b6eeed125b8a8815fc_icgraph" alt=""/></div>
+<map name="build_acceptance_8cpp_a0adb448f323cb9b6eeed125b8a8815fc_icgraph" id="build_acceptance_8cpp_a0adb448f323cb9b6eeed125b8a8815fc_icgraph">
+<area shape="rect" title=" " alt="" coords="461,31,524,56"/>
+<area shape="rect" href="acceptance_8h.html#a927f2b69720afb25b4ac3602f7f23557" title=" " alt="" coords="294,5,413,31"/>
+<area shape="rect" href="my_header_8h.html#a495cdb4d7de7aa1fc1dc61c50a8ac7d1" title=" " alt="" coords="105,56,245,81"/>
+<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,7,246,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,32,56,57"/>
 </map>
 </div>
 

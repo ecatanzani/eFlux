@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['fitgfactor_2ecpp_44',['fitGFactor.cpp',['../fit_g_factor_8cpp.html',1,'']]],
-  ['fittingfunctions_2ecpp_45',['fittingFunctions.cpp',['../fitting_functions_8cpp.html',1,'']]]
+  ['dataloop_2eh_118',['dataLoop.h',['../data_loop_8h.html',1,'']]]
 ];
