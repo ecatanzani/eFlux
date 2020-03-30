@@ -266,7 +266,16 @@ bool psd_charge_cut(
     std::vector<std::vector<short>> layerBarNumberPsd;    // Arrange PSD unique bar number
     std::vector<std::vector<double>> layerBarEnergyPsd;   // Arrange PSD hit energy
     std::vector<std::vector<short>> layerBarUsedPsd;      // mark PSD hits index used for clustering
-    std::vector<std::vector<double>> psdClusterMaxECoord; // Arrange X and Y coordinates regarding the max energy release on PSD layer
+
+    // PSD clusters
+    std::vector<std::vector<short>> psdCluster_idxBeg;
+    std::vector<std::vector<short>> psdCluster_length;
+    std::vector<std::vector<short>> psdCluster_idxMaxE;
+    std::vector<std::vector<double>> psdCluster_E;
+    std::vector<std::vector<double>> psdCluster_maxE;
+    std::vector<std::vector<double>> psdCluster_maxEcoordinate;     // Arrange X and Y coordinates regarding the max energy release on PSD layer
+    std::vector<std::vector<double>> psdCluster_coordinate;         // weighted if more than 1 strip
+    std::vector<std::vector<double>> psdCluster_Z;                  // weighted if more than 1 strip
 
     // Find max index and energy release for PSD hits
     std::vector<unsigned int> iMaxBarPsd(2, -1);
@@ -276,11 +285,21 @@ bool psd_charge_cut(
     // Create vector matrix
     for (int nLayer = 0; nLayer < 2; ++nLayer)
     {
+        // PSD clustering...
         layerBarIndexPsd.push_back(vshort);
         layerBarNumberPsd.push_back(vshort);
         layerBarEnergyPsd.push_back(vdouble);
         layerBarUsedPsd.push_back(vshort);
-        psdClusterMaxECoord.push_back(vdouble);
+
+        // PSD custers...
+        psdCluster_idxBeg.push_back(vshort);
+        psdCluster_length.push_back(vshort);
+        psdCluster_idxMaxE.push_back(vshort);
+        psdCluster_E.push_back(vdouble);
+        psdCluster_maxE.push_back(vdouble);
+        psdCluster_maxEcoordinate.push_back(vdouble);
+        psdCluster_coordinate.push_back(vdouble);
+        psdCluster_Z.push_back(vdouble);
     }
 
     // Loop on PSD hits
@@ -326,7 +345,7 @@ bool psd_charge_cut(
             int psdbar_maxIdx = layerBarNumberPsd[nLayer][iMaxBarPsd[nLayer]];
             double cluster_energy = eMaxBarPsd[nLayer];
             double actual_coordinate = nLayer % 2 ? psdhits->GetHitX(psdhits_maxIdx) : psdhits->GetHitY(psdhits_maxIdx);
-            psdClusterMaxECoord[nLayer].push_back(actual_coordinate);
+            psdCluster_maxEcoordinate[nLayer].push_back(actual_coordinate);
             double actualZ = psdhits->GetHitZ(psdhits_maxIdx);
             layerBarUsedPsd[nLayer][iMaxBarPsd[nLayer]] = 1;
 
@@ -375,15 +394,14 @@ bool psd_charge_cut(
                 actualZ = (actualZ * eMaxBarPsd[nLayer] + cluster_closestZ * cluster_closest_energy) / (eMaxBarPsd[nLayer] + cluster_closest_energy);
             }
 
-            /*
-            psdClusterIndBeg[lay].push_back(indFirst);
-            psdClusterLength[lay].push_back(cluSize);
-            psdClusterIndMaxE[lay].push_back(imax);
-            psdClusterMaxE[lay].push_back(eMaxBarPsd[lay]);
-            psdClusterE[lay].push_back(cluE);
-            psdClusterCoord[lay].push_back(thisCoord);
-            psdClusterZ[lay].push_back(thisZ);
-            */
+            
+            psdCluster_idxBeg[nLayer].push_back(cluster_fIdx);
+            psdCluster_length[nLayer].push_back(cluster_size);
+            psdCluster_idxMaxE[nLayer].push_back(psdhits_maxIdx);
+            psdCluster_maxE[nLayer].push_back(eMaxBarPsd[nLayer]);
+            psdCluster_E[nLayer].push_back(cluster_energy);
+            psdCluster_coordinate[nLayer].push_back(actual_coordinate);
+            psdCluster_Z[nLayer].push_back(actualZ);
 
             // Search for the next maximum energy release bar
             eMaxBarPsd[nLayer] = 0; // Reset maximum energy release
