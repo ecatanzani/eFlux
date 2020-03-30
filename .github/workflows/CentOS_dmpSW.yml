@@ -19,4 +19,4 @@ jobs:
         proxy_username: ${{ secrets.PROXY_USERNAME }}
         proxy_key: ${{ secrets.PRIVATE_KEY }}
         proxy_port: ${{ secrets.PROXY_PORT }}
-        script: bash /home/enrico/dampesw_builder/initBuilder.sh
+        script: bash /home/enrico/dampesw_builder/initBuilder.sh >2&1prova.log
