@@ -346,32 +346,68 @@ void buildAcceptance(
 
         /* ********************************* */
 
-        bool filter_maxElater_cut = maxElater_cut(bgorec, acceptance_cuts, bgoTotalE);
-        bool filter_maxBarLayer_cut = maxBarLayer_cut(bgohits, nBgoHits);
-        bool filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
-        bool filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
-        bool filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
-        bool filter_track_selection_cut = track_selection_cut(bgorec, stkclusters, stktracks, acceptance_cuts);
-        bool filter_xtrl_cut = xtrl_cut(sumRms, fracLayer, acceptance_cuts);
-        bool filter_psd_charge_cut = psd_charge_cut(psdhits, acceptance_cuts);
+        bool filter_maxElater_cut = false; 
+        bool filter_maxBarLayer_cut = false; 
+        bool filter_BGOTrackContainment_cut = false; 
+        bool filter_nBarLayer13_cut = false; 
+        bool filter_maxRms_cut = false; 
+        bool filter_track_selection_cut = false; 
+        bool filter_xtrl_cut = false; 
+        bool filter_psd_charge_cut = false;
+            
+        // **** First cuts ****
 
-        if (filter_maxElater_cut)
-            h_maxElateral_cut.Fill(simuEnergy * _GeV);
-        if (filter_maxBarLayer_cut)
-            h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
-        if (filter_BGOTrackContainment_cut)
-            h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
-        if (filter_nBarLayer13_cut)
-            h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
-        if (filter_maxRms_cut)
-            h_maxRms_cut.Fill(simuEnergy * _GeV);
-        if (filter_track_selection_cut)
-            h_track_selection_cut.Fill(simuEnergy * _GeV);
-        if (filter_xtrl_cut)
-            h_xtrl_cut.Fill(simuEnergy * _GeV);
-        if (filter_psd_charge_cut)
-            h_psd_charge_cut.Fill(simuEnergy * _GeV);
-
+        if (active_cuts.maxElater)
+        {
+            filter_maxElater_cut = maxElater_cut(bgorec, acceptance_cuts, bgoTotalE);
+            if (filter_maxElater_cut)
+                h_maxElateral_cut.Fill(simuEnergy * _GeV);
+        }
+        if (active_cuts.maxBarLayer)
+        {
+            filter_maxBarLayer_cut = maxBarLayer_cut(bgohits, nBgoHits);
+            if (filter_maxBarLayer_cut)
+                h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
+        }
+        if (active_cuts.BGOTrackContainment)
+        {
+            filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
+            if (filter_BGOTrackContainment_cut)
+                h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
+        }
+        if (active_cuts.nBarLayer13)
+        {
+            filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
+            if (filter_nBarLayer13_cut)
+                h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
+        }
+        if (active_cuts.maxRms)
+        {
+            filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
+            if (filter_maxRms_cut)
+                h_maxRms_cut.Fill(simuEnergy * _GeV);
+        }
+        if (active_cuts.track_selection)
+        {
+            filter_track_selection_cut = track_selection_cut(bgorec, stkclusters, stktracks, acceptance_cuts);
+            if (filter_track_selection_cut)
+                h_track_selection_cut.Fill(simuEnergy * _GeV);
+        }
+        if (active_cuts.xtrl)
+        {
+            filter_xtrl_cut = xtrl_cut(sumRms, fracLayer, acceptance_cuts);
+            if (filter_xtrl_cut)
+                h_xtrl_cut.Fill(simuEnergy * _GeV);
+        }
+        if (active_cuts.psd_charge)
+        {
+            filter_psd_charge_cut = psd_charge_cut(psdhits, acceptance_cuts);
+            if (filter_psd_charge_cut)
+                h_psd_charge_cut.Fill(simuEnergy * _GeV);
+        }
+        
+        // **** All-cuts ****
+        
         std::vector<bool> list_of_filters =
             build_list_of_active_filters(
                 active_cuts,
