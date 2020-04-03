@@ -119,7 +119,7 @@ inline std::vector<bool> build_list_of_active_filters(
     const bool filter_psd_charge_cut)
 {
     std::vector<bool> list_of_filters;
-    
+
     if (active_cuts.maxElater)
         list_of_filters.push_back(filter_maxElater_cut);
     if (active_cuts.maxBarLayer)
@@ -346,15 +346,17 @@ void buildAcceptance(
 
         /* ********************************* */
 
-        bool filter_maxElater_cut = false; 
-        bool filter_maxBarLayer_cut = false; 
-        bool filter_BGOTrackContainment_cut = false; 
-        bool filter_nBarLayer13_cut = false; 
-        bool filter_maxRms_cut = false; 
-        bool filter_track_selection_cut = false; 
-        bool filter_xtrl_cut = false; 
+        bool filter_maxElater_cut = false;
+        bool filter_maxBarLayer_cut = false;
+        bool filter_BGOTrackContainment_cut = false;
+        bool filter_nBarLayer13_cut = false;
+        bool filter_maxRms_cut = false;
+        bool filter_track_selection_cut = false;
+        bool filter_xtrl_cut = false;
         bool filter_psd_charge_cut = false;
-            
+
+        best_track event_best_track;
+
         // **** First cuts ****
 
         if (active_cuts.maxElater)
@@ -389,7 +391,14 @@ void buildAcceptance(
         }
         if (active_cuts.track_selection)
         {
-            filter_track_selection_cut = track_selection_cut(bgorec, stkclusters, stktracks, acceptance_cuts);
+            filter_track_selection_cut = 
+            track_selection_cut(
+                bgorec,
+                bgohits,
+                stkclusters,
+                stktracks,
+                acceptance_cuts,
+                event_best_track);
             if (filter_track_selection_cut)
                 h_track_selection_cut.Fill(simuEnergy * _GeV);
         }
@@ -405,9 +414,9 @@ void buildAcceptance(
             if (filter_psd_charge_cut)
                 h_psd_charge_cut.Fill(simuEnergy * _GeV);
         }
-        
+
         // **** All-cuts ****
-        
+
         std::vector<bool> list_of_filters =
             build_list_of_active_filters(
                 active_cuts,
@@ -419,9 +428,9 @@ void buildAcceptance(
                 filter_track_selection_cut,
                 filter_xtrl_cut,
                 filter_psd_charge_cut);
-        
+
         bool all_event_filter = true;
-        for (auto it=list_of_filters.begin(); it!=list_of_filters.end(); ++it)
+        for (auto it = list_of_filters.begin(); it != list_of_filters.end(); ++it)
             if (!*it)
             {
                 all_event_filter = false;
