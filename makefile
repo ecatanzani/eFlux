@@ -15,10 +15,10 @@ endif
 #dependencie
 DIPS_INCLUDE = $(shell root-config --cflags)
 #DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) -lMinuit -lRooFit -lRooFitCore
-DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
+DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) -lTreePlayer
 
-DAMPE_INC=/dampe/releases/DmpSoftware-6-0-10/include
-DAMPE_LIB=/dampe/releases/DmpSoftware-6-0-10/lib
+DAMPE_INC=/DAMPESW/Event/include
+DAMPE_LIB=/DAMPESW/Event/
 DAMPE_INC_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include
 DAMPE_LIB_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib
 
