@@ -3,7 +3,7 @@
 
 bool maxElater_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    const acceptance_conf &acceptance_cuts,
+    const acceptance_conf acceptance_cuts,
     const double bgoTotalE)
 {
     // Get energy maximum along X and Y views
@@ -69,7 +69,7 @@ bool maxBarLayer_cut(
 
 bool BGOTrackContainment_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    const acceptance_conf &acceptance_cuts,
+    const acceptance_conf acceptance_cuts,
     bool &passEvent)
 {
     bool passed_bgo_containment_cut = false;
@@ -124,7 +124,7 @@ bool maxRms_cut(
     const std::vector<std::vector<short>> &layerBarNumber,
     const std::vector<double> &rmsLayer,
     const double bgoTotalE,
-    const acceptance_conf &acceptance_cuts)
+    const acceptance_conf acceptance_cuts)
 {
     bool passed_maxRms_cut = false;
     auto max_rms = rmsLayer[0];
@@ -144,86 +144,276 @@ bool maxRms_cut(
     return passed_maxRms_cut;
 }
 
+inline void link_ladders(std::vector<int> &LadderToLayer)
+{
+    for (int ilad = 0; ilad < nSTKladders; ++ilad)
+    {
+        int iTRB = ilad / 24;
+        int iladTRB = ilad % 24;
+        int iPlane = 5 - iladTRB / 4; // 0-5 for each double layer
+        // int isX = (iTRB / 2) % 2;     // measuring X, TRB2, 3, 6, 7
+        int isY = (iTRB / 2 + 1) % 2; // measuring Y, TRB0, 1, 4, 5
+        int iLay = iPlane * 2 + isY;  // 0-11 for each layer, starting from X (measuring X)
+        LadderToLayer[ilad] = iLay;
+    }
+}
+
+inline void fill_BGO_vectors(
+    TVector3 &bgoRecEntrance,
+    TVector3 &bgoRecDirection,
+    const double BGO_TopZ,
+    const double BGO_SideXY,
+    const std::shared_ptr<DmpEvtBgoRec> bgorec)
+{
+    std::vector<double> bgoRec_slope(2, 0);
+    std::vector<double> bgoRec_intercept(2, 0);
+
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
+
+    // Build bgoRecDirection TVector3
+    TVector3 vec_s0_a(bgoRec_intercept[0], bgoRec_intercept[1], 0.);
+    TVector3 vec_s1_a(bgoRec_intercept[0] + bgoRec_slope[0], bgoRec_intercept[1] + bgoRec_slope[1], 1.);
+    bgoRecDirection = (vec_s1_a - vec_s0_a).Unit(); //uni vector pointing from front to back
+
+    // Build bgoRecEntrance TVector3
+    double topZ = BGO_TopZ;
+    double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
+
+    if (fabs(topX) > BGO_SideXY || fabs(topY) > BGO_SideXY)
+    {
+        // possibly enter from the x-sides
+        if (fabs(topX) > BGO_SideXY)
+        {
+            if (topX > 0)
+                topX = BGO_SideXY;
+            else
+                topX = -BGO_SideXY;
+            topZ = (topX - bgoRec_intercept[0]) / bgoRec_slope[0];
+            topY = bgoRec_slope[1] * topZ + bgoRec_intercept[1];
+            // possibly enter from the y-sides
+            if (fabs(topY) > BGO_SideXY)
+            {
+                if (topY > 0)
+                    topY = BGO_SideXY;
+                else
+                    topY = -BGO_SideXY;
+                topZ = (topY - bgoRec_intercept[1]) / bgoRec_slope[1];
+                topX = bgoRec_slope[0] * topZ + bgoRec_intercept[0];
+            }
+        }
+        //enter from the y-sides
+        else if (fabs(topY) > BGO_SideXY)
+        {
+            if (topY > 0)
+                topY = BGO_SideXY;
+            else
+                topY = -BGO_SideXY;
+            topZ = (topY - bgoRec_intercept[1]) / bgoRec_slope[1];
+            topX = bgoRec_slope[0] * topZ + bgoRec_intercept[0];
+        }
+    }
+
+    bgoRecEntrance[0] = topX;
+    bgoRecEntrance[1] = topY;
+    bgoRecEntrance[2] = topZ;
+}
+
+inline void get_track_points(
+    DmpStkTrack *track,
+    TClonesArray *stkclusters,
+    const std::vector<int> LadderToLayer,
+    std::vector<unsigned int> &track_nHoles,
+    best_track &event_best_track,
+    const bool best_track = false)
+{
+    std::vector<int> prevHole(2 - 2);
+    std::vector<int> firstLayer(2, -1);
+    std::vector<int> lastLayer(2, -1);
+    std::vector<int> lastPoint(2, -1);
+    std::vector<unsigned int> track_nHoles_cont(2, 0);
+
+    // Loop on track points to find last layer values
+    for (int ip = track->GetNPoints() - 1; ip >= 0; --ip)
+    {
+        if (lastLayer[0] == -1)
+        {
+            if (track->getHitMeasX(ip) > -9999.)
+            {
+                lastPoint[0] = ip;
+                DmpStkSiCluster *cluster = track->GetClusterX(ip, stkclusters);
+                auto hardID = cluster->getLadderHardware();
+                lastLayer[0] = LadderToLayer[hardID];
+            }
+        }
+        if (lastLayer[1] == -1)
+        {
+            if (track->getHitMeasY(ip) > -9999.)
+            {
+                lastPoint[1] = ip;
+                DmpStkSiCluster *cluster = track->GetClusterY(ip, stkclusters);
+                auto hardID = cluster->getLadderHardware();
+                lastLayer[1] = LadderToLayer[hardID];
+            }
+        }
+    }
+
+    // Found the number of holes on both X and Y
+    for (int ip = 0; ip <= lastPoint[0]; ++ip)
+    {
+        if (track->getHitMeasX(ip) > -9999.)
+        {
+            DmpStkSiCluster *cluster = track->GetClusterX(ip, stkclusters);
+            auto hardID = cluster->getLadderHardware();
+            if (firstLayer[0] == -1)
+                firstLayer[0] = LadderToLayer[hardID];
+            continue;
+        }
+        if (firstLayer[0] != -1)
+            ++track_nHoles[0];
+        if (ip == prevHole[0] + 1)
+            ++track_nHoles_cont[0];
+        prevHole[0] = ip;
+    }
+
+    for (int ip = 0; ip <= lastPoint[1]; ++ip)
+    {
+        if (track->getHitMeasY(ip) > -9999.)
+        {
+            DmpStkSiCluster *cluster = track->GetClusterY(ip, stkclusters);
+            auto hardID = cluster->getLadderHardware();
+            if (firstLayer[1] == -1)
+                firstLayer[1] = LadderToLayer[hardID];
+            continue;
+        }
+        if (firstLayer[1] != -1)
+            ++track_nHoles[1];
+        if (ip == prevHole[1] + 1)
+            ++track_nHoles_cont[1];
+        prevHole[1] = ip;
+    }
+
+    if (best_track)
+    {
+        event_best_track.n_points = track->GetNPoints();
+        for (int idx = 0; idx < 2; ++idx)
+            event_best_track.n_holes[idx] = track_nHoles[idx];
+        event_best_track.track_slope[0] = track->getTrackParams().getSlopeX();
+        event_best_track.track_slope[1] = track->getTrackParams().getSlopeY();
+        event_best_track.track_intercept[0] = track->getTrackParams().getInterceptX();
+        event_best_track.track_intercept[1] = track->getTrackParams().getInterceptY();
+        event_best_track.track_direction = (track->getDirection()).Unit();
+    }
+}
+
 bool track_selection_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::shared_ptr<DmpEvtBgoHits> bgohits,
     TClonesArray *stkclusters,
     TClonesArray *stktracks,
-    const acceptance_conf &acceptance_cuts)
+    const acceptance_conf acceptance_cuts,
+    best_track &event_best_track)
 {
     bool passed_track_selection_cut = false;
-    std::vector<DmpStkTrack *> result = std::vector<DmpStkTrack *>();
-    TVector3 angle_BGO(bgorec->GetSlopeXZ(), bgorec->GetSlopeYZ(), 1);
+    double BGO_TopZ = 46;       // 58.5 - 12.5 = 46, BGO sensitive top surface
+    double BGO_SideXY = 301.25; // 288.75 + 12.5 = 301.25, BGO sensitive side surface
+    TVector3 bgoRecEntrance;
+    TVector3 bgoRecDirection;
+    std::vector<int> LadderToLayer(nSTKladders, -1);
+    std::vector<DmpStkTrack *> selectedTracks;
 
-    // Get BGO top impact point
-    double BGO_TopZ = 46;
-    std::vector<double> bgoRec_slope(2);
-    std::vector<double> bgoRec_intercept(2);
-    bgoRec_slope[1] = bgorec->GetSlopeXZ();
-    bgoRec_slope[0] = bgorec->GetSlopeYZ();
-    bgoRec_intercept[1] = bgorec->GetInterceptXZ();
-    bgoRec_intercept[0] = bgorec->GetInterceptYZ();
-    double BGO_topX = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
-    double BGO_topY = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    link_ladders(LadderToLayer);
+    fill_BGO_vectors(
+        bgoRecEntrance,
+        bgoRecDirection,
+        BGO_TopZ,
+        BGO_SideXY,
+        bgorec);
 
     // Loop on the tracks
-    for (int trIdx = 0; trIdx < stktracks->GetLast(); ++trIdx)
+    for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx)
     {
-        // Track params...
-        int clusterX_counter = 0;
-        int clusterY_counter = 0;
-        int nHoles_X = 0;
-        int nHoles_Y = 0;
-        TVector3 track_direction;
-        TVector3 track_impact_point;
-        double track_slopeX;
-        double track_slopeY;
-        double STK_topX;
-        double STK_topY;
+        std::vector<unsigned int> track_nHoles(2, 0);
+        std::vector<double> track_slope(2, 0);
+        std::vector<double> track_intercept(2, 0);
+        std::vector<double> extr_BGO_top(2, 0);
 
         // *********************
 
+        // Get the track
         auto track = static_cast<DmpStkTrack *>(stktracks->ConstructedAt(trIdx));
 
-        for (int tPoint = 0; tPoint < track->GetNPoints(); ++tPoint)
-        {
-            track_direction = track->getDirection();
-            track_impact_point = track->getImpactPoint();
-            track_slopeX = track->getTrackParams().getSlopeX();
-            track_slopeY = track->getTrackParams().getSlopeY();
+        // Reject tracks with not enough X and Y clusters
+        if (track->getNhitX() < acceptance_cuts.track_X_clusters || track->getNhitY() < acceptance_cuts.track_Y_clusters)
+            continue;
 
-            // --> Count the number of clusters on both X and Y
-            auto clx = track->GetClusterX(tPoint, stkclusters);
-            auto cly = track->GetClusterY(tPoint, stkclusters);
-            if (clx)
-                ++clusterX_counter;
-            if (cly)
-                ++clusterY_counter;
+        get_track_points(
+            track,
+            stkclusters,
+            LadderToLayer,
+            track_nHoles,
+            event_best_track);
 
-            // --> Count the number of holes on both X and Y
-            if (tPoint > 0 && tPoint < (track->GetNPoints() - 1))
-            {
-                if (!(track->getHitMeasX(tPoint) > -9999.))
-                    ++nHoles_X;
-                if (!(track->getHitMeasY(tPoint) > -9999.))
-                    ++nHoles_Y;
-            }
-        }
+        if (track_nHoles[0] > 1 || track_nHoles[1] > 1)
+            continue;
 
-        STK_topX = track_slopeX * BGO_TopZ + track_impact_point.x();
-        STK_topY = track_slopeY * BGO_TopZ + track_impact_point.y();
+        // Find slope and intercept
+        track_slope[0] = track->getTrackParams().getSlopeX();
+        track_slope[1] = track->getTrackParams().getSlopeY();
+        track_intercept[0] = track->getTrackParams().getInterceptX();
+        track_intercept[1] = track->getTrackParams().getInterceptY();
+        TVector3 trackDirection = (track->getDirection()).Unit();
 
-        // Filtering track
+        // Extrapolate to the top of BGO
+        for (int coord = 0; coord < 2; ++coord)
+            extr_BGO_top[coord] = track_slope[coord] * BGO_TopZ + track_intercept[coord];
 
-        // CUT 0 - MINUMUM NUMBER OF CLUSTER
-        if (clusterX_counter >= acceptance_cuts.track_X_clusters && clusterY_counter >= acceptance_cuts.track_Y_clusters)
-            if (nHoles_X <= acceptance_cuts.track_missingHit_X && nHoles_Y <= acceptance_cuts.track_missingHit_Y)
-                if (track_direction.Angle(angle_BGO) <= acceptance_cuts.STK_BGO_delta_track)
-                    if (fabs(STK_topX - BGO_topX) <= acceptance_cuts.STK_BGO_delta_position && fabs(STK_topY - BGO_topY) <= acceptance_cuts.STK_BGO_delta_position)
-                        result.push_back(track);
+        // Evaluate distance between Top STK and BGO points
+        double dxTop = extr_BGO_top[0] - bgoRecEntrance[0];
+        double dyTop = extr_BGO_top[1] - bgoRecEntrance[1];
+        double drTop = sqrt(pow(dxTop, 2) + pow(dyTop, 2));
+        // Evaluate angular distance between STK track and BGO Rec track
+        double dAngleTrackBgoRec = trackDirection.Angle(bgoRecDirection) * TMath::RadToDeg();
+
+        if (drTop > acceptance_cuts.STK_BGO_delta_position)
+            continue;
+        if (dAngleTrackBgoRec > acceptance_cuts.STK_BGO_delta_track)
+            continue;
+
+        selectedTracks.push_back(track);
     }
 
-    if (result.size())
+    // Sort selected tracks vector
+    DmpStkTrackHelper tHelper(stktracks, true, bgorec.get(), bgohits.get());
+    tHelper.MergeSort(selectedTracks, &DmpStkTrackHelper::TracksCompare);
+
+    if (selectedTracks.size() > 0)
+    {
+        DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
+        std::vector<unsigned int> track_nHoles(2, 0);
+        
+        // Fill best track structure
+        get_track_points(
+            selected_track,
+            stkclusters,
+            LadderToLayer,
+            track_nHoles,
+            event_best_track,
+            true);
+
+        event_best_track.extr_BGO_topX = event_best_track.track_slope[0] * BGO_TopZ + event_best_track.track_intercept[0];
+        event_best_track.extr_BGO_topY = event_best_track.track_slope[1] * BGO_TopZ + event_best_track.track_intercept[1];
+
+        event_best_track.STK_BGO_topX_distance = event_best_track.extr_BGO_topX - bgoRecEntrance[0];
+        event_best_track.STK_BGO_topY_distance = event_best_track.extr_BGO_topY - bgoRecEntrance[1];
+        event_best_track.angular_distance_STK_BGO = event_best_track.track_direction.Angle(bgoRecDirection) * TMath::RadToDeg();
+        event_best_track.STK_BGO_topY_distance = sqrt(pow(event_best_track.STK_BGO_topX_distance, 2) + pow(event_best_track.STK_BGO_topY_distance, 2));
+
         passed_track_selection_cut = true;
+    }
 
     return passed_track_selection_cut;
 }
@@ -231,7 +421,7 @@ bool track_selection_cut(
 bool xtrl_cut(
     const double sumRms,
     const std::vector<double> fracLayer,
-    const acceptance_conf &acceptance_cuts)
+    const acceptance_conf acceptance_cuts)
 {
     bool passed_xtrl_cut = false;
     unsigned int last_layer_idx = 0;
@@ -256,16 +446,16 @@ bool xtrl_cut(
 
 bool psd_charge_cut(
     const std::shared_ptr<DmpEvtPsdHits> psdhits,
-    const acceptance_conf &acceptance_cuts)
+    const acceptance_conf acceptance_cuts)
 {
     bool passed_psd_charge_cut = false;
 
     std::vector<short> vshort;
     std::vector<double> vdouble;
-    std::vector<std::vector<short>> layerBarIndexPsd;     // Arrange PSD hit index
-    std::vector<std::vector<short>> layerBarNumberPsd;    // Arrange PSD unique bar number
-    std::vector<std::vector<double>> layerBarEnergyPsd;   // Arrange PSD hit energy
-    std::vector<std::vector<short>> layerBarUsedPsd;      // mark PSD hits index used for clustering
+    std::vector<std::vector<short>> layerBarIndexPsd;   // Arrange PSD hit index
+    std::vector<std::vector<short>> layerBarNumberPsd;  // Arrange PSD unique bar number
+    std::vector<std::vector<double>> layerBarEnergyPsd; // Arrange PSD hit energy
+    std::vector<std::vector<short>> layerBarUsedPsd;    // mark PSD hits index used for clustering
 
     // PSD clusters
     std::vector<std::vector<short>> psdCluster_idxBeg;
@@ -273,9 +463,9 @@ bool psd_charge_cut(
     std::vector<std::vector<short>> psdCluster_idxMaxE;
     std::vector<std::vector<double>> psdCluster_E;
     std::vector<std::vector<double>> psdCluster_maxE;
-    std::vector<std::vector<double>> psdCluster_maxEcoordinate;     // Arrange X and Y coordinates regarding the max energy release on PSD layer
-    std::vector<std::vector<double>> psdCluster_coordinate;         // weighted if more than 1 strip
-    std::vector<std::vector<double>> psdCluster_Z;                  // weighted if more than 1 strip
+    std::vector<std::vector<double>> psdCluster_maxEcoordinate; // Arrange X and Y coordinates regarding the max energy release on PSD layer
+    std::vector<std::vector<double>> psdCluster_coordinate;     // weighted if more than 1 strip
+    std::vector<std::vector<double>> psdCluster_Z;              // weighted if more than 1 strip
 
     // Find max index and energy release for PSD hits
     std::vector<unsigned int> iMaxBarPsd(2, -1);
@@ -377,7 +567,7 @@ bool psd_charge_cut(
                 layerBarUsedPsd[nLayer][iMaxBarPsd[nLayer] - 1] = 1;
             }
             //else if (energy_leftMaxBar < energy_rightMaxBar)
-            else    
+            else
             {
                 cluster_closest_barIdx = psdhits_maxIdx + 1;
                 cluster_energy += energy_rightMaxBar;
@@ -394,7 +584,6 @@ bool psd_charge_cut(
                 actualZ = (actualZ * eMaxBarPsd[nLayer] + cluster_closestZ * cluster_closest_energy) / (eMaxBarPsd[nLayer] + cluster_closest_energy);
             }
 
-            
             psdCluster_idxBeg[nLayer].push_back(cluster_fIdx);
             psdCluster_length[nLayer].push_back(cluster_size);
             psdCluster_idxMaxE[nLayer].push_back(psdhits_maxIdx);
@@ -406,7 +595,7 @@ bool psd_charge_cut(
             // Search for the next maximum energy release bar
             eMaxBarPsd[nLayer] = 0; // Reset maximum energy release
             for (unsigned int barIdx = 0; barIdx < layerBarEnergyPsd[nLayer].size(); ++barIdx)
-            {   
+            {
                 // Check for the next unused PSD bar with a non negligible energy release
                 if (layerBarUsedPsd[nLayer][barIdx] == 0 && layerBarEnergyPsd[nLayer][barIdx] > eMaxBarPsd[nLayer])
                 {
