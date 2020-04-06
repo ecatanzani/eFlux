@@ -20,6 +20,7 @@ Usage:
  -g  --geometry       <path_to_acceptance_ROOT_file>      (*) Acceptance file - flux calculation only
  -v  --verbose                                                Verbose output
  -p  --pedantic                                               Pedantic output
+```
 
 ### Support
 
