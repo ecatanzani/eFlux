@@ -14,14 +14,12 @@ endif
 
 #dependencie
 DIPS_INCLUDE = $(shell root-config --cflags)
-#DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) -lMinuit -lRooFit -lRooFitCore
-DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) -lTreePlayer
+DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) 
 
 DAMPE_INC=/DAMPESW/Event/include
-DAMPE_LIB=/DAMPESW/Event/
+DAMPE_LIB=/DAMPESW/Event
 DAMPE_INC_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include
 DAMPE_LIB_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib
-
 
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
@@ -46,7 +44,7 @@ SUB_DIRS := $(subst $(S_DIR)/,,$(SUB_DIRS))
 # C FLAGS
 C_FLAGS = -fPIC -D_FORCE_INLINES
 # CPP FLAGS
-CC_FLAGS = -std=c++14 -I$(S_INC) #-I$(ANYOPT_INC)
+CC_FLAGS = -std=c++14 -I$(S_INC)
 # RELEASE_FLAGS
 RELEASE_FLAGS = -O3
 # DEBUG_FLAGS
@@ -55,8 +53,8 @@ DEBUG_FLAGS = -g -D_DEBUG -Wall -Wno-unknown-pragmas
 LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
-	CC_FLAGS+= -I$(DIPS_INCLUDE) -I$(ANYOPT_INC) -I$(DAMPE_INC) -I$(DAMPE_INC_CNAF)
-	LDFLAGS += $(DIPS_LIBS) -L$(DAMPE_LIB) -L$(DAMPE_LIB_CNAF) -lDmpEvent
+	CC_FLAGS += -I$(DIPS_INCLUDE) -I$(ANYOPT_INC) -I$(DAMPE_INC) -I$(DAMPE_INC_CNAF)
+	LDFLAGS += $(DIPS_LIBS) -lTreePlayer -L$(DAMPE_LIB) -L$(DAMPE_LIB_CNAF) -lDmpEvent 
 endif
 ####################################################
 # Flags by OS
@@ -71,9 +69,7 @@ endif
 ALL_SOURCE_FILES := $(wildcard $(S_DIR)/*.cpp)\
 					$(wildcard $(S_DIR)/**/*.cpp)\
 					$(wildcard $(S_DIR)/**/**/*.cpp)
-
-	
-
+					
 ####################################################
 # Object files
 SOURCE_FILES = $(filter-out $(FILTER), $(ALL_SOURCE_FILES))
