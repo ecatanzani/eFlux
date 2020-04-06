@@ -70,7 +70,9 @@ extern bool xtrl_cut(
     const acceptance_conf acceptance_cuts);
     
 extern bool psd_charge_cut(
-    const std::shared_ptr<DmpEvtPsdHits> psdhits, 
-    const acceptance_conf acceptance_cuts);
+    const std::shared_ptr<DmpEvtPsdHits> psdhits,
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const acceptance_conf acceptance_cuts,
+    const best_track event_best_track);
     
 #endif

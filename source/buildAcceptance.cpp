@@ -410,7 +410,7 @@ void buildAcceptance(
         }
         if (active_cuts.psd_charge)
         {
-            filter_psd_charge_cut = psd_charge_cut(psdhits, acceptance_cuts);
+            filter_psd_charge_cut = psd_charge_cut(psdhits, bgorec, acceptance_cuts, event_best_track);
             if (filter_psd_charge_cut)
                 h_psd_charge_cut.Fill(simuEnergy * _GeV);
         }

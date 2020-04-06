@@ -394,7 +394,7 @@ bool track_selection_cut(
     {
         DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
         std::vector<unsigned int> track_nHoles(2, 0);
-        
+
         // Fill best track structure
         get_track_points(
             selected_track,
@@ -446,9 +446,19 @@ bool xtrl_cut(
 
 bool psd_charge_cut(
     const std::shared_ptr<DmpEvtPsdHits> psdhits,
-    const acceptance_conf acceptance_cuts)
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const acceptance_conf acceptance_cuts,
+    const best_track event_best_track)
 {
     bool passed_psd_charge_cut = false;
+
+    // Getting BGO Reco slope and intercept (used for cluster matching)
+    std::vector<double> bgoRec_slope(2, -999);
+    std::vector<double> bgoRec_intercept(2, -999);
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
 
     std::vector<short> vshort;
     std::vector<double> vdouble;
@@ -606,5 +616,53 @@ bool psd_charge_cut(
         }
     }
 
+    // Get the number of clusters on both X and Y
+    auto nPsdClusters = psdCluster_idxBeg[0].size() + psdCluster_idxBeg[1].size();
+    auto nPsdClustersX = psdCluster_idxBeg[0].size();
+    auto nPsdClustersY = psdCluster_idxBeg[1].size();
+
+    // PSD clusters matching
+
+    std::vector<int> icloPsdClu(2, -1); //0 is Y, 0 is X
+    std::vector<double> dxCloPsdClu(2, 9999);
+    std::vector<int> icloPsdCluMaxHit(2, -1);
+    std::vector<double> dxCloPsdCluMaxHit(2, 9999);
+    std::vector<int> icloPsdClu_bgoRec(2, -1);
+    std::vector<double> dxCloPsdClu_bgoRec(2, 9999);
+    std::vector<int> icloPsdClu_track(2, -1);
+    std::vector<double> dxCloPsdClu_track(2, 9999);
+    std::vector<int> icloPsdClu2_track(2, -1);
+    std::vector<double> dxCloPsdClu2_track(2, 9999);
+
+    for (int nLayer = 0; nLayer < 2; ++nLayer)
+    {
+        for (unsigned int iclu = 0; iclu < psdCluster_idxBeg[nLayer].size(); ++iclu)
+        {
+            bool IsMeasuringX = nLayer % 2;
+            double hitZ = psdCluster_Z[nLayer][iclu];
+            double thisCoord = psdCluster_maxEcoordinate[nLayer][iclu];
+
+            // Get distance between actual coordinate and BGO rec coordinate
+            double projCoord_bgoRec = IsMeasuringX ? bgoRec_slope[0] * hitZ + bgoRec_intercept[0] : bgoRec_slope[1] * hitZ + bgoRec_intercept[1];
+            double dX_bgoRec = thisCoord - projCoord_bgoRec;
+            if (fabs(dX_bgoRec) < fabs(dxCloPsdClu_bgoRec[nLayer]))
+            {
+                dxCloPsdClu_bgoRec[nLayer] = dX_bgoRec;
+                icloPsdClu_bgoRec[nLayer] = iclu;
+            }
+
+            // Get distance between actual coordinate and best track coordinate
+            double projCoord_track = IsMeasuringX ? event_best_track.track_slope[0] * hitZ + event_best_track.track_intercept[0] : event_best_track.track_slope[1] * hitZ + event_best_track.track_intercept[1];
+            double dX_track = thisCoord - projCoord_track;
+
+            if (fabs(dX_track) < fabs(dxCloPsdClu_track[nLayer]))
+            {
+                dxCloPsdClu_track[nLayer] = dX_track;
+                icloPsdClu_track[nLayer] = iclu;
+            }
+        }
+    }
+
+    passed_psd_charge_cut = (fabs(dxCloPsdClu_track[0]) < acceptance_cuts.STK_PSD_delta_position && fabs(dxCloPsdClu_track[1]) < acceptance_cuts.STK_PSD_delta_position) ? true : false;
     return passed_psd_charge_cut;
 }
