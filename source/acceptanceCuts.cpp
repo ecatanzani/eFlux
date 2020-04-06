@@ -224,7 +224,7 @@ inline void fill_BGO_vectors(
 
 inline void get_track_points(
     DmpStkTrack *track,
-    TClonesArray *stkclusters,
+    const std::shared_ptr<TClonesArray> stkclusters,
     const std::vector<int> LadderToLayer,
     std::vector<unsigned int> &track_nHoles,
     best_track &event_best_track,
@@ -244,7 +244,7 @@ inline void get_track_points(
             if (track->getHitMeasX(ip) > -9999.)
             {
                 lastPoint[0] = ip;
-                DmpStkSiCluster *cluster = track->GetClusterX(ip, stkclusters);
+                DmpStkSiCluster *cluster = track->GetClusterX(ip, stkclusters.get());
                 auto hardID = cluster->getLadderHardware();
                 lastLayer[0] = LadderToLayer[hardID];
             }
@@ -254,7 +254,7 @@ inline void get_track_points(
             if (track->getHitMeasY(ip) > -9999.)
             {
                 lastPoint[1] = ip;
-                DmpStkSiCluster *cluster = track->GetClusterY(ip, stkclusters);
+                DmpStkSiCluster *cluster = track->GetClusterY(ip, stkclusters.get());
                 auto hardID = cluster->getLadderHardware();
                 lastLayer[1] = LadderToLayer[hardID];
             }
@@ -266,7 +266,7 @@ inline void get_track_points(
     {
         if (track->getHitMeasX(ip) > -9999.)
         {
-            DmpStkSiCluster *cluster = track->GetClusterX(ip, stkclusters);
+            DmpStkSiCluster *cluster = track->GetClusterX(ip, stkclusters.get());
             auto hardID = cluster->getLadderHardware();
             if (firstLayer[0] == -1)
                 firstLayer[0] = LadderToLayer[hardID];
@@ -283,7 +283,7 @@ inline void get_track_points(
     {
         if (track->getHitMeasY(ip) > -9999.)
         {
-            DmpStkSiCluster *cluster = track->GetClusterY(ip, stkclusters);
+            DmpStkSiCluster *cluster = track->GetClusterY(ip, stkclusters.get());
             auto hardID = cluster->getLadderHardware();
             if (firstLayer[1] == -1)
                 firstLayer[1] = LadderToLayer[hardID];
@@ -312,8 +312,8 @@ inline void get_track_points(
 bool track_selection_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    TClonesArray *stkclusters,
-    TClonesArray *stktracks,
+    const std::shared_ptr<TClonesArray> stkclusters,
+    const std::shared_ptr<TClonesArray> stktracks,
     const acceptance_conf acceptance_cuts,
     best_track &event_best_track)
 {
@@ -387,7 +387,7 @@ bool track_selection_cut(
     }
 
     // Sort selected tracks vector
-    DmpStkTrackHelper tHelper(stktracks, true, bgorec.get(), bgohits.get());
+    DmpStkTrackHelper tHelper(stktracks.get(), true, bgorec.get(), bgohits.get());
     tHelper.MergeSort(selectedTracks, &DmpStkTrackHelper::TracksCompare);
 
     if (selectedTracks.size() > 0)

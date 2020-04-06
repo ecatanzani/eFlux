@@ -164,7 +164,8 @@ void buildAcceptance(
     dmpch->SetBranchAddress("DmpEvtBgoRec", &bgorec);
 
     // Register STK container
-    TClonesArray *stkclusters = new TClonesArray("DmpStkSiCluster");
+    std::shared_ptr<TClonesArray> stkclusters = std::make_shared<TClonesArray>("DmpStkSiCluster");
+    //TClonesArray *stkclusters = new TClonesArray("DmpStkSiCluster");
     dmpch->SetBranchAddress("StkClusterCollection", &stkclusters);
 
     // Check if STK tracks collection exists
@@ -177,8 +178,7 @@ void buildAcceptance(
         }
 
     // Register STK tracks collection
-    //std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack", 200);
-    TClonesArray *stktracks = new TClonesArray("DmpStkTrack", 200);
+    std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack", 200);
     if (fStkKalmanTracksFound)
         dmpch->SetBranchAddress("StkKalmanTracks", &stktracks);
 
@@ -391,14 +391,14 @@ void buildAcceptance(
         }
         if (active_cuts.track_selection)
         {
-            filter_track_selection_cut = 
-            track_selection_cut(
-                bgorec,
-                bgohits,
-                stkclusters,
-                stktracks,
-                acceptance_cuts,
-                event_best_track);
+            filter_track_selection_cut =
+                track_selection_cut(
+                    bgorec,
+                    bgohits,
+                    stkclusters,
+                    stktracks,
+                    acceptance_cuts,
+                    event_best_track);
             if (filter_track_selection_cut)
                 h_track_selection_cut.Fill(simuEnergy * _GeV);
         }
@@ -482,10 +482,6 @@ void buildAcceptance(
 
     // Return to main TFile directory
     outFile.cd();
-
-    // Clean memory
-    delete stkclusters;
-    delete stktracks;
 }
 
 #if 0
