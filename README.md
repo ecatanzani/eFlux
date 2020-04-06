@@ -1,47 +1,39 @@
 Electron Flux
 =======
-## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/ecatanzani/eFlux/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+This software computes the all-electron spectrum in a given energy range using DAMPE flight data.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Software usage:
 
 ```markdown
-Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
+Usage: 
 
-- Bulleted
-- List
+ -h  --help                                                   Prints this help
+ -i  --input          <path_to_input_DATA_TTree>          (*) Input data TTree - flux calculation only
+ -o  --output         <path_to_output_TFile>                  Output ROOT TFile
+ -d  --outputDir      <path_to_output_TFile_dir>              Output ROOT TFile directory
+ -t  --lvtime         <live_time-value>                   (*) DAMPE live-time 
+ -a  --acceptance     <path_to_MC_list>                   (*) Acceptance calculation
+ -c  --collect        <path_to_complete_histo>            (*) Generate TGraph from final histo
+ -f  --flux           <path_to_DATA_list_dir>             (*) Flux calculation
+ -g  --geometry       <path_to_acceptance_ROOT_file>      (*) Acceptance file - flux calculation only
+ -v  --verbose                                                Verbose output
+ -p  --pedantic                                               Pedantic output
 
-1. Numbered
-2. List
+### Support
 
-**Bold** and _Italic_ and `Code` text
+Having trouble with this code ? Check out the [documentation](https://ecatanzani.github.io/eFlux/)
 
-[Link to Doxygen](/docs/index.html) and ![Image](src)
-```
-[Link to Doxygen](https://ecatanzani.github.io/eFlux/)
+### Prerequisites
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+- C++14 (5.3.1 required)
+- DAMPESW: Event package. To BUILD and RUN this code not the whole DAMPESW package is required
+- ROOT (5.34.36 required)
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ecatanzani/eFlux/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
-
-Build Tests
+### Build Tests
 
 | CentOS |
 |:--:|
-| ![CentOS - DAMPE framework](https://github.com/ecatanzani/eFlux/workflows/CentOS%20-%20DAMPE%20framework/badge.svg) |
+| ![CentOS](https://github.com/ecatanzani/eFlux/workflows/CentOS%20-%20DAMPE%20framework/badge.svg) |
 
