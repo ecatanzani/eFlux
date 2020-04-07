@@ -151,7 +151,7 @@ void buildAcceptance(
     //auto dmpch = aggregateEventsDmpChain(accInputPath,verbose);
     auto dmpch = aggregateEventsTChain(accInputPath, verbose);
 
-    // SimuPrimaries container
+    // Register SimuPrimaries container
     std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::make_shared<DmpEvtSimuPrimaries>();
     dmpch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
 
@@ -165,7 +165,6 @@ void buildAcceptance(
 
     // Register STK container
     std::shared_ptr<TClonesArray> stkclusters = std::make_shared<TClonesArray>("DmpStkSiCluster");
-    //TClonesArray *stkclusters = new TClonesArray("DmpStkSiCluster");
     dmpch->SetBranchAddress("StkClusterCollection", &stkclusters);
 
     // Check if STK tracks collection exists
@@ -193,6 +192,7 @@ void buildAcceptance(
 
     // Cut histos
     TH1D h_incoming("h_incoming", "Energy Distribution of the incoming particles", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_gometric_cut("h_gometric_cut", "Energy Distribution - geometric cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxElateral_cut("h_maxElateral_cut", "Energy Distribution - maxElateral cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxBarLayer_cut("h_maxBarLayer_cut", "Energy Distribution - maxBarLayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment cut ", logEBins.size() - 1, &(logEBins[0]));
@@ -204,6 +204,7 @@ void buildAcceptance(
     TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
     h_incoming.Sumw2();
+    h_gometric_cut.Sumw2();
     h_maxElateral_cut.Sumw2();
     h_maxBarLayer_cut.Sumw2();
     h_BGOTrackContainment_cut.Sumw2();
@@ -235,7 +236,7 @@ void buildAcceptance(
                 std::cout << "\nProcessed " << evIdx + 1 << " events / " << nevents;
 
         // Get event total energy
-        //double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in MeV - not corrected
+        //double bgoTotalE = bgorec->GetTotalEnergy();      // Energy in MeV - not corrected
         double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
@@ -359,85 +360,89 @@ void buildAcceptance(
 
         // **** First cuts ****
 
-        if (active_cuts.maxElater)
+        if (geometric_cut(simu_primaries))
         {
-            filter_maxElater_cut = maxElater_cut(bgorec, acceptance_cuts, bgoTotalE);
-            if (filter_maxElater_cut)
-                h_maxElateral_cut.Fill(simuEnergy * _GeV);
-        }
-        if (active_cuts.maxBarLayer)
-        {
-            filter_maxBarLayer_cut = maxBarLayer_cut(bgohits, nBgoHits);
-            if (filter_maxBarLayer_cut)
-                h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
-        }
-        if (active_cuts.BGOTrackContainment)
-        {
-            filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
-            if (filter_BGOTrackContainment_cut)
-                h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
-        }
-        if (active_cuts.nBarLayer13)
-        {
-            filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
-            if (filter_nBarLayer13_cut)
-                h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
-        }
-        if (active_cuts.maxRms)
-        {
-            filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
-            if (filter_maxRms_cut)
-                h_maxRms_cut.Fill(simuEnergy * _GeV);
-        }
-        if (active_cuts.track_selection)
-        {
-            filter_track_selection_cut =
-                track_selection_cut(
-                    bgorec,
-                    bgohits,
-                    stkclusters,
-                    stktracks,
-                    acceptance_cuts,
-                    event_best_track);
-            if (filter_track_selection_cut)
-                h_track_selection_cut.Fill(simuEnergy * _GeV);
-        }
-        if (active_cuts.xtrl)
-        {
-            filter_xtrl_cut = xtrl_cut(sumRms, fracLayer, acceptance_cuts);
-            if (filter_xtrl_cut)
-                h_xtrl_cut.Fill(simuEnergy * _GeV);
-        }
-        if (active_cuts.psd_charge)
-        {
-            filter_psd_charge_cut = psd_charge_cut(psdhits, bgorec, acceptance_cuts, event_best_track);
-            if (filter_psd_charge_cut)
-                h_psd_charge_cut.Fill(simuEnergy * _GeV);
-        }
-
-        // **** All-cuts ****
-
-        std::vector<bool> list_of_filters =
-            build_list_of_active_filters(
-                active_cuts,
-                filter_maxElater_cut,
-                filter_maxBarLayer_cut,
-                filter_BGOTrackContainment_cut,
-                filter_nBarLayer13_cut,
-                filter_maxRms_cut,
-                filter_track_selection_cut,
-                filter_xtrl_cut,
-                filter_psd_charge_cut);
-
-        bool all_event_filter = true;
-        for (auto it = list_of_filters.begin(); it != list_of_filters.end(); ++it)
-            if (!*it)
+            h_gometric_cut.Fill(simuEnergy * _GeV);
+            if (active_cuts.maxElater)
             {
-                all_event_filter = false;
-                break;
+                filter_maxElater_cut = maxElater_cut(bgorec, acceptance_cuts, bgoTotalE);
+                if (filter_maxElater_cut)
+                    h_maxElateral_cut.Fill(simuEnergy * _GeV);
             }
-        if (all_event_filter)
-            h_all_cut.Fill(simuEnergy * _GeV);
+            if (active_cuts.maxBarLayer)
+            {
+                filter_maxBarLayer_cut = maxBarLayer_cut(bgohits, nBgoHits);
+                if (filter_maxBarLayer_cut)
+                    h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
+            }
+            if (active_cuts.BGOTrackContainment)
+            {
+                filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
+                if (filter_BGOTrackContainment_cut)
+                    h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
+            }
+            if (active_cuts.nBarLayer13)
+            {
+                filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
+                if (filter_nBarLayer13_cut)
+                    h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
+            }
+            if (active_cuts.maxRms)
+            {
+                filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
+                if (filter_maxRms_cut)
+                    h_maxRms_cut.Fill(simuEnergy * _GeV);
+            }
+            if (active_cuts.track_selection)
+            {
+                filter_track_selection_cut =
+                    track_selection_cut(
+                        bgorec,
+                        bgohits,
+                        stkclusters,
+                        stktracks,
+                        acceptance_cuts,
+                        event_best_track);
+                if (filter_track_selection_cut)
+                    h_track_selection_cut.Fill(simuEnergy * _GeV);
+            }
+            if (active_cuts.xtrl)
+            {
+                filter_xtrl_cut = xtrl_cut(sumRms, fracLayer, acceptance_cuts);
+                if (filter_xtrl_cut)
+                    h_xtrl_cut.Fill(simuEnergy * _GeV);
+            }
+            if (active_cuts.psd_charge)
+            {
+                filter_psd_charge_cut = psd_charge_cut(psdhits, bgorec, acceptance_cuts, event_best_track);
+                if (filter_psd_charge_cut)
+                    h_psd_charge_cut.Fill(simuEnergy * _GeV);
+            }
+
+            // **** All-cuts ****
+
+            std::vector<bool> list_of_filters =
+                build_list_of_active_filters(
+                    active_cuts,
+                    filter_maxElater_cut,
+                    filter_maxBarLayer_cut,
+                    filter_BGOTrackContainment_cut,
+                    filter_nBarLayer13_cut,
+                    filter_maxRms_cut,
+                    filter_track_selection_cut,
+                    filter_xtrl_cut,
+                    filter_psd_charge_cut);
+
+            bool all_event_filter = true;
+            for (auto it = list_of_filters.begin(); it != list_of_filters.end(); ++it)
+                if (!*it)
+                {
+                    all_event_filter = false;
+                    break;
+                }
+            if (all_event_filter)
+                h_all_cut.Fill(simuEnergy * _GeV);
+        }
     }
 
     if (verbose)
@@ -446,24 +451,34 @@ void buildAcceptance(
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
 
     auto h_acceptance = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance"));
+    auto h_geo_acceptance = static_cast<TH1D *>(h_gometric_cut.Clone("h_geo_acceptance"));
     h_acceptance->SetTitle("Acceptance");
     h_acceptance->Scale(genSurface);
     h_acceptance->Divide(&h_incoming);
+    h_geo_acceptance->SetTitle("Geometric Acceptance");
+    h_geo_acceptance->Scale(genSurface);
+    h_geo_acceptance->Divide(&h_incoming);
     std::vector<double> energyValues(h_acceptance->GetXaxis()->GetNbins(), 0);
     std::vector<double> acceptanceValues(energyValues.size(), 0);
+    std::vector<double> geo_acceptanceValues(energyValues.size(), 0);
     for (auto it = logEBins.begin(); it != logEBins.end(); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
         energyValues[index] = wtsydp(*it, *(it + 1), -1);
         acceptanceValues[index] = h_acceptance->GetBinContent(index + 1);
+        geo_acceptanceValues[index] = h_geo_acceptance->GetBinContent(index + 1);
     }
 
     TGraph acceptanceGr(acceptanceValues.size(), &energyValues[0], &acceptanceValues[0]);
+    TGraph geo_acceptanceGr(geo_acceptanceValues.size(), &energyValues[0], &geo_acceptanceValues[0]);
     acceptanceGr.SetName("acceptance");
     acceptanceGr.SetTitle("Acceptance");
+    geo_acceptanceGr.SetName("geo_acceptance");
+    geo_acceptanceGr.SetTitle("Geometric Acceptance");
 
     // Write histos to file
     h_incoming.Write();
+    h_gometric_cut.Write();
     h_maxElateral_cut.Write();
     h_maxBarLayer_cut.Write();
     h_BGOTrackContainment_cut.Write();
@@ -477,8 +492,10 @@ void buildAcceptance(
     // Create output acceptance dir in the output TFile
     auto acceptanceDIr = outFile.mkdir("Acceptance");
     acceptanceDIr->cd();
+    
     // Write final TGraph
     acceptanceGr.Write();
+    geo_acceptanceGr.Write();
 
     // Return to main TFile directory
     outFile.cd();

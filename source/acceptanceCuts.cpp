@@ -1,6 +1,66 @@
 #include "acceptance_cuts.h"
 #include "acceptance.h"
 
+bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
+{
+    bool passed_geometric_cut = false;
+
+    double BGO_TopZ = 46; //  58.5 - 12.5 = 46, BGO sensitive top surface
+    //double BGO_BottomZ = 448;                   // 435.5 + 12.5 = 46, BGO sensitive bottom surface
+    double BGO_SideXY = 301.25; //288.75 + 12.5 = 301.25, BGO sensitive side surface
+
+    TVector3 orgPosition;
+    orgPosition.SetX(simu_primaries->pv_x);
+    orgPosition.SetY(simu_primaries->pv_y);
+    orgPosition.SetZ(simu_primaries->pv_z);
+
+#if 0
+    // **** Directions Cosines Method
+
+    TVector3 dCos;
+    dCos.SetX(simu_primaries->pvpart_cosx);
+    dCos.SetY(simu_primaries->pvpart_cosy);
+    dCos.SetZ(simu_primaries->pvpart_cosz);
+
+    if (dCos.Z())
+    {
+        double ratioZ = (BGO_TopZ - orgPosition.Z()) / dCos.Z();
+        double actual_X = ratioZ * dCos.X() + orgPosition.X();
+        double actual_Y = ratioZ * dCos.Y() + orgPosition.Y();
+        if (fabs(actual_X) < BGO_SideXY && fabs(actual_Y) < BGO_SideXY)
+            passed_geometric_cut = true;
+    }
+
+#else
+    // **** Moments Method
+
+    TVector3 orgMomentum;
+    orgMomentum.SetX(simu_primaries->pvpart_px);
+    orgMomentum.SetY(simu_primaries->pvpart_py);
+    orgMomentum.SetZ(simu_primaries->pvpart_pz);
+
+    auto orgMomentum_theta = orgMomentum.Theta() * TMath::RadToDeg();
+    auto orgMomentum_costheta = cos(orgMomentum.Theta());
+
+    std::vector<double> slope(2, 0);
+    std::vector<double> intercept(2, 0);
+
+    slope[0] = orgMomentum.Z() ? orgMomentum.X() / orgMomentum.Z() : -999;
+    slope[1] = orgMomentum.Z() ? orgMomentum.Y() / orgMomentum.Z() : -999;
+    intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
+    intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
+
+    double actual_X = slope[0] * BGO_TopZ + intercept[0];
+    double actual_Y = slope[1] * BGO_TopZ + intercept[1];
+
+    if (fabs(actual_X) < BGO_SideXY && fabs(actual_Y) < BGO_SideXY)
+        passed_geometric_cut = true;
+    
+#endif
+
+    return passed_geometric_cut;
+}
+
 bool maxElater_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts,

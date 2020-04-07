@@ -31,6 +31,8 @@ struct best_track
 #define DAMPE_bgo_nLayers 14
 #define nSTKladders 192
 
+extern bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
+
 extern bool maxElater_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts,
