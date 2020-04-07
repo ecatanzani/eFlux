@@ -4,7 +4,7 @@
 
 **** CUT VARIABLE ****       **** VALUE ****      **** UNIT ****
 
-min_event_energy                    10                  GeV
+min_event_energy                    1                   GeV
 max_event_energy                    100                 GeV
 energy_lRatio                       0.35
 shower_axis_delta                   280                 mm
@@ -21,15 +21,15 @@ PSD_bar_min_energy_release          0.5                 MeV
 
 **** CUT ****                **** ACTIVE ****
 
-maxElater                           YES
-maxBarLayer                         YES
-BGOTrackContainment                 YES
-nBarLayer13                         YES
-maxRms                              YES
-track_selection                     YES
-xtrl                                YES
-psd_charge                          YES
+maxElater                           NO
+maxBarLayer                         NO
+BGOTrackContainment                 NO
+nBarLayer13                         NO
+maxRms                              NO
+track_selection                     NO
+xtrl                                NO
+psd_charge                          NO
 
 ## Simu Params
 
-generation_vertex_radius    1.381976597885342
+generation_vertex_radius    1.381976597885342           m
