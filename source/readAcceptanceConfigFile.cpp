@@ -24,7 +24,6 @@ void load_acceptance_struct(
     std::string::size_type sz;
     while (input_stream >> tmp_str)
     {
-        std::cout << "\n" << tmp_str << std::endl;
         // Load cuts variables
         if (!strcmp(tmp_str.c_str(), "min_event_energy"))
         {
