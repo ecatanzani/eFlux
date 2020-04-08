@@ -50,7 +50,7 @@ extern void eCore(
     AnyOption &opt,
     const std::string wd);
 
-extern const char *uniqueOutFile(
+extern const std::string uniqueOutFile(
     const std::string outputPath,
     AnyOption &opt);
 

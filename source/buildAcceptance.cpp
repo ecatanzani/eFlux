@@ -359,7 +359,7 @@ void buildAcceptance(
         best_track event_best_track;
 
         // **** First cuts ****
-        exit(123);
+        
         if (geometric_cut(simu_primaries))
         {
             h_gometric_cut.Fill(simuEnergy * _GeV);

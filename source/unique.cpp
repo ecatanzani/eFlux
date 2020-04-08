@@ -3,7 +3,7 @@
 #include <ctime>
 #include <sstream>
 
-const char *uniqueOutFile(
+const std::string uniqueOutFile(
     const std::string outputPath, 
     AnyOption &opt)
 {
@@ -16,5 +16,5 @@ const char *uniqueOutFile(
     else
         fPath << "analysisOutFile_" << ctime << ".root";
 
-    return fPath.str().c_str();
+    return fPath.str();
 }
