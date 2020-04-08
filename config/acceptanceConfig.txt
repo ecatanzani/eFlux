@@ -27,9 +27,9 @@ BGOTrackContainment                 NO
 nBarLayer13                         NO
 maxRms                              NO
 track_selection                     NO
-xtrl                                NO
+xtrl_selection                      NO
 psd_charge                          NO
 
 ## Simu Params
 
-generation_vertex_radius    1.381976597885342           m
+generation_vertex_radius            1.381976597885342   m
