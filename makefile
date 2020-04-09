@@ -18,8 +18,10 @@ DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
 
 DAMPE_INC=/DAMPESW/Event/include
 DAMPE_LIB=/DAMPESW/Event
-DAMPE_INC_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include
-DAMPE_LIB_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib
+#DAMPE_INC_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include
+#DAMPE_LIB_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib
+DAMPE_INC_CNAF=/storage/gpfs_data/dampe/users/ecatanzani/Softwares/DAMPE/Event/include
+DAMPE_LIB_CNAF=/storage/gpfs_data/dampe/users/ecatanzani/Softwares/DAMPE/Event
 
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
