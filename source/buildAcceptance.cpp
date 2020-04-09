@@ -107,39 +107,6 @@ inline std::shared_ptr<TH1D> buildHistoFromVector(
     return histo;
 }
 
-inline std::vector<bool> build_list_of_active_filters(
-    const acceptance_active_cuts active_cuts,
-    const bool filter_maxElater_cut,
-    const bool filter_maxBarLayer_cut,
-    const bool filter_BGOTrackContainment_cut,
-    const bool filter_nBarLayer13_cut,
-    const bool filter_maxRms_cut,
-    const bool filter_track_selection_cut,
-    const bool filter_xtrl_cut,
-    const bool filter_psd_charge_cut)
-{
-    std::vector<bool> list_of_filters;
-
-    if (active_cuts.maxElater)
-        list_of_filters.push_back(filter_maxElater_cut);
-    if (active_cuts.maxBarLayer)
-        list_of_filters.push_back(filter_maxBarLayer_cut);
-    if (active_cuts.BGOTrackContainment)
-        list_of_filters.push_back(filter_BGOTrackContainment_cut);
-    if (active_cuts.nBarLayer13)
-        list_of_filters.push_back(filter_nBarLayer13_cut);
-    if (active_cuts.maxRms)
-        list_of_filters.push_back(filter_maxRms_cut);
-    if (active_cuts.track_selection)
-        list_of_filters.push_back(filter_track_selection_cut);
-    if (active_cuts.xtrl)
-        list_of_filters.push_back(filter_xtrl_cut);
-    if (active_cuts.psd_charge)
-        list_of_filters.push_back(filter_psd_charge_cut);
-
-    return list_of_filters;
-}
-
 void buildAcceptance(
     const std::string accInputPath,
     const bool verbose,
@@ -357,6 +324,7 @@ void buildAcceptance(
         bool filter_psd_charge_cut = false;
 
         best_track event_best_track;
+        bool all_event_filter = false;
 
         // **** First cuts ****
         
@@ -366,30 +334,35 @@ void buildAcceptance(
             if (active_cuts.maxElater)
             {
                 filter_maxElater_cut = maxElater_cut(bgorec, acceptance_cuts, bgoTotalE);
+                all_event_filter = filter_maxElater_cut;
                 if (filter_maxElater_cut)
                     h_maxElateral_cut.Fill(simuEnergy * _GeV);
             }
             if (active_cuts.maxBarLayer)
             {
                 filter_maxBarLayer_cut = maxBarLayer_cut(bgohits, nBgoHits);
+                all_event_filter *= filter_maxBarLayer_cut;
                 if (filter_maxBarLayer_cut)
                     h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
             }
             if (active_cuts.BGOTrackContainment)
             {
                 filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
+                all_event_filter *= filter_BGOTrackContainment_cut;
                 if (filter_BGOTrackContainment_cut)
                     h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
             }
             if (active_cuts.nBarLayer13)
             {
                 filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
+                all_event_filter *= filter_nBarLayer13_cut;
                 if (filter_nBarLayer13_cut)
                     h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
             }
             if (active_cuts.maxRms)
             {
                 filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
+                all_event_filter *= filter_maxRms_cut;
                 if (filter_maxRms_cut)
                     h_maxRms_cut.Fill(simuEnergy * _GeV);
             }
@@ -403,50 +376,36 @@ void buildAcceptance(
                         stktracks,
                         acceptance_cuts,
                         event_best_track);
+                all_event_filter *= filter_track_selection_cut;
                 if (filter_track_selection_cut)
                     h_track_selection_cut.Fill(simuEnergy * _GeV);
             }
             if (active_cuts.xtrl)
             {
                 filter_xtrl_cut = xtrl_cut(sumRms, fracLayer, acceptance_cuts);
+                all_event_filter *= filter_xtrl_cut;
                 if (filter_xtrl_cut)
                     h_xtrl_cut.Fill(simuEnergy * _GeV);
             }
             if (active_cuts.psd_charge)
             {
                 filter_psd_charge_cut = psd_charge_cut(psdhits, bgorec, acceptance_cuts, event_best_track);
+                all_event_filter *= filter_psd_charge_cut;
                 if (filter_psd_charge_cut)
                     h_psd_charge_cut.Fill(simuEnergy * _GeV);
             }
 
             // **** All-cuts ****
-
-            std::vector<bool> list_of_filters =
-                build_list_of_active_filters(
-                    active_cuts,
-                    filter_maxElater_cut,
-                    filter_maxBarLayer_cut,
-                    filter_BGOTrackContainment_cut,
-                    filter_nBarLayer13_cut,
-                    filter_maxRms_cut,
-                    filter_track_selection_cut,
-                    filter_xtrl_cut,
-                    filter_psd_charge_cut);
-
-            bool all_event_filter = true;
-            for (auto it = list_of_filters.begin(); it != list_of_filters.end(); ++it)
-                if (!*it)
-                {
-                    all_event_filter = false;
-                    break;
-                }
             if (all_event_filter)
                 h_all_cut.Fill(simuEnergy * _GeV);
         }
     }
 
     if (verbose)
-        std::cout << "\n\nFiltered events: " << h_all_cut.GetEntries() << "/" << nevents << "\n\n";
+    {
+        std::cout << "\n\ngeometric filtered events: " << h_all_cut.GetEntries() << "/" << nevents << std::endl;
+        std::cout << std::endl << "all-cut filtered events: " << h_all_cut.GetEntries() << "/" << nevents << "\n\n";
+    }
 
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
 
