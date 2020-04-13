@@ -66,7 +66,6 @@ def main(args=None):
     
     if len(final_binning):
         with open(opts.output, "w") as out_binning:
-            out_binning.write("######### Energy log binning #########\n\n")
             for elm in final_binning:
                 out_binning.write(str(elm))
                 out_binning.write("\n")
