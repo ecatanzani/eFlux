@@ -23,11 +23,15 @@ def getListOfFiles(condor_wd):
 
 def compute_final_histos(condor_dir_list, opts):
     h_incoming = TH1D()
+    h_gometric_cut = TH1D()
     h_maxElateral_cut = TH1D()
     h_maxBarLayer_cut = TH1D()
     h_BGOTrackContainment_cut = TH1D()
     h_nBarLayer13_cut = TH1D()
     h_maxRms_cut = TH1D()
+    h_track_selection_cut = TH1D()
+    h_xtrl_cut = TH1D()
+    h_psd_charge_cut = TH1D()
     h_all_cut = TH1D()
 
     for dIdx, tmp_dir in enumerate(condor_dir_list):
@@ -51,19 +55,27 @@ def compute_final_histos(condor_dir_list, opts):
         
         # Reading histos
         h_incoming_tmp = rFile.Get("h_incoming")
+        h_gometric_cut_tmp = rFile.Get("h_gometric_cut")
         h_maxElateral_cut_tmp = rFile.Get("h_maxElateral_cut")
         h_maxBarLayer_cut_tmp = rFile.Get("h_maxBarLayer_cut")
         h_BGOTrackContainment_cut_tmp = rFile.Get("h_BGOTrackContainment_cut")
         h_nBarLayer13_cut_tmp = rFile.Get("h_nBarLayer13_cut")
         h_maxRms_cut_tmp = rFile.Get("h_maxRms_cut")
+        h_track_selection_cut_tmp = rFile.Get("h_track_selection_cut")
+        h_xtrl_cut_tmp = rFile.Get("h_xtrl_cut")
+        h_psd_charge_cut_tmp = rFile.Get("h_psd_charge_cut")
         h_all_cut_tmp = rFile.Get("h_all_cut")
         
         h_incoming_tmp.SetDirectory(0)
+        h_gometric_cut_tmp.SetDirectory(0)
         h_maxElateral_cut_tmp.SetDirectory(0)
         h_maxBarLayer_cut_tmp.SetDirectory(0)
         h_BGOTrackContainment_cut_tmp.SetDirectory(0)
         h_nBarLayer13_cut_tmp.SetDirectory(0)
         h_maxRms_cut_tmp.SetDirectory(0)
+        h_track_selection_cut_tmp.SetDirectory(0)
+        h_xtrl_cut_tmp.SetDirectory(0)
+        h_psd_charge_cut_tmp.SetDirectory(0)
         h_all_cut_tmp.SetDirectory(0)
 
         # Clone output file
@@ -72,19 +84,27 @@ def compute_final_histos(condor_dir_list, opts):
         # Add histos
         if dIdx == 0:
             h_incoming = h_incoming_tmp.Clone("h_incoming")
+            h_gometric_cut = h_gometric_cut_tmp.Clone("h_gometric_cut")
             h_maxElateral_cut = h_maxElateral_cut_tmp.Clone("h_maxElateral_cut")
             h_maxBarLayer_cut = h_maxBarLayer_cut_tmp.Clone("h_maxBarLayer_cut")
             h_BGOTrackContainment_cut = h_BGOTrackContainment_cut_tmp.Clone("h_BGOTrackContainment_cut")
             h_nBarLayer13_cut = h_nBarLayer13_cut_tmp.Clone("h_nBarLayer13_cut")
             h_maxRms_cut = h_maxRms_cut_tmp.Clone("h_maxRms_cut")
+            h_track_selection_cut = h_track_selection_cut_tmp.Clone("h_track_selection_cut")
+            h_xtrl_cut = h_xtrl_cut_tmp.Clone("h_xtrl_cut")
+            h_psd_charge_cut = h_psd_charge_cut_tmp.Clone("h_psd_charge_cut")
             h_all_cut = h_all_cut_tmp.Clone("h_all_cut")
         else:
             h_incoming.Add(h_incoming_tmp)
+            h_gometric_cut.Add(h_gometric_cut_tmp)
             h_maxElateral_cut.Add(h_maxElateral_cut_tmp)
             h_maxBarLayer_cut.Add(h_maxBarLayer_cut_tmp)
             h_BGOTrackContainment_cut.Add(h_BGOTrackContainment_cut_tmp)
             h_nBarLayer13_cut.Add(h_nBarLayer13_cut_tmp)
             h_maxRms_cut.Add(h_maxRms_cut_tmp)
+            h_track_selection_cut.Add(h_track_selection_cut_tmp)
+            h_xtrl_cut.Add(h_xtrl_cut_tmp)
+            h_psd_charge_cut.Add(h_psd_charge_cut_tmp)
             h_all_cut.Add(h_all_cut_tmp)
 
     # Create output file for full histos
@@ -98,11 +118,15 @@ def compute_final_histos(condor_dir_list, opts):
 
     # Writing final histos to file
     h_incoming.Write()
+    h_gometric_cut.Write()
     h_maxElateral_cut.Write()
     h_maxBarLayer_cut.Write()
     h_BGOTrackContainment_cut.Write()
     h_nBarLayer13_cut.Write()
     h_maxRms_cut.Write()
+    h_track_selection_cut.Write()
+    h_xtrl_cut.Write()
+    h_psd_charge_cut.Write()
     h_all_cut.Write()
 
     # Closing output file
