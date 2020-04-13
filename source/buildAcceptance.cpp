@@ -403,7 +403,7 @@ void buildAcceptance(
 
     if (verbose)
     {
-        std::cout << "\n\ngeometric filtered events: " << h_all_cut.GetEntries() << "/" << nevents << std::endl;
+        std::cout << "\n\ngeometric filtered events: " << h_gometric_cut.GetEntries() << "/" << nevents << std::endl;
         std::cout << std::endl << "all-cut filtered events: " << h_all_cut.GetEntries() << "/" << nevents << "\n\n";
     }
 
