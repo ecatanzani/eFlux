@@ -70,6 +70,8 @@ def main(args=None):
             for elm in final_binning:
                 out_binning.write(str(elm))
                 out_binning.write("\n")
+    else:
+        print("No correct bin found. Nothing has been written to disk")
     
 
 if __name__ == "__main__":
