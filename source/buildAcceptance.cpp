@@ -420,7 +420,7 @@ void buildAcceptance(
     std::vector<double> energyValues(h_acceptance->GetXaxis()->GetNbins(), 0);
     std::vector<double> acceptanceValues(energyValues.size(), 0);
     std::vector<double> geo_acceptanceValues(energyValues.size(), 0);
-    for (auto it = logEBins.begin(); it != logEBins.end(); ++it)
+    for (auto it = logEBins.begin(); it != (logEBins.end()-1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
         energyValues[index] = wtsydp(*it, *(it + 1), -1);

@@ -111,7 +111,7 @@ void generateFinalGraph(
     std::vector<double> acceptanceValues_psd_charge_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
 
-    for (auto it = logEBins.begin(); it != logEBins.end(); ++it)
+    for (auto it = logEBins.begin(); it != (logEBins.end()-1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
         energyValues[index] = wtsydp(*it, *(it + 1), -1);
