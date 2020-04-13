@@ -1,5 +1,8 @@
 #include "myHeader.h"
 
+#include <fstream>
+#include <sstream>
+
 std::string getWorkingDir(const char* exePath)
 {
     std::string tmpPath(exePath);
@@ -70,5 +73,28 @@ std::vector<float> createLogBinning(const energy_cuts e_cuts)
     }
     binning[e_cuts.e_bins] = value;
 
+    return binning;
+}
+
+std::vector<float> readLogBinning(const std::string wd)
+{
+    std::string cwd = wd;
+    std::size_t index = cwd.find("eFlux");
+    std::string configPath = cwd.substr(0, index + 5);
+    configPath += "/config/binningConfig.txt";
+    std::ifstream input_file(configPath.c_str());
+    if (!input_file.is_open())
+    {
+        std::cerr << "\nERROR 100! File not open " << configPath << "\n\n";
+        exit(100);
+    }
+    std::string input_string((std::istreambuf_iterator<char>(input_file)), (std::istreambuf_iterator<char>()));
+    input_file.close();
+    std::string tmp_str;
+    std::istringstream input_stream(input_string);
+    std::string::size_type sz;
+    std::vector<float> binning;
+    while (input_stream >> tmp_str)
+        binning.push_back(stod(tmp_str, &sz));
     return binning;
 }
