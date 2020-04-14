@@ -409,31 +409,104 @@ void buildAcceptance(
 
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
 
-    auto h_acceptance = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance"));
-    auto h_geo_acceptance = static_cast<TH1D *>(h_gometric_cut.Clone("h_geo_acceptance"));
-    h_acceptance->SetTitle("Acceptance");
-    h_acceptance->Scale(genSurface);
-    h_acceptance->Divide(&h_incoming);
-    h_geo_acceptance->SetTitle("Geometric Acceptance");
-    h_geo_acceptance->Scale(genSurface);
-    h_geo_acceptance->Divide(&h_incoming);
-    std::vector<double> energyValues(h_acceptance->GetXaxis()->GetNbins(), 0);
-    std::vector<double> acceptanceValues(energyValues.size(), 0);
-    std::vector<double> geo_acceptanceValues(energyValues.size(), 0);
+    // Building acceptance histos
+    auto h_acceptance_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_acceptance_gometric_cut"));
+    auto h_acceptance_maxElateral_cut = static_cast<TH1D *>(h_maxElateral_cut.Clone("h_acceptance_maxElateral_cut"));
+    auto h_acceptance_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_acceptance_maxBarLayer_cut"));
+    auto h_acceptance_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_acceptance_BGOTrackContainment_cut"));
+    auto h_acceptance_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_acceptance_nBarLayer13_cut"));
+    auto h_acceptance_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_acceptance_maxRms_cut"));
+    auto h_acceptance_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_acceptance_track_selection_cut"));
+    auto h_acceptance_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_acceptance_xtrl_cut"));
+    auto h_acceptance_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_acceptance_psd_charge_cut"));
+    auto h_acceptance_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance_all_cut"));
+
+    h_acceptance_gometric_cut->Scale(genSurface);
+    h_acceptance_maxElateral_cut->Scale(genSurface);
+    h_acceptance_maxBarLayer_cut->Scale(genSurface);
+    h_acceptance_BGOTrackContainment_cut->Scale(genSurface);
+    h_acceptance_nBarLayer13_cut->Scale(genSurface);
+    h_acceptance_maxRms_cut->Scale(genSurface);
+    h_acceptance_track_selection_cut->Scale(genSurface);
+    h_acceptance_xtrl_cut->Scale(genSurface);
+    h_acceptance_psd_charge_cut->Scale(genSurface);
+    h_acceptance_all_cut->Scale(genSurface);
+
+    h_acceptance_gometric_cut->Divide(&h_incoming);
+    h_acceptance_maxElateral_cut->Divide(&h_incoming);
+    h_acceptance_maxBarLayer_cut->Divide(&h_incoming);
+    h_acceptance_BGOTrackContainment_cut->Divide(&h_incoming);
+    h_acceptance_nBarLayer13_cut->Divide(&h_incoming);
+    h_acceptance_maxRms_cut->Divide(&h_incoming);
+    h_acceptance_track_selection_cut->Divide(&h_incoming);
+    h_acceptance_xtrl_cut->Divide(&h_incoming);
+    h_acceptance_psd_charge_cut->Divide(&h_incoming);
+    h_acceptance_all_cut->Divide(&h_incoming);
+
+    // Builing vectors
+    std::vector<double> energyValues(h_acceptance_maxElateral_cut->GetXaxis()->GetNbins(), 0);
+
+    std::vector<double> acceptanceValues_gometric_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_maxElateral_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_maxBarLayer_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_BGOTrackContainment_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_nBarLayer13_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_maxRms_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_track_selection_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_xtrl_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_psd_charge_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
+
     for (auto it = logEBins.begin(); it != (logEBins.end()-1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
         energyValues[index] = wtsydp(*it, *(it + 1), -1);
-        acceptanceValues[index] = h_acceptance->GetBinContent(index + 1);
-        geo_acceptanceValues[index] = h_geo_acceptance->GetBinContent(index + 1);
+        acceptanceValues_gometric_cut[index] = h_acceptance_gometric_cut->GetBinContent(index + 1);
+        acceptanceValues_maxElateral_cut[index] = h_acceptance_maxElateral_cut->GetBinContent(index + 1);
+        acceptanceValues_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinContent(index + 1);
+        acceptanceValues_BGOTrackContainment_cut[index] = h_acceptance_BGOTrackContainment_cut->GetBinContent(index + 1);
+        acceptanceValues_nBarLayer13_cut[index] = h_acceptance_nBarLayer13_cut->GetBinContent(index + 1);
+        acceptanceValues_maxRms_cut[index] = h_acceptance_maxRms_cut->GetBinContent(index + 1);
+        acceptanceValues_track_selection_cut[index] = h_acceptance_track_selection_cut->GetBinContent(index + 1);
+        acceptanceValues_xtrl_cut[index] = h_acceptance_xtrl_cut->GetBinContent(index + 1);
+        acceptanceValues_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinContent(index + 1);
+        acceptanceValues_all_cut[index] = h_acceptance_all_cut->GetBinContent(index + 1);
     }
 
-    TGraph acceptanceGr(acceptanceValues.size(), &energyValues[0], &acceptanceValues[0]);
-    TGraph geo_acceptanceGr(geo_acceptanceValues.size(), &energyValues[0], &geo_acceptanceValues[0]);
-    acceptanceGr.SetName("acceptance");
-    acceptanceGr.SetTitle("Acceptance");
-    geo_acceptanceGr.SetName("geo_acceptance");
-    geo_acceptanceGr.SetTitle("Geometric Acceptance");
+    // Building graphs
+    TGraph gr_acceptance_gometric_cut(energyValues.size(), &energyValues[0], &acceptanceValues_gometric_cut[0]);
+    TGraph gr_acceptance_maxElateral_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElateral_cut[0]);
+    TGraph gr_acceptance_maxBarLayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxBarLayer_cut[0]);
+    TGraph gr_acceptance_BGOTrackContainment_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGOTrackContainment_cut[0]);
+    TGraph gr_acceptance_nBarLayer13_cut(energyValues.size(), &energyValues[0], &acceptanceValues_nBarLayer13_cut[0]);
+    TGraph gr_acceptance_maxRms_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxRms_cut[0]);
+    TGraph gr_acceptance_track_selection_cut(energyValues.size(), &energyValues[0], &acceptanceValues_track_selection_cut[0]);
+    TGraph gr_acceptance_xtrl_cut(energyValues.size(), &energyValues[0], &acceptanceValues_xtrl_cut[0]);
+    TGraph gr_acceptance_psd_charge_cut(energyValues.size(), &energyValues[0], &acceptanceValues_psd_charge_cut[0]);
+    TGraph gr_acceptance_all_cut(energyValues.size(), &energyValues[0], &acceptanceValues_all_cut[0]);
+
+    gr_acceptance_gometric_cut.SetName("gr_acceptance_gometric_cut");
+    gr_acceptance_maxElateral_cut.SetName("gr_acceptance_maxElateral_cut");
+    gr_acceptance_maxBarLayer_cut.SetName("gr_acceptance_maxBarLayer_cut");
+    gr_acceptance_BGOTrackContainment_cut.SetName("gr_acceptance_BGOTrackContainment_cut");
+    gr_acceptance_nBarLayer13_cut.SetName("gr_acceptance_nBarLayer13_cut");
+    gr_acceptance_maxRms_cut.SetName("gr_acceptance_maxRms_cut");
+    gr_acceptance_track_selection_cut.SetName("gr_acceptance_track_selection_cut");
+    gr_acceptance_xtrl_cut.SetName("gr_acceptance_xtrl_cut");
+    gr_acceptance_psd_charge_cut.SetName("gr_acceptance_psd_charge_cut");
+    gr_acceptance_all_cut.SetName("gr_acceptance_all_cut");
+
+    gr_acceptance_gometric_cut.SetTitle("Acceptance - geometric cut");
+    gr_acceptance_maxElateral_cut.SetTitle("Acceptance - maxElateral cut");
+    gr_acceptance_maxBarLayer_cut.SetTitle("Acceptance - maxBarLayer cut");
+    gr_acceptance_BGOTrackContainment_cut.SetTitle("Acceptance - BGOTrackContainment cut");
+    gr_acceptance_nBarLayer13_cut.SetTitle("Acceptance - nBarLayer13 cut");
+    gr_acceptance_maxRms_cut.SetTitle("Acceptance - maxRms cut");
+    gr_acceptance_track_selection_cut.SetTitle("Acceptance - track selection cut");
+    gr_acceptance_xtrl_cut.SetTitle("Acceptance - XTRL cut");
+    gr_acceptance_psd_charge_cut.SetTitle("Acceptance - PSD charge selection cut");
+    gr_acceptance_all_cut.SetTitle("Acceptance - all cut");
+
 
     // Write histos to file
     h_incoming.Write();
@@ -452,9 +525,17 @@ void buildAcceptance(
     auto acceptanceDIr = outFile.mkdir("Acceptance");
     acceptanceDIr->cd();
     
-    // Write final TGraph
-    acceptanceGr.Write();
-    geo_acceptanceGr.Write();
+    // Write final TGraphs
+    gr_acceptance_gometric_cut.Write();
+    gr_acceptance_maxElateral_cut.Write();
+    gr_acceptance_maxBarLayer_cut.Write();
+    gr_acceptance_BGOTrackContainment_cut.Write();
+    gr_acceptance_nBarLayer13_cut.Write();
+    gr_acceptance_maxRms_cut.Write();
+    gr_acceptance_track_selection_cut.Write();
+    gr_acceptance_xtrl_cut.Write();
+    gr_acceptance_psd_charge_cut.Write();
+    gr_acceptance_all_cut.Write();
 
     // Return to main TFile directory
     outFile.cd();
