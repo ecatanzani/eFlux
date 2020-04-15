@@ -117,8 +117,7 @@ bool maxBarLayer_cut(
 
 bool BGOTrackContainment_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    const acceptance_conf acceptance_cuts,
-    bool &passEvent)
+    const acceptance_conf acceptance_cuts)
 {
     bool passed_bgo_containment_cut = false;
 

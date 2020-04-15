@@ -47,8 +47,7 @@ extern bool maxBarLayer_cut(
 
 extern bool BGOTrackContainment_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
-    const acceptance_conf acceptance_cuts,
-    bool &passEvent);
+    const acceptance_conf acceptance_cuts);
 
 extern bool nBarLayer13_cut(
     const std::shared_ptr<DmpEvtBgoHits> bgohits,

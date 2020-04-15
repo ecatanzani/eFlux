@@ -194,9 +194,6 @@ void buildAcceptance(
         // Get chain event
         dmpch->GetEvent(evIdx);
 
-        // GOOD EVENT variable
-        bool passEvent = true;
-
         // Event printout
         if (verbose)
             if (((evIdx + 1) % _kStep) == 0)
@@ -347,7 +344,7 @@ void buildAcceptance(
             }
             if (active_cuts.BGOTrackContainment)
             {
-                filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts, passEvent);
+                filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts);
                 all_event_filter *= filter_BGOTrackContainment_cut;
                 if (filter_BGOTrackContainment_cut)
                     h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
