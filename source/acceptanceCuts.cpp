@@ -129,9 +129,6 @@ bool BGOTrackContainment_cut(
     bgoRec_intercept[1] = bgorec->GetInterceptXZ();
     bgoRec_intercept[0] = bgorec->GetInterceptYZ();
 
-    TVector3 bgoRecEntrance;
-    TVector3 bgoRecExit;
-
     double topZ = BGO_TopZ;
     double topX = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
     double topY = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
