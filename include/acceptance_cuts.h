@@ -30,6 +30,9 @@ struct best_track
 // DAMPE struct
 #define DAMPE_bgo_nLayers 14
 #define nSTKladders 192
+#define BGO_TopZ 46
+#define BGO_BottomZ 448
+#define BGO_SideXY 301.25
 
 extern bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
 
