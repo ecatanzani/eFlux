@@ -1,11 +1,8 @@
-/*
-    Consider this repo as a manual: https://github.com/DAMPEEU/DmpTools/blob/master/HE_skimmer/code/app/main.cc#L318
-*/
-
 #include "myHeader.h"
 #include "acceptance.h"
 #include "acceptance_cuts.h"
 #include "energyMatch.h"
+#include "DmpBgoContainer.h"
 
 #include "TClonesArray.h"
 
@@ -214,100 +211,11 @@ void buildAcceptance(
         if (bgoTotalE == 0)
             continue;
 
-        std::vector<std::vector<short>> layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>());  // arrange BGO hits by layer
-        std::vector<std::vector<short>> layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>()); // arrange BGO bars by layer
-
-        // Get the number of BGO hits
-        int nBgoHits = bgohits->GetHittedBarNumber();
-
-        // Scan BGO hits
-        for (int ihit = 0; ihit < nBgoHits; ++ihit)
-        {
-            // Get layer ID
-            auto layerID = bgohits->GetLayerID(ihit);
-            // Get bar global ID
-            auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
-            layerBarIndex[layerID].push_back(ihit);
-            layerBarNumber[layerID].push_back(iBar);
-        }
-
-        std::vector<double> rmsLayer(DAMPE_bgo_nLayers, 0);
-        std::vector<double> fracLayer(DAMPE_bgo_nLayers, 0);
-        std::vector<double> eLayer(DAMPE_bgo_nLayers, 0);
-        std::vector<double> eCoreLayer(DAMPE_bgo_nLayers, 0);
-        std::vector<double> eCoreCoord(DAMPE_bgo_nLayers, 0);
-        double sumRms = 0;
-
-        for (int lay = 0; lay < DAMPE_bgo_nLayers; ++lay)
-        {
-            // Setting default value for maximum bar index and energy for each layer
-            int imax = -1;
-            if (layerBarIndex[lay].size())
-                imax = layerBarIndex[lay].at(0);
-            double maxE = (bgohits->fEnergy)[0];
-
-            // Find the maximum of the nergy release in a certain layer, together with the bar ID
-            for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
-            {
-                int ihit = *it;
-                double hitE = (bgohits->fEnergy)[ihit];
-                if (hitE > maxE)
-                {
-                    maxE = hitE;
-                    imax = ihit;
-                }
-            }
-
-            rmsLayer[lay] = 0;
-            fracLayer[lay] = 0;
-            eLayer[lay] = 0;
-
-            if (maxE)
-            {
-                // Find the bar index regarding the maximum energy release in a certain layer
-                auto iBarMax = ((bgohits->fGlobalBarID)[imax] >> 6) & 0x1f;
-                // Register the maximum energy release of a layer
-                eCoreLayer[lay] = maxE;
-                // Find the coordinate (weighted by the nergy release) of the bar with the biggest energy release in a certain layer
-                auto coordMax = lay % 2 ? bgohits->GetHitX(imax) : bgohits->GetHitY(imax);
-                eCoreCoord[lay] = maxE * coordMax;
-                // Consider the nearest bar respect to the max one in order to better interpolate the position
-                if (iBarMax > 0 && iBarMax < 21)
-                {
-                    for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
-                    {
-                        auto ihit = *it;
-                        auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
-                        if (iBar - iBarMax == 1 || iBar - iBarMax == -1)
-                        {
-                            double hitE = (bgohits->fEnergy)[ihit];
-                            double thisCoord = lay % 2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
-                            eCoreLayer[lay] += hitE;
-                            eCoreCoord[lay] += hitE * thisCoord;
-                        }
-                    }
-                }
-                // Get the CoG coordinate of the max energy bar cluster
-                eCoreCoord[lay] /= eCoreLayer[lay];
-                // Get the energy RMS of a layer
-                for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
-                {
-                    auto ihit = *it;
-                    auto hitE = (bgohits->fEnergy)[ihit];
-                    auto thisCoord = lay % 2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
-                    eLayer[lay] += hitE;
-                    rmsLayer[lay] += hitE * (thisCoord - eCoreCoord[lay]) * (thisCoord - eCoreCoord[lay]);
-                }
-                rmsLayer[lay] = sqrt(rmsLayer[lay] / eLayer[lay]);
-                fracLayer[lay] = eLayer[lay] / bgoTotalE;
-                if (layerBarNumber[lay].size() <= 1)
-                    rmsLayer[lay] = 0;
-            }
-            sumRms += rmsLayer[lay];
-        }
-
-        // Build XTR
-        //auto Xtr = pow(sumRms, 4) * fracLayer[13] / 8000000.;
+        DmpBgoContainer bgoVault(DAMPE_bgo_nLayers);
+        bgoVault.scanBGOHits(
+            bgohits,
+            bgoTotalE,
+            DAMPE_bgo_nLayers);
 
         /* ********************************* */
 
@@ -324,11 +232,11 @@ void buildAcceptance(
         bool all_event_filter = false;
 
         // **** First cuts ****
-        
+
         if (geometric_cut(simu_primaries))
         {
             h_gometric_cut.Fill(simuEnergy * _GeV);
-            if (active_cuts.maxElater)
+            if (active_cuts.maxElayer)
             {
                 filter_maxElayer_cut = maxElayer_cut(bgorec, acceptance_cuts, bgoTotalE);
                 all_event_filter = filter_maxElayer_cut;
@@ -337,7 +245,7 @@ void buildAcceptance(
             }
             if (active_cuts.maxBarLayer)
             {
-                filter_maxBarLayer_cut = maxBarLayer_cut(bgohits, nBgoHits);
+                filter_maxBarLayer_cut = maxBarLayer_cut(bgohits);
                 all_event_filter *= filter_maxBarLayer_cut;
                 if (filter_maxBarLayer_cut)
                     h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
@@ -351,14 +259,21 @@ void buildAcceptance(
             }
             if (active_cuts.nBarLayer13)
             {
-                filter_nBarLayer13_cut = nBarLayer13_cut(bgohits, layerBarNumber[13], bgoTotalE);
+                filter_nBarLayer13_cut = nBarLayer13_cut(
+                    bgohits, 
+                    bgoVault.GetSingleLayerBarNumber(13), 
+                    bgoTotalE);
                 all_event_filter *= filter_nBarLayer13_cut;
                 if (filter_nBarLayer13_cut)
                     h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
             }
             if (active_cuts.maxRms)
             {
-                filter_maxRms_cut = maxRms_cut(layerBarNumber, rmsLayer, bgoTotalE, acceptance_cuts);
+                filter_maxRms_cut = maxRms_cut(
+                    bgoVault.GetLayerBarNumber(), 
+                    bgoVault.GetRmsLayer(), 
+                    bgoTotalE, 
+                    acceptance_cuts);
                 all_event_filter *= filter_maxRms_cut;
                 if (filter_maxRms_cut)
                     h_maxRms_cut.Fill(simuEnergy * _GeV);
@@ -379,7 +294,7 @@ void buildAcceptance(
             }
             if (active_cuts.xtrl)
             {
-                filter_xtrl_cut = xtrl_cut(sumRms, fracLayer, acceptance_cuts);
+                filter_xtrl_cut = xtrl_cut(bgoVault.GetSumRMS(), bgoVault.GetFracLayer(), acceptance_cuts);
                 all_event_filter *= filter_xtrl_cut;
                 if (filter_xtrl_cut)
                     h_xtrl_cut.Fill(simuEnergy * _GeV);
@@ -401,14 +316,15 @@ void buildAcceptance(
     if (verbose)
     {
         std::cout << "\n\ngeometric filtered events: " << h_gometric_cut.GetEntries() << "/" << nevents << std::endl;
-        std::cout << std::endl << "all-cut filtered events: " << h_all_cut.GetEntries() << "/" << nevents << "\n\n";
+        std::cout << std::endl
+                  << "all-cut filtered events: " << h_all_cut.GetEntries() << "/" << nevents << "\n\n";
     }
 
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
 
     // Building acceptance histos
     auto h_acceptance_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_acceptance_gometric_cut"));
-    auto h_acceptance_maxElateral_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_acceptance_maxElateral_cut"));
+    auto h_acceptance_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_acceptance_maxElayer_cut"));
     auto h_acceptance_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_acceptance_maxBarLayer_cut"));
     auto h_acceptance_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_acceptance_BGOTrackContainment_cut"));
     auto h_acceptance_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_acceptance_nBarLayer13_cut"));
@@ -419,7 +335,7 @@ void buildAcceptance(
     auto h_acceptance_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance_all_cut"));
 
     h_acceptance_gometric_cut->Scale(genSurface);
-    h_acceptance_maxElateral_cut->Scale(genSurface);
+    h_acceptance_maxElayer_cut->Scale(genSurface);
     h_acceptance_maxBarLayer_cut->Scale(genSurface);
     h_acceptance_BGOTrackContainment_cut->Scale(genSurface);
     h_acceptance_nBarLayer13_cut->Scale(genSurface);
@@ -430,7 +346,7 @@ void buildAcceptance(
     h_acceptance_all_cut->Scale(genSurface);
 
     h_acceptance_gometric_cut->Divide(&h_incoming);
-    h_acceptance_maxElateral_cut->Divide(&h_incoming);
+    h_acceptance_maxElayer_cut->Divide(&h_incoming);
     h_acceptance_maxBarLayer_cut->Divide(&h_incoming);
     h_acceptance_BGOTrackContainment_cut->Divide(&h_incoming);
     h_acceptance_nBarLayer13_cut->Divide(&h_incoming);
@@ -441,10 +357,10 @@ void buildAcceptance(
     h_acceptance_all_cut->Divide(&h_incoming);
 
     // Builing vectors
-    std::vector<double> energyValues(h_acceptance_maxElateral_cut->GetXaxis()->GetNbins(), 0);
+    std::vector<double> energyValues(h_acceptance_maxElayer_cut->GetXaxis()->GetNbins(), 0);
 
     std::vector<double> acceptanceValues_gometric_cut(energyValues.size(), 0);
-    std::vector<double> acceptanceValues_maxElateral_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_maxElayer_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_maxBarLayer_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_BGOTrackContainment_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_nBarLayer13_cut(energyValues.size(), 0);
@@ -454,12 +370,12 @@ void buildAcceptance(
     std::vector<double> acceptanceValues_psd_charge_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
 
-    for (auto it = logEBins.begin(); it != (logEBins.end()-1); ++it)
+    for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
         energyValues[index] = wtsydp(*it, *(it + 1), -1);
         acceptanceValues_gometric_cut[index] = h_acceptance_gometric_cut->GetBinContent(index + 1);
-        acceptanceValues_maxElateral_cut[index] = h_acceptance_maxElateral_cut->GetBinContent(index + 1);
+        acceptanceValues_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinContent(index + 1);
         acceptanceValues_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinContent(index + 1);
         acceptanceValues_BGOTrackContainment_cut[index] = h_acceptance_BGOTrackContainment_cut->GetBinContent(index + 1);
         acceptanceValues_nBarLayer13_cut[index] = h_acceptance_nBarLayer13_cut->GetBinContent(index + 1);
@@ -472,7 +388,7 @@ void buildAcceptance(
 
     // Building graphs
     TGraph gr_acceptance_gometric_cut(energyValues.size(), &energyValues[0], &acceptanceValues_gometric_cut[0]);
-    TGraph gr_acceptance_maxElateral_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElateral_cut[0]);
+    TGraph gr_acceptance_maxElayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElayer_cut[0]);
     TGraph gr_acceptance_maxBarLayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxBarLayer_cut[0]);
     TGraph gr_acceptance_BGOTrackContainment_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGOTrackContainment_cut[0]);
     TGraph gr_acceptance_nBarLayer13_cut(energyValues.size(), &energyValues[0], &acceptanceValues_nBarLayer13_cut[0]);
@@ -483,7 +399,7 @@ void buildAcceptance(
     TGraph gr_acceptance_all_cut(energyValues.size(), &energyValues[0], &acceptanceValues_all_cut[0]);
 
     gr_acceptance_gometric_cut.SetName("gr_acceptance_gometric_cut");
-    gr_acceptance_maxElateral_cut.SetName("gr_acceptance_maxElateral_cut");
+    gr_acceptance_maxElayer_cut.SetName("gr_acceptance_maxElayer_cut");
     gr_acceptance_maxBarLayer_cut.SetName("gr_acceptance_maxBarLayer_cut");
     gr_acceptance_BGOTrackContainment_cut.SetName("gr_acceptance_BGOTrackContainment_cut");
     gr_acceptance_nBarLayer13_cut.SetName("gr_acceptance_nBarLayer13_cut");
@@ -494,7 +410,7 @@ void buildAcceptance(
     gr_acceptance_all_cut.SetName("gr_acceptance_all_cut");
 
     gr_acceptance_gometric_cut.SetTitle("Acceptance - geometric cut");
-    gr_acceptance_maxElateral_cut.SetTitle("Acceptance - maxElateral cut");
+    gr_acceptance_maxElayer_cut.SetTitle("Acceptance - maxElateral cut");
     gr_acceptance_maxBarLayer_cut.SetTitle("Acceptance - maxBarLayer cut");
     gr_acceptance_BGOTrackContainment_cut.SetTitle("Acceptance - BGOTrackContainment cut");
     gr_acceptance_nBarLayer13_cut.SetTitle("Acceptance - nBarLayer13 cut");
@@ -503,7 +419,6 @@ void buildAcceptance(
     gr_acceptance_xtrl_cut.SetTitle("Acceptance - XTRL cut");
     gr_acceptance_psd_charge_cut.SetTitle("Acceptance - PSD charge selection cut");
     gr_acceptance_all_cut.SetTitle("Acceptance - all cut");
-
 
     // Write histos to file
     h_incoming.Write();
@@ -521,10 +436,10 @@ void buildAcceptance(
     // Create output acceptance dir in the output TFile
     auto acceptanceDIr = outFile.mkdir("Acceptance");
     acceptanceDIr->cd();
-    
+
     // Write final TGraphs
     gr_acceptance_gometric_cut.Write();
-    gr_acceptance_maxElateral_cut.Write();
+    gr_acceptance_maxElayer_cut.Write();
     gr_acceptance_maxBarLayer_cut.Write();
     gr_acceptance_BGOTrackContainment_cut.Write();
     gr_acceptance_nBarLayer13_cut.Write();
