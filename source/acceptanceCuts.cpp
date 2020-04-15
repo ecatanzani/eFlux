@@ -5,10 +5,6 @@ bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 {
     bool passed_geometric_cut = false;
 
-    double BGO_TopZ = 46; //  58.5 - 12.5 = 46, BGO sensitive top surface
-    //double BGO_BottomZ = 448;                   // 435.5 + 12.5 = 46, BGO sensitive bottom surface
-    double BGO_SideXY = 301.25; //288.75 + 12.5 = 301.25, BGO sensitive side surface
-
     TVector3 orgPosition;
     orgPosition.SetX(simu_primaries->pv_x);
     orgPosition.SetY(simu_primaries->pv_y);
@@ -68,7 +64,7 @@ bool maxElater_cut(
 {
     bool passed_maxELayerTotalE_cut = true;
 
-    int iMaxELayer = -1; // Index of the layer corresponding to the max energy
+    int iMaxELayer = -1;  // Index of the layer corresponding to the max energy
     double MaxELayer = 0; // Value of the max energy
 
     // Found the max energy value and layer
@@ -125,25 +121,31 @@ bool BGOTrackContainment_cut(
     bool &passEvent)
 {
     bool passed_bgo_containment_cut = false;
-    double BGO_TopZ = 46;
-    double BGO_BottomZ = 448;
+
     std::vector<double> bgoRec_slope(2);
     std::vector<double> bgoRec_intercept(2);
+
     bgoRec_slope[1] = bgorec->GetSlopeXZ();
     bgoRec_slope[0] = bgorec->GetSlopeYZ();
     bgoRec_intercept[1] = bgorec->GetInterceptXZ();
     bgoRec_intercept[0] = bgorec->GetInterceptYZ();
 
-    if ((bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0) ||
-        (bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0))
-        passEvent = false;
+    TVector3 bgoRecEntrance;
+    TVector3 bgoRecExit;
 
+    double topZ = BGO_TopZ;
     double topX = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
     double topY = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+
+    double bottomZ = BGO_BottomZ;
     double bottomX = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
     double bottomY = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
 
-    if (fabs(topX) < acceptance_cuts.shower_axis_delta && fabs(topY) < acceptance_cuts.shower_axis_delta && fabs(bottomX) < acceptance_cuts.shower_axis_delta && fabs(bottomY) < acceptance_cuts.shower_axis_delta)
+    if (
+        fabs(topX) < acceptance_cuts.shower_axis_delta &&
+        fabs(topY) < acceptance_cuts.shower_axis_delta &&
+        fabs(bottomX) < acceptance_cuts.shower_axis_delta &&
+        fabs(bottomY) < acceptance_cuts.shower_axis_delta)
         passed_bgo_containment_cut = true;
 
     return passed_bgo_containment_cut;
@@ -213,8 +215,6 @@ inline void link_ladders(std::vector<int> &LadderToLayer)
 inline void fill_BGO_vectors(
     TVector3 &bgoRecEntrance,
     TVector3 &bgoRecDirection,
-    const double BGO_TopZ,
-    const double BGO_SideXY,
     const std::shared_ptr<DmpEvtBgoRec> bgorec)
 {
     std::vector<double> bgoRec_slope(2, 0);
@@ -370,8 +370,7 @@ bool track_selection_cut(
     best_track &event_best_track)
 {
     bool passed_track_selection_cut = false;
-    double BGO_TopZ = 46;       // 58.5 - 12.5 = 46, BGO sensitive top surface
-    double BGO_SideXY = 301.25; // 288.75 + 12.5 = 301.25, BGO sensitive side surface
+    
     TVector3 bgoRecEntrance;
     TVector3 bgoRecDirection;
     std::vector<int> LadderToLayer(nSTKladders, -1);
@@ -381,8 +380,6 @@ bool track_selection_cut(
     fill_BGO_vectors(
         bgoRecEntrance,
         bgoRecDirection,
-        BGO_TopZ,
-        BGO_SideXY,
         bgorec);
 
     // Loop on the tracks
