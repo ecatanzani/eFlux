@@ -22,6 +22,13 @@
 
 #include "anyoption.h"
 
+// DAMPE struct
+const int DAMPE_bgo_nLayers = 14;
+const int nSTKladders = 192;
+const int BGO_TopZ = 46;
+const int BGO_BottomZ = 448;
+const int BGO_SideXY = 301.25;
+
 struct acceptance_conf
 {
     double min_event_energy;
@@ -43,7 +50,7 @@ struct acceptance_conf
 
 struct acceptance_active_cuts
 {
-    bool maxElater = false;
+    bool maxElayer = false;
     bool maxBarLayer = false;
     bool BGOTrackContainment = false;
     bool nBarLayer13 = false;
@@ -61,7 +68,7 @@ extern double wtsydp(
     const float minene,
     const float maxene,
     const float index);
-    
+
 extern void computeAcceptance(
     const std::string accInputPath,
     const bool verbose,
