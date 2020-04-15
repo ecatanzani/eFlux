@@ -66,30 +66,19 @@ bool maxElater_cut(
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE)
 {
-    // Get energy maximum along X and Y views
-    double ELayer_max_XZ = 0;
-    double ELayer_max_YZ = 0;
-
-    for (int lIdx = 1; lIdx < DAMPE_bgo_nLayers; lIdx += 2)
-    {
-        auto lEgy = bgorec->GetELayer(lIdx);
-        if (lEgy > ELayer_max_XZ)
-            ELayer_max_XZ = lEgy;
-    }
-
-    for (int lIdx = 1; lIdx < DAMPE_bgo_nLayers; lIdx += 1)
-    {
-        auto lEgy = bgorec->GetELayer(lIdx);
-        if (lEgy > ELayer_max_YZ)
-            ELayer_max_YZ = lEgy;
-    }
-
     bool passed_maxELayerTotalE_cut = true;
-    double MaxELayer;
-    if (ELayer_max_XZ > ELayer_max_YZ)
-        MaxELayer = ELayer_max_XZ;
-    else
-        MaxELayer = ELayer_max_YZ;
+    
+    int iMaxELayer = -1;            // Index of the layer corresponding to the max energy
+    double MaxELayer = 0;           // Value of the max energy
+    
+    // Found the max energy value and layer
+    for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
+        if ((bgo_rec->GetLayerEnergy())[lay] > MaxELayer)
+        {
+          MaxELayer = (bgorec->GetLayerEnergy())[idxLy];
+          iMaxELayer = idxLy;
+        }
+
     double rMaxELayerTotalE = MaxELayer / bgoTotalE;
     if (rMaxELayerTotalE > acceptance_cuts.energy_lRatio)
         passed_maxELayerTotalE_cut = false;
