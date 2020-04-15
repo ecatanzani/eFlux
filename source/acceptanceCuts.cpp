@@ -85,15 +85,13 @@ bool maxElayer_cut(
     return passed_maxELayerTotalE_cut;
 }
 
-bool maxBarLayer_cut(
-    const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    const int nBgoHits)
+bool maxBarLayer_cut(const std::shared_ptr<DmpEvtBgoHits> bgohits)
 {
     bool passed_maxBarLayer_cut = true;
     std::vector<short> barNumberMaxEBarLay1_2_3(3, -1); // Bar number of maxE bar in layer 1, 2, 3
     std::vector<double> MaxEBarLay1_2_3(3, 0);          // E of maxE bar in layer 1, 2, 3
 
-    for (int ihit = 0; ihit < nBgoHits; ++ihit)
+    for (int ihit = 0; ihit < bgohits->GetHittedBarNumber(); ++ihit)
     {
         auto hitE = (bgohits->fEnergy)[ihit];
         auto lay = bgohits->GetLayerID(ihit);
@@ -149,7 +147,7 @@ bool BGOTrackContainment_cut(
 
 bool nBarLayer13_cut(
     const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    const std::vector<short> &layerBarNumber,
+    const std::vector<short> layerBarNumber,
     const double bgoTotalE)
 {
     bool passed_nBarLayer13_cut = false;
@@ -171,8 +169,8 @@ bool nBarLayer13_cut(
 }
 
 bool maxRms_cut(
-    const std::vector<std::vector<short>> &layerBarNumber,
-    const std::vector<double> &rmsLayer,
+    const std::vector<std::vector<short>> layerBarNumber,
+    const std::vector<double> rmsLayer,
     const double bgoTotalE,
     const acceptance_conf acceptance_cuts)
 {
