@@ -102,11 +102,11 @@ void load_acceptance_struct(
         }
 
         // Load cuts
-        if (!strcmp(tmp_str.c_str(), "maxElater"))
+        if (!strcmp(tmp_str.c_str(), "maxElayer"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-                active_cuts.maxElater = true;
+                active_cuts.maxElayer = true;
         }
         if (!strcmp(tmp_str.c_str(), "maxBarLayer"))
         {
