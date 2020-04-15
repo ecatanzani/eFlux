@@ -36,7 +36,7 @@ struct best_track
 
 extern bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
 
-extern bool maxElater_cut(
+extern bool maxElayer_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE);

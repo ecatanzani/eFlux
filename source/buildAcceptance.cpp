@@ -160,7 +160,7 @@ void buildAcceptance(
     // Cut histos
     TH1D h_incoming("h_incoming", "Energy Distribution of the incoming particles", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_gometric_cut("h_gometric_cut", "Energy Distribution - geometric cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_maxElateral_cut("h_maxElateral_cut", "Energy Distribution - maxElateral cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_maxElayer_cut("h_maxElayer_cut", "Energy Distribution - maxElateral cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxBarLayer_cut("h_maxBarLayer_cut", "Energy Distribution - maxBarLayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_nBarLayer13_cut("h_nBarLayer13_cut", "Energy Distribution - nBarLayer13 cut", logEBins.size() - 1, &(logEBins[0]));
@@ -172,7 +172,7 @@ void buildAcceptance(
 
     h_incoming.Sumw2();
     h_gometric_cut.Sumw2();
-    h_maxElateral_cut.Sumw2();
+    h_maxElayer_cut.Sumw2();
     h_maxBarLayer_cut.Sumw2();
     h_BGOTrackContainment_cut.Sumw2();
     h_nBarLayer13_cut.Sumw2();
@@ -314,7 +314,7 @@ void buildAcceptance(
 
         /* ********************************* */
 
-        bool filter_maxElater_cut = false;
+        bool filter_maxElayer_cut = false;
         bool filter_maxBarLayer_cut = false;
         bool filter_BGOTrackContainment_cut = false;
         bool filter_nBarLayer13_cut = false;
@@ -333,10 +333,10 @@ void buildAcceptance(
             h_gometric_cut.Fill(simuEnergy * _GeV);
             if (active_cuts.maxElater)
             {
-                filter_maxElater_cut = maxElater_cut(bgorec, acceptance_cuts, bgoTotalE);
-                all_event_filter = filter_maxElater_cut;
-                if (filter_maxElater_cut)
-                    h_maxElateral_cut.Fill(simuEnergy * _GeV);
+                filter_maxElayer_cut = maxElayer_cut(bgorec, acceptance_cuts, bgoTotalE);
+                all_event_filter = filter_maxElayer_cut;
+                if (filter_maxElayer_cut)
+                    h_maxElayer_cut.Fill(simuEnergy * _GeV);
             }
             if (active_cuts.maxBarLayer)
             {
@@ -411,7 +411,7 @@ void buildAcceptance(
 
     // Building acceptance histos
     auto h_acceptance_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_acceptance_gometric_cut"));
-    auto h_acceptance_maxElateral_cut = static_cast<TH1D *>(h_maxElateral_cut.Clone("h_acceptance_maxElateral_cut"));
+    auto h_acceptance_maxElateral_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_acceptance_maxElateral_cut"));
     auto h_acceptance_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_acceptance_maxBarLayer_cut"));
     auto h_acceptance_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_acceptance_BGOTrackContainment_cut"));
     auto h_acceptance_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_acceptance_nBarLayer13_cut"));
@@ -511,7 +511,7 @@ void buildAcceptance(
     // Write histos to file
     h_incoming.Write();
     h_gometric_cut.Write();
-    h_maxElateral_cut.Write();
+    h_maxElayer_cut.Write();
     h_maxBarLayer_cut.Write();
     h_BGOTrackContainment_cut.Write();
     h_nBarLayer13_cut.Write();

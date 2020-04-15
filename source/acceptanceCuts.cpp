@@ -57,7 +57,7 @@ bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
     return passed_geometric_cut;
 }
 
-bool maxElater_cut(
+bool maxElayer_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE)
