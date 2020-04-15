@@ -55,7 +55,7 @@ bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 
     if (fabs(actual_X) < BGO_SideXY && fabs(actual_Y) < BGO_SideXY)
         passed_geometric_cut = true;
-    
+
 #endif
 
     return passed_geometric_cut;
@@ -67,19 +67,22 @@ bool maxElater_cut(
     const double bgoTotalE)
 {
     bool passed_maxELayerTotalE_cut = true;
-    
-    int iMaxELayer = -1;            // Index of the layer corresponding to the max energy
-    double MaxELayer = 0;           // Value of the max energy
-    
+
+    int iMaxELayer = -1; // Index of the layer corresponding to the max energy
+    double MaxELayer = 0; // Value of the max energy
+
     // Found the max energy value and layer
     for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
-        if ((bgo_rec->GetLayerEnergy())[lay] > MaxELayer)
+    {
+        auto layer_energy = (double)bgorec->GetLayerEnergy()[idxLy];
+        if (layer_energy > MaxELayer)
         {
-          MaxELayer = (bgorec->GetLayerEnergy())[idxLy];
-          iMaxELayer = idxLy;
+            MaxELayer = layer_energy;
+            iMaxELayer = idxLy;
         }
+    }
 
-    double rMaxELayerTotalE = MaxELayer / bgoTotalE;
+    auto rMaxELayerTotalE = MaxELayer / bgoTotalE;
     if (rMaxELayerTotalE > acceptance_cuts.energy_lRatio)
         passed_maxELayerTotalE_cut = false;
 
