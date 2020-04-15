@@ -27,13 +27,6 @@ struct best_track
     double angular_distance_STK_BGO = -999;
 };
 
-// DAMPE struct
-#define DAMPE_bgo_nLayers 14
-#define nSTKladders 192
-#define BGO_TopZ 46
-#define BGO_BottomZ 448
-#define BGO_SideXY 301.25
-
 extern bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
 
 extern bool maxElayer_cut(
@@ -41,9 +34,7 @@ extern bool maxElayer_cut(
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE);
 
-extern bool maxBarLayer_cut(
-    const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    const int nBgoHits);
+extern bool maxBarLayer_cut(const std::shared_ptr<DmpEvtBgoHits> bgohits);
 
 extern bool BGOTrackContainment_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
@@ -51,12 +42,12 @@ extern bool BGOTrackContainment_cut(
 
 extern bool nBarLayer13_cut(
     const std::shared_ptr<DmpEvtBgoHits> bgohits,
-    const std::vector<short> &layerBarNumber,
+    const std::vector<short> layerBarNumber,
     const double bgoTotalE);
 
 extern bool maxRms_cut(
-    const std::vector<std::vector<short>> &layerBarNumber,
-    const std::vector<double> &rmsLayer,
+    const std::vector<std::vector<short>> layerBarNumber,
+    const std::vector<double> rmsLayer,
     const double bgoTotalE,
     const acceptance_conf acceptance_cuts);
 
