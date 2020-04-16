@@ -194,11 +194,13 @@ void buildAcceptance(
         // Event printout
         if (verbose)
             if (((evIdx + 1) % _kStep) == 0)
-                std::cout << "\nProcessed " << evIdx + 1 << " events / " << nevents;
-
+            {   
+                auto percentage = (int)(((evIdx + 1) / (double)nevents) * 100);
+                std::cout << "\nProcessed " << evIdx + 1 << " events / " << nevents << "\t | " << percentage << " %";
+            }
         // Get event total energy
-        //double bgoTotalE = bgorec->GetTotalEnergy();      // Energy in MeV - not corrected
-        double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
+        double bgoTotalE = bgorec->GetTotalEnergy();      // Energy in MeV - not corrected
+        //double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
         // Don't accept events outside the selected energy window
@@ -245,7 +247,10 @@ void buildAcceptance(
             }
             if (active_cuts.maxBarLayer)
             {
-                filter_maxBarLayer_cut = maxBarLayer_cut(bgohits);
+                filter_maxBarLayer_cut = maxBarLayer_cut(
+                    bgoVault.GetLayerBarNumber(),
+                    bgoVault.GetiMaxLayer(),
+                    bgoVault.GetIdxBarMaxLayer());
                 all_event_filter *= filter_maxBarLayer_cut;
                 if (filter_maxBarLayer_cut)
                     h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
@@ -260,8 +265,8 @@ void buildAcceptance(
             if (active_cuts.nBarLayer13)
             {
                 filter_nBarLayer13_cut = nBarLayer13_cut(
-                    bgohits, 
-                    bgoVault.GetSingleLayerBarNumber(13), 
+                    bgohits,
+                    bgoVault.GetSingleLayerBarNumber(13),
                     bgoTotalE);
                 all_event_filter *= filter_nBarLayer13_cut;
                 if (filter_nBarLayer13_cut)
@@ -270,9 +275,9 @@ void buildAcceptance(
             if (active_cuts.maxRms)
             {
                 filter_maxRms_cut = maxRms_cut(
-                    bgoVault.GetLayerBarNumber(), 
-                    bgoVault.GetRmsLayer(), 
-                    bgoTotalE, 
+                    bgoVault.GetLayerBarNumber(),
+                    bgoVault.GetRmsLayer(),
+                    bgoTotalE,
                     acceptance_cuts);
                 all_event_filter *= filter_maxRms_cut;
                 if (filter_maxRms_cut)

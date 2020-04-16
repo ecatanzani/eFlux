@@ -70,7 +70,7 @@ bool maxElayer_cut(
     // Found the max energy value and layer
     for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
     {
-        auto layer_energy = (double)bgorec->GetLayerEnergy()[idxLy];
+        auto layer_energy = static_cast<double>((bgorec->GetLayerEnergy())[idxLy]);
         if (layer_energy > MaxELayer)
         {
             MaxELayer = layer_energy;
@@ -80,35 +80,32 @@ bool maxElayer_cut(
 
     auto rMaxELayerTotalE = MaxELayer / bgoTotalE;
     if (rMaxELayerTotalE > acceptance_cuts.energy_lRatio)
-        passed_maxELayerTotalE_cut = false;
-
+            passed_maxELayerTotalE_cut = false;
+           
     return passed_maxELayerTotalE_cut;
 }
 
-bool maxBarLayer_cut(const std::shared_ptr<DmpEvtBgoHits> bgohits)
+bool maxBarLayer_cut(
+    const std::vector<std::vector<short>> layerBarNumber,
+    const std::vector<int> iMaxLayer,
+    const std::vector<int> idxBarMaxLayer)
 {
     bool passed_maxBarLayer_cut = true;
-    std::vector<short> barNumberMaxEBarLay1_2_3(3, -1); // Bar number of maxE bar in layer 1, 2, 3
-    std::vector<double> MaxEBarLay1_2_3(3, 0);          // E of maxE bar in layer 1, 2, 3
 
-    for (int ihit = 0; ihit < bgohits->GetHittedBarNumber(); ++ihit)
+    for (auto lIdx = 1; lIdx <= 3; ++lIdx)
     {
-        auto hitE = (bgohits->fEnergy)[ihit];
-        auto lay = bgohits->GetLayerID(ihit);
-        if (lay == 1 || lay == 2 || lay == 3)
+        if (layerBarNumber[lIdx].size() == 0)
         {
-            if (hitE > MaxEBarLay1_2_3[lay - 1])
-            {
-                auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
-                MaxEBarLay1_2_3[lay - 1] = hitE;
-                barNumberMaxEBarLay1_2_3[lay - 1] = iBar;
-            }
-        }
-    }
-
-    for (int j = 0; j < 3; ++j)
-        if (barNumberMaxEBarLay1_2_3[j] <= 0 || barNumberMaxEBarLay1_2_3[j] == 21)
             passed_maxBarLayer_cut = false;
+            break;
+        }
+        if (iMaxLayer[lIdx] > -1)
+            if (idxBarMaxLayer[lIdx] == 0 || idxBarMaxLayer[lIdx] == 21)
+            {
+                passed_maxBarLayer_cut = false;
+                break;
+            }
+    }
 
     return passed_maxBarLayer_cut;
 }
@@ -364,7 +361,7 @@ bool track_selection_cut(
     best_track &event_best_track)
 {
     bool passed_track_selection_cut = false;
-    
+
     TVector3 bgoRecEntrance;
     TVector3 bgoRecDirection;
     std::vector<int> LadderToLayer(nSTKladders, -1);

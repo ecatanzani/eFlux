@@ -34,7 +34,10 @@ extern bool maxElayer_cut(
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE);
 
-extern bool maxBarLayer_cut(const std::shared_ptr<DmpEvtBgoHits> bgohits);
+extern bool maxBarLayer_cut(
+    const std::vector<std::vector<short>> layerBarNumber,
+    const std::vector<int> iMaxLayer,
+    const std::vector<int> idxBarMaxLayer);
 
 extern bool BGOTrackContainment_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
