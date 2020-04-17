@@ -80,8 +80,8 @@ bool maxElayer_cut(
 
     auto rMaxELayerTotalE = MaxELayer / bgoTotalE;
     if (rMaxELayerTotalE > acceptance_cuts.energy_lRatio)
-            passed_maxELayerTotalE_cut = false;
-           
+        passed_maxELayerTotalE_cut = false;
+
     return passed_maxELayerTotalE_cut;
 }
 
@@ -119,26 +119,26 @@ bool BGOTrackContainment_cut(
     std::vector<double> bgoRec_slope(2);
     std::vector<double> bgoRec_intercept(2);
 
-    bgoRec_slope[1] = bgorec->GetSlopeXZ();
-    bgoRec_slope[0] = bgorec->GetSlopeYZ();
-    bgoRec_intercept[1] = bgorec->GetInterceptXZ();
-    bgoRec_intercept[0] = bgorec->GetInterceptYZ();
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
 
     double topZ = BGO_TopZ;
-    double topX = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
-    double topY = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
 
     double bottomZ = BGO_BottomZ;
-    double bottomX = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
-    double bottomY = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
-
+    double bottomX = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
+    double bottomY = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
+    
     if (
         fabs(topX) < acceptance_cuts.shower_axis_delta &&
         fabs(topY) < acceptance_cuts.shower_axis_delta &&
         fabs(bottomX) < acceptance_cuts.shower_axis_delta &&
         fabs(bottomY) < acceptance_cuts.shower_axis_delta)
         passed_bgo_containment_cut = true;
-
+    
     return passed_bgo_containment_cut;
 }
 
