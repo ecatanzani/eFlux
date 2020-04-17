@@ -21,9 +21,8 @@ PSD_bar_min_energy_release          0.5                 MeV
 
 **** CUT ****                **** ACTIVE ****
 
-maxElater                           NO
-maxBarLayer                         NO
-BGOTrackContainment                 NO
+geometry                            YES
+BGO_fiducial                        YES
 nBarLayer13                         NO
 maxRms                              NO
 track_selection                     NO
