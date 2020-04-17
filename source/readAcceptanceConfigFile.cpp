@@ -102,53 +102,62 @@ void load_acceptance_struct(
         }
 
         // Load cuts
-        if (!strcmp(tmp_str.c_str(), "maxElayer"))
+        if (!strcmp(tmp_str.c_str(), "geometry"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-                active_cuts.maxElayer = true;
+                active_cuts.geometry = true;
         }
-        if (!strcmp(tmp_str.c_str(), "maxBarLayer"))
+        if (!strcmp(tmp_str.c_str(), "BGO_fiducial"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-                active_cuts.maxBarLayer = true;
-        }
-        if (!strcmp(tmp_str.c_str(), "BGOTrackContainment"))
-        {
-            input_stream >> tmp_str;
-            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-                active_cuts.BGOTrackContainment = true;
+                active_cuts.BGO_fiducial = true;
         }
         if (!strcmp(tmp_str.c_str(), "nBarLayer13"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
                 active_cuts.nBarLayer13 = true;
+                ++active_cuts.nActiveCuts;
+            }
         }
         if (!strcmp(tmp_str.c_str(), "maxRms"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
                 active_cuts.maxRms = true;
+                ++active_cuts.nActiveCuts;
+            }
         }
         if (!strcmp(tmp_str.c_str(), "track_selection"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
                 active_cuts.track_selection = true;
+                ++active_cuts.nActiveCuts;
+            }
         }
         if (!strcmp(tmp_str.c_str(), "xtrl_selection"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
                 active_cuts.xtrl = true;
+                ++active_cuts.nActiveCuts;
+            }
         }
         if (!strcmp(tmp_str.c_str(), "psd_charge"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
                 active_cuts.psd_charge = true;
+                ++active_cuts.nActiveCuts;
+            }
         }
     }
 }

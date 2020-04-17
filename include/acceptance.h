@@ -25,9 +25,9 @@
 // DAMPE struct
 const int DAMPE_bgo_nLayers = 14;
 const int nSTKladders = 192;
-const int BGO_TopZ = 46;
-const int BGO_BottomZ = 448;
-const int BGO_SideXY = 301.25;
+const double BGO_TopZ = 46;
+const double BGO_BottomZ = 448;
+const double BGO_SideXY = 301.25;
 
 struct acceptance_conf
 {
@@ -50,14 +50,14 @@ struct acceptance_conf
 
 struct acceptance_active_cuts
 {
-    bool maxElayer = false;
-    bool maxBarLayer = false;
-    bool BGOTrackContainment = false;
+    bool geometry = false;
+    bool BGO_fiducial = false;
     bool nBarLayer13 = false;
     bool maxRms = false;
     bool track_selection = false;
     bool xtrl = false;
     bool psd_charge = false;
+    unsigned int nActiveCuts = 0;
 };
 
 //#define _memType "graph"
