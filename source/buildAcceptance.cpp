@@ -157,7 +157,7 @@ void buildAcceptance(
     // Cut histos
     TH1D h_incoming("h_incoming", "Energy Distribution of the incoming particles", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_gometric_cut("h_gometric_cut", "Energy Distribution - geometric cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_maxElayer_cut("h_maxElayer_cut", "Energy Distribution - maxElateral cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_maxElayer_cut("h_maxElayer_cut", "Energy Distribution - maxElayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxBarLayer_cut("h_maxBarLayer_cut", "Energy Distribution - maxBarLayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGO_fiducial("h_BGO_fiducial", "Energy Distibution - BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
@@ -232,7 +232,33 @@ void buildAcceptance(
         // **** Geometric Factor ****
         if (active_cuts.geometry)
             if (geometric_cut(simu_primaries))
+            {
+                // maxElayer_cut && geometric cut
+                auto filter_maxElayer_cut = maxElayer_cut(
+                    bgorec,
+                    acceptance_cuts,
+                    bgoTotalE);
+                
+                // maxBarLayer_cut && geometric cut
+                auto filter_maxBarLayer_cut = maxBarLayer_cut(
+                    bgoVault.GetLayerBarNumber(),
+                    bgoVault.GetiMaxLayer(),
+                    bgoVault.GetIdxBarMaxLayer());
+
+                // BGOTrackContainment_cut && geometric cut
+                auto filter_BGOTrackContainment_cut = BGOTrackContainment_cut(
+                    bgorec, 
+                    acceptance_cuts);
+            
+                if (filter_maxElayer_cut)
+                    h_maxElayer_cut.Fill(simuEnergy * _GeV);
+                if (filter_maxBarLayer_cut)
+                    h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
+                if (filter_BGOTrackContainment_cut)
+                    h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
+
                 h_gometric_cut.Fill(simuEnergy * _GeV);
+            }
 
         // **** BGO Fiducial Volume ****
         if (active_cuts.BGO_fiducial)
@@ -256,13 +282,6 @@ void buildAcceptance(
             // BGOTrackContainment_cut
             auto filter_BGOTrackContainment_cut = BGOTrackContainment_cut(bgorec, acceptance_cuts);
             filter_BGO_fiducial *= filter_BGOTrackContainment_cut;
-
-            if (filter_maxElayer_cut)
-                h_maxElayer_cut.Fill(simuEnergy * _GeV);
-            if (filter_maxBarLayer_cut)
-                h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
-            if (filter_BGOTrackContainment_cut)
-                h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
 
             // BGO_fiducial_cut
             if (filter_BGO_fiducial)
@@ -534,17 +553,17 @@ void buildAcceptance(
     auto h_ratio_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_psd_charge_cut"));
     auto h_ratio_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_all_cut"));
 
-    h_ratio_gometric_cut->Divide(&h_incoming);
-    h_ratio_maxElayer_cut->Divide(&h_incoming);
-    h_ratio_maxBarLayer_cut->Divide(&h_incoming);
-    h_ratio_BGOTrackContainment_cut->Divide(&h_incoming);
+    h_ratio_gometric_cut->Divide(&h_gometric_cut);
+    h_ratio_maxElayer_cut->Divide(&h_gometric_cut);
+    h_ratio_maxBarLayer_cut->Divide(&h_gometric_cut);
+    h_ratio_BGOTrackContainment_cut->Divide(&h_gometric_cut);
     h_ratio_BGO_fiducial->Divide(&h_incoming);
-    h_ratio_nBarLayer13_cut->Divide(&h_incoming);
-    h_ratio_maxRms_cut->Divide(&h_incoming);
-    h_ratio_track_selection_cut->Divide(&h_incoming);
-    h_ratio_xtrl_cut->Divide(&h_incoming);
-    h_ratio_psd_charge_cut->Divide(&h_incoming);
-    h_ratio_all_cut->Divide(&h_incoming);
+    h_ratio_nBarLayer13_cut->Divide(&h_gometric_cut);
+    h_ratio_maxRms_cut->Divide(&h_gometric_cut);
+    h_ratio_track_selection_cut->Divide(&h_gometric_cut);
+    h_ratio_xtrl_cut->Divide(&h_gometric_cut);
+    h_ratio_psd_charge_cut->Divide(&h_gometric_cut);
+    h_ratio_all_cut->Divide(&h_gometric_cut);
 
     h_ratio_gometric_cut->Write();
     h_ratio_maxElayer_cut->Write();
