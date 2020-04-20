@@ -200,6 +200,7 @@ void buildAcceptance(
                 auto percentage = (int)(((evIdx + 1) / (double)nevents) * 100);
                 std::cout << "\nProcessed " << evIdx + 1 << " events / " << nevents << "\t | " << percentage << " %";
             }
+        
         // Get event total energy
         double bgoTotalE = bgorec->GetTotalEnergy(); // Energy in MeV - not corrected
         //double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
