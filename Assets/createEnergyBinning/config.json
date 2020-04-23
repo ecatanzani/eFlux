@@ -1,0 +1,6 @@
+{
+    "eMin": 20,
+    "eMax": 10000,
+    "bins": 20,
+    "junctions": []
+}
