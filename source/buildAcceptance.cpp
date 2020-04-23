@@ -201,6 +201,9 @@ void buildAcceptance(
     // Ratio of layer energy respect to total BGO energy
     TH1D h_preGeo_layer_energy_ratio("h_preGeo_layer_energy_ratio", "Layer Energy Ratio", 100, 0, 10);
 
+    // Map of events outside the "real" first BGO layer
+    TH2D h_noBGOenergy_real_topMap("h_noBGOenergy_real_topMap", "Real BGO TOP Map", 500, -500, 500, 500, -500, 500);
+
     // ***** After Geometric Cut
     // Top X and Y
     TH1D h_geo_BGOrec_topX_vs_realX("h_geo_BGOrec_topX_vs_realX", "Real X - BGOrec TOP X", 100, -100, 100);
@@ -237,6 +240,7 @@ void buildAcceptance(
     h_preGeo_BGOrec_interceptY.Sumw2();
     h_preGeo_real_topMap.Sumw2();
     h_preGeo_BGOreco_topMap.Sumw2();
+    h_noBGOenergy_real_topMap.Sumw2();
 
     h_geo_BGOrec_topX_vs_realX.Sumw2();
     h_geo_BGOrec_topY_vs_realY.Sumw2();
@@ -312,6 +316,7 @@ void buildAcceptance(
         if (!bgoTotalE) // If the energy in the BGO is zero the particle didn't hit the BGO
         {
             h_incoming.Fill(simuEnergy * _GeV);
+            fillExternalMap(simu_primaries, h_noBGOenergy_real_topMap);
             continue;
         }
         else    // Check if the BGO reco process is correct
@@ -795,6 +800,8 @@ void buildAcceptance(
     h_preGeo_BGOreco_topMap.Write();
 
     h_preGeo_layer_energy_ratio.Write();
+
+    h_noBGOenergy_real_topMap.Write();
 
     outFile.cd();
 

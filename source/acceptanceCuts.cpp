@@ -17,6 +17,34 @@ bool checkBGOreco(const std::shared_ptr<DmpEvtBgoRec> bgorec)
         return true;
 }
 
+void fillExternalMap(
+    const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries, 
+    TH2D &h_noBGOenergy_real_topMap)
+{
+    TVector3 orgPosition;
+    orgPosition.SetX(simu_primaries->pv_x);
+    orgPosition.SetY(simu_primaries->pv_y);
+    orgPosition.SetZ(simu_primaries->pv_z);
+
+    TVector3 orgMomentum;
+    orgMomentum.SetX(simu_primaries->pvpart_px);
+    orgMomentum.SetY(simu_primaries->pvpart_py);
+    orgMomentum.SetZ(simu_primaries->pvpart_pz);
+
+    std::vector<double> slope(2, 0);
+    std::vector<double> intercept(2, 0);
+
+    slope[0] = orgMomentum.Z() ? orgMomentum.X() / orgMomentum.Z() : -999;
+    slope[1] = orgMomentum.Z() ? orgMomentum.Y() / orgMomentum.Z() : -999;
+    intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
+    intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
+
+    double actual_X = slope[0] * BGO_TopZ + intercept[0];
+    double actual_Y = slope[1] * BGO_TopZ + intercept[1];
+
+    h_noBGOenergy_real_topMap.Fill(actual_X, actual_Y);
+}
+
 bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 {
     bool passed_geometric_cut = false;

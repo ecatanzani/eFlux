@@ -100,4 +100,8 @@ extern void evaluateTopPosition(
 
 extern bool checkBGOreco(const std::shared_ptr<DmpEvtBgoRec> bgorec);
 
+extern void fillExternalMap(
+    const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries, 
+    TH2D &h_noBGOenergy_real_topMap);
+
 #endif
