@@ -7,8 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     name: DAMPE Framework Building Test
     steps:
-    - name: checkout
-      uses: actions/checkout@v2
     - name: remote building
       uses: appleboy/ssh-action@master
       with:
