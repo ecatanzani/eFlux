@@ -61,8 +61,7 @@ struct acceptance_active_cuts
 };
 
 //#define _memType "graph"
-#define _memType "histo"
-#define _kStep 10000
+//#define _memType "histo"
 
 extern double wtsydp(
     const float minene,
