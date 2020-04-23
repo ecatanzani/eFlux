@@ -1,6 +1,22 @@
 #include "acceptance_cuts.h"
 #include "acceptance.h"
 
+bool checkBGOreco(const std::shared_ptr<DmpEvtBgoRec> bgorec)
+{
+    std::vector<double> bgoRec_slope(2);
+    std::vector<double> bgoRec_intercept(2);
+
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
+
+    if ((bgoRec_slope[0]==0 && bgoRec_intercept[0]==0) || (bgoRec_slope[1]==0 && bgoRec_intercept[1]==0))
+        return false;
+    else
+        return true;
+}
+
 bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 {
     bool passed_geometric_cut = false;
@@ -35,8 +51,8 @@ bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
     orgMomentum.SetY(simu_primaries->pvpart_py);
     orgMomentum.SetZ(simu_primaries->pvpart_pz);
 
-    auto orgMomentum_theta = orgMomentum.Theta() * TMath::RadToDeg();
-    auto orgMomentum_costheta = cos(orgMomentum.Theta());
+    //auto orgMomentum_theta = orgMomentum.Theta() * TMath::RadToDeg();
+    //auto orgMomentum_costheta = cos(orgMomentum.Theta());
 
     std::vector<double> slope(2, 0);
     std::vector<double> intercept(2, 0);
@@ -55,6 +71,90 @@ bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 #endif
 
     return passed_geometric_cut;
+}
+
+void evaluateTopPosition(
+    const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    TH1D &h_BGOrec_topX_vs_realX,
+    TH1D &h_BGOrec_topY_vs_realY,
+    TH1D &h_real_slopeX,
+    TH1D &h_real_slopeY,
+    TH1D &h_BGOrec_slopeX,
+    TH1D &h_BGOrec_slopeY,
+    TH1D &h_real_interceptX,
+    TH1D &h_real_interceptY,
+    TH1D &h_BGOrec_interceptX,
+    TH1D &h_BGOrec_interceptY,
+    TH2D &h_real_topMap,
+    TH2D &h_BGOreco_topMap)
+{
+    // Get the real simu position
+    TVector3 orgPosition;
+    orgPosition.SetX(simu_primaries->pv_x);
+    orgPosition.SetY(simu_primaries->pv_y);
+    orgPosition.SetZ(simu_primaries->pv_z);
+    
+    TVector3 orgMomentum;
+    orgMomentum.SetX(simu_primaries->pvpart_px);
+    orgMomentum.SetY(simu_primaries->pvpart_py);
+    orgMomentum.SetZ(simu_primaries->pvpart_pz);
+
+    std::vector<double> slope(2, 0);
+    std::vector<double> intercept(2, 0);
+
+    slope[0] = orgMomentum.Z() ? orgMomentum.X() / orgMomentum.Z() : -999;
+    slope[1] = orgMomentum.Z() ? orgMomentum.Y() / orgMomentum.Z() : -999;
+    intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
+    intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
+
+    double actual_X = slope[0] * BGO_TopZ + intercept[0];
+    double actual_Y = slope[1] * BGO_TopZ + intercept[1];
+
+    // Get the reco position
+    std::vector<double> bgoRec_slope(2);
+    std::vector<double> bgoRec_intercept(2);
+
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
+
+    if ((bgoRec_slope[0]==0 && bgoRec_intercept[0]==0) || (bgoRec_slope[1]==0 && bgoRec_intercept[1]==0))
+        return;
+
+    double topZ = BGO_TopZ;
+    double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
+
+    /*
+    double bottomZ = BGO_BottomZ;
+    double bottomX = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
+    double bottomY = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
+    */
+
+    // Fill slopes
+    h_real_slopeX.Fill(slope[0]);
+    h_real_slopeY.Fill(slope[1]);
+    h_BGOrec_slopeX.Fill(bgoRec_slope[0]);
+    h_BGOrec_slopeY.Fill(bgoRec_slope[1]);
+
+    // Fill intercepts
+    h_real_interceptX.Fill(intercept[0]);
+    h_real_interceptY.Fill(intercept[1]);
+    h_BGOrec_interceptX.Fill(bgoRec_intercept[0]);
+    h_BGOrec_interceptY.Fill(bgoRec_intercept[1]);
+
+    auto spreadX = actual_X - topX;
+    auto spreadY = actual_Y - topY;
+
+    // Fill spreads
+    h_BGOrec_topX_vs_realX.Fill(spreadX);
+    h_BGOrec_topY_vs_realY.Fill(spreadY);
+
+    // Fill maps
+    h_real_topMap.Fill(actual_X, actual_Y);
+    h_BGOreco_topMap.Fill(topX, topY);
 }
 
 bool maxElayer_cut(
@@ -83,6 +183,30 @@ bool maxElayer_cut(
         passed_maxELayerTotalE_cut = false;
 
     return passed_maxELayerTotalE_cut;
+}
+
+void evaluateEnergyRatio(
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const acceptance_conf acceptance_cuts,
+    const double bgoTotalE,
+    TH1D &h_layer_energy_ratio)
+{
+    int iMaxELayer = -1;  // Index of the layer corresponding to the max energy
+    double MaxELayer = 0; // Value of the max energy
+
+    // Found the max energy value and layer
+    for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
+    {
+        auto layer_energy = static_cast<double>((bgorec->GetLayerEnergy())[idxLy]);
+        if (layer_energy > MaxELayer)
+        {
+            MaxELayer = layer_energy;
+            iMaxELayer = idxLy;
+        }
+    }
+
+    auto rMaxELayerTotalE = MaxELayer / bgoTotalE;
+    h_layer_energy_ratio.Fill(rMaxELayerTotalE);
 }
 
 bool maxBarLayer_cut(
@@ -124,6 +248,9 @@ bool BGOTrackContainment_cut(
     bgoRec_intercept[0] = bgorec->GetInterceptXZ();
     bgoRec_intercept[1] = bgorec->GetInterceptYZ();
 
+    if ((bgoRec_slope[0]==0 && bgoRec_intercept[0]==0) || (bgoRec_slope[1]==0 && bgoRec_intercept[1]==0))
+        return passed_bgo_containment_cut;
+
     double topZ = BGO_TopZ;
     double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
     double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
@@ -131,7 +258,7 @@ bool BGOTrackContainment_cut(
     double bottomZ = BGO_BottomZ;
     double bottomX = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
     double bottomY = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
-    
+
     if (
         fabs(topX) < acceptance_cuts.shower_axis_delta &&
         fabs(topY) < acceptance_cuts.shower_axis_delta &&

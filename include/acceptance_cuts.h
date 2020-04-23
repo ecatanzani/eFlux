@@ -5,6 +5,8 @@
 #include <vector>
 
 #include "TVector3.h"
+#include "TH1D.h"
+#include "TH2D.h"
 
 #include "acceptance.h"
 
@@ -33,6 +35,12 @@ extern bool maxElayer_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE);
+
+extern void evaluateEnergyRatio(
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const acceptance_conf acceptance_cuts,
+    const double bgoTotalE,
+    TH1D &h_layer_energy_ratio);
 
 extern bool maxBarLayer_cut(
     const std::vector<std::vector<short>> layerBarNumber,
@@ -72,5 +80,24 @@ extern bool psd_charge_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts,
     const best_track event_best_track);
+
+// Analysis functions
+extern void evaluateTopPosition(
+    const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    TH1D &h_BGOrec_topX_vs_realX,
+    TH1D &h_BGOrec_topY_vs_realY,
+    TH1D &h_real_slopeX,
+    TH1D &h_real_slopeY,
+    TH1D &h_BGOrec_slopeX,
+    TH1D &h_BGOrec_slopeY,
+    TH1D &h_real_interceptX,
+    TH1D &h_real_interceptY,
+    TH1D &h_BGOrec_interceptX,
+    TH1D &h_BGOrec_interceptY,
+    TH2D &h_real_topMap,
+    TH2D &h_BGOreco_topMap);
+
+extern bool checkBGOreco(const std::shared_ptr<DmpEvtBgoRec> bgorec);
 
 #endif
