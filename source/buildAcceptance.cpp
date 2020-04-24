@@ -310,19 +310,23 @@ void buildAcceptance(
         if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
             continue;
 
-        h_BGOrec_E.Fill(bgoTotalE_raw);
-        h_BGOrec_E_corr.Fill(bgoTotalE);
-        
-        if (!bgoTotalE) // If the energy in the BGO is zero the particle didn't hit the BGO
+        if (!bgoTotalE)
         {
+            // If the energy in the BGO is zero the particle didn't hit the BGO
             h_incoming.Fill(simuEnergy * _GeV);
             fillExternalMap(simu_primaries, h_noBGOenergy_real_topMap);
             continue;
         }
-        else    // Check if the BGO reco process is correct
+        else
         {
+            // Check if the BGO reco process is correct
             if (checkBGOreco(bgorec))
+            {
                 h_incoming.Fill(simuEnergy * _GeV);
+                // Fill the energy histos
+                h_BGOrec_E.Fill(bgoTotalE_raw);
+                h_BGOrec_E_corr.Fill(bgoTotalE);
+            }
             else
                 continue;
         }
