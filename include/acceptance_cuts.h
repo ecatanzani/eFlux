@@ -98,7 +98,9 @@ extern void evaluateTopPosition(
     TH2D &h_real_topMap,
     TH2D &h_BGOreco_topMap);
 
-extern bool checkBGOreco(const std::shared_ptr<DmpEvtBgoRec> bgorec);
+extern bool checkBGOreco(
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
 
 extern void fillExternalMap(
     const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries, 

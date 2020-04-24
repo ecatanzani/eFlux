@@ -1,7 +1,9 @@
 #include "acceptance_cuts.h"
 #include "acceptance.h"
 
-bool checkBGOreco(const std::shared_ptr<DmpEvtBgoRec> bgorec)
+bool checkBGOreco(
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 {
     std::vector<double> bgoRec_slope(2);
     std::vector<double> bgoRec_intercept(2);
@@ -12,7 +14,38 @@ bool checkBGOreco(const std::shared_ptr<DmpEvtBgoRec> bgorec)
     bgoRec_intercept[1] = bgorec->GetInterceptYZ();
 
     if ((bgoRec_slope[0]==0 && bgoRec_intercept[0]==0) || (bgoRec_slope[1]==0 && bgoRec_intercept[1]==0))
-        return false;
+    {
+        TVector3 orgPosition;
+        orgPosition.SetX(simu_primaries->pv_x);
+        orgPosition.SetY(simu_primaries->pv_y);
+        orgPosition.SetZ(simu_primaries->pv_z);
+
+        TVector3 orgMomentum;
+        orgMomentum.SetX(simu_primaries->pvpart_px);
+        orgMomentum.SetY(simu_primaries->pvpart_py);
+        orgMomentum.SetZ(simu_primaries->pvpart_pz);
+
+        std::vector<double> slope(2, 0);
+        std::vector<double> intercept(2, 0);
+
+        slope[0] = orgMomentum.Z() ? orgMomentum.X() / orgMomentum.Z() : -999;
+        slope[1] = orgMomentum.Z() ? orgMomentum.Y() / orgMomentum.Z() : -999;
+        intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
+        intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
+        
+        double actual_X = slope[0] * BGO_TopZ + intercept[0];
+        double actual_Y = slope[1] * BGO_TopZ + intercept[1];
+        double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+        double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
+
+        int position_sensitivity = 30;
+
+        if ( fabs(actual_X-topX)>position_sensitivity || fabs(actual_Y-topY)>position_sensitivity)
+            return false;
+        else
+            return true;
+
+    }
     else
         return true;
 }

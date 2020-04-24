@@ -285,8 +285,8 @@ void buildAcceptance(
     double _GeV = 0.001;
     int kStep = 10;
 
-    for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
-    {
+        for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
+        {
         // Get chain event
         dmpch->GetEvent(evIdx);
 
@@ -320,7 +320,7 @@ void buildAcceptance(
         else
         {
             // Check if the BGO reco process is correct
-            if (checkBGOreco(bgorec))
+            if (checkBGOreco(bgorec, simu_primaries))
             {
                 h_incoming.Fill(simuEnergy * _GeV);
                 // Fill the energy histos
