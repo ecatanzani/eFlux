@@ -226,7 +226,7 @@ void buildAcceptance(
     TH2D h_geo_BGOreco_topMap("h_geo_BGOreco_topMap", "BGOreco TOP Map", 500, -500, 500, 500, -500, 500);
 
     // Ratio of layer energy respect to total BGO energy
-    TH1D h_geo_layer_energy_ratio("h_geo_layer_energy_ratio", "Layer Energy Ratio", 100, 0, 10);
+    TH1D h_geo_layer_energy_ratio("h_geo_layer_energy_ratio", "Layer Energy Ratio", 10, 0, 1);
 
     h_preGeo_BGOrec_topX_vs_realX.Sumw2();
     h_preGeo_BGOrec_topY_vs_realY.Sumw2();
