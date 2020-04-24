@@ -40,7 +40,9 @@ extern void evaluateEnergyRatio(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE,
-    TH1D &h_layer_energy_ratio);
+    TH1D &h_layer_max_energy_ratio,
+    std::vector<TH1D> &h_layer_energy,
+    std::vector<TH1D> &h_layer_energy_ratio);
 
 extern bool maxBarLayer_cut(
     const std::vector<std::vector<short>> layerBarNumber,

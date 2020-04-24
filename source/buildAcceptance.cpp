@@ -5,6 +5,7 @@
 #include "DmpBgoContainer.h"
 
 #include "TClonesArray.h"
+#include "TString.h"
 
 /**
  * @brief 
@@ -93,6 +94,30 @@ double wtsydp(
         return dene / log(maxene / minene);
 }
 
+inline void init_BGO_histos(
+    std::vector<TH1D> &h_layer_energy_ratio, 
+    std::vector<TH1D> &h_layer_energy)
+{
+    h_layer_energy_ratio.resize(DAMPE_bgo_nLayers);
+    h_layer_energy.resize(DAMPE_bgo_nLayers);
+
+    for (auto lIdx = 0; lIdx<DAMPE_bgo_nLayers; ++lIdx)
+    {
+        TString h_ratio_name = "h_layer_energy_ratio_";
+        TString h_name = "h_layer_energy_";
+        TString h_ratio_title = "Energy Ratio - BGO layer ";
+        TString h_title = "Energy - BGO layer ";
+        
+        h_ratio_name += lIdx;
+        h_name += lIdx;
+        h_ratio_title += lIdx;
+        h_title += lIdx;
+
+        h_layer_energy[lIdx] = TH1D(h_name.Data(), h_title.Data(), 100, 0, 1);
+        h_layer_energy_ratio[lIdx] = TH1D(h_ratio_name.Data(), h_ratio_title.Data(), 100, 0, 1);
+    }
+}
+
 inline std::shared_ptr<TH1D> buildHistoFromVector(
     const std::vector<double> &energyValues,
     const std::vector<double> &consgFactor)
@@ -154,6 +179,8 @@ void buildAcceptance(
     if (verbose)
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
 
+    // **** Acceptance 
+    
     // First-Cut histos
     TH1D h_incoming("h_incoming", "Energy Distribution of the incoming particles", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_gometric_cut("h_gometric_cut", "Energy Distribution - geometric cut", logEBins.size() - 1, &(logEBins[0]));
@@ -172,21 +199,21 @@ void buildAcceptance(
     TH1D h_maxBarLayer_maxElayer_BGOTrackContainment_gometric_cut("h_maxBarLayer_maxElayer_BGOTrackContainment_gometric_cut", "Energy Distribution - maxBarLayer + maxElayer + BGOTrackContainment + geometric cut ", logEBins.size() - 1, &(logEBins[0]));    
     TH1D h_BGO_fiducial("h_BGO_fiducial", "Energy Distibution - BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
 
-    // Analysis histos
+    // **** Analysis histos
 
     TH1D h_BGOrec_E("h_BGOrec_E", "BGO Energy", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOrec_E_corr("h_BGOrec_E_corr", "BGO Corrected Energy", logEBins.size() - 1, &(logEBins[0]));
 
-    // ***** Pre Geometric Cut
+    // Pre Geometric Cut
     // Top X and Y
     TH1D h_preGeo_BGOrec_topX_vs_realX("h_preGeo_BGOrec_topX_vs_realX", "Real X - BGOrec TOP X", 100, -100, 100);
     TH1D h_preGeo_BGOrec_topY_vs_realY("h_preGeo_BGOrec_topY_vs_realY", "Real Y - BGOrec TOP Y", 100, -100, 100);
 
     // Slope X and Y
-    TH1D h_preGeo_real_slopeX("h_preGeo_real_slopeX", "Real Slope X", 90, -90, 90);
-    TH1D h_preGeo_real_slopeY("h_preGeo_real_slopeY", "Real Slope Y", 90, -90, 90);
-    TH1D h_preGeo_BGOrec_slopeX("h_preGeo_BGOrec_slopeX", "BGOrec Slope X", 90, -90, 90);
-    TH1D h_preGeo_BGOrec_slopeY("h_preGeo_BGOrec_slopeY", "BGOrec Slope Y", 90, -90, 90);
+    TH1D h_preGeo_real_slopeX("h_preGeo_real_slopeX", "Real Slope X", 1000, -90, 90);
+    TH1D h_preGeo_real_slopeY("h_preGeo_real_slopeY", "Real Slope Y", 1000, -90, 90);
+    TH1D h_preGeo_BGOrec_slopeX("h_preGeo_BGOrec_slopeX", "BGOrec Slope X", 1000, -90, 90);
+    TH1D h_preGeo_BGOrec_slopeY("h_preGeo_BGOrec_slopeY", "BGOrec Slope Y", 1000, -90, 90);
 
     // Intercept X and Y
     TH1D h_preGeo_real_interceptX("h_preGeo_real_interceptX", "Real Intercept X", 500, -500, 500);
@@ -199,21 +226,21 @@ void buildAcceptance(
     TH2D h_preGeo_BGOreco_topMap("h_preGeo_BGOreco_topMap", "BGOreco TOP Map", 500, -500, 500, 500, -500, 500);
 
     // Ratio of layer energy respect to total BGO energy
-    TH1D h_preGeo_layer_energy_ratio("h_preGeo_layer_energy_ratio", "Layer Energy Ratio", 100, 0, 10);
+    TH1D h_preGeo_layer_energy_ratio("h_preGeo_layer_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
 
     // Map of events outside the "real" first BGO layer
     TH2D h_noBGOenergy_real_topMap("h_noBGOenergy_real_topMap", "Real BGO TOP Map", 500, -500, 500, 500, -500, 500);
 
-    // ***** After Geometric Cut
+    // After Geometric Cut
     // Top X and Y
     TH1D h_geo_BGOrec_topX_vs_realX("h_geo_BGOrec_topX_vs_realX", "Real X - BGOrec TOP X", 100, -100, 100);
     TH1D h_geo_BGOrec_topY_vs_realY("h_geo_BGOrec_topY_vs_realY", "Real Y - BGOrec TOP Y", 100, -100, 100);
 
     // Slope X and Y
-    TH1D h_geo_real_slopeX("h_geo_real_slopeX", "Real Slope X", 180, -180, 180);
-    TH1D h_geo_real_slopeY("h_geo_real_slopeY", "Real Slope Y", 180, -180, 180);
-    TH1D h_geo_BGOrec_slopeX("h_geo_BGOrec_slopeX", "BGOrec Slope X", 180, -180, 180);
-    TH1D h_geo_BGOrec_slopeY("h_geo_BGOrec_slopeY", "BGOrec Slope Y", 180, -180, 180);
+    TH1D h_geo_real_slopeX("h_geo_real_slopeX", "Real Slope X", 1000, -90, 90);
+    TH1D h_geo_real_slopeY("h_geo_real_slopeY", "Real Slope Y", 1000, -90, 90);
+    TH1D h_geo_BGOrec_slopeX("h_geo_BGOrec_slopeX", "BGOrec Slope X", 1000, -90, 90);
+    TH1D h_geo_BGOrec_slopeY("h_geo_BGOrec_slopeY", "BGOrec Slope Y", 1000, -90, 90);
 
     // Intercept X and Y
     TH1D h_geo_real_interceptX("h_geo_real_interceptX", "Real Intercept X", 500, -500, 500);
@@ -224,9 +251,16 @@ void buildAcceptance(
     // Top Map
     TH2D h_geo_real_topMap("h_geo_real_topMap", "Real BGO TOP Map", 500, -500, 500, 500, -500, 500);
     TH2D h_geo_BGOreco_topMap("h_geo_BGOreco_topMap", "BGOreco TOP Map", 500, -500, 500, 500, -500, 500);
-
+    
     // Ratio of layer energy respect to total BGO energy
-    TH1D h_geo_layer_energy_ratio("h_geo_layer_energy_ratio", "Layer Energy Ratio", 10, 0, 1);
+    TH1D h_layer_max_energy_ratio("h_layer_max_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
+    
+    std::vector<TH1D> h_layer_energy_ratio; 
+    std::vector<TH1D> h_layer_energy;
+    
+    init_BGO_histos(h_layer_energy_ratio, h_layer_energy);
+
+    // *****
 
     h_preGeo_BGOrec_topX_vs_realX.Sumw2();
     h_preGeo_BGOrec_topY_vs_realY.Sumw2();
@@ -272,7 +306,7 @@ void buildAcceptance(
     h_all_cut.Sumw2();
 
     h_preGeo_layer_energy_ratio.Sumw2();
-    h_geo_layer_energy_ratio.Sumw2();
+    h_layer_max_energy_ratio.Sumw2();
 
     h_maxBarLayer_maxElayer_gometric_cut.Sumw2();
     h_maxBarLayer_maxElayer_BGOTrackContainment_gometric_cut.Sumw2();
@@ -359,7 +393,9 @@ void buildAcceptance(
             bgorec,
             acceptance_cuts,
             bgoTotalE,
-            h_preGeo_layer_energy_ratio);
+            h_layer_max_energy_ratio,
+            h_layer_energy,
+            h_layer_energy_ratio);
 
         /* ********************************* */
 
@@ -397,7 +433,9 @@ void buildAcceptance(
                     bgorec,
                     acceptance_cuts,
                     bgoTotalE,
-                    h_geo_layer_energy_ratio);
+                    h_layer_max_energy_ratio,
+                    h_layer_energy,
+                    h_layer_energy_ratio);
 
                 // maxElayer_cut && geometric cut
                 auto filter_maxElayer_cut = maxElayer_cut(
@@ -825,8 +863,6 @@ void buildAcceptance(
     h_geo_real_topMap.Write();
     h_geo_BGOreco_topMap.Write();
 
-    h_geo_layer_energy_ratio.Write();
-
     outFile.cd();
 
     auto BGOdir = outFile.mkdir("BGO_Energy");
@@ -834,6 +870,13 @@ void buildAcceptance(
     
     h_BGOrec_E.Write();
     h_BGOrec_E_corr.Write();
+    h_layer_max_energy_ratio.Write();
+
+    for (auto lIdx=0; lIdx<DAMPE_bgo_nLayers; ++lIdx)
+    {
+        h_layer_energy[lIdx].Write();
+        h_layer_energy_ratio[lIdx].Write();
+    }
 
     outFile.cd();
 }

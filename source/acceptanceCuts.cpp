@@ -225,23 +225,16 @@ bool maxElayer_cut(
 {
     bool passed_maxELayerTotalE_cut = true;
 
-    int iMaxELayer = -1;  // Index of the layer corresponding to the max energy
-    double MaxELayer = 0; // Value of the max energy
-
-    // Found the max energy value and layer
     for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
     {
         auto layer_energy = static_cast<double>((bgorec->GetLayerEnergy())[idxLy]);
-        if (layer_energy > MaxELayer)
+        auto tmp_ratio = layer_energy/bgoTotalE;
+        if (tmp_ratio > acceptance_cuts.energy_lRatio)
         {
-            MaxELayer = layer_energy;
-            iMaxELayer = idxLy;
-        }
+            passed_maxELayerTotalE_cut = false;
+            break;
+        }  
     }
-
-    auto rMaxELayerTotalE = MaxELayer / bgoTotalE;
-    if (rMaxELayerTotalE > acceptance_cuts.energy_lRatio)
-        passed_maxELayerTotalE_cut = false;
 
     return passed_maxELayerTotalE_cut;
 }
@@ -250,15 +243,20 @@ void evaluateEnergyRatio(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE,
-    TH1D &h_layer_energy_ratio)
+    TH1D &h_layer_max_energy_ratio,
+    std::vector<TH1D> &h_layer_energy,
+    std::vector<TH1D> &h_layer_energy_ratio)
 {
     int iMaxELayer = -1;  // Index of the layer corresponding to the max energy
     double MaxELayer = 0; // Value of the max energy
+    double _GeV = 0.001;
 
     // Found the max energy value and layer
     for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
     {
         auto layer_energy = static_cast<double>((bgorec->GetLayerEnergy())[idxLy]);
+        h_layer_energy[idxLy].Fill(layer_energy*_GeV);
+        h_layer_energy_ratio[idxLy].Fill(layer_energy/bgoTotalE);
         if (layer_energy > MaxELayer)
         {
             MaxELayer = layer_energy;
@@ -267,7 +265,7 @@ void evaluateEnergyRatio(
     }
 
     auto rMaxELayerTotalE = MaxELayer / bgoTotalE;
-    h_layer_energy_ratio.Fill(rMaxELayerTotalE);
+    h_layer_max_energy_ratio.Fill(rMaxELayerTotalE);
 }
 
 bool maxBarLayer_cut(
