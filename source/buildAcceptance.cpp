@@ -94,27 +94,20 @@ double wtsydp(
         return dene / log(maxene / minene);
 }
 
-inline void init_BGO_histos(
-    std::vector<TH1D> &h_layer_energy_ratio, 
-    std::vector<TH1D> &h_layer_energy)
+inline void init_BGO_histos(std::vector<TH1D> &h_layer_energy_ratio)
 {
     h_layer_energy_ratio.resize(DAMPE_bgo_nLayers);
-    h_layer_energy.resize(DAMPE_bgo_nLayers);
 
     for (auto lIdx = 0; lIdx<DAMPE_bgo_nLayers; ++lIdx)
     {
         TString h_ratio_name = "h_layer_energy_ratio_";
-        TString h_name = "h_layer_energy_";
         TString h_ratio_title = "Energy Ratio - BGO layer ";
-        TString h_title = "Energy - BGO layer ";
         
         h_ratio_name += lIdx;
-        h_name += lIdx;
         h_ratio_title += lIdx;
-        h_title += lIdx;
-
-        h_layer_energy[lIdx] = TH1D(h_name.Data(), h_title.Data(), 100, 0, 1);
+        
         h_layer_energy_ratio[lIdx] = TH1D(h_ratio_name.Data(), h_ratio_title.Data(), 100, 0, 1);
+        h_layer_energy_ratio[lIdx].Sumw2();
     }
 }
 
@@ -256,9 +249,8 @@ void buildAcceptance(
     TH1D h_layer_max_energy_ratio("h_layer_max_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
     
     std::vector<TH1D> h_layer_energy_ratio; 
-    std::vector<TH1D> h_layer_energy;
     
-    init_BGO_histos(h_layer_energy_ratio, h_layer_energy);
+    init_BGO_histos(h_layer_energy_ratio);
 
     // *****
 
@@ -394,7 +386,6 @@ void buildAcceptance(
             acceptance_cuts,
             bgoTotalE,
             h_layer_max_energy_ratio,
-            h_layer_energy,
             h_layer_energy_ratio);
 
         /* ********************************* */
@@ -434,7 +425,6 @@ void buildAcceptance(
                     acceptance_cuts,
                     bgoTotalE,
                     h_layer_max_energy_ratio,
-                    h_layer_energy,
                     h_layer_energy_ratio);
 
                 // maxElayer_cut && geometric cut
@@ -873,10 +863,7 @@ void buildAcceptance(
     h_layer_max_energy_ratio.Write();
 
     for (auto lIdx=0; lIdx<DAMPE_bgo_nLayers; ++lIdx)
-    {
-        h_layer_energy[lIdx].Write();
         h_layer_energy_ratio[lIdx].Write();
-    }
 
     outFile.cd();
 }

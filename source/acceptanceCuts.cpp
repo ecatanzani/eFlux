@@ -244,7 +244,6 @@ void evaluateEnergyRatio(
     const acceptance_conf acceptance_cuts,
     const double bgoTotalE,
     TH1D &h_layer_max_energy_ratio,
-    std::vector<TH1D> &h_layer_energy,
     std::vector<TH1D> &h_layer_energy_ratio)
 {
     int iMaxELayer = -1;  // Index of the layer corresponding to the max energy
@@ -255,7 +254,6 @@ void evaluateEnergyRatio(
     for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
     {
         auto layer_energy = static_cast<double>((bgorec->GetLayerEnergy())[idxLy]);
-        h_layer_energy[idxLy].Fill(layer_energy*_GeV);
         h_layer_energy_ratio[idxLy].Fill(layer_energy/bgoTotalE);
         if (layer_energy > MaxELayer)
         {
