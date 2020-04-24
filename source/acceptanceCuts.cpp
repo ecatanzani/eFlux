@@ -224,11 +224,11 @@ bool maxElayer_cut(
     const double bgoTotalE)
 {
     bool passed_maxELayerTotalE_cut = true;
+    auto layer_energies = static_cast<double>(bgorec->GetLayerEnergy());
 
     for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
     {
-        auto layer_energy = static_cast<double>((bgorec->GetLayerEnergy())[idxLy]);
-        auto tmp_ratio = layer_energy/bgoTotalE;
+        auto tmp_ratio = layer_energies[idxLy]/bgoTotalE;
         if (tmp_ratio > acceptance_cuts.energy_lRatio)
         {
             passed_maxELayerTotalE_cut = false;
