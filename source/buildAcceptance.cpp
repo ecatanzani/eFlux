@@ -183,10 +183,10 @@ void buildAcceptance(
     TH1D h_preGeo_BGOrec_topY_vs_realY("h_preGeo_BGOrec_topY_vs_realY", "Real Y - BGOrec TOP Y", 100, -100, 100);
 
     // Slope X and Y
-    TH1D h_preGeo_real_slopeX("h_preGeo_real_slopeX", "Real Slope X", 180, -180, 180);
-    TH1D h_preGeo_real_slopeY("h_preGeo_real_slopeY", "Real Slope Y", 180, -180, 180);
-    TH1D h_preGeo_BGOrec_slopeX("h_preGeo_BGOrec_slopeX", "BGOrec Slope X", 180, -180, 180);
-    TH1D h_preGeo_BGOrec_slopeY("h_preGeo_BGOrec_slopeY", "BGOrec Slope Y", 180, -180, 180);
+    TH1D h_preGeo_real_slopeX("h_preGeo_real_slopeX", "Real Slope X", 90, -90, 90);
+    TH1D h_preGeo_real_slopeY("h_preGeo_real_slopeY", "Real Slope Y", 90, -90, 90);
+    TH1D h_preGeo_BGOrec_slopeX("h_preGeo_BGOrec_slopeX", "BGOrec Slope X", 90, -90, 90);
+    TH1D h_preGeo_BGOrec_slopeY("h_preGeo_BGOrec_slopeY", "BGOrec Slope Y", 90, -90, 90);
 
     // Intercept X and Y
     TH1D h_preGeo_real_interceptX("h_preGeo_real_interceptX", "Real Intercept X", 500, -500, 500);
