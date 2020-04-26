@@ -224,7 +224,7 @@ bool maxElayer_cut(
     const double bgoTotalE)
 {
     bool passed_maxELayerTotalE_cut = true;
-    auto layer_energies = static_cast<double>(bgorec->GetLayerEnergy());
+    auto layer_energies = bgorec->GetLayerEnergy();
 
     for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
     {

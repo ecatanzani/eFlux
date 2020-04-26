@@ -196,6 +196,8 @@ void buildAcceptance(
 
     TH1D h_BGOrec_E("h_BGOrec_E", "BGO Energy", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOrec_E_corr("h_BGOrec_E_corr", "BGO Corrected Energy", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_simu_energy("h_simu_energy", "Simu Energy", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_energy_diff("h_energy_diff", "Simu vs Corrected Reco BGO energy", 1000, -100, 100);
 
     // Pre Geometric Cut
     // Top X and Y
@@ -253,6 +255,9 @@ void buildAcceptance(
     init_BGO_histos(h_layer_energy_ratio);
 
     // *****
+
+    h_simu_energy.Sumw2();
+    h_energy_diff.Sumw2();
 
     h_preGeo_BGOrec_topX_vs_realX.Sumw2();
     h_preGeo_BGOrec_topY_vs_realY.Sumw2();
@@ -332,6 +337,12 @@ void buildAcceptance(
         double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
         double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
 
+        // Fill the energy histos
+        h_BGOrec_E.Fill(bgoTotalE_raw * _GeV);
+        h_BGOrec_E_corr.Fill(bgoTotalE * _GeV);
+        h_simu_energy.Fill(simuEnergy * _GeV);
+        h_energy_diff.Fill(simuEnergy-bgoTotalE);
+
         // Don't accept events outside the selected energy window
         if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
             continue;
@@ -347,12 +358,7 @@ void buildAcceptance(
         {
             // Check if the BGO reco process is correct
             if (checkBGOreco(bgorec, simu_primaries))
-            {
                 h_incoming.Fill(simuEnergy * _GeV);
-                // Fill the energy histos
-                h_BGOrec_E.Fill(bgoTotalE_raw);
-                h_BGOrec_E_corr.Fill(bgoTotalE);
-            }
             else
                 continue;
         }
@@ -860,6 +866,8 @@ void buildAcceptance(
     
     h_BGOrec_E.Write();
     h_BGOrec_E_corr.Write();
+    h_simu_energy.Write();
+    h_energy_diff.Write();
     h_layer_max_energy_ratio.Write();
 
     for (auto lIdx=0; lIdx<DAMPE_bgo_nLayers; ++lIdx)
