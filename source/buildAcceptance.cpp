@@ -354,13 +354,7 @@ void buildAcceptance(
         // Don't accept events outside the selected energy window
         if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
             continue;
-
-        /*
-        // Check if the reco energy is correct
-         if (bgoTotalE * _GeV < acceptance_cuts.min_event_energy || bgoTotalE * _GeV > acceptance_cuts.max_event_energy)
-            continue;
-        */
-
+            
         if (!bgoTotalE)
         {
             // If the energy in the BGO is zero the particle didn't hit the BGO

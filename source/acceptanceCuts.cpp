@@ -123,10 +123,14 @@ bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
     intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
     intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
 
-    double actual_X = slope[0] * BGO_TopZ + intercept[0];
-    double actual_Y = slope[1] * BGO_TopZ + intercept[1];
+    double actual_topX = slope[0] * BGO_TopZ + intercept[0];
+    double actual_topY = slope[1] * BGO_TopZ + intercept[1];
 
-    if (fabs(actual_X) < BGO_SideXY && fabs(actual_Y) < BGO_SideXY)
+    double actual_bottomX = slope[0] * BGO_BottomZ + intercept[0];
+    double actual_bottomY = slope[1] * BGO_BottomZ + intercept[1];
+
+    if (fabs(actual_topX) < BGO_SideXY && fabs(actual_topY) < BGO_SideXY &&
+        fabs(actual_bottomX) < BGO_SideXY && fabs(actual_bottomY) < BGO_SideXY)
         passed_geometric_cut = true;
 
 #endif
