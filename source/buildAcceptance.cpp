@@ -197,7 +197,12 @@ void buildAcceptance(
     TH1D h_BGOrec_E("h_BGOrec_E", "BGO Energy", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOrec_E_corr("h_BGOrec_E_corr", "BGO Corrected Energy", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_simu_energy("h_simu_energy", "Simu Energy", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_energy_diff("h_energy_diff", "Simu vs Corrected Reco BGO energy", 1000, -100, 100);
+    TH1D h_energy_diff("h_energy_diff", "Simu vs Corrected Reco BGO energy", 50, -100, 100);
+
+    TH1D h_accepted_BGOrec_E("h_accepted_BGOrec_E", "BGO Energy", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_accepted_BGOrec_E_corr("h_accepted_BGOrec_E_corr", "BGO Corrected Energy", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_accepted_simu_energy("h_accepted_simu_energy", "Simu Energy", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_accepted_energy_diff("h_accepted_energy_diff", "Simu vs Corrected Reco BGO energy", 50, -100, 100);
 
     // Pre Geometric Cut
     // Top X and Y
@@ -255,9 +260,15 @@ void buildAcceptance(
     init_BGO_histos(h_layer_energy_ratio);
 
     // *****
-
+    h_BGOrec_E.Sumw2();
+    h_BGOrec_E_corr.Sumw2();
     h_simu_energy.Sumw2();
     h_energy_diff.Sumw2();
+
+    h_accepted_BGOrec_E.Sumw2();
+    h_accepted_BGOrec_E_corr.Sumw2();
+    h_accepted_simu_energy.Sumw2();
+    h_accepted_energy_diff.Sumw2();
 
     h_preGeo_BGOrec_topX_vs_realX.Sumw2();
     h_preGeo_BGOrec_topY_vs_realY.Sumw2();
@@ -285,9 +296,6 @@ void buildAcceptance(
     h_geo_BGOrec_interceptY.Sumw2();
     h_geo_real_topMap.Sumw2();
     h_geo_BGOreco_topMap.Sumw2();
-
-    h_BGOrec_E.Sumw2();
-    h_BGOrec_E_corr.Sumw2();
 
     h_incoming.Sumw2();
     h_gometric_cut.Sumw2();
@@ -341,11 +349,17 @@ void buildAcceptance(
         h_BGOrec_E.Fill(bgoTotalE_raw * _GeV);
         h_BGOrec_E_corr.Fill(bgoTotalE * _GeV);
         h_simu_energy.Fill(simuEnergy * _GeV);
-        h_energy_diff.Fill(simuEnergy-bgoTotalE);
+        h_energy_diff.Fill((simuEnergy-bgoTotalE) * _GeV);
 
         // Don't accept events outside the selected energy window
         if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
             continue;
+
+        /*
+        // Check if the reco energy is correct
+         if (bgoTotalE * _GeV < acceptance_cuts.min_event_energy || bgoTotalE * _GeV > acceptance_cuts.max_event_energy)
+            continue;
+        */
 
         if (!bgoTotalE)
         {
@@ -409,6 +423,12 @@ void buildAcceptance(
         if (active_cuts.geometry)
             if (geometric_cut(simu_primaries))
             {
+                // Fill energy histos
+                h_accepted_BGOrec_E.Fill(bgoTotalE_raw * _GeV);
+                h_accepted_BGOrec_E_corr.Fill(bgoTotalE * _GeV);
+                h_accepted_simu_energy.Fill(simuEnergy * _GeV);
+                h_accepted_energy_diff.Fill((simuEnergy-bgoTotalE) * _GeV);
+                
                 // Analyse BGOreco algorithm
                 evaluateTopPosition(
                     simu_primaries, 
@@ -869,6 +889,11 @@ void buildAcceptance(
     h_simu_energy.Write();
     h_energy_diff.Write();
     h_layer_max_energy_ratio.Write();
+
+    h_accepted_BGOrec_E.Write();
+    h_accepted_BGOrec_E_corr.Write();
+    h_accepted_simu_energy.Write();
+    h_accepted_energy_diff.Write();
 
     for (auto lIdx=0; lIdx<DAMPE_bgo_nLayers; ++lIdx)
         h_layer_energy_ratio[lIdx].Write();
