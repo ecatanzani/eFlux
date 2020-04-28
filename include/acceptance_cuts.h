@@ -30,6 +30,7 @@ struct best_track
 };
 
 extern bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
+extern bool geometric_top_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
 
 extern bool maxElayer_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
@@ -49,6 +50,10 @@ extern bool maxBarLayer_cut(
     const std::vector<int> idxBarMaxLayer);
 
 extern bool BGOTrackContainment_cut(
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const acceptance_conf acceptance_cuts);
+
+extern bool BGOTrackContainment_top_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const acceptance_conf acceptance_cuts);
 

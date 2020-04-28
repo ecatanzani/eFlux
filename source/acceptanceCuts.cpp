@@ -41,7 +41,10 @@ bool checkBGOreco(
         int position_sensitivity = 30;
 
         if ( fabs(actual_X-topX)>position_sensitivity || fabs(actual_Y-topY)>position_sensitivity)
+        {
+            std::cout << "X: " << fabs(actual_X-topX) << "\tY: " << fabs(actual_Y-topY);
             return false;
+        }
         else
             return true;
 
@@ -138,6 +141,62 @@ bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
     return passed_geometric_cut;
 }
 
+bool geometric_top_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
+{
+    bool passed_geometric_cut = false;
+
+    TVector3 orgPosition;
+    orgPosition.SetX(simu_primaries->pv_x);
+    orgPosition.SetY(simu_primaries->pv_y);
+    orgPosition.SetZ(simu_primaries->pv_z);
+
+#if 0
+    // **** Directions Cosines Method
+
+    TVector3 dCos;
+    dCos.SetX(simu_primaries->pvpart_cosx);
+    dCos.SetY(simu_primaries->pvpart_cosy);
+    dCos.SetZ(simu_primaries->pvpart_cosz);
+
+    if (dCos.Z())
+    {
+        double ratioZ = (BGO_TopZ - orgPosition.Z()) / dCos.Z();
+        double actual_X = ratioZ * dCos.X() + orgPosition.X();
+        double actual_Y = ratioZ * dCos.Y() + orgPosition.Y();
+        if (fabs(actual_X) < BGO_SideXY && fabs(actual_Y) < BGO_SideXY)
+            passed_geometric_cut = true;
+    }
+
+#else
+    // **** Moments Method
+
+    TVector3 orgMomentum;
+    orgMomentum.SetX(simu_primaries->pvpart_px);
+    orgMomentum.SetY(simu_primaries->pvpart_py);
+    orgMomentum.SetZ(simu_primaries->pvpart_pz);
+
+    //auto orgMomentum_theta = orgMomentum.Theta() * TMath::RadToDeg();
+    //auto orgMomentum_costheta = cos(orgMomentum.Theta());
+
+    std::vector<double> slope(2, 0);
+    std::vector<double> intercept(2, 0);
+
+    slope[0] = orgMomentum.Z() ? orgMomentum.X() / orgMomentum.Z() : -999;
+    slope[1] = orgMomentum.Z() ? orgMomentum.Y() / orgMomentum.Z() : -999;
+    intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
+    intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
+
+    double actual_topX = slope[0] * BGO_TopZ + intercept[0];
+    double actual_topY = slope[1] * BGO_TopZ + intercept[1];
+
+    if (fabs(actual_topX) < BGO_SideXY && fabs(actual_topY))
+        passed_geometric_cut = true;
+
+#endif
+
+    return passed_geometric_cut;
+}
+
 void evaluateTopPosition(
     const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
@@ -184,10 +243,7 @@ void evaluateTopPosition(
     bgoRec_slope[1] = bgorec->GetSlopeYZ();
     bgoRec_intercept[0] = bgorec->GetInterceptXZ();
     bgoRec_intercept[1] = bgorec->GetInterceptYZ();
-
-    if ((bgoRec_slope[0]==0 && bgoRec_intercept[0]==0) || (bgoRec_slope[1]==0 && bgoRec_intercept[1]==0))
-        return;
-
+    
     double topZ = BGO_TopZ;
     double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
     double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
@@ -309,9 +365,6 @@ bool BGOTrackContainment_cut(
     bgoRec_intercept[0] = bgorec->GetInterceptXZ();
     bgoRec_intercept[1] = bgorec->GetInterceptYZ();
 
-    if ((bgoRec_slope[0]==0 && bgoRec_intercept[0]==0) || (bgoRec_slope[1]==0 && bgoRec_intercept[1]==0))
-        return passed_bgo_containment_cut;
-
     double topZ = BGO_TopZ;
     double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
     double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
@@ -325,6 +378,29 @@ bool BGOTrackContainment_cut(
         fabs(topY) < acceptance_cuts.shower_axis_delta &&
         fabs(bottomX) < acceptance_cuts.shower_axis_delta &&
         fabs(bottomY) < acceptance_cuts.shower_axis_delta)
+        passed_bgo_containment_cut = true;
+    
+    return passed_bgo_containment_cut;
+}
+
+bool BGOTrackContainment_top_cut(
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const acceptance_conf acceptance_cuts)
+{
+    bool passed_bgo_containment_cut = false;
+
+    std::vector<double> bgoRec_slope(2);
+    std::vector<double> bgoRec_intercept(2);
+
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
+    
+    double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
+
+    if (fabs(topX) < acceptance_cuts.shower_axis_delta && fabs(topY) < acceptance_cuts.shower_axis_delta)
         passed_bgo_containment_cut = true;
     
     return passed_bgo_containment_cut;
