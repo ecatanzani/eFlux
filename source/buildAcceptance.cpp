@@ -122,6 +122,17 @@ inline std::shared_ptr<TH1D> buildHistoFromVector(
     return histo;
 }
 
+inline void updateProcessStatus(const int evIdx, int &kStep, const int nevents)
+{
+    auto percentage = ((evIdx + 1) / (double)nevents) * 100;
+    if (floor(percentage) != 0 && ((int)floor(percentage) % kStep) == 0)
+    {
+        std::cout << "\n"
+                  << percentage << " %\t | \tProcessed " << evIdx + 1 << " events / " << nevents;
+        kStep += 10;
+    }
+}
+
 void buildAcceptance(
     const std::string accInputPath,
     const bool verbose,
@@ -187,7 +198,7 @@ void buildAcceptance(
     TH1D h_xtrl_cut("h_xtrl_cut", "Energy Distribution - xtrl cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_psd_charge_cut("h_psd_charge_cut", "Energy Distribution - psd charge cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
-    
+
     // **** Analysis histos
 
     TH1D h_BGOrec_E("h_BGOrec_E", "BGO Energy", logEBins.size() - 1, &(logEBins[0]));
@@ -324,15 +335,7 @@ void buildAcceptance(
 
         // Event printout
         if (verbose)
-        {
-            auto percentage = ((evIdx + 1) / (double)nevents) * 100;
-            if (floor(percentage) != 0 && ((int)floor(percentage) % kStep) == 0)
-            {
-                std::cout << "\n"
-                          << percentage << " %\t | \tProcessed " << evIdx + 1 << " events / " << nevents;
-                kStep += 10;
-            }
-        }
+            updateProcessStatus(evIdx, kStep, nevents);
 
         // Get event total energy
         double bgoTotalE_raw = bgorec->GetTotalEnergy(); // Energy in MeV - not corrected
@@ -460,375 +463,373 @@ void buildAcceptance(
             h_maxBarLayer_cut.Fill(simuEnergy * _GeV);
         if (filter_BGOTrackContainment_cut)
             h_BGOTrackContainment_cut.Fill(simuEnergy * _GeV);
-        
 
-    // **** BGO Fiducial Volume ****
-    if (active_cuts.BGO_fiducial)
-    {
-        bool filter_BGO_fiducial = true;
-        
-        filter_BGO_fiducial *= filter_maxElayer_cut;
-        filter_BGO_fiducial *= filter_maxBarLayer_cut;
-        filter_BGO_fiducial *= filter_BGOTrackContainment_cut;
+        // **** BGO Fiducial Volume ****
+        if (active_cuts.BGO_fiducial)
+        {
+            bool filter_BGO_fiducial = true;
 
-        // BGO_fiducial_cut
-        if (filter_BGO_fiducial)
-            h_BGO_fiducial.Fill(simuEnergy * _GeV);
-    }
+            filter_BGO_fiducial *= filter_maxElayer_cut;
+            filter_BGO_fiducial *= filter_maxBarLayer_cut;
+            filter_BGO_fiducial *= filter_BGOTrackContainment_cut;
 
-    // **** nBarLayer13 cut ****
-    if (active_cuts.nBarLayer13)
-    {
-        filter_nBarLayer13_cut = nBarLayer13_cut(
-            bgohits,
-            bgoVault.GetSingleLayerBarNumber(13),
-            bgoTotalE);
-        all_event_filter *= filter_nBarLayer13_cut;
-        if (filter_nBarLayer13_cut)
-            h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
-    }
+            // BGO_fiducial_cut
+            if (filter_BGO_fiducial)
+                h_BGO_fiducial.Fill(simuEnergy * _GeV);
+        }
 
-    // **** maxRms cut ****
-    if (active_cuts.maxRms)
-    {
-        filter_maxRms_cut = maxRms_cut(
-            bgoVault.GetLayerBarNumber(),
-            bgoVault.GetRmsLayer(),
-            bgoTotalE,
-            acceptance_cuts);
-        all_event_filter *= filter_maxRms_cut;
-        if (filter_maxRms_cut)
-            h_maxRms_cut.Fill(simuEnergy * _GeV);
-    }
-
-    // **** track_selection cut ****
-    if (active_cuts.track_selection)
-    {
-        filter_track_selection_cut =
-            track_selection_cut(
-                bgorec,
+        // **** nBarLayer13 cut ****
+        if (active_cuts.nBarLayer13)
+        {
+            filter_nBarLayer13_cut = nBarLayer13_cut(
                 bgohits,
-                stkclusters,
-                stktracks,
+                bgoVault.GetSingleLayerBarNumber(13),
+                bgoTotalE);
+            all_event_filter *= filter_nBarLayer13_cut;
+            if (filter_nBarLayer13_cut)
+                h_nBarLayer13_cut.Fill(simuEnergy * _GeV);
+        }
+
+        // **** maxRms cut ****
+        if (active_cuts.maxRms)
+        {
+            filter_maxRms_cut = maxRms_cut(
+                bgoVault.GetLayerBarNumber(),
+                bgoVault.GetRmsLayer(),
+                bgoTotalE,
+                acceptance_cuts);
+            all_event_filter *= filter_maxRms_cut;
+            if (filter_maxRms_cut)
+                h_maxRms_cut.Fill(simuEnergy * _GeV);
+        }
+
+        // **** track_selection cut ****
+        if (active_cuts.track_selection)
+        {
+            filter_track_selection_cut =
+                track_selection_cut(
+                    bgorec,
+                    bgohits,
+                    stkclusters,
+                    stktracks,
+                    acceptance_cuts,
+                    event_best_track);
+            all_event_filter *= filter_track_selection_cut;
+            if (filter_track_selection_cut)
+                h_track_selection_cut.Fill(simuEnergy * _GeV);
+        }
+
+        // **** xtrl cut ****
+        if (active_cuts.xtrl)
+        {
+            filter_xtrl_cut = xtrl_cut(
+                bgoVault.GetSumRMS(),
+                bgoVault.GetFracLayer(),
+                acceptance_cuts);
+            all_event_filter *= filter_xtrl_cut;
+            if (filter_xtrl_cut)
+                h_xtrl_cut.Fill(simuEnergy * _GeV);
+        }
+
+        // **** psd_charge cut ****
+        if (active_cuts.psd_charge)
+        {
+            filter_psd_charge_cut = psd_charge_cut(
+                psdhits,
+                bgorec,
                 acceptance_cuts,
                 event_best_track);
-        all_event_filter *= filter_track_selection_cut;
-        if (filter_track_selection_cut)
-            h_track_selection_cut.Fill(simuEnergy * _GeV);
+            all_event_filter *= filter_psd_charge_cut;
+            if (filter_psd_charge_cut)
+                h_psd_charge_cut.Fill(simuEnergy * _GeV);
+        }
+
+        // **** All-cuts ****
+        if (active_cuts.nActiveCuts)
+            if (all_event_filter)
+                h_all_cut.Fill(simuEnergy * _GeV);
     }
 
-    // **** xtrl cut ****
-    if (active_cuts.xtrl)
+    if (verbose)
     {
-        filter_xtrl_cut = xtrl_cut(
-            bgoVault.GetSumRMS(),
-            bgoVault.GetFracLayer(),
-            acceptance_cuts);
-        all_event_filter *= filter_xtrl_cut;
-        if (filter_xtrl_cut)
-            h_xtrl_cut.Fill(simuEnergy * _GeV);
+        auto refEntries = h_incoming.GetEntries();
+
+        std::cout << "\n\n ****** \n\n";
+        std::cout << "generated events in good energy range: " << refEntries << std::endl;
+
+        if (h_gometric_cut.GetEntries())
+            std::cout << "geometric filtered events: " << h_gometric_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_gometric_cut.GetEntries()) / refEntries << std::endl;
+
+        refEntries = h_gometric_cut.GetEntries();
+
+        if (h_BGO_fiducial.GetEntries())
+            std::cout << "BGO fiducial filtered events: " << h_BGO_fiducial.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_BGO_fiducial.GetEntries()) / refEntries << std::endl;
+
+        if (h_nBarLayer13_cut.GetEntries())
+            std::cout << "nBarLayer13 filtered events: " << h_nBarLayer13_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_nBarLayer13_cut.GetEntries()) / refEntries << std::endl;
+
+        if (h_maxRms_cut.GetEntries())
+            std::cout << "maxRms filtered events: " << h_maxRms_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_maxRms_cut.GetEntries()) / refEntries << std::endl;
+
+        if (h_track_selection_cut.GetEntries())
+            std::cout << "track_selection filtered events: " << h_track_selection_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_track_selection_cut.GetEntries()) / refEntries << std::endl;
+
+        if (h_xtrl_cut.GetEntries())
+            std::cout << "xtrl filtered events: " << h_xtrl_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_xtrl_cut.GetEntries()) / refEntries << std::endl;
+
+        if (h_psd_charge_cut.GetEntries())
+            std::cout << "psd_charge filtered events: " << h_psd_charge_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_psd_charge_cut.GetEntries()) / refEntries << std::endl;
+
+        if (h_all_cut.GetEntries())
+            std::cout << "psd_charge filtered events: " << h_all_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_all_cut.GetEntries()) / refEntries;
+
+        std::cout << "\n\n ****** \n\n";
     }
 
-    // **** psd_charge cut ****
-    if (active_cuts.psd_charge)
+    double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
+
+    // Building acceptance histos
+    auto h_acceptance_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_acceptance_gometric_cut"));
+    auto h_acceptance_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_acceptance_maxElayer_cut"));
+    auto h_acceptance_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_acceptance_maxBarLayer_cut"));
+    auto h_acceptance_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_acceptance_BGOTrackContainment_cut"));
+    auto h_acceptance_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_acceptance_BGO_fiducial"));
+    auto h_acceptance_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_acceptance_nBarLayer13_cut"));
+    auto h_acceptance_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_acceptance_maxRms_cut"));
+    auto h_acceptance_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_acceptance_track_selection_cut"));
+    auto h_acceptance_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_acceptance_xtrl_cut"));
+    auto h_acceptance_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_acceptance_psd_charge_cut"));
+    auto h_acceptance_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance_all_cut"));
+
+    h_acceptance_gometric_cut->Divide(&h_incoming);
+    h_acceptance_maxElayer_cut->Divide(&h_incoming);
+    h_acceptance_maxBarLayer_cut->Divide(&h_incoming);
+    h_acceptance_BGOTrackContainment_cut->Divide(&h_incoming);
+    h_acceptance_BGO_fiducial->Divide(&h_incoming);
+    h_acceptance_nBarLayer13_cut->Divide(&h_incoming);
+    h_acceptance_maxRms_cut->Divide(&h_incoming);
+    h_acceptance_track_selection_cut->Divide(&h_incoming);
+    h_acceptance_xtrl_cut->Divide(&h_incoming);
+    h_acceptance_psd_charge_cut->Divide(&h_incoming);
+    h_acceptance_all_cut->Divide(&h_incoming);
+
+    h_acceptance_gometric_cut->Scale(genSurface);
+    h_acceptance_maxElayer_cut->Scale(genSurface);
+    h_acceptance_maxBarLayer_cut->Scale(genSurface);
+    h_acceptance_BGOTrackContainment_cut->Scale(genSurface);
+    h_acceptance_BGO_fiducial->Scale(genSurface);
+    h_acceptance_nBarLayer13_cut->Scale(genSurface);
+    h_acceptance_maxRms_cut->Scale(genSurface);
+    h_acceptance_track_selection_cut->Scale(genSurface);
+    h_acceptance_xtrl_cut->Scale(genSurface);
+    h_acceptance_psd_charge_cut->Scale(genSurface);
+    h_acceptance_all_cut->Scale(genSurface);
+
+    // Builing vectors
+    std::vector<double> energyValues(h_incoming.GetXaxis()->GetNbins(), 0);
+
+    std::vector<double> acceptanceValues_gometric_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_maxElayer_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_maxBarLayer_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_BGOTrackContainment_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_BGO_fiducial_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_nBarLayer13_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_maxRms_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_track_selection_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_xtrl_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_psd_charge_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
+
+    for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
-        filter_psd_charge_cut = psd_charge_cut(
-            psdhits,
-            bgorec,
-            acceptance_cuts,
-            event_best_track);
-        all_event_filter *= filter_psd_charge_cut;
-        if (filter_psd_charge_cut)
-            h_psd_charge_cut.Fill(simuEnergy * _GeV);
+        auto index = std::distance(logEBins.begin(), it);
+        energyValues[index] = wtsydp(*it, *(it + 1), -1);
+        acceptanceValues_gometric_cut[index] = h_acceptance_gometric_cut->GetBinContent(index + 1);
+        acceptanceValues_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinContent(index + 1);
+        acceptanceValues_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinContent(index + 1);
+        acceptanceValues_BGOTrackContainment_cut[index] = h_acceptance_BGOTrackContainment_cut->GetBinContent(index + 1);
+        acceptanceValues_BGO_fiducial_cut[index] = h_acceptance_BGO_fiducial->GetBinContent(index + 1);
+        acceptanceValues_nBarLayer13_cut[index] = h_acceptance_nBarLayer13_cut->GetBinContent(index + 1);
+        acceptanceValues_maxRms_cut[index] = h_acceptance_maxRms_cut->GetBinContent(index + 1);
+        acceptanceValues_track_selection_cut[index] = h_acceptance_track_selection_cut->GetBinContent(index + 1);
+        acceptanceValues_xtrl_cut[index] = h_acceptance_xtrl_cut->GetBinContent(index + 1);
+        acceptanceValues_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinContent(index + 1);
+        acceptanceValues_all_cut[index] = h_acceptance_all_cut->GetBinContent(index + 1);
     }
 
-    // **** All-cuts ****
-    if (active_cuts.nActiveCuts)
-        if (all_event_filter)
-            h_all_cut.Fill(simuEnergy * _GeV);
-}
+    // Building graphs
+    TGraph gr_acceptance_gometric_cut(energyValues.size(), &energyValues[0], &acceptanceValues_gometric_cut[0]);
+    TGraph gr_acceptance_maxElayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElayer_cut[0]);
+    TGraph gr_acceptance_maxBarLayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxBarLayer_cut[0]);
+    TGraph gr_acceptance_BGOTrackContainment_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGOTrackContainment_cut[0]);
+    TGraph gr_acceptance_BGO_fiducial_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGO_fiducial_cut[0]);
+    TGraph gr_acceptance_nBarLayer13_cut(energyValues.size(), &energyValues[0], &acceptanceValues_nBarLayer13_cut[0]);
+    TGraph gr_acceptance_maxRms_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxRms_cut[0]);
+    TGraph gr_acceptance_track_selection_cut(energyValues.size(), &energyValues[0], &acceptanceValues_track_selection_cut[0]);
+    TGraph gr_acceptance_xtrl_cut(energyValues.size(), &energyValues[0], &acceptanceValues_xtrl_cut[0]);
+    TGraph gr_acceptance_psd_charge_cut(energyValues.size(), &energyValues[0], &acceptanceValues_psd_charge_cut[0]);
+    TGraph gr_acceptance_all_cut(energyValues.size(), &energyValues[0], &acceptanceValues_all_cut[0]);
 
-if (verbose)
-{
-    auto refEntries = h_incoming.GetEntries();
+    gr_acceptance_gometric_cut.SetName("gr_acceptance_gometric_cut");
+    gr_acceptance_maxElayer_cut.SetName("gr_acceptance_maxElayer_cut");
+    gr_acceptance_maxBarLayer_cut.SetName("gr_acceptance_maxBarLayer_cut");
+    gr_acceptance_BGOTrackContainment_cut.SetName("gr_acceptance_BGOTrackContainment_cut");
+    gr_acceptance_BGO_fiducial_cut.SetName("gr_acceptance_BGO_fiducial_cut");
+    gr_acceptance_nBarLayer13_cut.SetName("gr_acceptance_nBarLayer13_cut");
+    gr_acceptance_maxRms_cut.SetName("gr_acceptance_maxRms_cut");
+    gr_acceptance_track_selection_cut.SetName("gr_acceptance_track_selection_cut");
+    gr_acceptance_xtrl_cut.SetName("gr_acceptance_xtrl_cut");
+    gr_acceptance_psd_charge_cut.SetName("gr_acceptance_psd_charge_cut");
+    gr_acceptance_all_cut.SetName("gr_acceptance_all_cut");
 
-    std::cout << "\n\n ****** \n\n";
-    std::cout << "generated events in good energy range: " << refEntries << std::endl;
+    gr_acceptance_gometric_cut.SetTitle("Acceptance - geometric cut");
+    gr_acceptance_maxElayer_cut.SetTitle("Acceptance - maxElateral cut");
+    gr_acceptance_maxBarLayer_cut.SetTitle("Acceptance - maxBarLayer cut");
+    gr_acceptance_BGOTrackContainment_cut.SetTitle("Acceptance - BGOTrackContainment cut");
+    gr_acceptance_BGO_fiducial_cut.SetTitle("Acceptance - BGO fiducial volume cut");
+    gr_acceptance_nBarLayer13_cut.SetTitle("Acceptance - nBarLayer13 cut");
+    gr_acceptance_maxRms_cut.SetTitle("Acceptance - maxRms cut");
+    gr_acceptance_track_selection_cut.SetTitle("Acceptance - track selection cut");
+    gr_acceptance_xtrl_cut.SetTitle("Acceptance - XTRL cut");
+    gr_acceptance_psd_charge_cut.SetTitle("Acceptance - PSD charge selection cut");
+    gr_acceptance_all_cut.SetTitle("Acceptance - all cut");
 
-    if (h_gometric_cut.GetEntries())
-        std::cout << "geometric filtered events: " << h_gometric_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_gometric_cut.GetEntries()) / refEntries << std::endl;
+    // Write histos to file
+    h_incoming.Write();
+    h_gometric_cut.Write();
+    h_maxElayer_cut.Write();
+    h_maxBarLayer_cut.Write();
+    h_BGOTrackContainment_cut.Write();
+    h_BGO_fiducial.Write();
+    h_nBarLayer13_cut.Write();
+    h_maxRms_cut.Write();
+    h_track_selection_cut.Write();
+    h_xtrl_cut.Write();
+    h_psd_charge_cut.Write();
+    h_all_cut.Write();
 
-    refEntries = h_gometric_cut.GetEntries();
+    // Create output acceptance dir in the output TFile
+    auto acceptanceDir = outFile.mkdir("Acceptance");
+    acceptanceDir->cd();
 
-    if (h_BGO_fiducial.GetEntries())
-        std::cout << "BGO fiducial filtered events: " << h_BGO_fiducial.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_BGO_fiducial.GetEntries()) / refEntries << std::endl;
+    // Write final TGraphs
+    gr_acceptance_gometric_cut.Write();
+    gr_acceptance_maxElayer_cut.Write();
+    gr_acceptance_maxBarLayer_cut.Write();
+    gr_acceptance_BGOTrackContainment_cut.Write();
+    gr_acceptance_BGO_fiducial_cut.Write();
+    gr_acceptance_nBarLayer13_cut.Write();
+    gr_acceptance_maxRms_cut.Write();
+    gr_acceptance_track_selection_cut.Write();
+    gr_acceptance_xtrl_cut.Write();
+    gr_acceptance_psd_charge_cut.Write();
+    gr_acceptance_all_cut.Write();
 
-    if (h_nBarLayer13_cut.GetEntries())
-        std::cout << "nBarLayer13 filtered events: " << h_nBarLayer13_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_nBarLayer13_cut.GetEntries()) / refEntries << std::endl;
+    // Return to main TFile directory
+    outFile.cd();
 
-    if (h_maxRms_cut.GetEntries())
-        std::cout << "maxRms filtered events: " << h_maxRms_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_maxRms_cut.GetEntries()) / refEntries << std::endl;
+    // Create output ratio dir in the output TFile
+    auto ratioDir = outFile.mkdir("Ratios");
+    ratioDir->cd();
 
-    if (h_track_selection_cut.GetEntries())
-        std::cout << "track_selection filtered events: " << h_track_selection_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_track_selection_cut.GetEntries()) / refEntries << std::endl;
+    // Building ratio histos
+    auto h_ratio_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_ratio_gometric_cut"));
+    auto h_ratio_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_ratio_maxElayer_cut"));
+    auto h_ratio_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_ratio_maxBarLayer_cut"));
+    auto h_ratio_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_ratio_BGOTrackContainment_cut"));
+    auto h_ratio_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_ratio_BGO_fiducial"));
+    auto h_ratio_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_ratio_nBarLayer13_cut"));
+    auto h_ratio_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_ratio_maxRms_cut"));
+    auto h_ratio_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_ratio_track_selection_cut"));
+    auto h_ratio_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_ratio_xtrl_cut"));
+    auto h_ratio_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_psd_charge_cut"));
+    auto h_ratio_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_all_cut"));
 
-    if (h_xtrl_cut.GetEntries())
-        std::cout << "xtrl filtered events: " << h_xtrl_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_xtrl_cut.GetEntries()) / refEntries << std::endl;
+    h_ratio_gometric_cut->Divide(&h_gometric_cut);
+    h_ratio_maxElayer_cut->Divide(&h_gometric_cut);
+    h_ratio_maxBarLayer_cut->Divide(&h_gometric_cut);
+    h_ratio_BGOTrackContainment_cut->Divide(&h_gometric_cut);
+    h_ratio_BGO_fiducial->Divide(&h_gometric_cut);
+    h_ratio_nBarLayer13_cut->Divide(&h_gometric_cut);
+    h_ratio_maxRms_cut->Divide(&h_gometric_cut);
+    h_ratio_track_selection_cut->Divide(&h_gometric_cut);
+    h_ratio_xtrl_cut->Divide(&h_gometric_cut);
+    h_ratio_psd_charge_cut->Divide(&h_gometric_cut);
+    h_ratio_all_cut->Divide(&h_gometric_cut);
 
-    if (h_psd_charge_cut.GetEntries())
-        std::cout << "psd_charge filtered events: " << h_psd_charge_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_psd_charge_cut.GetEntries()) / refEntries << std::endl;
+    h_ratio_gometric_cut->Write();
+    h_ratio_maxElayer_cut->Write();
+    h_ratio_maxBarLayer_cut->Write();
+    h_ratio_BGOTrackContainment_cut->Write();
+    h_ratio_BGO_fiducial->Write();
+    h_ratio_nBarLayer13_cut->Write();
+    h_ratio_maxRms_cut->Write();
+    h_ratio_track_selection_cut->Write();
+    h_ratio_xtrl_cut->Write();
+    h_ratio_psd_charge_cut->Write();
+    h_ratio_all_cut->Write();
 
-    if (h_all_cut.GetEntries())
-        std::cout << "psd_charge filtered events: " << h_all_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_all_cut.GetEntries()) / refEntries;
+    outFile.cd();
 
-    std::cout << "\n\n ****** \n\n";
-}
+    // Create output analysis dir in the output TFile
+    auto preGeo_analysisDir = outFile.mkdir("Analysis_preGeoCut");
+    preGeo_analysisDir->cd();
 
-double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
+    h_preGeo_BGOrec_topX_vs_realX.Write();
+    h_preGeo_BGOrec_topY_vs_realY.Write();
+    h_preGeo_real_slopeX.Write();
+    h_preGeo_real_slopeY.Write();
+    h_preGeo_BGOrec_slopeX.Write();
+    h_preGeo_BGOrec_slopeY.Write();
+    h_preGeo_real_interceptX.Write();
+    h_preGeo_real_interceptY.Write();
+    h_preGeo_BGOrec_interceptX.Write();
+    h_preGeo_BGOrec_interceptY.Write();
+    h_preGeo_real_topMap.Write();
+    h_preGeo_BGOreco_topMap.Write();
 
-// Building acceptance histos
-auto h_acceptance_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_acceptance_gometric_cut"));
-auto h_acceptance_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_acceptance_maxElayer_cut"));
-auto h_acceptance_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_acceptance_maxBarLayer_cut"));
-auto h_acceptance_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_acceptance_BGOTrackContainment_cut"));
-auto h_acceptance_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_acceptance_BGO_fiducial"));
-auto h_acceptance_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_acceptance_nBarLayer13_cut"));
-auto h_acceptance_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_acceptance_maxRms_cut"));
-auto h_acceptance_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_acceptance_track_selection_cut"));
-auto h_acceptance_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_acceptance_xtrl_cut"));
-auto h_acceptance_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_acceptance_psd_charge_cut"));
-auto h_acceptance_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance_all_cut"));
+    h_preGeo_layer_energy_ratio.Write();
 
-h_acceptance_gometric_cut->Divide(&h_incoming);
-h_acceptance_maxElayer_cut->Divide(&h_incoming);
-h_acceptance_maxBarLayer_cut->Divide(&h_incoming);
-h_acceptance_BGOTrackContainment_cut->Divide(&h_incoming);
-h_acceptance_BGO_fiducial->Divide(&h_incoming);
-h_acceptance_nBarLayer13_cut->Divide(&h_incoming);
-h_acceptance_maxRms_cut->Divide(&h_incoming);
-h_acceptance_track_selection_cut->Divide(&h_incoming);
-h_acceptance_xtrl_cut->Divide(&h_incoming);
-h_acceptance_psd_charge_cut->Divide(&h_incoming);
-h_acceptance_all_cut->Divide(&h_incoming);
+    h_noBGOenergy_real_topMap.Write();
 
-h_acceptance_gometric_cut->Scale(genSurface);
-h_acceptance_maxElayer_cut->Scale(genSurface);
-h_acceptance_maxBarLayer_cut->Scale(genSurface);
-h_acceptance_BGOTrackContainment_cut->Scale(genSurface);
-h_acceptance_BGO_fiducial->Scale(genSurface);
-h_acceptance_nBarLayer13_cut->Scale(genSurface);
-h_acceptance_maxRms_cut->Scale(genSurface);
-h_acceptance_track_selection_cut->Scale(genSurface);
-h_acceptance_xtrl_cut->Scale(genSurface);
-h_acceptance_psd_charge_cut->Scale(genSurface);
-h_acceptance_all_cut->Scale(genSurface);
+    outFile.cd();
 
-// Builing vectors
-std::vector<double> energyValues(h_incoming.GetXaxis()->GetNbins(), 0);
+    auto geo_analysisDir = outFile.mkdir("Analysis_GeoCut");
+    geo_analysisDir->cd();
 
-std::vector<double> acceptanceValues_gometric_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_maxElayer_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_maxBarLayer_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_BGOTrackContainment_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_BGO_fiducial_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_nBarLayer13_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_maxRms_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_track_selection_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_xtrl_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_psd_charge_cut(energyValues.size(), 0);
-std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
+    h_geo_BGOrec_topX_vs_realX.Write();
+    h_geo_BGOrec_topY_vs_realY.Write();
+    h_geo_real_slopeX.Write();
+    h_geo_real_slopeY.Write();
+    h_geo_BGOrec_slopeX.Write();
+    h_geo_BGOrec_slopeY.Write();
+    h_geo_real_interceptX.Write();
+    h_geo_real_interceptY.Write();
+    h_geo_BGOrec_interceptX.Write();
+    h_geo_BGOrec_interceptY.Write();
+    h_geo_real_topMap.Write();
+    h_geo_BGOreco_topMap.Write();
 
-for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
-{
-    auto index = std::distance(logEBins.begin(), it);
-    energyValues[index] = wtsydp(*it, *(it + 1), -1);
-    acceptanceValues_gometric_cut[index] = h_acceptance_gometric_cut->GetBinContent(index + 1);
-    acceptanceValues_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinContent(index + 1);
-    acceptanceValues_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinContent(index + 1);
-    acceptanceValues_BGOTrackContainment_cut[index] = h_acceptance_BGOTrackContainment_cut->GetBinContent(index + 1);
-    acceptanceValues_BGO_fiducial_cut[index] = h_acceptance_BGO_fiducial->GetBinContent(index + 1);
-    acceptanceValues_nBarLayer13_cut[index] = h_acceptance_nBarLayer13_cut->GetBinContent(index + 1);
-    acceptanceValues_maxRms_cut[index] = h_acceptance_maxRms_cut->GetBinContent(index + 1);
-    acceptanceValues_track_selection_cut[index] = h_acceptance_track_selection_cut->GetBinContent(index + 1);
-    acceptanceValues_xtrl_cut[index] = h_acceptance_xtrl_cut->GetBinContent(index + 1);
-    acceptanceValues_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinContent(index + 1);
-    acceptanceValues_all_cut[index] = h_acceptance_all_cut->GetBinContent(index + 1);
-}
+    outFile.cd();
 
-// Building graphs
-TGraph gr_acceptance_gometric_cut(energyValues.size(), &energyValues[0], &acceptanceValues_gometric_cut[0]);
-TGraph gr_acceptance_maxElayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElayer_cut[0]);
-TGraph gr_acceptance_maxBarLayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxBarLayer_cut[0]);
-TGraph gr_acceptance_BGOTrackContainment_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGOTrackContainment_cut[0]);
-TGraph gr_acceptance_BGO_fiducial_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGO_fiducial_cut[0]);
-TGraph gr_acceptance_nBarLayer13_cut(energyValues.size(), &energyValues[0], &acceptanceValues_nBarLayer13_cut[0]);
-TGraph gr_acceptance_maxRms_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxRms_cut[0]);
-TGraph gr_acceptance_track_selection_cut(energyValues.size(), &energyValues[0], &acceptanceValues_track_selection_cut[0]);
-TGraph gr_acceptance_xtrl_cut(energyValues.size(), &energyValues[0], &acceptanceValues_xtrl_cut[0]);
-TGraph gr_acceptance_psd_charge_cut(energyValues.size(), &energyValues[0], &acceptanceValues_psd_charge_cut[0]);
-TGraph gr_acceptance_all_cut(energyValues.size(), &energyValues[0], &acceptanceValues_all_cut[0]);
+    auto BGOdir = outFile.mkdir("BGO_Energy");
+    BGOdir->cd();
 
-gr_acceptance_gometric_cut.SetName("gr_acceptance_gometric_cut");
-gr_acceptance_maxElayer_cut.SetName("gr_acceptance_maxElayer_cut");
-gr_acceptance_maxBarLayer_cut.SetName("gr_acceptance_maxBarLayer_cut");
-gr_acceptance_BGOTrackContainment_cut.SetName("gr_acceptance_BGOTrackContainment_cut");
-gr_acceptance_BGO_fiducial_cut.SetName("gr_acceptance_BGO_fiducial_cut");
-gr_acceptance_nBarLayer13_cut.SetName("gr_acceptance_nBarLayer13_cut");
-gr_acceptance_maxRms_cut.SetName("gr_acceptance_maxRms_cut");
-gr_acceptance_track_selection_cut.SetName("gr_acceptance_track_selection_cut");
-gr_acceptance_xtrl_cut.SetName("gr_acceptance_xtrl_cut");
-gr_acceptance_psd_charge_cut.SetName("gr_acceptance_psd_charge_cut");
-gr_acceptance_all_cut.SetName("gr_acceptance_all_cut");
+    h_BGOrec_E.Write();
+    h_BGOrec_E_corr.Write();
+    h_simu_energy.Write();
+    h_energy_diff.Write();
+    h_layer_max_energy_ratio.Write();
 
-gr_acceptance_gometric_cut.SetTitle("Acceptance - geometric cut");
-gr_acceptance_maxElayer_cut.SetTitle("Acceptance - maxElateral cut");
-gr_acceptance_maxBarLayer_cut.SetTitle("Acceptance - maxBarLayer cut");
-gr_acceptance_BGOTrackContainment_cut.SetTitle("Acceptance - BGOTrackContainment cut");
-gr_acceptance_BGO_fiducial_cut.SetTitle("Acceptance - BGO fiducial volume cut");
-gr_acceptance_nBarLayer13_cut.SetTitle("Acceptance - nBarLayer13 cut");
-gr_acceptance_maxRms_cut.SetTitle("Acceptance - maxRms cut");
-gr_acceptance_track_selection_cut.SetTitle("Acceptance - track selection cut");
-gr_acceptance_xtrl_cut.SetTitle("Acceptance - XTRL cut");
-gr_acceptance_psd_charge_cut.SetTitle("Acceptance - PSD charge selection cut");
-gr_acceptance_all_cut.SetTitle("Acceptance - all cut");
+    h_accepted_BGOrec_E.Write();
+    h_accepted_BGOrec_E_corr.Write();
+    h_accepted_simu_energy.Write();
+    h_accepted_energy_diff.Write();
 
-// Write histos to file
-h_incoming.Write();
-h_gometric_cut.Write();
-h_maxElayer_cut.Write();
-h_maxBarLayer_cut.Write();
-h_BGOTrackContainment_cut.Write();
-h_BGO_fiducial.Write();
-h_nBarLayer13_cut.Write();
-h_maxRms_cut.Write();
-h_track_selection_cut.Write();
-h_xtrl_cut.Write();
-h_psd_charge_cut.Write();
-h_all_cut.Write();
+    for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
+        h_layer_energy_ratio[lIdx].Write();
 
-// Create output acceptance dir in the output TFile
-auto acceptanceDir = outFile.mkdir("Acceptance");
-acceptanceDir->cd();
-
-// Write final TGraphs
-gr_acceptance_gometric_cut.Write();
-gr_acceptance_maxElayer_cut.Write();
-gr_acceptance_maxBarLayer_cut.Write();
-gr_acceptance_BGOTrackContainment_cut.Write();
-gr_acceptance_BGO_fiducial_cut.Write();
-gr_acceptance_nBarLayer13_cut.Write();
-gr_acceptance_maxRms_cut.Write();
-gr_acceptance_track_selection_cut.Write();
-gr_acceptance_xtrl_cut.Write();
-gr_acceptance_psd_charge_cut.Write();
-gr_acceptance_all_cut.Write();
-
-// Return to main TFile directory
-outFile.cd();
-
-// Create output ratio dir in the output TFile
-auto ratioDir = outFile.mkdir("Ratios");
-ratioDir->cd();
-
-// Building ratio histos
-auto h_ratio_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_ratio_gometric_cut"));
-auto h_ratio_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_ratio_maxElayer_cut"));
-auto h_ratio_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_ratio_maxBarLayer_cut"));
-auto h_ratio_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_ratio_BGOTrackContainment_cut"));
-auto h_ratio_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_ratio_BGO_fiducial"));
-auto h_ratio_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_ratio_nBarLayer13_cut"));
-auto h_ratio_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_ratio_maxRms_cut"));
-auto h_ratio_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_ratio_track_selection_cut"));
-auto h_ratio_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_ratio_xtrl_cut"));
-auto h_ratio_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_psd_charge_cut"));
-auto h_ratio_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_all_cut"));
-
-h_ratio_gometric_cut->Divide(&h_gometric_cut);
-h_ratio_maxElayer_cut->Divide(&h_gometric_cut);
-h_ratio_maxBarLayer_cut->Divide(&h_gometric_cut);
-h_ratio_BGOTrackContainment_cut->Divide(&h_gometric_cut);
-h_ratio_BGO_fiducial->Divide(&h_gometric_cut);
-h_ratio_nBarLayer13_cut->Divide(&h_gometric_cut);
-h_ratio_maxRms_cut->Divide(&h_gometric_cut);
-h_ratio_track_selection_cut->Divide(&h_gometric_cut);
-h_ratio_xtrl_cut->Divide(&h_gometric_cut);
-h_ratio_psd_charge_cut->Divide(&h_gometric_cut);
-h_ratio_all_cut->Divide(&h_gometric_cut);
-
-h_ratio_gometric_cut->Write();
-h_ratio_maxElayer_cut->Write();
-h_ratio_maxBarLayer_cut->Write();
-h_ratio_BGOTrackContainment_cut->Write();
-h_ratio_BGO_fiducial->Write();
-h_ratio_nBarLayer13_cut->Write();
-h_ratio_maxRms_cut->Write();
-h_ratio_track_selection_cut->Write();
-h_ratio_xtrl_cut->Write();
-h_ratio_psd_charge_cut->Write();
-h_ratio_all_cut->Write();
-
-outFile.cd();
-
-// Create output analysis dir in the output TFile
-auto preGeo_analysisDir = outFile.mkdir("Analysis_preGeoCut");
-preGeo_analysisDir->cd();
-
-h_preGeo_BGOrec_topX_vs_realX.Write();
-h_preGeo_BGOrec_topY_vs_realY.Write();
-h_preGeo_real_slopeX.Write();
-h_preGeo_real_slopeY.Write();
-h_preGeo_BGOrec_slopeX.Write();
-h_preGeo_BGOrec_slopeY.Write();
-h_preGeo_real_interceptX.Write();
-h_preGeo_real_interceptY.Write();
-h_preGeo_BGOrec_interceptX.Write();
-h_preGeo_BGOrec_interceptY.Write();
-h_preGeo_real_topMap.Write();
-h_preGeo_BGOreco_topMap.Write();
-
-h_preGeo_layer_energy_ratio.Write();
-
-h_noBGOenergy_real_topMap.Write();
-
-outFile.cd();
-
-auto geo_analysisDir = outFile.mkdir("Analysis_GeoCut");
-geo_analysisDir->cd();
-
-h_geo_BGOrec_topX_vs_realX.Write();
-h_geo_BGOrec_topY_vs_realY.Write();
-h_geo_real_slopeX.Write();
-h_geo_real_slopeY.Write();
-h_geo_BGOrec_slopeX.Write();
-h_geo_BGOrec_slopeY.Write();
-h_geo_real_interceptX.Write();
-h_geo_real_interceptY.Write();
-h_geo_BGOrec_interceptX.Write();
-h_geo_BGOrec_interceptY.Write();
-h_geo_real_topMap.Write();
-h_geo_BGOreco_topMap.Write();
-
-outFile.cd();
-
-auto BGOdir = outFile.mkdir("BGO_Energy");
-BGOdir->cd();
-
-h_BGOrec_E.Write();
-h_BGOrec_E_corr.Write();
-h_simu_energy.Write();
-h_energy_diff.Write();
-h_layer_max_energy_ratio.Write();
-
-h_accepted_BGOrec_E.Write();
-h_accepted_BGOrec_E_corr.Write();
-h_accepted_simu_energy.Write();
-h_accepted_energy_diff.Write();
-
-for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
-    h_layer_energy_ratio[lIdx].Write();
-
-outFile.cd();
-
+    outFile.cd();
 }
 
 #if 0
