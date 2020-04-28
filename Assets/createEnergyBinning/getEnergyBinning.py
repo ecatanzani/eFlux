@@ -92,15 +92,15 @@ def main(args=None):
 
     
     binning = createBinning(opts, pars)
-    '''
-    if len(final_binning):
-        with open(opts.output, "w") as out_binning:
-            for elm in final_binning:
-                out_binning.write(str(elm))
-                out_binning.write("\n")
-    else:
-        print("No correct bin found. Nothing has been written to disk")
-    '''
+    
+    if opts.output:
+        if len(binning):
+            with open(opts.output, "w") as out_binning:
+                for elm in binning:
+                    out_binning.write(str(elm))
+                    out_binning.write("\n")
+        else:
+            print("No correct bin found. Nothing has been written to disk")
 
 if __name__ == "__main__":
     main()
