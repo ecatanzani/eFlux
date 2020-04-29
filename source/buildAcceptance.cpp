@@ -357,23 +357,6 @@ void buildAcceptance(
         if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
             continue;
 
-        // Evaluate the position on the First BGO layer (before geometric cut)
-        evaluateTopPosition(
-            simu_primaries,
-            bgorec,
-            h_preGeo_BGOrec_topX_vs_realX,
-            h_preGeo_BGOrec_topY_vs_realY,
-            h_preGeo_real_slopeX,
-            h_preGeo_real_slopeY,
-            h_preGeo_BGOrec_slopeX,
-            h_preGeo_BGOrec_slopeY,
-            h_preGeo_real_interceptX,
-            h_preGeo_real_interceptY,
-            h_preGeo_BGOrec_interceptX,
-            h_preGeo_BGOrec_interceptY,
-            h_preGeo_real_topMap,
-            h_preGeo_BGOreco_topMap);
-
         // Read trigger status
         // For MC events triggers 1 and 2 are always disabled
         bool unbiased_tr = evt_header->GeneratedTrigger(0) && evt_header->EnabledTrigger(0);
@@ -397,6 +380,24 @@ void buildAcceptance(
         else
         {
             h_incoming.Fill(simuEnergy * _GeV);
+            
+            // Evaluate the position on the First BGO layer for the non - triggered events
+            evaluateTopPosition(
+                simu_primaries,
+                bgorec,
+                h_preGeo_BGOrec_topX_vs_realX,
+                h_preGeo_BGOrec_topY_vs_realY,
+                h_preGeo_real_slopeX,
+                h_preGeo_real_slopeY,
+                h_preGeo_BGOrec_slopeX,
+                h_preGeo_BGOrec_slopeY,
+                h_preGeo_real_interceptX,
+                h_preGeo_real_interceptY,
+                h_preGeo_BGOrec_interceptX,
+                h_preGeo_BGOrec_interceptY,
+                h_preGeo_real_topMap,
+                h_preGeo_BGOreco_topMap);
+
             continue;
         }
 
