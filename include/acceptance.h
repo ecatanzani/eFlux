@@ -13,6 +13,8 @@
 #include <numeric>
 
 #include "DmpChain.h"
+#include "DmpBgoContainer.h"
+#include "DmpEvtHeader.h"
 
 #include "TDirectory.h"
 #include "TSystem.h"

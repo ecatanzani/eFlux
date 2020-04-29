@@ -2,7 +2,6 @@
 #include "acceptance.h"
 #include "acceptance_cuts.h"
 #include "energyMatch.h"
-#include "DmpBgoContainer.h"
 
 #include "TClonesArray.h"
 #include "TString.h"
@@ -144,6 +143,10 @@ void buildAcceptance(
     //auto dmpch = aggregateEventsDmpChain(accInputPath,verbose);
     auto dmpch = aggregateEventsTChain(accInputPath, verbose);
 
+    // Register Header container
+    std::shared_ptr<DmpEvtHeader> evt_header = std::make_shared<DmpEvtHeader>();
+    dmpch->SetBranchAddress("EventHeader", &evt_header);
+
     // Register SimuPrimaries container
     std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::make_shared<DmpEvtSimuPrimaries>();
     dmpch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
@@ -187,6 +190,7 @@ void buildAcceptance(
 
     // First-Cut histos
     TH1D h_incoming("h_incoming", "Energy Distribution of the incoming particles", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_gometric_cut("h_gometric_cut", "Energy Distribution - geometric cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxElayer_cut("h_maxElayer_cut", "Energy Distribution - maxElayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxBarLayer_cut("h_maxBarLayer_cut", "Energy Distribution - maxBarLayer cut ", logEBins.size() - 1, &(logEBins[0]));
@@ -305,6 +309,7 @@ void buildAcceptance(
     h_geo_BGOreco_topMap.Sumw2();
 
     h_incoming.Sumw2();
+    h_trigger.Sumw2();
     h_gometric_cut.Sumw2();
     h_maxElayer_cut.Sumw2();
     h_maxBarLayer_cut.Sumw2();
@@ -340,7 +345,7 @@ void buildAcceptance(
         // Get event total energy
         double bgoTotalE_raw = bgorec->GetTotalEnergy(); // Energy in MeV - not corrected
         double bgoTotalE = bgorec->GetElectronEcor();    // Returns corrected energy assuming this was an electron (MeV)
-        double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle in MeV
+        double simuEnergy = simu_primaries->pvpart_ekin; //Energy of simu primaries particle (MeV)
 
         // Fill the energy histos
         h_BGOrec_E.Fill(bgoTotalE_raw * _GeV);
@@ -369,12 +374,21 @@ void buildAcceptance(
             h_preGeo_real_topMap,
             h_preGeo_BGOreco_topMap);
 
-        // Check if the particle hit the detector (and is contained in the fiducial volume of the BGO) or not
-        if (geometric_cut(simu_primaries))
-        {
-            // The particle hit the detector
+        // Read trigger status
+        // For MC events triggers 1 and 2 are always disabled
+        bool unbiased_tr = evt_header->GeneratedTrigger(0) && evt_header->EnabledTrigger(0);
+        bool mip1_tr = evt_header->GeneratedTrigger(1);
+        bool mip2_tr = evt_header->GeneratedTrigger(2);
+        bool HET_tr = evt_header->GeneratedTrigger(3) && evt_header->EnabledTrigger(3);
+        bool LET_tr = evt_header->GeneratedTrigger(4) && evt_header->EnabledTrigger(4);
+        bool MIP_tr = mip1_tr || mip2_tr;
 
-            // Check if the BGO reco process is correct
+        bool general_trigger = MIP_tr || HET_tr || LET_tr;
+        
+        
+        if (general_trigger)
+        {
+            h_trigger.Fill(simuEnergy * _GeV);
             if (checkBGOreco(bgorec, simu_primaries))
                 h_incoming.Fill(simuEnergy * _GeV);
             else
@@ -382,14 +396,14 @@ void buildAcceptance(
         }
         else
         {
-            // The particle didn't hit the detector
             h_incoming.Fill(simuEnergy * _GeV);
-            fillExternalMap(simu_primaries, h_noBGOenergy_real_topMap);
             continue;
         }
 
-        // The event has been accepted as contained in the BGO fiducial volume (hit on top and bottom side of the BGO)
-
+        // Fill geometric-cut histo
+        if (geometric_cut(simu_primaries))
+            h_gometric_cut.Fill(simuEnergy * _GeV);
+        
         bool filter_nBarLayer13_cut = false;
         bool filter_maxRms_cut = false;
         bool filter_track_selection_cut = false;
@@ -436,9 +450,6 @@ void buildAcceptance(
             bgoTotalE,
             h_layer_max_energy_ratio,
             h_layer_energy_ratio);
-
-        // Fill geometric-cut histo
-        h_gometric_cut.Fill(simuEnergy * _GeV);
 
         // maxElayer_cut && geometric cut
         auto filter_maxElayer_cut = maxElayer_cut(
@@ -552,15 +563,14 @@ void buildAcceptance(
 
     if (verbose)
     {
-        auto refEntries = h_incoming.GetEntries();
-
         std::cout << "\n\n ****** \n\n";
-        std::cout << "generated events in good energy range: " << refEntries << std::endl;
+        std::cout << "generated events in good energy range: " << h_incoming.GetEntries();
+        std::cout << "triggered events: " << h_trigger.GetEntries() << std::endl;
+
+        auto refEntries = h_trigger.GetEntries();
 
         if (h_gometric_cut.GetEntries())
             std::cout << "geometric filtered events: " << h_gometric_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_gometric_cut.GetEntries()) / refEntries << std::endl;
-
-        refEntries = h_gometric_cut.GetEntries();
 
         if (h_BGO_fiducial.GetEntries())
             std::cout << "BGO fiducial filtered events: " << h_BGO_fiducial.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_BGO_fiducial.GetEntries()) / refEntries << std::endl;
@@ -696,6 +706,7 @@ void buildAcceptance(
 
     // Write histos to file
     h_incoming.Write();
+    h_trigger.Write();
     h_gometric_cut.Write();
     h_maxElayer_cut.Write();
     h_maxBarLayer_cut.Write();
@@ -745,17 +756,17 @@ void buildAcceptance(
     auto h_ratio_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_psd_charge_cut"));
     auto h_ratio_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_all_cut"));
 
-    h_ratio_gometric_cut->Divide(&h_gometric_cut);
-    h_ratio_maxElayer_cut->Divide(&h_gometric_cut);
-    h_ratio_maxBarLayer_cut->Divide(&h_gometric_cut);
-    h_ratio_BGOTrackContainment_cut->Divide(&h_gometric_cut);
-    h_ratio_BGO_fiducial->Divide(&h_gometric_cut);
-    h_ratio_nBarLayer13_cut->Divide(&h_gometric_cut);
-    h_ratio_maxRms_cut->Divide(&h_gometric_cut);
-    h_ratio_track_selection_cut->Divide(&h_gometric_cut);
-    h_ratio_xtrl_cut->Divide(&h_gometric_cut);
-    h_ratio_psd_charge_cut->Divide(&h_gometric_cut);
-    h_ratio_all_cut->Divide(&h_gometric_cut);
+    h_ratio_gometric_cut->Divide(&h_trigger);
+    h_ratio_maxElayer_cut->Divide(&h_trigger);
+    h_ratio_maxBarLayer_cut->Divide(&h_trigger);
+    h_ratio_BGOTrackContainment_cut->Divide(&h_trigger);
+    h_ratio_BGO_fiducial->Divide(&h_trigger);
+    h_ratio_nBarLayer13_cut->Divide(&h_trigger);
+    h_ratio_maxRms_cut->Divide(&h_trigger);
+    h_ratio_track_selection_cut->Divide(&h_trigger);
+    h_ratio_xtrl_cut->Divide(&h_trigger);
+    h_ratio_psd_charge_cut->Divide(&h_trigger);
+    h_ratio_all_cut->Divide(&h_trigger);
 
     h_ratio_gometric_cut->Write();
     h_ratio_maxElayer_cut->Write();

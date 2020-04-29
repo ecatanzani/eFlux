@@ -14,6 +14,7 @@
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtSimuPrimaries.h"
 #include "DmpStkTrackHelper.h"
+#include "DmpEvtHeader.h"
 
 struct best_track
 {
