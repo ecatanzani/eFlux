@@ -197,7 +197,7 @@ bool geometric_top_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries
     return passed_geometric_cut;
 }
 
-void evaluateTopPosition(
+void evaluateTopBottomPosition(
     const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     TH1D &h_BGOrec_topX_vs_realX,
@@ -211,7 +211,9 @@ void evaluateTopPosition(
     TH1D &h_BGOrec_interceptX,
     TH1D &h_BGOrec_interceptY,
     TH2D &h_real_topMap,
-    TH2D &h_BGOreco_topMap)
+    TH2D &h_BGOreco_topMap,
+    TH2D &h_real_bottomMap,
+    TH2D &h_BGOreco_bottomMap)
 {
     // Get the real simu position
     TVector3 orgPosition;
@@ -232,8 +234,11 @@ void evaluateTopPosition(
     intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
     intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
 
-    double actual_X = slope[0] * BGO_TopZ + intercept[0];
-    double actual_Y = slope[1] * BGO_TopZ + intercept[1];
+    double real_topX = slope[0] * BGO_TopZ + intercept[0];
+    double real_topY = slope[1] * BGO_TopZ + intercept[1];
+
+    double real_bottomX = slope[0] * BGO_BottomZ + intercept[0];
+    double real_bottomY = slope[1] * BGO_BottomZ + intercept[1];
 
     // Get the reco position
     std::vector<double> bgoRec_slope(2);
@@ -244,15 +249,11 @@ void evaluateTopPosition(
     bgoRec_intercept[0] = bgorec->GetInterceptXZ();
     bgoRec_intercept[1] = bgorec->GetInterceptYZ();
     
-    double topZ = BGO_TopZ;
-    double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
-    double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
-
-    /*
-    double bottomZ = BGO_BottomZ;
-    double bottomX = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
-    double bottomY = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
-    */
+    double reco_topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    double reco_topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
+    
+    double reco_bottomX = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
+    double reco_bottomY = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
 
     // Fill slopes
     h_real_slopeX.Fill(slope[0]);
@@ -266,16 +267,19 @@ void evaluateTopPosition(
     h_BGOrec_interceptX.Fill(bgoRec_intercept[0]);
     h_BGOrec_interceptY.Fill(bgoRec_intercept[1]);
 
-    auto spreadX = actual_X - topX;
-    auto spreadY = actual_Y - topY;
+    auto spread_topX = real_topX - reco_topX;
+    auto spread_topY = real_topY - reco_topY;
 
     // Fill spreads
-    h_BGOrec_topX_vs_realX.Fill(spreadX);
-    h_BGOrec_topY_vs_realY.Fill(spreadY);
+    h_BGOrec_topX_vs_realX.Fill(spread_topX);
+    h_BGOrec_topY_vs_realY.Fill(spread_topY);
 
     // Fill maps
-    h_real_topMap.Fill(actual_X, actual_Y);
-    h_BGOreco_topMap.Fill(topX, topY);
+    h_real_topMap.Fill(real_topX, real_topY);
+    h_real_bottomMap.Fill(real_bottomX, real_bottomY);
+    h_BGOreco_topMap.Fill(reco_topX, reco_topY);
+    h_BGOreco_bottomMap.Fill(reco_bottomX, reco_bottomY);
+
 }
 
 bool maxElayer_cut(

@@ -89,7 +89,7 @@ extern bool psd_charge_cut(
     const best_track event_best_track);
 
 // Analysis functions
-extern void evaluateTopPosition(
+extern void evaluateTopBottomPosition(
     const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     TH1D &h_BGOrec_topX_vs_realX,
@@ -103,7 +103,9 @@ extern void evaluateTopPosition(
     TH1D &h_BGOrec_interceptX,
     TH1D &h_BGOrec_interceptY,
     TH2D &h_real_topMap,
-    TH2D &h_BGOreco_topMap);
+    TH2D &h_BGOreco_topMap,
+    TH2D &h_real_bottomMap,
+    TH2D &h_BGOreco_bottomMap);
 
 extern bool checkBGOreco(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,

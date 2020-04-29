@@ -232,9 +232,13 @@ void buildAcceptance(
     TH1D h_preGeo_BGOrec_interceptX("h_preGeo_BGOrec_interceptX", "BGOrec Intercept X", 500, -500, 500);
     TH1D h_preGeo_BGOrec_interceptY("h_preGeo_BGOrec_interceptY", "BGOrec Intercept Y", 500, -500, 500);
 
-    // Top Map
+    // Top Maps
     TH2D h_preGeo_real_topMap("h_preGeo_real_topMap", "Real BGO TOP Map", 500, -500, 500, 500, -500, 500);
     TH2D h_preGeo_BGOreco_topMap("h_preGeo_BGOreco_topMap", "BGOreco TOP Map", 500, -500, 500, 500, -500, 500);
+
+    // Bottom Maps
+    TH2D h_preGeo_real_bottomMap("h_preGeo_real_bottomMap", "Real BGO BOTTOM Map", 500, -500, 500, 500, -500, 500);
+    TH2D h_preGeo_BGOreco_bottomMap("h_preGeo_BGOreco_bottomMap", "BGOreco BOTTOM Map", 500, -500, 500, 500, -500, 500);
 
     // Ratio of layer energy respect to total BGO energy
     TH1D h_preGeo_layer_energy_ratio("h_preGeo_layer_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
@@ -259,9 +263,13 @@ void buildAcceptance(
     TH1D h_geo_BGOrec_interceptX("h_geo_BGOrec_interceptX", "BGOrec Intercept X", 500, -500, 500);
     TH1D h_geo_BGOrec_interceptY("h_geo_BGOrec_interceptY", "BGOrec Intercept Y", 500, -500, 500);
 
-    // Top Map
+    // Top Maps
     TH2D h_geo_real_topMap("h_geo_real_topMap", "Real BGO TOP Map", 500, -500, 500, 500, -500, 500);
     TH2D h_geo_BGOreco_topMap("h_geo_BGOreco_topMap", "BGOreco TOP Map", 500, -500, 500, 500, -500, 500);
+
+    // Bottom Maps
+    TH2D h_geo_real_bottomMap("h_geo_real_bottomMap", "Real BGO BOTTOM Map", 500, -500, 500, 500, -500, 500);
+    TH2D h_geo_BGOreco_bottomMap("h_geo_BGOreco_bottomMap", "BGOreco BOTTOM Map", 500, -500, 500, 500, -500, 500);
 
     // Ratio of layer energy respect to total BGO energy
     TH1D h_layer_max_energy_ratio("h_layer_max_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
@@ -293,6 +301,8 @@ void buildAcceptance(
     h_preGeo_BGOrec_interceptY.Sumw2();
     h_preGeo_real_topMap.Sumw2();
     h_preGeo_BGOreco_topMap.Sumw2();
+    h_preGeo_real_bottomMap.Sumw2();
+    h_preGeo_BGOreco_bottomMap.Sumw2();
     h_noBGOenergy_real_topMap.Sumw2();
 
     h_geo_BGOrec_topX_vs_realX.Sumw2();
@@ -307,6 +317,8 @@ void buildAcceptance(
     h_geo_BGOrec_interceptY.Sumw2();
     h_geo_real_topMap.Sumw2();
     h_geo_BGOreco_topMap.Sumw2();
+    h_geo_real_bottomMap.Sumw2();
+    h_geo_BGOreco_bottomMap.Sumw2();
 
     h_incoming.Sumw2();
     h_trigger.Sumw2();
@@ -367,8 +379,8 @@ void buildAcceptance(
         bool MIP_tr = mip1_tr || mip2_tr;
 
         bool general_trigger = MIP_tr || HET_tr || LET_tr;
-        
-        
+
+        // Check if the event has been triggered or not
         if (general_trigger)
         {
             h_trigger.Fill(simuEnergy * _GeV);
@@ -382,7 +394,7 @@ void buildAcceptance(
             h_incoming.Fill(simuEnergy * _GeV);
             
             // Evaluate the position on the First BGO layer for the non - triggered events
-            evaluateTopPosition(
+            evaluateTopBottomPosition(
                 simu_primaries,
                 bgorec,
                 h_preGeo_BGOrec_topX_vs_realX,
@@ -396,14 +408,38 @@ void buildAcceptance(
                 h_preGeo_BGOrec_interceptX,
                 h_preGeo_BGOrec_interceptY,
                 h_preGeo_real_topMap,
-                h_preGeo_BGOreco_topMap);
+                h_preGeo_BGOreco_topMap,
+                h_preGeo_real_bottomMap,
+                h_preGeo_BGOreco_bottomMap);
 
             continue;
         }
 
         // Fill geometric-cut histo
-        if (geometric_cut(simu_primaries))
-            h_gometric_cut.Fill(simuEnergy * _GeV);
+        if (active_cuts.geometry)
+            if (geometric_cut(simu_primaries))
+            {
+                h_gometric_cut.Fill(simuEnergy * _GeV);
+                
+                // Evaluate the position on the First BGO layer (after geometric cut)
+                evaluateTopBottomPosition(
+                    simu_primaries,
+                    bgorec,
+                    h_geo_BGOrec_topX_vs_realX,
+                    h_geo_BGOrec_topY_vs_realY,
+                    h_geo_real_slopeX,
+                    h_geo_real_slopeY,
+                    h_geo_BGOrec_slopeX,
+                    h_geo_BGOrec_slopeY,
+                    h_geo_real_interceptX,
+                    h_geo_real_interceptY,
+                    h_geo_BGOrec_interceptX,
+                    h_geo_BGOrec_interceptY,
+                    h_geo_real_topMap,
+                    h_geo_BGOreco_topMap,
+                    h_geo_real_bottomMap,
+                    h_geo_BGOreco_bottomMap);
+            }
         
         bool filter_nBarLayer13_cut = false;
         bool filter_maxRms_cut = false;
@@ -427,22 +463,6 @@ void buildAcceptance(
             bgoTotalE,
             DAMPE_bgo_nLayers);
 
-        // Evaluate the position on the First BGO layer (after geometric cut)
-        evaluateTopPosition(
-            simu_primaries,
-            bgorec,
-            h_geo_BGOrec_topX_vs_realX,
-            h_geo_BGOrec_topY_vs_realY,
-            h_geo_real_slopeX,
-            h_geo_real_slopeY,
-            h_geo_BGOrec_slopeX,
-            h_geo_BGOrec_slopeY,
-            h_geo_real_interceptX,
-            h_geo_real_interceptY,
-            h_geo_BGOrec_interceptX,
-            h_geo_BGOrec_interceptY,
-            h_geo_real_topMap,
-            h_geo_BGOreco_topMap);
 
         // evaluate the energy raio on each single layer of the BGO
         evaluateEnergyRatio(
@@ -565,7 +585,7 @@ void buildAcceptance(
     if (verbose)
     {
         std::cout << "\n\n ****** \n\n";
-        std::cout << "generated events in good energy range: " << h_incoming.GetEntries();
+        std::cout << "generated events in good energy range: " << h_incoming.GetEntries() << std::endl;
         std::cout << "triggered events: " << h_trigger.GetEntries() << std::endl;
 
         auto refEntries = h_trigger.GetEntries();
@@ -597,7 +617,8 @@ void buildAcceptance(
         std::cout << "\n\n ****** \n\n";
     }
 
-    double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
+    //double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
+    double genSurface = 8 * pow(TMath::Pi(),2) * pow(acceptance_cuts.vertex_radius, 2) / 2;
 
     // Building acceptance histos
     auto h_acceptance_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_acceptance_gometric_cut"));
@@ -799,6 +820,8 @@ void buildAcceptance(
     h_preGeo_BGOrec_interceptY.Write();
     h_preGeo_real_topMap.Write();
     h_preGeo_BGOreco_topMap.Write();
+    h_preGeo_real_bottomMap.Write();
+    h_preGeo_BGOreco_bottomMap.Write();
 
     h_preGeo_layer_energy_ratio.Write();
 
@@ -821,6 +844,8 @@ void buildAcceptance(
     h_geo_BGOrec_interceptY.Write();
     h_geo_real_topMap.Write();
     h_geo_BGOreco_topMap.Write();
+    h_geo_real_bottomMap.Write();
+    h_geo_BGOreco_bottomMap.Write();
 
     outFile.cd();
 
