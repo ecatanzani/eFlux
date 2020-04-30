@@ -395,7 +395,7 @@ void buildAcceptance(
         {
             // Increase the incoming events
             h_incoming.Fill(simuEnergy * _GeV);
-            
+
             // Evaluate the position on the First BGO layer for the non - triggered events
             evaluateTopBottomPosition(
                 simu_primaries,
@@ -419,31 +419,30 @@ void buildAcceptance(
         }
 
         // Fill geometric-cut histo
-        if (active_cuts.geometry)
-            if (geometric_cut(simu_primaries))
-            {
-                h_gometric_cut.Fill(simuEnergy * _GeV);
-                
-                // Evaluate the position on the First BGO layer (after geometric cut)
-                evaluateTopBottomPosition(
-                    simu_primaries,
-                    bgorec,
-                    h_geo_BGOrec_topX_vs_realX,
-                    h_geo_BGOrec_topY_vs_realY,
-                    h_geo_real_slopeX,
-                    h_geo_real_slopeY,
-                    h_geo_BGOrec_slopeX,
-                    h_geo_BGOrec_slopeY,
-                    h_geo_real_interceptX,
-                    h_geo_real_interceptY,
-                    h_geo_BGOrec_interceptX,
-                    h_geo_BGOrec_interceptY,
-                    h_geo_real_topMap,
-                    h_geo_BGOreco_topMap,
-                    h_geo_real_bottomMap,
-                    h_geo_BGOreco_bottomMap);
-            }
-        
+        if (geometric_cut(simu_primaries))
+        {
+            h_gometric_cut.Fill(simuEnergy * _GeV);
+
+            // Evaluate the position on the First BGO layer (after geometric cut)
+            evaluateTopBottomPosition(
+                simu_primaries,
+                bgorec,
+                h_geo_BGOrec_topX_vs_realX,
+                h_geo_BGOrec_topY_vs_realY,
+                h_geo_real_slopeX,
+                h_geo_real_slopeY,
+                h_geo_BGOrec_slopeX,
+                h_geo_BGOrec_slopeY,
+                h_geo_real_interceptX,
+                h_geo_real_interceptY,
+                h_geo_BGOrec_interceptX,
+                h_geo_BGOrec_interceptY,
+                h_geo_real_topMap,
+                h_geo_BGOreco_topMap,
+                h_geo_real_bottomMap,
+                h_geo_BGOreco_bottomMap);
+        }
+
         bool filter_nBarLayer13_cut = false;
         bool filter_maxRms_cut = false;
         bool filter_track_selection_cut = false;
@@ -465,7 +464,6 @@ void buildAcceptance(
             bgohits,
             bgoTotalE,
             DAMPE_bgo_nLayers);
-
 
         // evaluate the energy raio on each single layer of the BGO
         evaluateEnergyRatio(
@@ -784,7 +782,7 @@ void buildAcceptance(
     auto h_ratio_tr_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_ratio_tr_xtrl_cut"));
     auto h_ratio_tr_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_tr_psd_charge_cut"));
     auto h_ratio_tr_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_tr_all_cut"));
-    
+
     h_ratio_tr_gometric_cut->Divide(&h_trigger);
     h_ratio_tr_maxElayer_cut->Divide(&h_trigger);
     h_ratio_tr_maxBarLayer_cut->Divide(&h_trigger);
@@ -828,7 +826,7 @@ void buildAcceptance(
     auto h_ratio_geo_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_ratio_geo_xtrl_cut"));
     auto h_ratio_geo_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_geo_psd_charge_cut"));
     auto h_ratio_geo_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_geo_all_cut"));
-    
+
     h_ratio_geo_maxElayer_cut->Divide(&h_gometric_cut);
     h_ratio_geo_maxBarLayer_cut->Divide(&h_gometric_cut);
     h_ratio_geo_BGOTrackContainment_cut->Divide(&h_gometric_cut);
@@ -853,7 +851,6 @@ void buildAcceptance(
     h_ratio_geo_all_cut->Write();
 
     outFile.cd();
-
 
     // Create output analysis dir in the output TFile
     auto preGeo_analysisDir = outFile.mkdir("Analysis_preGeoCut");

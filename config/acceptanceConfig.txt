@@ -21,7 +21,6 @@ PSD_bar_min_energy_release          0.5                 MeV
 
 **** CUT ****                **** ACTIVE ****
 
-geometry                            YES
 BGO_fiducial                        YES
 nBarLayer13                         NO
 maxRms                              NO
