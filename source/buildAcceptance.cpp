@@ -383,14 +383,17 @@ void buildAcceptance(
         // Check if the event has been triggered or not
         if (general_trigger)
         {
-            h_trigger.Fill(simuEnergy * _GeV);
             if (checkBGOreco(bgorec, simu_primaries))
+            {
+                h_trigger.Fill(simuEnergy * _GeV);
                 h_incoming.Fill(simuEnergy * _GeV);
+            }
             else
                 continue;
         }
         else
         {
+            // Increase the incoming events
             h_incoming.Fill(simuEnergy * _GeV);
             
             // Evaluate the position on the First BGO layer for the non - triggered events
@@ -617,8 +620,8 @@ void buildAcceptance(
         std::cout << "\n\n ****** \n\n";
     }
 
-    //double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
-    double genSurface = 8 * pow(TMath::Pi(),2) * pow(acceptance_cuts.vertex_radius, 2) / 2;
+    double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
+    double scaleFactor = TMath::Pi() * genSurface;
 
     // Building acceptance histos
     auto h_acceptance_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_acceptance_gometric_cut"));
@@ -645,17 +648,17 @@ void buildAcceptance(
     h_acceptance_psd_charge_cut->Divide(&h_incoming);
     h_acceptance_all_cut->Divide(&h_incoming);
 
-    h_acceptance_gometric_cut->Scale(genSurface);
-    h_acceptance_maxElayer_cut->Scale(genSurface);
-    h_acceptance_maxBarLayer_cut->Scale(genSurface);
-    h_acceptance_BGOTrackContainment_cut->Scale(genSurface);
-    h_acceptance_BGO_fiducial->Scale(genSurface);
-    h_acceptance_nBarLayer13_cut->Scale(genSurface);
-    h_acceptance_maxRms_cut->Scale(genSurface);
-    h_acceptance_track_selection_cut->Scale(genSurface);
-    h_acceptance_xtrl_cut->Scale(genSurface);
-    h_acceptance_psd_charge_cut->Scale(genSurface);
-    h_acceptance_all_cut->Scale(genSurface);
+    h_acceptance_gometric_cut->Scale(scaleFactor);
+    h_acceptance_maxElayer_cut->Scale(scaleFactor);
+    h_acceptance_maxBarLayer_cut->Scale(scaleFactor);
+    h_acceptance_BGOTrackContainment_cut->Scale(scaleFactor);
+    h_acceptance_BGO_fiducial->Scale(scaleFactor);
+    h_acceptance_nBarLayer13_cut->Scale(scaleFactor);
+    h_acceptance_maxRms_cut->Scale(scaleFactor);
+    h_acceptance_track_selection_cut->Scale(scaleFactor);
+    h_acceptance_xtrl_cut->Scale(scaleFactor);
+    h_acceptance_psd_charge_cut->Scale(scaleFactor);
+    h_acceptance_all_cut->Scale(scaleFactor);
 
     // Builing vectors
     std::vector<double> energyValues(h_incoming.GetXaxis()->GetNbins(), 0);
@@ -765,44 +768,92 @@ void buildAcceptance(
     auto ratioDir = outFile.mkdir("Ratios");
     ratioDir->cd();
 
+    // Create trigger folder
+    auto trigger_dir = outFile.mkdir("Trigger");
+    trigger_dir->cd();
+
     // Building ratio histos
-    auto h_ratio_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_ratio_gometric_cut"));
-    auto h_ratio_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_ratio_maxElayer_cut"));
-    auto h_ratio_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_ratio_maxBarLayer_cut"));
-    auto h_ratio_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_ratio_BGOTrackContainment_cut"));
-    auto h_ratio_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_ratio_BGO_fiducial"));
-    auto h_ratio_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_ratio_nBarLayer13_cut"));
-    auto h_ratio_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_ratio_maxRms_cut"));
-    auto h_ratio_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_ratio_track_selection_cut"));
-    auto h_ratio_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_ratio_xtrl_cut"));
-    auto h_ratio_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_psd_charge_cut"));
-    auto h_ratio_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_all_cut"));
+    auto h_ratio_tr_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_ratio_tr_gometric_cut"));
+    auto h_ratio_tr_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_ratio_tr_maxElayer_cut"));
+    auto h_ratio_tr_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_ratio_tr_maxBarLayer_cut"));
+    auto h_ratio_tr_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_ratio_tr_BGOTrackContainment_cut"));
+    auto h_ratio_tr_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_ratio_tr_BGO_fiducial"));
+    auto h_ratio_tr_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_ratio_tr_nBarLayer13_cut"));
+    auto h_ratio_tr_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_ratio_tr_maxRms_cut"));
+    auto h_ratio_tr_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_ratio_tr_track_selection_cut"));
+    auto h_ratio_tr_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_ratio_tr_xtrl_cut"));
+    auto h_ratio_tr_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_tr_psd_charge_cut"));
+    auto h_ratio_tr_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_tr_all_cut"));
+    
+    h_ratio_tr_gometric_cut->Divide(&h_trigger);
+    h_ratio_tr_maxElayer_cut->Divide(&h_trigger);
+    h_ratio_tr_maxBarLayer_cut->Divide(&h_trigger);
+    h_ratio_tr_BGOTrackContainment_cut->Divide(&h_trigger);
+    h_ratio_tr_BGO_fiducial->Divide(&h_trigger);
+    h_ratio_tr_nBarLayer13_cut->Divide(&h_trigger);
+    h_ratio_tr_maxRms_cut->Divide(&h_trigger);
+    h_ratio_tr_track_selection_cut->Divide(&h_trigger);
+    h_ratio_tr_xtrl_cut->Divide(&h_trigger);
+    h_ratio_tr_psd_charge_cut->Divide(&h_trigger);
+    h_ratio_tr_all_cut->Divide(&h_trigger);
 
-    h_ratio_gometric_cut->Divide(&h_trigger);
-    h_ratio_maxElayer_cut->Divide(&h_trigger);
-    h_ratio_maxBarLayer_cut->Divide(&h_trigger);
-    h_ratio_BGOTrackContainment_cut->Divide(&h_trigger);
-    h_ratio_BGO_fiducial->Divide(&h_trigger);
-    h_ratio_nBarLayer13_cut->Divide(&h_trigger);
-    h_ratio_maxRms_cut->Divide(&h_trigger);
-    h_ratio_track_selection_cut->Divide(&h_trigger);
-    h_ratio_xtrl_cut->Divide(&h_trigger);
-    h_ratio_psd_charge_cut->Divide(&h_trigger);
-    h_ratio_all_cut->Divide(&h_trigger);
+    //Write histos to disk
+    h_ratio_tr_gometric_cut->Write();
+    h_ratio_tr_maxElayer_cut->Write();
+    h_ratio_tr_maxBarLayer_cut->Write();
+    h_ratio_tr_BGOTrackContainment_cut->Write();
+    h_ratio_tr_BGO_fiducial->Write();
+    h_ratio_tr_nBarLayer13_cut->Write();
+    h_ratio_tr_maxRms_cut->Write();
+    h_ratio_tr_track_selection_cut->Write();
+    h_ratio_tr_xtrl_cut->Write();
+    h_ratio_tr_psd_charge_cut->Write();
+    h_ratio_tr_all_cut->Write();
 
-    h_ratio_gometric_cut->Write();
-    h_ratio_maxElayer_cut->Write();
-    h_ratio_maxBarLayer_cut->Write();
-    h_ratio_BGOTrackContainment_cut->Write();
-    h_ratio_BGO_fiducial->Write();
-    h_ratio_nBarLayer13_cut->Write();
-    h_ratio_maxRms_cut->Write();
-    h_ratio_track_selection_cut->Write();
-    h_ratio_xtrl_cut->Write();
-    h_ratio_psd_charge_cut->Write();
-    h_ratio_all_cut->Write();
+    // Return to main ratio dir
+    ratioDir->cd();
+
+    // Create geometric folder
+    auto geometric_dir = outFile.mkdir("Geometric");
+    geometric_dir->cd();
+
+    // Building ratio histos
+    auto h_ratio_geo_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_ratio_geo_maxElayer_cut"));
+    auto h_ratio_geo_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_ratio_geo_maxBarLayer_cut"));
+    auto h_ratio_geo_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_ratio_geo_BGOTrackContainment_cut"));
+    auto h_ratio_geo_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_ratio_geo_BGO_fiducial"));
+    auto h_ratio_geo_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_ratio_geo_nBarLayer13_cut"));
+    auto h_ratio_geo_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_ratio_geo_maxRms_cut"));
+    auto h_ratio_geo_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_ratio_geo_track_selection_cut"));
+    auto h_ratio_geo_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_ratio_geo_xtrl_cut"));
+    auto h_ratio_geo_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_ratio_geo_psd_charge_cut"));
+    auto h_ratio_geo_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_geo_all_cut"));
+    
+    h_ratio_geo_maxElayer_cut->Divide(&h_gometric_cut);
+    h_ratio_geo_maxBarLayer_cut->Divide(&h_gometric_cut);
+    h_ratio_geo_BGOTrackContainment_cut->Divide(&h_gometric_cut);
+    h_ratio_geo_BGO_fiducial->Divide(&h_gometric_cut);
+    h_ratio_geo_nBarLayer13_cut->Divide(&h_gometric_cut);
+    h_ratio_geo_maxRms_cut->Divide(&h_gometric_cut);
+    h_ratio_geo_track_selection_cut->Divide(&h_gometric_cut);
+    h_ratio_geo_xtrl_cut->Divide(&h_gometric_cut);
+    h_ratio_geo_psd_charge_cut->Divide(&h_gometric_cut);
+    h_ratio_geo_all_cut->Divide(&h_gometric_cut);
+
+    //Write histos to disk
+    h_ratio_geo_maxElayer_cut->Write();
+    h_ratio_geo_maxBarLayer_cut->Write();
+    h_ratio_geo_BGOTrackContainment_cut->Write();
+    h_ratio_geo_BGO_fiducial->Write();
+    h_ratio_geo_nBarLayer13_cut->Write();
+    h_ratio_geo_maxRms_cut->Write();
+    h_ratio_geo_track_selection_cut->Write();
+    h_ratio_geo_xtrl_cut->Write();
+    h_ratio_geo_psd_charge_cut->Write();
+    h_ratio_geo_all_cut->Write();
 
     outFile.cd();
+
 
     // Create output analysis dir in the output TFile
     auto preGeo_analysisDir = outFile.mkdir("Analysis_preGeoCut");
