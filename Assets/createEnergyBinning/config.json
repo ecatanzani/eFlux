@@ -1,5 +1,5 @@
 {
-    "eMin": 20,
+    "eMin": 1,
     "eMax": 10000,
     "bins": 20,
     "junctions": []
