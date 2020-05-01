@@ -227,7 +227,7 @@ optional arguments:
   -o OUTPUT, --output OUTPUT  Output binning text file
   -v, --verbose               run in high verbosity mode
 ```
-The software requires a json configuration file as input, through the **--input** flag. This file stores the parameters used during the energy binning building. Here an example, showing the default configuration:
+The software reads a json configuration file (an external one can also be used, through the **--input** flag). This file stores the parameters used during the energy binning building. Here an example, showing the default configuration:
 
 ```markdown
 {
@@ -243,8 +243,54 @@ The software requires a json configuration file as input, through the **--input*
 * **bins**: number of bins (default value set to *20*)
 * **junctions**: *list* of the energy edges of the different data-sets (*empty* by default)
 
-The software produces an output text configuration file, whose path needs to be specified using the **--output** flag.
+The software may produces an output text file containing the binning, whose path needs to be specified using the **--output** flag. If the flag is not specified the binning is not written to disk.
 
+```markdown
+❯ python getEnergyBinning.py -o myBinning.txt -v
+
+**** Binning settings:
+eMin: 1
+eMax: 10000
+Number of bins: 20
+****
+
+Binning found!
+('Number of bins: ', 20)
+****
+
+[  1.00000000e+00   1.58489319e+00   2.51188643e+00   3.98107171e+00
+   6.30957344e+00   1.00000000e+01   1.58489319e+01   2.51188643e+01
+   3.98107171e+01   6.30957344e+01   1.00000000e+02   1.58489319e+02
+   2.51188643e+02   3.98107171e+02   6.30957344e+02   1.00000000e+03
+   1.58489319e+03   2.51188643e+03   3.98107171e+03   6.30957344e+03
+   1.00000000e+04]
+
+0:00:00.004979
+```
+
+```markdown
+❯ ls -ll
+total 24
+-rw-r--r--  1 enrico  staff    74  1 Mag 14:59 config.json
+-rw-r--r--  1 enrico  staff  3688 28 Apr 10:37 getEnergyBinning.py
+-rw-r--r--  1 enrico  staff   250  1 Mag 15:13 myBinning.txt
+```
+
+```markdown
+❯ head myBinning.txt
+1.0
+1.58489319246
+2.51188643151
+3.98107170553
+6.3095734448
+10.0
+15.8489319246
+25.1188643151
+39.8107170553
+63.095734448
+```
+
+**IMPORTANT NOTE:** if the **junctions** list is empty the number of bins reported in the json config file is conserved, while in the other cases the software may modify the number of bins (at maximum *5*) in order to match the energy requirement and found the best binning.
 
 Support
 =======
