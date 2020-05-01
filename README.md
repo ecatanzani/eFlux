@@ -146,7 +146,7 @@ This is an example of the configuration file with some default values.
 
 farmAddress         root://xrootd-dampe.cloud.ba.infn.it//
 simu_XRDFS_path     /MC/reco/
-geometry            6r0p10
+geometry            6r0p0
 simu_eMin           1
 simu_eMax           10000
 particle            e
@@ -161,8 +161,44 @@ jSet                dataSets.json
 * **particle**: particle ID (default value set to *e* for *electrons*)
 * **jSet**: name of the local json file where all the MC data-sets are collected according to the previous parameters (default value set to *dataSets.json*, but external json files can be used, through the **-input** flag).
 
+Crawler parses the configuration file and, accordingly to the parameters value, queries *jSet* to retieve the proper MC reco data list.
 
+As an example, this is a real usage case of Crawler according to the previous configuration file:
 
+```markdown
+❯ python3 explorer.py -v
+xrdfs root://xrootd-dampe.cloud.ba.infn.it// ls /MC/reco/v6r0p0 allElectron-v6r0p0_100GeV_10TeV
+xrdfs root://xrootd-dampe.cloud.ba.infn.it// ls /MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV-p2
+xrdfs root://xrootd-dampe.cloud.ba.infn.it// ls /MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV-p3
+xrdfs root://xrootd-dampe.cloud.ba.infn.it// ls /MC/reco/v6r0p0/allElectron-v6r0p0_1GeV_100GeV
+xrdfs root://xrootd-dampe.cloud.ba.infn.it// ls /MC/reco/v6r0p0/allElectron-v6r0p0_1GeV_15GeV
+0:00:08.744187
+```
+
+Crawler creates a txt list with default name accordingly to the energy range:
+
+```markdown
+❯ ls -ll
+total 12320
+-rw-r--r--  1 enrico  staff      246  1 Mag 11:35 crawlerConfig.txt
+-rw-r--r--  1 enrico  staff     1672 20 Feb 23:21 dataSets.json
+-rw-r--r--  1 enrico  staff     3963  9 Mar 15:21 explorer.py
+-rw-r--r--  1 enrico  staff  5786558  1 Mag 11:42 simuFileList_e_1.0_10000.0.txt
+```
+
+```markdown
+❯ head simuFileList_e_1.0_10000.0.txt
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000001.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000002.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000003.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000004.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000005.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000006.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000007.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000008.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000009.reco.root
+root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000010.reco.root
+```
 
 Support
 =======
