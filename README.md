@@ -2,6 +2,11 @@ Electron Flux
 =======
 
 This is a C++ software that computes the all-electron spectrum in a given energy range using DAMPE flight data.
+ 
+Practical information:
+
+* All the information contained in the flight data are incapsulated using a **TTree**, according to **ROOT** framework.
+* **XROOTD** will be the default protocol to aceess remote data, both flight and MC. This protocol permits to execute the software indipendently on the target farm, avoidint to specify custom paths for each one of them or to move large amounts of data.
 
 Software usage:
 
@@ -75,20 +80,20 @@ This config file shows the default value for the parameters used to compute the 
 
 Here a description of the event selection parameters:
 
-* **min_event_energy**: minimum value for the energy range (default value set to 1 GeV)
-* **max_event_energy**: maximum value for the energy range (default value set to 10 TeV)
-* **energy_lRatio**: ratio of the energy released in a certain layer respect to the total calorimeter energy (default value set to 0.35)
-* **shower_axis_delta**: distance, expressed in mm, between the projection points (x,y) of the BGO shower on the TOP and BOTTOM layers of the calorimeter respect to its center (default value set to 280)
-* **max_rms_shower_width** : maximum value of the shower width of all layers with energy more than 1% of the total calorimeter energy (default value set to 100 mm)
-* **track_X_clusters**: number of required X clusters for a track (default value set to 4)
-* **track_Y_clusters**: number of required Y clusters for a track (default value set to 4)
-* **track_missingHit_X**: maximum number of X missing points for a track (default value set to 1)
-* **track_missingHit_Y**: maximum number of Y missing points for a track (default value set to 1)
-* **STK_BGO_delta_track**: maximum mangular distance between the direction of the reconstructed BGO shower and the STK track direction (default value set to 10 deg)
-* **STK_BGO_delta_position**: maximum value of the distance between the extrapolated positions of the track and the shower to the top of the BGO (default value set to 40 mm)
-* **xtrl**: value used to discriminate between electrons(positrons) and hadrons (default value set to 8.5)
-* **STK_PSD_delta_position**: maximum value of the distance between the hit position of the PSD cluster seed strip and the extrapolated track position (default value set to 40 mm)
-* **PSD_bar_min_energy_release**: value of the minimum required energy release into the PSD bard (default value set to 0.5 MeV)
+* **min_event_energy**: minimum value for the energy range (default value set to *1 GeV*)
+* **max_event_energy**: maximum value for the energy range (default value set to *10 TeV*)
+* **energy_lRatio**: ratio of the energy released in a certain layer respect to the total calorimeter energy (default value set to *0.35*)
+* **shower_axis_delta**: distance, expressed in mm, between the projection points (x,y) of the BGO shower on the TOP and BOTTOM layers of the calorimeter respect to its center (default value set to *280 mm*)
+* **max_rms_shower_width** : maximum value of the shower width of all layers with energy more than 1% of the total calorimeter energy (default value set to *100 mm*)
+* **track_X_clusters**: number of required X clusters for a track (default value set to *4*)
+* **track_Y_clusters**: number of required Y clusters for a track (default value set to *4*)
+* **track_missingHit_X**: maximum number of X missing points for a track (default value set to *1*)
+* **track_missingHit_Y**: maximum number of Y missing points for a track (default value set to *1*)
+* **STK_BGO_delta_track**: maximum mangular distance between the direction of the reconstructed BGO shower and the STK track direction (default value set to *10 deg*)
+* **STK_BGO_delta_position**: maximum value of the distance between the extrapolated positions of the track and the shower to the top of the BGO (default value set to *40 mm*)
+* **xtrl**: value used to discriminate between electrons(positrons) and hadrons (default value set to *8.5*)
+* **STK_PSD_delta_position**: maximum value of the distance between the hit position of the PSD cluster seed strip and the extrapolated track position (default value set to *40 mm*)
+* **PSD_bar_min_energy_release**: value of the minimum required energy release into the PSD bard (default value set to *0.5 MeV*)
 
 All DAMPE simulations are based on an HALF-sphere with the detector on its center; all the simulated particles go downwards (exept for the data sets marked as **BACKENTERING**). The radius of such a sphere may vary but its default value, represented by the parameter **generation_vertex_radius** is set to 1.38 m. This value canbe found both on the **mac** file used for the simulation or studying the **DmpEventSimuPrimaries/pv_x** and **DmpTruthTrajectoriesCollection/start_x** distributions on the **RECO** files.
 
@@ -104,11 +109,12 @@ The list of the provided cuts is the following:
 * **xtrl_selection**
 * **psd_charge**
 
-**BGO_fiducial** cut ensures that all the events selected are well contained into the BGO volume.
+**BGO_fiducial** cut ensures that all the events selected are well contained into the BGO volume (this cut is active by default).
 **nBarLayer13** and **maxRms** permit to remove lateral and large showering events.
 **track_selection** is used to select events with a good STK track associated.
 **xtrl_selection** is used to select electrons (positrons) from a background of hadrons or low energy particles that mimic thei behaviour.
 
+All the accessory cuts can be activated/deactivated using the flags **YES**/**NO**.
 
 ### Crawler
 
@@ -131,7 +137,9 @@ optional arguments:
 
 Crawler computes the MC file list as output (the **--output** flag is optional and, if not specified, a default value will be automatically assigned accordingly to the energy range chosen). 
 
-The software uses a config file to produce the final data list:
+The software uses a config file to produce the final data list.
+
+This is an example of the configuration file with some default values.
 
 ```markdown
 ---DataSets default params
@@ -139,15 +147,22 @@ The software uses a config file to produce the final data list:
 farmAddress         root://xrootd-dampe.cloud.ba.infn.it//
 simu_XRDFS_path     /MC/reco/
 geometry            6r0p10
-simu_eMin           0
-simu_eMax           100
+simu_eMin           1
+simu_eMax           10000
 particle            e
 jSet                dataSets.json
 ```
 
-This is an example of the configuration file with some default values.
+* **farmAddress**: the address of the farm where the data are located (default value set to *root://xrootd-dampe.cloud.ba.infn.it//*)
+* **simu_XRDFS_path**: local path for the reconstructed MC data (default value set to */MC/reco/*)
+* **geometry**: release of the detector geometry (default value set to *6r0p10*)
+* **simu_eMin**: minimum value of the data-set energy (default value set to *1 GeV*)
+* **simu_eMax**: maximum value of the data-set energy (default value set to *10 TeV*)
+* **particle**: particle ID (default value set to *e* for *electrons*)
+* **jSet**: name of the local json file where all the MC data-sets are collected according to the previous parameters (default value set to *dataSets.json*, but external json files can be used, through the **-input** flag).
 
-* **farmAddress**
+
+
 
 Support
 =======
