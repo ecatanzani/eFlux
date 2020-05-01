@@ -2,8 +2,8 @@
 
 farmAddress         root://xrootd-dampe.cloud.ba.infn.it//
 simu_XRDFS_path     /MC/reco/
-geometry            6r0p0
-simu_eMin           0
-simu_eMax           50000
+geometry            6r0p10
+simu_eMin           1
+simu_eMax           10000
 particle            e
 jSet                dataSets.json
