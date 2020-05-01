@@ -200,6 +200,52 @@ root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_
 root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p0/allElectron-v6r0p0_100GeV_10TeV/allElectron-v6r0p0_100GeV_10TeV.noOrb.000010.reco.root
 ```
 
+Using the default *v6r0p0* geometry, the following data-sets will be available:
+
+* allElectron-v6r0p0_1GeV_15GeV
+* allElectron-v6r0p0_1GeV_100GeV
+* allElectron-v6r0p0_100GeV_10TeV
+* allElectron-v6r0p0_100GeV_10TeV-p2
+* allElectron-v6r0p0_100GeV_10TeV-p3
+
+### Energy binning
+
+This is an **Asset** software to create a logaritmic energy binning for the flux and acceptance calculation. 
+
+This software is particularly usefull if multiple data-sets are needed to cover the analysis energy range; in this case the bins should be computed in order to match the energy range of each data-set. 
+
+This software is written in **Python** and requires the **numpy** package.
+
+Here the usage:
+
+```markdown
+Binning Finder
+
+optional arguments:
+  -h, --help                  show this help message and exit
+  -i INPUT, --input INPUT     json data storage
+  -o OUTPUT, --output OUTPUT  Output binning text file
+  -v, --verbose               run in high verbosity mode
+```
+The software requires a json configuration file as input, through the **--input** flag. This file stores the parameters used during the energy binning building. Here an example, showing the default configuration:
+
+```markdown
+{
+    "eMin": 1,
+    "eMax": 10000,
+    "bins": 20,
+    "junctions": []
+}
+```
+
+* **eMin**: minimum energy value used in the binning (default value set to *1 GeV*)
+* **eMax**: maximum energy value used in the binning (default value set to *10 TeV*)
+* **bins**: number of bins (default value set to *20*)
+* **junctions**: *list* of the energy edges of the different data-sets (*empty* by default)
+
+The software produces an output text configuration file, whose path needs to be specified using the **--output** flag.
+
+
 Support
 =======
 
