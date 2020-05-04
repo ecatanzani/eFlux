@@ -15,7 +15,20 @@ def getListOfFiles(condor_wd):
             full_dir_path = condor_wd + "/" + tmp_dir
             expected_condor_outDir = full_dir_path + "/outFiles"
             if os.path.isdir(expected_condor_outDir):
-                list_dir.append(full_dir_path)
+                _list_dir = os.listdir(expected_condor_outDir)
+                tmp_acc_full_path = ""
+                for file in _list_dir:
+                    if file.endswith(".root"):
+                        tmp_acc_full_path = expected_condor_outDir + "/" + file
+                        break
+                if os.path.isfile(tmp_acc_full_path):
+                    tmp_acc_file = TFile.Open(tmp_acc_full_path,"READ")
+                    if tmp_acc_file.IsOpen():
+                        list_dir.append(full_dir_path)
+                    else:
+                        skipped_dirs.append(full_dir_path)
+                else:
+                    skipped_dirs.append(full_dir_path)
             else:
                 skipped_dirs.append(full_dir_path)
     return list_dir, skipped_dirs
@@ -158,12 +171,10 @@ def main(args=None):
     parser = ArgumentParser(
         usage="Usage: %(prog)s [options]", description="Acceptance Adder")
 
-    parser.add_argument("-i", "--input", type=str,
-                        dest='input', help='Input condor jobs WD')
-    parser.add_argument("-o", "--output", type=str,
-                        dest='output', help='Output ROOT TFile')
-    parser.add_argument("-v", "--verbose", dest='verbose', default=False,
-                        action='store_true', help='run in high verbosity mode')
+    parser.add_argument("-i", "--input", type=str, dest='input', help='Input condor jobs WD')
+    parser.add_argument("-o", "--output", type=str, dest='output', help='Output ROOT TFile')
+    parser.add_argument("-v", "--verbose", dest='verbose', default=False, action='store_true', help='run in high verbosity mode')
+    parser.add_argument("-c", "--check", dest='check', default=False, action='store_true', help='check tmp acceptance ROOT files')
 
     opts = parser.parse_args(args)
 
@@ -175,7 +186,8 @@ def main(args=None):
     for idx, elm in enumerate(skipped_dirs):
         print('Skipped {} directory: {}'.format(idx, elm))
     
-    compute_final_histos(good_dirs, opts)
+    if not opts.check:
+        compute_final_histos(good_dirs, opts)
 
 
 if __name__ == "__main__":
