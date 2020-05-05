@@ -193,7 +193,7 @@ void buildAcceptance(
     TH1D h_maxElayer_cut("h_maxElayer_cut", "Energy Distribution - maxElayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxBarLayer_cut("h_maxBarLayer_cut", "Energy Distribution - maxBarLayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment cut ", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_BGO_fiducial("h_BGO_fiducial", "Energy Distibution - BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_BGO_fiducial_cut("h_BGO_fiducial_cut", "Energy Distibution - BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_nBarLayer13_cut("h_nBarLayer13_cut", "Energy Distribution - nBarLayer13 cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxRms_cut("h_maxRms_cut", "Energy Distribution - maxRms cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_track_selection_cut("h_track_selection_cut", "Energy Distribution - track selection cut", logEBins.size() - 1, &(logEBins[0]));
@@ -298,7 +298,7 @@ void buildAcceptance(
     h_maxElayer_cut.Sumw2();
     h_maxBarLayer_cut.Sumw2();
     h_BGOTrackContainment_cut.Sumw2();
-    h_BGO_fiducial.Sumw2();
+    h_BGO_fiducial_cut.Sumw2();
     h_nBarLayer13_cut.Sumw2();
     h_maxRms_cut.Sumw2();
     h_track_selection_cut.Sumw2();
@@ -655,7 +655,7 @@ void buildAcceptance(
         // Fill BGO fiducial volume cut
         if (filter_BGO_fiducial_cut)
         {
-            h_BGO_fiducial.Fill(simuEnergy * _GeV);
+            h_BGO_fiducial_cut.Fill(simuEnergy * _GeV);
         
             // BGO fiducial cut && nBarLayer13 cut
             if (filter_nBarLayer13_cut)
@@ -719,8 +719,8 @@ void buildAcceptance(
         if (h_gometric_cut.GetEntries())
             std::cout << "geometric filtered events: " << h_gometric_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_gometric_cut.GetEntries()) / refEntries << std::endl;
 
-        if (h_BGO_fiducial.GetEntries())
-            std::cout << "BGO fiducial filtered events: " << h_BGO_fiducial.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_BGO_fiducial.GetEntries()) / refEntries << std::endl;
+        if (h_BGO_fiducial_cut.GetEntries())
+            std::cout << "BGO fiducial filtered events: " << h_BGO_fiducial_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_BGO_fiducial_cut.GetEntries()) / refEntries << std::endl;
 
         if (h_nBarLayer13_cut.GetEntries())
             std::cout << "nBarLayer13 filtered events: " << h_nBarLayer13_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_nBarLayer13_cut.GetEntries()) / refEntries << std::endl;
@@ -751,7 +751,7 @@ void buildAcceptance(
     auto h_acceptance_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_acceptance_maxElayer_cut"));
     auto h_acceptance_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_acceptance_maxBarLayer_cut"));
     auto h_acceptance_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_acceptance_BGOTrackContainment_cut"));
-    auto h_acceptance_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_acceptance_BGO_fiducial"));
+    auto h_acceptance_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial_cut.Clone("h_acceptance_BGO_fiducial"));
     auto h_acceptance_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_acceptance_nBarLayer13_cut"));
     auto h_acceptance_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_acceptance_maxRms_cut"));
     auto h_acceptance_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_acceptance_track_selection_cut"));
@@ -853,24 +853,38 @@ void buildAcceptance(
     gr_acceptance_all_cut.SetTitle("Acceptance - all cut");
 
     // Write histos to file
+    // Acceptance - First-Cut histos
     h_incoming.Write();
     h_trigger.Write();
     h_gometric_cut.Write();
     h_maxElayer_cut.Write();
     h_maxBarLayer_cut.Write();
     h_BGOTrackContainment_cut.Write();
-    h_BGO_fiducial.Write();
+    h_BGO_fiducial_cut.Write();
     h_nBarLayer13_cut.Write();
     h_maxRms_cut.Write();
     h_track_selection_cut.Write();
     h_xtrl_cut.Write();
     h_psd_charge_cut.Write();
     h_all_cut.Write();
-
+    // Acceptance - Cuts && Geometric Cut
     h_geometric_maxElayer_cut.Write();
     h_geometric_maxBarLayer_cut.Write();
     h_geometric_BGOTrackContainment_cut.Write();
     h_geometric_BGO_fiducial.Write();
+    h_geometric_nBarLayer13_cut.Write();
+    h_geometric_maxRms_cut.Write();
+    h_geometric_track_selection_cut.Write();
+    h_geometric_xtrl_cut.Write();
+    h_geometric_psd_charge_cut.Write();
+    h_geometric_all_cut.Write();
+    // Acceptance - Cuts && BGO fiducial volume cut
+    h_BGOfiducial_nBarLayer13_cut.Write();
+    h_BGOfiducial_maxRms_cut.Write();
+    h_BGOfiducial_track_selection_cut.Write();
+    h_BGOfiducial_xtrl_cut.Write();
+    h_BGOfiducial_psd_charge_cut.Write();
+    h_BGOfiducial_all_cut.Write();
 
     // Create output acceptance dir in the output TFile
     auto acceptanceDir = outFile.mkdir("Acceptance");
@@ -904,7 +918,7 @@ void buildAcceptance(
     auto h_ratio_tr_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_ratio_tr_maxElayer_cut"));
     auto h_ratio_tr_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_ratio_tr_maxBarLayer_cut"));
     auto h_ratio_tr_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut.Clone("h_ratio_tr_BGOTrackContainment_cut"));
-    auto h_ratio_tr_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial.Clone("h_ratio_tr_BGO_fiducial"));
+    auto h_ratio_tr_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial_cut.Clone("h_ratio_tr_BGO_fiducial"));
     auto h_ratio_tr_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut.Clone("h_ratio_tr_nBarLayer13_cut"));
     auto h_ratio_tr_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut.Clone("h_ratio_tr_maxRms_cut"));
     auto h_ratio_tr_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_ratio_tr_track_selection_cut"));
@@ -993,12 +1007,12 @@ void buildAcceptance(
     auto h_ratio_BGOfiducial_all_cut = static_cast<TH1D *>(h_BGOfiducial_all_cut.Clone("h_ratio_BGOfiducial_all_cut"));
 
     // Scale histos respect to the BGO fiducial cut events
-    h_ratio_BGOfiducial_nBarLayer13_cut->Divide(&h_BGO_fiducial);
-    h_ratio_BGOfiducial_maxRms_cut->Divide(&h_BGO_fiducial);
-    h_ratio_BGOfiducial_track_selection_cut->Divide(&h_BGO_fiducial);
-    h_ratio_BGOfiducial_xtrl_cut->Divide(&h_BGO_fiducial);
-    h_ratio_BGOfiducial_psd_charge_cut->Divide(&h_BGO_fiducial);
-    h_ratio_BGOfiducial_all_cut->Divide(&h_BGO_fiducial);
+    h_ratio_BGOfiducial_nBarLayer13_cut->Divide(&h_BGO_fiducial_cut);
+    h_ratio_BGOfiducial_maxRms_cut->Divide(&h_BGO_fiducial_cut);
+    h_ratio_BGOfiducial_track_selection_cut->Divide(&h_BGO_fiducial_cut);
+    h_ratio_BGOfiducial_xtrl_cut->Divide(&h_BGO_fiducial_cut);
+    h_ratio_BGOfiducial_psd_charge_cut->Divide(&h_BGO_fiducial_cut);
+    h_ratio_BGOfiducial_all_cut->Divide(&h_BGO_fiducial_cut);
 
     //Write histos to disk
     h_ratio_BGOfiducial_nBarLayer13_cut->Write();
