@@ -534,18 +534,18 @@ inline void get_track_points(
     best_track &event_best_track,
     const bool best_track = false)
 {
-    std::vector<int> prevHole(2 - 2);
+    std::vector<int> prevHole(2, - 2);
     std::vector<int> firstLayer(2, -1);
     std::vector<int> lastLayer(2, -1);
     std::vector<int> lastPoint(2, -1);
     std::vector<unsigned int> track_nHoles_cont(2, 0);
-
+    
     // Loop on track points to find last layer values
     for (int ip = track->GetNPoints() - 1; ip >= 0; --ip)
     {
         if (lastLayer[0] == -1)
         {
-            if (track->getHitMeasX(ip) > -9999.)
+            if (track->getHitMeasX(ip) > -99999)
             {
                 lastPoint[0] = ip;
                 DmpStkSiCluster *cluster = track->GetClusterX(ip, stkclusters.get());
@@ -555,7 +555,7 @@ inline void get_track_points(
         }
         if (lastLayer[1] == -1)
         {
-            if (track->getHitMeasY(ip) > -9999.)
+            if (track->getHitMeasY(ip) > -99999)
             {
                 lastPoint[1] = ip;
                 DmpStkSiCluster *cluster = track->GetClusterY(ip, stkclusters.get());
@@ -564,40 +564,44 @@ inline void get_track_points(
             }
         }
     }
-
+    
     // Found the number of holes on both X and Y
     for (int ip = 0; ip <= lastPoint[0]; ++ip)
     {
-        if (track->getHitMeasX(ip) > -9999.)
+        if (track->getHitMeasX(ip) > -99999)
         {
             DmpStkSiCluster *cluster = track->GetClusterX(ip, stkclusters.get());
             auto hardID = cluster->getLadderHardware();
             if (firstLayer[0] == -1)
                 firstLayer[0] = LadderToLayer[hardID];
-            continue;
         }
-        if (firstLayer[0] != -1)
-            ++track_nHoles[0];
-        if (ip == prevHole[0] + 1)
-            ++track_nHoles_cont[0];
-        prevHole[0] = ip;
+        else
+        {
+            if (firstLayer[0] != -1)
+                ++track_nHoles[0];
+            if (ip == prevHole[0] + 1)
+                ++track_nHoles_cont[0];
+            prevHole[0] = ip;
+        }
     }
-
+    
     for (int ip = 0; ip <= lastPoint[1]; ++ip)
     {
-        if (track->getHitMeasY(ip) > -9999.)
+        if (track->getHitMeasY(ip) > -99999)
         {
             DmpStkSiCluster *cluster = track->GetClusterY(ip, stkclusters.get());
             auto hardID = cluster->getLadderHardware();
             if (firstLayer[1] == -1)
                 firstLayer[1] = LadderToLayer[hardID];
-            continue;
         }
-        if (firstLayer[1] != -1)
-            ++track_nHoles[1];
-        if (ip == prevHole[1] + 1)
-            ++track_nHoles_cont[1];
-        prevHole[1] = ip;
+        else
+        {
+            if (firstLayer[1] != -1)
+                ++track_nHoles[1];
+            if (ip == prevHole[1] + 1)
+                ++track_nHoles_cont[1];
+            prevHole[1] = ip;
+        }
     }
 
     if (best_track)
@@ -633,7 +637,7 @@ bool track_selection_cut(
         bgoRecEntrance,
         bgoRecDirection,
         bgorec);
-
+    
     // Loop on the tracks
     for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx)
     {
@@ -646,18 +650,18 @@ bool track_selection_cut(
 
         // Get the track
         auto track = static_cast<DmpStkTrack *>(stktracks->ConstructedAt(trIdx));
-
+        
         // Reject tracks with not enough X and Y clusters
         if (track->getNhitX() < acceptance_cuts.track_X_clusters || track->getNhitY() < acceptance_cuts.track_Y_clusters)
             continue;
-
+        
         get_track_points(
             track,
             stkclusters,
             LadderToLayer,
             track_nHoles,
             event_best_track);
-
+        
         if (track_nHoles[0] > 1 || track_nHoles[1] > 1)
             continue;
 
@@ -686,7 +690,7 @@ bool track_selection_cut(
 
         selectedTracks.push_back(track);
     }
-
+    
     // Sort selected tracks vector
     DmpStkTrackHelper tHelper(stktracks.get(), true, bgorec.get(), bgohits.get());
     tHelper.MergeSort(selectedTracks, &DmpStkTrackHelper::TracksCompare);
@@ -715,7 +719,7 @@ bool track_selection_cut(
 
         passed_track_selection_cut = true;
     }
-
+    
     return passed_track_selection_cut;
 }
 
