@@ -783,7 +783,7 @@ bool psd_charge_cut(
     std::vector<std::vector<double>> psdCluster_Z;              // weighted if more than 1 strip
 
     // Find max index and energy release for PSD hits
-    std::vector<unsigned int> iMaxBarPsd(2, -1);
+    std::vector<int> iMaxBarPsd(2, -1);
     std::vector<double> eMaxBarPsd(2, 0);
     bool first_hit = true;
 
@@ -853,7 +853,7 @@ bool psd_charge_cut(
             psdCluster_maxEcoordinate[nLayer].push_back(actual_coordinate);
             double actualZ = psdhits->GetHitZ(psdhits_maxIdx);
             layerBarUsedPsd[nLayer][iMaxBarPsd[nLayer]] = 1;
-
+            
             int cluster_closest_barIdx = -1;
             double energy_leftMaxBar = 0;
             double energy_rightMaxBar = 0;
@@ -861,8 +861,8 @@ bool psd_charge_cut(
             int cluster_size = 1;              // Size of the cluster
 
             // Complete the cluster building procedure with the closest bars to the one with the maximum energy release
-            if (iMaxBarPsd[nLayer] - 1 > 0) // Check the previous bar
-                if ((layerBarUsedPsd[nLayer][iMaxBarPsd[nLayer] - 1] == 0) && (psdbar_maxIdx == layerBarNumberPsd[nLayer][iMaxBarPsd[nLayer] - 1] + 1))
+            if ((iMaxBarPsd[nLayer] - 1) > 0) // Check the previous bar
+               if ((layerBarUsedPsd[nLayer][iMaxBarPsd[nLayer] - 1] == 0) && (psdbar_maxIdx == layerBarNumberPsd[nLayer][iMaxBarPsd[nLayer] - 1] + 1))
                     energy_leftMaxBar = layerBarEnergyPsd[nLayer][iMaxBarPsd[nLayer] - 1];
             if ((iMaxBarPsd[nLayer] + 1) < layerBarEnergyPsd[nLayer].size()) // Check the next bar
                 if ((layerBarUsedPsd[nLayer][iMaxBarPsd[nLayer] + 1] == 0) && (psdbar_maxIdx == layerBarNumberPsd[nLayer][iMaxBarPsd[nLayer] + 1] - 1))
@@ -873,6 +873,7 @@ bool psd_charge_cut(
                 Now we have the central bar with the highest energy release, the left and the right one. 
                 One cluster is composed by 2 bars. We have to choose, between the 2 lateral bars, that one with the highest energy release
             */
+            
             if (energy_leftMaxBar > energy_rightMaxBar)
             {
                 cluster_closest_barIdx = psdhits_maxIdx - 1;
@@ -909,16 +910,16 @@ bool psd_charge_cut(
 
             // Search for the next maximum energy release bar
             eMaxBarPsd[nLayer] = 0; // Reset maximum energy release
+
             for (unsigned int barIdx = 0; barIdx < layerBarEnergyPsd[nLayer].size(); ++barIdx)
-            {
                 // Check for the next unused PSD bar with a non negligible energy release
                 if (layerBarUsedPsd[nLayer][barIdx] == 0 && layerBarEnergyPsd[nLayer][barIdx] > eMaxBarPsd[nLayer])
                 {
                     iMaxBarPsd[nLayer] = barIdx;
                     eMaxBarPsd[nLayer] = layerBarEnergyPsd[nLayer][barIdx];
                 }
-            }
         }
+    
     }
 
     // Get the number of clusters on both X and Y
