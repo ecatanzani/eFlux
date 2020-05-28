@@ -4,7 +4,7 @@
 
 **** CUT VARIABLE ****       **** VALUE ****      **** UNIT ****
 
-min_event_energy                    20                   GeV
+min_event_energy                    1                   GeV
 max_event_energy                    10000                GeV
 energy_lRatio                       0.35
 shower_axis_delta                   280                 mm
@@ -22,11 +22,11 @@ PSD_bar_min_energy_release          0.5                 MeV
 **** CUT ****                **** ACTIVE ****
 
 BGO_fiducial                        YES
-nBarLayer13                         NO
-maxRms                              NO
-track_selection                     NO
-xtrl_selection                      NO
-psd_charge                          NO
+nBarLayer13                         YES
+maxRms                              YES
+track_selection                     YES
+xtrl_selection                      YES
+psd_charge                          YES
 
 ## Simu Params
 
