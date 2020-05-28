@@ -217,7 +217,7 @@ void buildAcceptance(
     TH1D h_BGOfiducial_nBarLayer13_cut("h_BGOfiducial_nBarLayer13_cut", "Energy Distribution - nBarLayer13 + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_maxRms_cut("h_BGOfiducial_maxRms_cut", "Energy Distribution - maxRms  + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_track_selection_cut("h_BGOfiducial_track_selection_cut", "Energy Distribution - track selection + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_BGOfiducial_xtrl_cut("h_xtrh_BGOfiducial_xtrl_cutl_cut", "Energy Distribution - xtrl + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_BGOfiducial_xtrl_cut("h_BGOfiducial_xtrl_cut", "Energy Distribution - xtrl + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_psd_charge_cut("h_BGOfiducial_psd_charge_cut", "Energy Distribution - psd charge + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_all_cut("h_BGOfiducial_all_cut", "Energy Distribution - All + BGO fiducial cut ", logEBins.size() - 1, &(logEBins[0]));
 
