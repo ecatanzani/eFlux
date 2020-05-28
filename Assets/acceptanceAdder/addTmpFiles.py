@@ -8,18 +8,23 @@ import math
 
 start = datetime.now()
 
+
 def main(args=None):
     parser = ArgumentParser(
         usage="Usage: %(prog)s [options]", description="Acceptance Adder")
 
-    parser.add_argument("-i", "--input", type=str, dest='input', help='Input condor jobs WD')
-    parser.add_argument("-o", "--output", type=str, dest='output', help='Output ROOT TFile')
-    parser.add_argument("-v", "--verbose", dest='verbose', default=False, action='store_true', help='run in high verbosity mode')
-    parser.add_argument("-c", "--check", dest='check', default=False, action='store_true', help='check tmp acceptance ROOT files')
+    parser.add_argument("-i", "--input", type=str,
+                        dest='input', help='Input condor jobs WD')
+    parser.add_argument("-o", "--output", type=str,
+                        dest='output', help='Output ROOT TFile')
+    parser.add_argument("-v", "--verbose", dest='verbose', default=False,
+                        action='store_true', help='run in high verbosity mode')
+    parser.add_argument("-c", "--check", dest='check', default=False,
+                        action='store_true', help='check tmp acceptance ROOT files')
 
     opts = parser.parse_args(args)
 
-    #Load analysis functions
+    # Load analysis functions
     sys.path.append("moduls")
     from adder import compute_final_histos
     from scanDirs import getListOfFiles
@@ -27,11 +32,15 @@ def main(args=None):
     good_dirs, skipped_dirs = getListOfFiles(opts.input)
     if opts.verbose:
         print('Found {} GOOD condor directories'.format(len(good_dirs)))
-    
-    print('Found {} BAD condor directories...'.format(len(skipped_dirs)))
-    for idx, elm in enumerate(skipped_dirs):
-        print('Skipped {} directory: {}'.format(idx, elm))
-    
+
+    if skipped_dirs:
+        print('Found {} BAD condor directories...'.format(len(skipped_dirs)))
+        for idx, elm in enumerate(skipped_dirs):
+            print('Skipped {} directory: {}'.format(idx, elm))
+    else:
+        if opts.verbose:
+            print('Found {} BAD condor directories...'.format(len(skipped_dirs)))
+
     if not opts.check:
         compute_final_histos(good_dirs, opts)
 

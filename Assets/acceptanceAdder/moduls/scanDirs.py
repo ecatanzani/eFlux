@@ -1,6 +1,7 @@
 import os
 from ROOT import TFile
 
+
 def getListOfFiles(condor_wd):
     list_dir = []
     skipped_dirs = []
@@ -16,7 +17,7 @@ def getListOfFiles(condor_wd):
                         tmp_acc_full_path = expected_condor_outDir + "/" + file
                         break
                 if os.path.isfile(tmp_acc_full_path):
-                    tmp_acc_file = TFile.Open(tmp_acc_full_path,"READ")
+                    tmp_acc_file = TFile.Open(tmp_acc_full_path, "READ")
                     if tmp_acc_file.IsOpen():
                         list_dir.append(full_dir_path)
                     else:
