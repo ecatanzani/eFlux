@@ -746,4 +746,3 @@ def compute_final_histos(condor_dir_list, opts):
     
     # Closing output file
     fOut.Close()
-    '''
