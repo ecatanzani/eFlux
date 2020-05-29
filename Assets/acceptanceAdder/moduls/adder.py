@@ -183,6 +183,7 @@ def compute_final_histos(condor_dir_list, opts):
 
         h_BGOfiducial_nBarLayer13_cut_tmp = rFile.Get("h_BGOfiducial_nBarLayer13_cut")
         h_BGOfiducial_maxRms_cut_tmp = rFile.Get("h_BGOfiducial_maxRms_cut")
+        h_BGOfiducial_track_selection_cut_tmp = rFile.Get("h_BGOfiducial_track_selection_cut")
         h_BGOfiducial_xtrl_cut_tmp = rFile.Get("h_BGOfiducial_xtrl_cut")
         h_BGOfiducial_psd_charge_cut_tmp = rFile.Get("h_BGOfiducial_psd_charge_cut")
         h_BGOfiducial_all_cut_tmp = rFile.Get("h_BGOfiducial_all_cut")
@@ -232,37 +233,6 @@ def compute_final_histos(condor_dir_list, opts):
             histoName = "BGO_Energy/h_layer_energy_ratio_"
             histoName += str(idx)
             h_layer_energy_ratio_tmp.append(rFile.Get(histoName))
-        
-        h_ratio_tr_gometric_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_gometric_cut")
-        h_ratio_tr_maxElayer_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_maxElayer_cut")
-        h_ratio_tr_maxBarLayer_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_maxBarLayer_cut")
-        h_ratio_tr_BGOTrackContainment_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_BGOTrackContainment_cut")
-        h_ratio_tr_BGO_fiducial_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_BGO_fiducial")
-        h_ratio_tr_nBarLayer13_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_nBarLayer13_cut")
-        h_ratio_tr_maxRms_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_maxRms_cut")
-        h_ratio_tr_track_selection_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_track_selection_cut")
-        h_ratio_tr_xtrl_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_xtrl_cut")
-        h_ratio_tr_psd_charge_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_psd_charge_cut")
-        h_ratio_tr_all_cut_tmp = rFile.Get("Efficiency/Trigger/h_ratio_tr_all_cut")
-        
-        h_ratio_geo_maxElayer_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_maxElayer_cut")
-        h_ratio_geo_maxBarLayer_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_maxBarLayer_cut")
-        h_ratio_geo_BGOTrackContainment_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_BGOTrackContainment_cut")
-        h_ratio_geo_BGO_fiducial_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_BGO_fiducial")
-        h_ratio_geo_nBarLayer13_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_nBarLayer13_cut")
-        h_ratio_geo_maxRms_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_maxRms_cut")
-        h_ratio_geo_track_selection_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_track_selection_cut")
-        h_ratio_geo_xtrl_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_xtrl_cut")
-        h_ratio_geo_psd_charge_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_psd_charge_cut")
-        h_ratio_geo_all_cut_tmp = rFile.Get("Efficiency/Geometric/h_ratio_geo_all_cut")
-
-        h_ratio_BGOfiducial_nBarLayer13_cut_tmp = rFile.Get("Efficiency/BGO_fiducial_volume/h_ratio_BGOfiducial_nBarLayer13_cut")
-        h_ratio_BGOfiducial_maxRms_cut_tmp = rFile.Get("Efficiency/BGO_fiducial_volume/h_ratio_BGOfiducial_maxRms_cut")
-        h_ratio_BGOfiducial_track_selection_cut_tmp = rFile.Get("Efficiency/BGO_fiducial_volume/h_ratio_BGOfiducial_track_selection_cut")
-        h_ratio_BGOfiducial_xtrl_cut_tmp = rFile.Get("Efficiency/BGO_fiducial_volume/h_ratio_BGOfiducial_xtrl_cut")
-        h_ratio_BGOfiducial_psd_charge_cut_tmp = rFile.Get("Efficiency/BGO_fiducial_volume/h_ratio_BGOfiducial_psd_charge_cut")
-        h_ratio_BGOfiducial_all_cut_tmp = rFile.Get("Efficiency/BGO_fiducial_volume/h_ratio_BGOfiducial_all_cut")
-
 
         # Unlink histos
         h_incoming_tmp.SetDirectory(0)
@@ -291,7 +261,8 @@ def compute_final_histos(condor_dir_list, opts):
         h_geometric_all_cut_tmp.SetDirectory(0)
 
         h_BGOfiducial_nBarLayer13_cut_tmp.SetDirectory(0)
-        h_BGOfiducial_maxRms_cut_tmp.SetDirectory(0) 
+        h_BGOfiducial_maxRms_cut_tmp.SetDirectory(0)
+        h_BGOfiducial_track_selection_cut_tmp.SetDirectory(0)
         h_BGOfiducial_xtrl_cut_tmp.SetDirectory(0)
         h_BGOfiducial_psd_charge_cut_tmp.SetDirectory(0)
         h_BGOfiducial_all_cut_tmp.SetDirectory(0)
@@ -353,36 +324,6 @@ def compute_final_histos(condor_dir_list, opts):
         h_layer_max_energy_ratio_tmp.SetDirectory(0)
         for idx in range(0,14):
             h_layer_energy_ratio_tmp[idx].SetDirectory(0)
-        
-        h_ratio_tr_gometric_cut_tmp.SetDirectory(0)
-        h_ratio_tr_maxElayer_cut_tmp.SetDirectory(0)
-        h_ratio_tr_maxBarLayer_cut_tmp.SetDirectory(0)
-        h_ratio_tr_BGOTrackContainment_cut_tmp.SetDirectory(0)
-        h_ratio_tr_BGO_fiducial_tmp.SetDirectory(0)
-        h_ratio_tr_nBarLayer13_cut_tmp.SetDirectory(0)
-        h_ratio_tr_maxRms_cut_tmp.SetDirectory(0)
-        h_ratio_tr_track_selection_cut_tmp.SetDirectory(0)
-        h_ratio_tr_xtrl_cut_tmp.SetDirectory(0)
-        h_ratio_tr_psd_charge_cut_tmp.SetDirectory(0)
-        h_ratio_tr_all_cut_tmp.SetDirectory(0)
-        
-        h_ratio_geo_maxElayer_cut_tmp.SetDirectory(0)
-        h_ratio_geo_maxBarLayer_cut_tmp.SetDirectory(0)
-        h_ratio_geo_BGOTrackContainment_cut_tmp.SetDirectory(0)
-        h_ratio_geo_BGO_fiducial_tmp.SetDirectory(0)
-        h_ratio_geo_nBarLayer13_cut_tmp.SetDirectory(0)
-        h_ratio_geo_maxRms_cut_tmp.SetDirectory(0)
-        h_ratio_geo_track_selection_cut_tmp.SetDirectory(0)
-        h_ratio_geo_xtrl_cut_tmp.SetDirectory(0)
-        h_ratio_geo_psd_charge_cut_tmp.SetDirectory(0)
-        h_ratio_geo_all_cut_tmp.SetDirectory(0)
-
-        h_ratio_BGOfiducial_nBarLayer13_cut_tmp.SetDirectory(0)
-        h_ratio_BGOfiducial_maxRms_cut_tmp.SetDirectory(0)
-        h_ratio_BGOfiducial_track_selection_cut_tmp.SetDirectory(0)
-        h_ratio_BGOfiducial_xtrl_cut_tmp.SetDirectory(0)
-        h_ratio_BGOfiducial_psd_charge_cut_tmp.SetDirectory(0)
-        h_ratio_BGOfiducial_all_cut_tmp.SetDirectory(0)
 
         # Clone output file
         rFile.Close()
@@ -417,6 +358,7 @@ def compute_final_histos(condor_dir_list, opts):
 
             h_BGOfiducial_nBarLayer13_cut = h_BGOfiducial_nBarLayer13_cut_tmp.Clone("h_BGOfiducial_nBarLayer13_cut")
             h_BGOfiducial_maxRms_cut = h_BGOfiducial_maxRms_cut_tmp.Clone("h_BGOfiducial_maxRms_cut")
+            h_BGOfiducial_track_selection_cut = h_BGOfiducial_track_selection_cut_tmp.Clone("h_BGOfiducial_track_selection_cut")
             h_BGOfiducial_xtrl_cut = h_BGOfiducial_xtrl_cut_tmp.Clone("h_BGOfiducial_xtrl_cut")
             h_BGOfiducial_psd_charge_cut = h_BGOfiducial_psd_charge_cut_tmp.Clone("h_BGOfiducial_psd_charge_cut")
             h_BGOfiducial_all_cut = h_BGOfiducial_all_cut_tmp.Clone("h_BGOfiducial_all_cut")
@@ -464,36 +406,6 @@ def compute_final_histos(condor_dir_list, opts):
             for idx in range(0,14):
                 h_layer_energy_ratio[idx] = h_layer_energy_ratio_tmp[idx].Clone("h_layer_energy_ratio")
 
-            h_ratio_tr_gometric_cut = h_ratio_tr_gometric_cut_tmp.Clone("h_ratio_tr_gometric_cut")
-            h_ratio_tr_maxElayer_cut = h_ratio_tr_maxElayer_cut_tmp.Clone("h_ratio_tr_maxElayer_cut")
-            h_ratio_tr_maxBarLayer_cut = h_ratio_tr_maxBarLayer_cut_tmp.Clone("h_ratio_tr_maxBarLayer_cut")
-            h_ratio_tr_BGOTrackContainment_cut = h_ratio_tr_BGOTrackContainment_cut_tmp.Clone("h_ratio_tr_BGOTrackContainment_cut")
-            h_ratio_tr_BGO_fiducial = h_ratio_tr_BGO_fiducial_tmp.Clone("h_ratio_tr_BGO_fiducial")
-            h_ratio_tr_nBarLayer13_cut = h_ratio_tr_nBarLayer13_cut_tmp.Clone("h_ratio_tr_nBarLayer13_cut")
-            h_ratio_tr_maxRms_cut = h_ratio_tr_maxRms_cut_tmp.Clone("h_ratio_tr_maxRms_cut")
-            h_ratio_tr_track_selection_cut = h_ratio_tr_track_selection_cut_tmp.Clone("h_ratio_tr_track_selection_cut")
-            h_ratio_tr_xtrl_cut = h_ratio_tr_xtrl_cut_tmp.Clone("h_ratio_tr_xtrl_cut")
-            h_ratio_tr_psd_charge_cut = h_ratio_tr_psd_charge_cut_tmp.Clone("h_ratio_tr_psd_charge_cut")
-            h_ratio_tr_all_cut = h_ratio_tr_all_cut_tmp.Clone("h_ratio_tr_all_cut")
-            
-            h_ratio_geo_maxElayer_cut = h_ratio_geo_maxElayer_cut_tmp.Clone("h_ratio_geo_maxElayer_cut")
-            h_ratio_geo_maxBarLayer_cut = h_ratio_geo_maxBarLayer_cut_tmp.Clone("h_ratio_geo_maxBarLayer_cut")
-            h_ratio_geo_BGOTrackContainment_cut = h_ratio_geo_BGOTrackContainment_cut_tmp.Clone("h_ratio_geoh_ratio_geo_BGOTrackContainment_cut_maxElayer_cut")
-            h_ratio_geo_BGO_fiducial = h_ratio_geo_BGO_fiducial_tmp.Clone("h_ratio_geo_BGO_fiducial")
-            h_ratio_geo_nBarLayer13_cut = h_ratio_geo_nBarLayer13_cut_tmp.Clone("h_ratio_geo_nBarLayer13_cut")
-            h_ratio_geo_maxRms_cut = h_ratio_geo_maxRms_cut_tmp.Clone("h_ratio_geo_maxRms_cut")
-            h_ratio_geo_track_selection_cut = h_ratio_geo_track_selection_cut_tmp.Clone("h_ratio_geo_track_selection_cut")
-            h_ratio_geo_xtrl_cut = h_ratio_geo_xtrl_cut_tmp.Clone("h_ratio_geo_xtrl_cut")
-            h_ratio_geo_psd_charge_cut = h_ratio_geo_psd_charge_cut_tmp.Clone("h_ratio_geo_psd_charge_cut")
-            h_ratio_geo_all_cut = h_ratio_geo_all_cut_tmp.Clone("h_ratio_geo_all_cut")
-
-            h_ratio_BGOfiducial_nBarLayer13_cut = h_ratio_BGOfiducial_nBarLayer13_cut_tmp.Clone("h_ratio_BGOfiducial_nBarLayer13_cut")
-            h_ratio_BGOfiducial_maxRms_cut = h_ratio_BGOfiducial_maxRms_cut_tmp.Clone("h_ratio_BGOfiducial_maxRms_cut")
-            h_ratio_BGOfiducial_track_selection_cut = h_ratio_BGOfiducial_track_selection_cut_tmp.Clone("h_ratio_BGOfiducial_track_selection_cut")
-            h_ratio_BGOfiducial_xtrl_cut = h_ratio_BGOfiducial_xtrl_cut_tmp.Clone("h_ratio_BGOfiducial_xtrl_cut")
-            h_ratio_BGOfiducial_psd_charge_cut = h_ratio_BGOfiducial_psd_charge_cut_tmp.Clone("h_ratio_BGOfiducial_psd_charge_cut")
-            h_ratio_BGOfiducial_all_cut = h_ratio_BGOfiducial_all_cut_tmp.Clone("h_ratio_BGOfiducial_all_cut")
-
         else:
             h_incoming.Add(h_incoming_tmp)
             h_trigger.Add(h_trigger_tmp)
@@ -522,6 +434,7 @@ def compute_final_histos(condor_dir_list, opts):
 
             h_BGOfiducial_nBarLayer13_cut.Add(h_BGOfiducial_nBarLayer13_cut_tmp)
             h_BGOfiducial_maxRms_cut.Add(h_BGOfiducial_maxRms_cut_tmp)
+            h_BGOfiducial_track_selection_cut.Add(h_BGOfiducial_track_selection_cut_tmp)
             h_BGOfiducial_xtrl_cut.Add(h_BGOfiducial_xtrl_cut_tmp)
             h_BGOfiducial_psd_charge_cut.Add(h_BGOfiducial_psd_charge_cut_tmp)
             h_BGOfiducial_all_cut.Add(h_BGOfiducial_all_cut_tmp)
@@ -569,36 +482,6 @@ def compute_final_histos(condor_dir_list, opts):
             for idx in range(0,14):
                 h_layer_energy_ratio[idx].Add(h_layer_energy_ratio_tmp)
 
-            h_ratio_tr_gometric_cut.Add(h_ratio_tr_gometric_cut_tmp)
-            h_ratio_tr_maxElayer_cut.Add(h_ratio_tr_maxElayer_cut_tmp)
-            h_ratio_tr_maxBarLayer_cut.Add(h_ratio_tr_maxBarLayer_cut_tmp)
-            h_ratio_tr_BGOTrackContainment_cut.Add(h_ratio_tr_BGOTrackContainment_cut_tmp)
-            h_ratio_tr_BGO_fiducial.Add(h_ratio_tr_BGO_fiducial_tmp)
-            h_ratio_tr_nBarLayer13_cut.Add(h_ratio_tr_nBarLayer13_cut_tmp)
-            h_ratio_tr_maxRms_cut.Add(h_ratio_tr_maxRms_cut_tmp)
-            h_ratio_tr_track_selection_cut.Add(h_ratio_tr_track_selection_cut_tmp)
-            h_ratio_tr_xtrl_cut.Add(h_ratio_tr_xtrl_cut_tmp)
-            h_ratio_tr_psd_charge_cut.Add(h_ratio_tr_psd_charge_cut_tmp)
-            h_ratio_tr_all_cut.Add(h_ratio_tr_all_cut_tmp)
-            
-            h_ratio_geo_maxElayer_cut.Add(h_ratio_geo_maxElayer_cut_tmp)
-            h_ratio_geo_maxBarLayer_cut.Add(h_ratio_geo_maxBarLayer_cut_tmp)
-            h_ratio_geo_BGOTrackContainment_cut.Add(h_ratio_geo_BGOTrackContainment_cut_tmp)
-            h_ratio_geo_BGO_fiducial.Add(h_ratio_geo_BGO_fiducial_tmp)
-            h_ratio_geo_nBarLayer13_cut.Add(h_ratio_geo_nBarLayer13_cut_tmp)
-            h_ratio_geo_maxRms_cut.Add(h_ratio_geo_maxRms_cut_tmp)
-            h_ratio_geo_track_selection_cut.Add(h_ratio_geo_track_selection_cut_tmp)
-            h_ratio_geo_xtrl_cut.Add(h_ratio_geo_xtrl_cut_tmp)
-            h_ratio_geo_psd_charge_cut.Add(h_ratio_geo_psd_charge_cut_tmp)
-            h_ratio_geo_all_cut.Add(h_ratio_geo_all_cut_tmp)
-
-            h_ratio_BGOfiducial_nBarLayer13_cut.Add(h_ratio_BGOfiducial_nBarLayer13_cut_tmp)
-            h_ratio_BGOfiducial_maxRms_cut.Add(h_ratio_BGOfiducial_maxRms_cut_tmp)
-            h_ratio_BGOfiducial_track_selection_cut.Add(h_ratio_BGOfiducial_track_selection_cut_tmp)
-            h_ratio_BGOfiducial_xtrl_cut.Add(h_ratio_BGOfiducial_xtrl_cut_tmp)
-            h_ratio_BGOfiducial_psd_charge_cut.Add(h_ratio_BGOfiducial_psd_charge_cut_tmp)
-            h_ratio_BGOfiducial_all_cut.Add(h_ratio_BGOfiducial_all_cut_tmp)
-
     
     # Create output file for full histos
     fOut = TFile.Open(opts.output, "RECREATE")
@@ -637,6 +520,7 @@ def compute_final_histos(condor_dir_list, opts):
 
     h_BGOfiducial_nBarLayer13_cut.Write()
     h_BGOfiducial_maxRms_cut.Write()
+    h_BGOfiducial_track_selection_cut.Write()
     h_BGOfiducial_xtrl_cut.Write()
     h_BGOfiducial_psd_charge_cut.Write()
     h_BGOfiducial_all_cut.Write()
@@ -694,48 +578,6 @@ def compute_final_histos(condor_dir_list, opts):
     h_layer_max_energy_ratio.Write()
     for idx in range(0,14):
         h_layer_energy_ratio[idx].Write()
-
-    fOut.cd()
-    fOut.mkdir("Efficiency/Trigger")
-    fOut.cd("Efficiency/Trigger")
-
-    h_ratio_tr_gometric_cut.Write()
-    h_ratio_tr_maxElayer_cut.Write()
-    h_ratio_tr_maxBarLayer_cut.Write()
-    h_ratio_tr_BGOTrackContainment_cut.Write()
-    h_ratio_tr_BGO_fiducial.Write()
-    h_ratio_tr_nBarLayer13_cut.Write()
-    h_ratio_tr_maxRms_cut.Write()
-    h_ratio_tr_track_selection_cut.Write()
-    h_ratio_tr_xtrl_cut.Write()
-    h_ratio_tr_psd_charge_cut.Write()
-    h_ratio_tr_all_cut.Write()
-
-    fOut.cd()
-    fOut.mkdir("Efficiency/Geometric")
-    fOut.cd("Efficiency/Geometric")
-
-    h_ratio_geo_maxElayer_cut.Write()
-    h_ratio_geo_maxBarLayer_cut.Write()
-    h_ratio_geo_BGOTrackContainment_cut.Write()
-    h_ratio_geo_BGO_fiducial.Write()
-    h_ratio_geo_nBarLayer13_cut.Write()
-    h_ratio_geo_maxRms_cut.Write()
-    h_ratio_geo_track_selection_cut.Write()
-    h_ratio_geo_xtrl_cut.Write()
-    h_ratio_geo_psd_charge_cut.Write()
-    h_ratio_geo_all_cut.Write()
-
-    fOut.cd()
-    fOut.mkdir("Efficiency/BGO_fiducial_volume")
-    fOut.cd("Efficiency/BGO_fiducial_volume")
-
-    h_ratio_BGOfiducial_nBarLayer13_cut.Write()
-    h_ratio_BGOfiducial_maxRms_cut.Write()
-    h_ratio_BGOfiducial_track_selection_cut.Write()
-    h_ratio_BGOfiducial_xtrl_cut.Write()
-    h_ratio_BGOfiducial_psd_charge_cut.Write()
-    h_ratio_BGOfiducial_all_cut.Write()
 
     fOut.cd()
     

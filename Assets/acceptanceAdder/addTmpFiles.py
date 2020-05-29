@@ -21,7 +21,7 @@ def main(args=None):
                         action='store_true', help='run in high verbosity mode')
     parser.add_argument("-c", "--check", dest='check', default=False,
                         action='store_true', help='check tmp acceptance ROOT files')
-
+    
     opts = parser.parse_args(args)
 
     # Load analysis functions
@@ -42,8 +42,10 @@ def main(args=None):
             print('Found {} BAD condor directories...'.format(len(skipped_dirs)))
 
     if not opts.check:
-        compute_final_histos(good_dirs, opts)
-
+        if opts.output:
+            compute_final_histos(good_dirs, opts)
+        else:
+            print("!!! Missing output ROOT file... please specify a path")
 
 if __name__ == "__main__":
     main()
