@@ -480,7 +480,7 @@ def compute_final_histos(condor_dir_list, opts):
             h_triggered_energy_diff.Add(h_triggered_energy_diff_tmp)
             h_layer_max_energy_ratio.Add(h_layer_max_energy_ratio_tmp)
             for idx in range(0,14):
-                h_layer_energy_ratio[idx].Add(h_layer_energy_ratio_tmp)
+                h_layer_energy_ratio[idx].Add(h_layer_energy_ratio_tmp[idx])
 
     
     # Create output file for full histos
