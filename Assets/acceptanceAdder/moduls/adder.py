@@ -404,7 +404,9 @@ def compute_final_histos(condor_dir_list, opts):
             h_triggered_energy_diff = h_triggered_energy_diff_tmp.Clone("h_triggered_energy_diff")
             h_layer_max_energy_ratio = h_layer_max_energy_ratio_tmp.Clone("h_layer_max_energy_ratio")
             for idx in range(0,14):
-                h_layer_energy_ratio[idx] = h_layer_energy_ratio_tmp[idx].Clone("h_layer_energy_ratio")
+                h_ratio_name = "h_layer_energy_ratio_"
+                h_ratio_name += str(idx)
+                h_layer_energy_ratio[idx] = h_layer_energy_ratio_tmp[idx].Clone(h_ratio_name)
 
         else:
             h_incoming.Add(h_incoming_tmp)
