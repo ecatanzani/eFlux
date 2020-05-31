@@ -61,7 +61,7 @@ void generateFinalGraph(
 
     auto h_BGOfiducial_nBarLayer13_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_nBarLayer13_cut"));
     auto h_BGOfiducial_maxRms_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_maxRms_cut"));
-    auto h_BGOfiducial_track_selection_cut = static_cast<TH1D*>(inHisto.Get("h_ratio_BGOfiducial_track_selection_cut"));
+    auto h_BGOfiducial_track_selection_cut = static_cast<TH1D*>(inHisto.Get("h_BGOfiducial_track_selection_cut"));
     auto h_BGOfiducial_xtrl_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_xtrl_cut"));
     auto h_BGOfiducial_psd_charge_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_psd_charge_cut"));
     auto h_BGOfiducial_all_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_all_cut"));
@@ -118,6 +118,7 @@ void generateFinalGraph(
     }       
 
     h_incoming->SetDirectory(0);
+    h_trigger->SetDirectory(0);
     h_gometric_cut->SetDirectory(0);
     h_maxElayer_cut->SetDirectory(0);
     h_maxBarLayer_cut->SetDirectory(0);
@@ -129,7 +130,7 @@ void generateFinalGraph(
     h_xtrl_cut->SetDirectory(0);
     h_psd_charge_cut->SetDirectory(0);
     h_all_cut->SetDirectory(0);
-
+    
     h_geometric_maxElayer_cut->SetDirectory(0);
     h_geometric_maxBarLayer_cut->SetDirectory(0);
     h_geometric_BGOTrackContainment_cut->SetDirectory(0);
@@ -147,7 +148,7 @@ void generateFinalGraph(
     h_BGOfiducial_xtrl_cut->SetDirectory(0);
     h_BGOfiducial_psd_charge_cut->SetDirectory(0);
     h_BGOfiducial_all_cut->SetDirectory(0);
-
+    
     h_preGeo_BGOrec_topX_vs_realX->SetDirectory(0);
     h_preGeo_BGOrec_topY_vs_realY->SetDirectory(0);
     h_preGeo_real_slopeX->SetDirectory(0);
@@ -163,7 +164,7 @@ void generateFinalGraph(
     h_preGeo_real_bottomMap->SetDirectory(0);
     h_preGeo_BGOreco_bottomMap->SetDirectory(0);
     h_noBGOenergy_real_topMap->SetDirectory(0);
-
+    
     h_geo_BGOrec_topX_vs_realX->SetDirectory(0);
     h_geo_BGOrec_topY_vs_realY->SetDirectory(0);
     h_geo_real_slopeX->SetDirectory(0);
@@ -174,15 +175,23 @@ void generateFinalGraph(
     h_geo_real_interceptY->SetDirectory(0);
     h_geo_BGOrec_interceptX->SetDirectory(0);
     h_geo_BGOrec_interceptY->SetDirectory(0);
-    h_preGeo_real_topMap->SetDirectory(0);
-    h_preGeo_BGOreco_topMap->SetDirectory(0);
-    h_preGeo_real_bottomMap->SetDirectory(0);
-    h_preGeo_BGOreco_bottomMap->SetDirectory(0);
-    h_noBGOenergy_real_topMap->SetDirectory(0); 
+    h_geo_real_topMap->SetDirectory(0);
+    h_geo_BGOreco_topMap->SetDirectory(0);
+    h_geo_real_bottomMap->SetDirectory(0);
+    h_geo_BGOreco_bottomMap->SetDirectory(0);
+    
+    h_BGOrec_E->SetDirectory(0);
+    h_BGOrec_E_corr->SetDirectory(0);
+    h_simu_energy->SetDirectory(0);
+    h_energy_diff->SetDirectory(0);
+    h_triggered_BGOrec_E->SetDirectory(0);
+    h_triggered_BGOrec_E_corr->SetDirectory(0);
+    h_triggered_simu_energy->SetDirectory(0);
+    h_triggered_energy_diff->SetDirectory(0);
+    h_layer_max_energy_ratio->SetDirectory(0);
 
     for(auto idx=0; idx<DAMPE_bgo_nLayers; ++idx)
-         h_layer_energy_ratio[idx]->SetDirectory(0);
-
+        h_layer_energy_ratio[idx]->SetDirectory(0);
     inHisto.Close();
     
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
@@ -224,7 +233,7 @@ void generateFinalGraph(
     h_acceptance_xtrl_cut->Scale(scaleFactor);
     h_acceptance_psd_charge_cut->Scale(scaleFactor);
     h_acceptance_all_cut->Scale(scaleFactor);
-
+    
     // Builing vectors
     std::vector<double> energyValues(h_incoming->GetXaxis()->GetNbins(), 0);
 
@@ -239,7 +248,7 @@ void generateFinalGraph(
     std::vector<double> acceptanceValues_xtrl_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_psd_charge_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
-
+    
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
@@ -256,7 +265,7 @@ void generateFinalGraph(
         acceptanceValues_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinContent(index + 1);
         acceptanceValues_all_cut[index] = h_acceptance_all_cut->GetBinContent(index + 1);
     }
-
+    
     // Building graphs
     TGraph gr_acceptance_gometric_cut(energyValues.size(), &energyValues[0], &acceptanceValues_gometric_cut[0]);
     TGraph gr_acceptance_maxElayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElayer_cut[0]);
@@ -355,7 +364,7 @@ void generateFinalGraph(
 
     // Return to main TFile directory
     outFile.cd();
-
+    
     // Create output ratio dir in the output TFile
     auto ratioDir = outFile.mkdir("Efficiency");
 
@@ -473,7 +482,7 @@ void generateFinalGraph(
     h_ratio_BGOfiducial_all_cut->Write();
 
     outFile.cd();
-
+    
     // Create output analysis dir in the output TFile
     auto preGeo_analysisDir = outFile.mkdir("Analysis_preGeoCut");
     preGeo_analysisDir->cd();
@@ -516,7 +525,7 @@ void generateFinalGraph(
     h_geo_BGOreco_bottomMap->Write();
 
     outFile.cd();
-
+    
     auto BGOdir = outFile.mkdir("BGO_Energy");
     BGOdir->cd();
 
@@ -530,7 +539,7 @@ void generateFinalGraph(
     h_triggered_BGOrec_E_corr->Write();
     h_triggered_simu_energy->Write();
     h_triggered_energy_diff->Write();
-
+    
     for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
         h_layer_energy_ratio[lIdx]->Write();
 
