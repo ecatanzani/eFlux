@@ -202,7 +202,7 @@ void generateFinalGraph(
     auto h_acceptance_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut->Clone("h_acceptance_maxElayer_cut"));
     auto h_acceptance_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut->Clone("h_acceptance_maxBarLayer_cut"));
     auto h_acceptance_BGOTrackContainment_cut = static_cast<TH1D *>(h_BGOTrackContainment_cut->Clone("h_acceptance_BGOTrackContainment_cut"));
-    auto h_acceptance_BGO_fiducial = static_cast<TH1D *>(h_BGO_fiducial_cut->Clone("h_acceptance_BGO_fiducial"));
+    auto h_acceptance_BGO_fiducial_cut = static_cast<TH1D *>(h_BGO_fiducial_cut->Clone("h_acceptance_BGO_fiducial_cut"));
     auto h_acceptance_nBarLayer13_cut = static_cast<TH1D *>(h_nBarLayer13_cut->Clone("h_acceptance_nBarLayer13_cut"));
     auto h_acceptance_maxRms_cut = static_cast<TH1D *>(h_maxRms_cut->Clone("h_acceptance_maxRms_cut"));
     auto h_acceptance_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut->Clone("h_acceptance_track_selection_cut"));
@@ -214,7 +214,7 @@ void generateFinalGraph(
     h_acceptance_maxElayer_cut->Divide(h_incoming);
     h_acceptance_maxBarLayer_cut->Divide(h_incoming);
     h_acceptance_BGOTrackContainment_cut->Divide(h_incoming);
-    h_acceptance_BGO_fiducial->Divide(h_incoming);
+    h_acceptance_BGO_fiducial_cut->Divide(h_incoming);
     h_acceptance_nBarLayer13_cut->Divide(h_incoming);
     h_acceptance_maxRms_cut->Divide(h_incoming);
     h_acceptance_track_selection_cut->Divide(h_incoming);
@@ -226,14 +226,14 @@ void generateFinalGraph(
     h_acceptance_maxElayer_cut->Scale(scaleFactor);
     h_acceptance_maxBarLayer_cut->Scale(scaleFactor);
     h_acceptance_BGOTrackContainment_cut->Scale(scaleFactor);
-    h_acceptance_BGO_fiducial->Scale(scaleFactor);
+    h_acceptance_BGO_fiducial_cut->Scale(scaleFactor);
     h_acceptance_nBarLayer13_cut->Scale(scaleFactor);
     h_acceptance_maxRms_cut->Scale(scaleFactor);
     h_acceptance_track_selection_cut->Scale(scaleFactor);
     h_acceptance_xtrl_cut->Scale(scaleFactor);
     h_acceptance_psd_charge_cut->Scale(scaleFactor);
     h_acceptance_all_cut->Scale(scaleFactor);
-    
+
     // Builing vectors
     std::vector<double> energyValues(h_incoming->GetXaxis()->GetNbins(), 0);
 
@@ -248,7 +248,23 @@ void generateFinalGraph(
     std::vector<double> acceptanceValues_xtrl_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_psd_charge_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
+     
+    //Building histo errors on energy and acceptance
+    std::vector<double> acceptanceError_gometric_cut(h_incoming->GetXaxis()->GetNbins(), 0);
+    std::vector<double> acceptanceError_maxElayer_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_maxBarLayer_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_BGOTrackContainment_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_BGO_fiducial_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_nBarLayer13_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_maxRms_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_track_selection_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_xtrl_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_psd_charge_cut(acceptanceError_gometric_cut.size(), 0);
+    std::vector<double> acceptanceError_all_cut(acceptanceError_gometric_cut.size(), 0);
     
+    std::vector<double> energy_LowError(energyValues.size(), 0);
+    std::vector<double> energy_HighError(energyValues.size(), 0);
+
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
@@ -257,27 +273,42 @@ void generateFinalGraph(
         acceptanceValues_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinContent(index + 1);
         acceptanceValues_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinContent(index + 1);
         acceptanceValues_BGOTrackContainment_cut[index] = h_acceptance_BGOTrackContainment_cut->GetBinContent(index + 1);
-        acceptanceValues_BGO_fiducial_cut[index] = h_acceptance_BGO_fiducial->GetBinContent(index + 1);
+        acceptanceValues_BGO_fiducial_cut[index] = h_acceptance_BGO_fiducial_cut->GetBinContent(index + 1);
         acceptanceValues_nBarLayer13_cut[index] = h_acceptance_nBarLayer13_cut->GetBinContent(index + 1);
         acceptanceValues_maxRms_cut[index] = h_acceptance_maxRms_cut->GetBinContent(index + 1);
         acceptanceValues_track_selection_cut[index] = h_acceptance_track_selection_cut->GetBinContent(index + 1);
         acceptanceValues_xtrl_cut[index] = h_acceptance_xtrl_cut->GetBinContent(index + 1);
         acceptanceValues_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinContent(index + 1);
         acceptanceValues_all_cut[index] = h_acceptance_all_cut->GetBinContent(index + 1);
+
+        acceptanceError_gometric_cut[index] = h_acceptance_gometric_cut->GetBinError(index+1)/2.;
+        acceptanceError_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinError(index+1)/2.;
+        acceptanceError_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinError(index+1)/2.;
+        acceptanceError_BGOTrackContainment_cut[index] = h_acceptance_BGOTrackContainment_cut->GetBinError(index+1)/2.;
+        acceptanceError_BGO_fiducial_cut[index] = h_acceptance_BGO_fiducial_cut->GetBinError(index+1)/2.;
+        acceptanceError_nBarLayer13_cut[index] = h_acceptance_nBarLayer13_cut->GetBinError(index+1)/2.;
+        acceptanceError_maxRms_cut[index] = h_acceptance_maxRms_cut->GetBinError(index+1)/2.;
+        acceptanceError_track_selection_cut[index] = h_acceptance_track_selection_cut->GetBinError(index+1)/2.;
+        acceptanceError_xtrl_cut[index] = h_acceptance_xtrl_cut->GetBinError(index+1)/2.;
+        acceptanceError_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinError(index+1)/2.;
+        acceptanceError_all_cut[index] = h_acceptance_all_cut->GetBinError(index+1)/2.; 
+
+        energy_LowError[index] = energyValues[index] - *it;
+        energy_HighError[index] = *(it + 1) - energyValues[index];
     }
-    
+
     // Building graphs
-    TGraph gr_acceptance_gometric_cut(energyValues.size(), &energyValues[0], &acceptanceValues_gometric_cut[0]);
-    TGraph gr_acceptance_maxElayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElayer_cut[0]);
-    TGraph gr_acceptance_maxBarLayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxBarLayer_cut[0]);
-    TGraph gr_acceptance_BGOTrackContainment_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGOTrackContainment_cut[0]);
-    TGraph gr_acceptance_BGO_fiducial_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGO_fiducial_cut[0]);
-    TGraph gr_acceptance_nBarLayer13_cut(energyValues.size(), &energyValues[0], &acceptanceValues_nBarLayer13_cut[0]);
-    TGraph gr_acceptance_maxRms_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxRms_cut[0]);
-    TGraph gr_acceptance_track_selection_cut(energyValues.size(), &energyValues[0], &acceptanceValues_track_selection_cut[0]);
-    TGraph gr_acceptance_xtrl_cut(energyValues.size(), &energyValues[0], &acceptanceValues_xtrl_cut[0]);
-    TGraph gr_acceptance_psd_charge_cut(energyValues.size(), &energyValues[0], &acceptanceValues_psd_charge_cut[0]);
-    TGraph gr_acceptance_all_cut(energyValues.size(), &energyValues[0], &acceptanceValues_all_cut[0]);
+    TGraphAsymmErrors gr_acceptance_gometric_cut(energyValues.size(), &energyValues[0], &acceptanceValues_gometric_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_gometric_cut[0], &acceptanceError_gometric_cut[0]);
+    TGraphAsymmErrors gr_acceptance_maxElayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElayer_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_maxElayer_cut[0], &acceptanceError_maxElayer_cut[0]);
+    TGraphAsymmErrors gr_acceptance_maxBarLayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxBarLayer_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_maxBarLayer_cut[0], &acceptanceError_maxBarLayer_cut[0]);
+    TGraphAsymmErrors gr_acceptance_BGOTrackContainment_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGOTrackContainment_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_BGOTrackContainment_cut[0], &acceptanceError_BGOTrackContainment_cut[0]);
+    TGraphAsymmErrors gr_acceptance_BGO_fiducial_cut(energyValues.size(), &energyValues[0], &acceptanceValues_BGO_fiducial_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_BGO_fiducial_cut[0], &acceptanceError_BGO_fiducial_cut[0]);
+    TGraphAsymmErrors gr_acceptance_nBarLayer13_cut(energyValues.size(), &energyValues[0], &acceptanceValues_nBarLayer13_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_nBarLayer13_cut[0], &acceptanceError_nBarLayer13_cut[0]);
+    TGraphAsymmErrors gr_acceptance_maxRms_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxRms_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_maxRms_cut[0], &acceptanceError_maxRms_cut[0]);
+    TGraphAsymmErrors gr_acceptance_track_selection_cut(energyValues.size(), &energyValues[0], &acceptanceValues_track_selection_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_track_selection_cut[0], &acceptanceError_track_selection_cut[0]);
+    TGraphAsymmErrors gr_acceptance_xtrl_cut(energyValues.size(), &energyValues[0], &acceptanceValues_xtrl_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_xtrl_cut[0], &acceptanceError_xtrl_cut[0]);
+    TGraphAsymmErrors gr_acceptance_psd_charge_cut(energyValues.size(), &energyValues[0], &acceptanceValues_psd_charge_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_psd_charge_cut[0], &acceptanceError_psd_charge_cut[0]);
+    TGraphAsymmErrors gr_acceptance_all_cut(energyValues.size(), &energyValues[0], &acceptanceValues_all_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_all_cut[0], &acceptanceError_all_cut[0]);
 
     gr_acceptance_gometric_cut.SetName("gr_acceptance_gometric_cut");
     gr_acceptance_maxElayer_cut.SetName("gr_acceptance_maxElayer_cut");

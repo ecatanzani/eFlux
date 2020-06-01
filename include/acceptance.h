@@ -19,7 +19,7 @@
 #include "TDirectory.h"
 #include "TSystem.h"
 #include "TVector3.h"
-#include "TGraph.h"
+#include "TGraphAsymmErrors.h"
 #include "TH1D.h"
 
 #include "anyoption.h"
