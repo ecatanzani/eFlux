@@ -67,7 +67,7 @@ def createOutSimuFile(opts, simu_eMin, simu_eMax, particle):
     else:
         return opts.output
 
-def createOutSimuFile(opts, data_eMin, data_eMax):
+def createOutDataFile(opts, data_eMin, data_eMax):
     if not opts.input:
         finalPath = "dataFileList_"
         finalPath += str(data_eMin)
