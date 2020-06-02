@@ -1,14 +1,13 @@
 #include "myHeader.h"
 #include "acceptanceFit.h"
 
-#include "TGraph.h"
 #include "TString.h"
 
 template <typename InputDataType>
 void tmpFit(
-    TDirectory *geoFactorDir,
+    TDirectory *accDir,
     TF1 &myFitter,
-    InputDataType *gFactor,
+    InputDataType *acceptance,
     const bool verbose,
     const bool baseFit,
     const unsigned int fitNumber)
@@ -24,16 +23,16 @@ void tmpFit(
         tDirName += "_";
         tDirName += fitNumber;
     }
-    auto logisticDir = geoFactorDir->mkdir(tDirName.Data());
+    auto logisticDir = accDir->mkdir(tDirName.Data());
     logisticDir->cd();
 
     // Getting the number of parameters from the TF1
     auto nPars = myFitter.GetNpar();
 
     // Creating Chi2,Prob and NDF histos
-    TH1D chi2("chi2", "#chi^{2} - Geometric Factor Fit", 100, 0, 10000);
-    TH1D prob("prob", "Probability - Geometric Factor Fit", 100, 0, 1);
-    TH1D ndf("ndf", "NDF - Geometric Factor Fit", 100, 0, 100);
+    TH1D chi2("chi2", "#chi^{2} - Geometric Factor Fit", 1000, 0, 10);
+    TH1D prob("prob", "Probability - Geometric Factor Fit", 1000, 0, 1);
+    TH1D ndf("ndf", "NDF - Geometric Factor Fit", 1000, 0, 40);
 
     // vectors containing the parameters values
 
@@ -54,7 +53,7 @@ void tmpFit(
     // Start the fit procedure
     for (int fIdx = 0; fIdx < nGFitLoops; ++fIdx)
     {
-        gFactor->Fit(myFitter.GetName(), "IR");
+        acceptance->Fit(myFitter.GetName(), "IR");
 
         if (fabs(chisq - myFitter.GetChisquare()) < chiSQLLimit)
             break;
@@ -117,7 +116,7 @@ void tmpFit(
     chi2gr.SetMarkerStyle(8);
 
     // Writing fitted Geometrical Factor
-    gFactor->Write();
+    acceptance->Write();
 
     // Writing chi2,prob and NDF histos
     chi2.Write();
@@ -130,7 +129,7 @@ void tmpFit(
         grPar[pIdx]->Write();
 
     // Returning to main Geometrical Factor directory
-    geoFactorDir->cd();
+    accDir->cd();
 
     // Cleaning memory
     for (int pIdx = 0; pIdx < nPars; ++pIdx)
@@ -148,59 +147,59 @@ inline void setStartingParameters(
 }
 
 template <typename InputDataType>
-TF1 fitAcceptance(InputDataType *gFactor, TFile &outFile, const bool verbose)
+TF1 fitAcceptance(InputDataType *finalAcceptance, TFile &outFile, const bool verbose)
 {
 
     // Creating a TDirectory for the outputs of the fit procedure on the Geometrical Factor
-    TDirectory *geoFactorDir = outFile.mkdir("geoFactor");
-    geoFactorDir->cd();
+    TDirectory *accDir = outFile.mkdir("Acceptance");
+    accDir->cd();
 
     // Define start fitting TF1 - base logistic function
     TF1 fitter_0("fitter_0", logisticFunction_0, 1e-1, 1e+4, 4);
     fitter_0.SetLineColor(kRed);
-    tmpFit<InputDataType>(geoFactorDir, fitter_0, gFactor, verbose);
+    tmpFit<InputDataType>(accDir, fitter_0, finalAcceptance, verbose);
 
     // Define more accurate TF1s
     TF1 fitter_1("fitter_1", logisticFunction_1, 1e-1, 1e+4, 6);
     setStartingParameters(fitter_0, fitter_1, fitter_0.GetNpar(), fitter_1.GetNpar());
     fitter_1.SetLineColor(kGreen + 1);
-    tmpFit<InputDataType>(geoFactorDir, fitter_1, gFactor, verbose, false, 1);
+    tmpFit<InputDataType>(accDir, fitter_1, finalAcceptance, verbose, false, 1);
 
     TF1 fitter_2("fitter_2", logisticFunction_2, 1e-1, 1e+4, 7);
     setStartingParameters(fitter_1, fitter_2, fitter_1.GetNpar(), fitter_2.GetNpar());
     fitter_2.SetLineColor(kMagenta + 1);
-    tmpFit<InputDataType>(geoFactorDir, fitter_2, gFactor, verbose, false, 2);
+    tmpFit<InputDataType>(accDir, fitter_2, finalAcceptance, verbose, false, 2);
 
     TF1 fitter_3("fitter_3", logisticFunction_3, 1e-1, 1e+4, 9);
     setStartingParameters(fitter_2, fitter_3, fitter_2.GetNpar(), fitter_3.GetNpar());
     fitter_3.SetLineColor(kCyan + 3);
-    tmpFit<InputDataType>(geoFactorDir, fitter_3, gFactor, verbose, false, 3);
+    tmpFit<InputDataType>(accDir, fitter_3, finalAcceptance, verbose, false, 3);
 
     TF1 fitter_4("fitter_4", logisticFunction_4, 1e-1, 1e+4, 11);
     setStartingParameters(fitter_3, fitter_4, fitter_3.GetNpar(), fitter_4.GetNpar());
     fitter_4.SetLineColor(kBlue + 3);
-    tmpFit<InputDataType>(geoFactorDir, fitter_4, gFactor, verbose, false, 4);
+    tmpFit<InputDataType>(accDir, fitter_4, finalAcceptance, verbose, false, 4);
 
     TF1 fitter_5("fitter_5", logisticFunction_5, 1e-1, 1e+4, 13);
     setStartingParameters(fitter_4, fitter_5, fitter_4.GetNpar(), fitter_5.GetNpar());
     fitter_5.SetLineColor(kOrange - 3);
-    tmpFit<InputDataType>(geoFactorDir, fitter_5, gFactor, verbose, false, 5);
+    tmpFit<InputDataType>(accDir, fitter_5, finalAcceptance, verbose, false, 5);
 
     TF1 fitter_6("fitter_6", logisticFunction_6, 1e-1, 1e+4, 15);
     setStartingParameters(fitter_5, fitter_6, fitter_5.GetNpar(), fitter_6.GetNpar());
     fitter_6.SetLineColor(kYellow + 2);
-    tmpFit<InputDataType>(geoFactorDir, fitter_6, gFactor, verbose, false, 6);
+    tmpFit<InputDataType>(accDir, fitter_6, finalAcceptance, verbose, false, 6);
 
     TF1 fitter_7("fitter_7", logisticFunction_7, 1e-1, 1e+4, 18);
     setStartingParameters(fitter_6, fitter_7, fitter_6.GetNpar(), fitter_7.GetNpar());
     fitter_7.SetLineColor(kGreen + 4);
-    tmpFit<InputDataType>(geoFactorDir, fitter_7, gFactor, verbose, false, 7);
+    tmpFit<InputDataType>(accDir, fitter_7, finalAcceptance, verbose, false, 7);
 
     /*
     TF1 fitter_8("fitter_8",logisticFunction_8,1e-1,1e+4,21);
     setStartingParameters(fitter_7,fitter_8,fitter_7.GetNpar(),fitter_8.GetNpar());
     fitter_8.SetLineColor(kCyan);
-    tmpFit(geoFactorDir,fitter_8,gFactor,verbose,false,8);
+    tmpFit(accDir,fitter_8,acceptance,verbose,false,8);
     */
 
     // Returning to main TFile directory
@@ -209,27 +208,27 @@ TF1 fitAcceptance(InputDataType *gFactor, TFile &outFile, const bool verbose)
     return fitter_7;
 }
 
-template TF1 fitAcceptance(TH1F *gFactor,TFile &outFile,const bool verbose);
-template TF1 fitAcceptance(TH1D *gFactor,TFile &outFile,const bool verbose);
-template TF1 fitAcceptance(TGraph *gFactor,TFile &outFile,const bool verbose);
+template TF1 fitAcceptance(TH1F *finalAcceptance,TFile &outFile,const bool verbose);
+template TF1 fitAcceptance(TH1D *finalAcceptance,TFile &outFile,const bool verbose);
+template TF1 fitAcceptance(TGraphAsymmErrors *finalAcceptance,TFile &outFile,const bool verbose);
 template void tmpFit(
-    TDirectory *geoFactorDir,
+    TDirectory *accDir,
     TF1 &myFitter,
-    TH1D *gFactor,
+    TH1D *acceptance,
     const bool verbose,
     const bool baseFit = true,
     const unsigned int fitNumber = 0);
 template void tmpFit(
-    TDirectory *geoFactorDir,
+    TDirectory *accDir,
     TF1 &myFitter,
-    TH1F *gFactor,
+    TH1F *acceptance,
     const bool verbose,
     const bool baseFit = true,
     const unsigned int fitNumber = 0);
 template void tmpFit(
-    TDirectory *geoFactorDir,
+    TDirectory *accDir,
     TF1 &myFitter,
-    TGraph *gFactor,
+    TGraphAsymmErrors *acceptance,
     const bool verbose,
     const bool baseFit = true,
     const unsigned int fitNumber = 0);

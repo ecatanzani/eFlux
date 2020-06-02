@@ -25,9 +25,6 @@
 
 #pragma once
 
-#define nGFitLoops 1000000
-#define chiSQLLimit 0.000001
-
 #define GetCurrentDir getcwd
 struct energy_cuts
 {
