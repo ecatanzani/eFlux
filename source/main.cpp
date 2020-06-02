@@ -11,13 +11,12 @@ int main(int argc, char **argv)
     opt.addUsage("Usage: ");
     opt.addUsage("");
     opt.addUsage(" -h  --help                                                   Prints this help");
-    opt.addUsage(" -i  --input          <path_to_input_DATA_TTree>          (*) Input data TTree - flux calculation only");
+    opt.addUsage(" -i  --input          <path_to_input_DATA_list>           (*) Input DATA list");
     opt.addUsage(" -o  --output         <path_to_output_TFile>                  Output ROOT TFile");
     opt.addUsage(" -d  --outputDir      <path_to_output_TFile_dir>              Output ROOT TFile directory");
     opt.addUsage(" -t  --lvtime         <live_time-value>                   (*) DAMPE live-time ");
     opt.addUsage(" -a  --acceptance     <path_to_MC_list>                   (*) Acceptance calculation");
     opt.addUsage(" -c  --collect        <path_to_complete_histo>            (*) Generate TGraph from final histo");
-    opt.addUsage(" -f  --flux           <path_to_DATA_list_dir>             (*) Flux calculation");
     opt.addUsage(" -g  --geometry       <path_to_acceptance_ROOT_file>      (*) Acceptance file - flux calculation only");
     opt.addUsage(" -v  --verbose                                                Verbose output");
     opt.addUsage(" -p  --pedantic                                               Pedantic output");
@@ -29,7 +28,6 @@ int main(int argc, char **argv)
     opt.setOption("outputDir", 'd');
     opt.setOption("lvtime", 't');
     opt.setOption("acceptance", 'a');
-    opt.setOption("flux", 'f');
     opt.setOption("geometry", 'g');
     opt.setOption("collect", 'c');
     opt.setFlag("verbose", 'v');
@@ -45,7 +43,6 @@ int main(int argc, char **argv)
     std::string inputPath;
     std::string outputPath;
     std::string accInputPath;
-    std::string fluxInputPath;
     std::string wd = getWorkingDir(argv[0]);
     std::string inputCompleteHisto;
     stringstream str_lvTime;
@@ -63,7 +60,10 @@ int main(int argc, char **argv)
     if (opt.getFlag("help") || opt.getFlag('h'))
         opt.printUsage();
     if (opt.getValue("input") || opt.getValue('i'))
+    {
         inputPath = opt.getValue('i');
+        myFlux = true;
+    }
     if (opt.getValue("output") || opt.getValue('o'))
         outputPath = opt.getValue('o');
     if (opt.getValue("outputDir") || opt.getValue('d'))
@@ -77,11 +77,6 @@ int main(int argc, char **argv)
     {
         myAcceptance = true;
         accInputPath = opt.getValue('a');
-    }
-    if (opt.getValue("flux") || opt.getValue('f'))
-    {
-        myFlux = true;
-        fluxInputPath = opt.getValue('f');
     }
     if (opt.getValue("geometry") || opt.getValue('g'))
         accInputPath = opt.getValue('g');
