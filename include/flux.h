@@ -9,7 +9,7 @@
 
 #include "TFile.h"
 
-extern void buildXtrlFlux(
+extern void buildFlux(
     const std::vector<float> &eBins,
     const std::string inputPath,
     const unsigned int lvTime,
