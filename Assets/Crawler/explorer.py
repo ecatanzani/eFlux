@@ -127,7 +127,6 @@ def main(args=None):
             for file in dList:
                 outPath = pars['farmAddress'] + file + "\n"
                 outList.write(outPath)
-
     else:
         # Parse data json
         with open(pars['jSet'], 'rb') as set_:
