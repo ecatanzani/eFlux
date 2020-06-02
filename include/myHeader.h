@@ -54,10 +54,6 @@ extern const std::string uniqueOutFile(
 
 extern std::string GetCurrentWorkingDir(void);
 
-extern std::string getListPath(
-    const std::string accInputPath,
-    const bool MC = false);
-
 extern bool chechFlags(
     AnyOption &opt,
     const std::string inputPath,

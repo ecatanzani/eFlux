@@ -2,6 +2,8 @@
 #include "acceptance.h"
 #include "acceptance_cuts.h"
 #include "energyMatch.h"
+#include "aggregateEvents.h"
+#include "wtsydp.h"
 
 #include "TClonesArray.h"
 #include "TString.h"
@@ -12,86 +14,6 @@
  * @param accInputPath 
  * @param verbose 
  */
-
-std::string getListPath(const std::string accInputPath, const bool MC)
-{
-    std::string MClist = accInputPath;
-    std::string relMClist;
-    if (MC)
-    {
-        std::string relMClist = "/MC.txt";
-        MClist.append(relMClist);
-    }
-    else
-    {
-        std::string relMClist = "/Data.txt";
-        MClist.append(relMClist);
-    }
-    return MClist;
-}
-
-std::shared_ptr<DmpChain> aggregateEventsDmpChain(
-    const std::string accInputPath,
-    const bool verbose)
-{
-    // ****** Access data using DAMPE Chain ******
-
-    // Create DmpChain object
-    std::shared_ptr<DmpChain> dmpch = std::make_shared<DmpChain>("CollectionTree");
-
-    // Add MC file list to DmpChain
-    //dmpch->AddFromList(getListPath(accInputPath, true).c_str());
-    dmpch->AddFromList(accInputPath.c_str());
-    if (verbose)
-        dmpch->GetListOfFiles()->Print();
-
-    return dmpch;
-}
-
-std::shared_ptr<TChain> aggregateEventsTChain(
-    const std::string accInputPath,
-    const bool verbose)
-{
-    // ****** Access data using ROOT TChain ******
-
-    // Create TChain object
-    //TChain* dmpch = new TChain("CollectionTree");
-    std::shared_ptr<TChain> dmpch = std::make_shared<TChain>("CollectionTree");
-    //std::shared_ptr<TChain> dmpch( new TChain("CollectionTree") );
-
-    // Reading list of MC files
-    //std::ifstream input_file(getListPath(accInputPath, true).c_str());
-    std::ifstream input_file(accInputPath.c_str());
-    if (!input_file.is_open())
-    {
-        std::cerr << "\nERROR 100! File not open " << getListPath(accInputPath, true) << "\n\n";
-        exit(100);
-    }
-    std::string input_string((std::istreambuf_iterator<char>(input_file)), (std::istreambuf_iterator<char>()));
-    input_file.close();
-    std::string tmp_str;
-    std::istringstream input_stream(input_string);
-    while (input_stream >> tmp_str)
-    {
-        dmpch->Add(tmp_str.c_str());
-        if (verbose)
-            std::cout << "\nAdding " << tmp_str << " to the chain ...";
-    }
-
-    return dmpch;
-}
-
-double wtsydp(
-    const float minene,
-    const float maxene,
-    const float index)
-{
-    float dene = maxene - minene;
-    if (index != -1)
-        return pow(fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene)), 1. / index);
-    else
-        return dene / log(maxene / minene);
-}
 
 inline void init_BGO_histos(std::vector<TH1D> &h_layer_energy_ratio)
 {

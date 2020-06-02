@@ -17,9 +17,7 @@ extern std::vector<unsigned int> evLoop(
     const std::vector<float> &eBins,
     const std::string inputPath,
     TFile &outFile,
-    const bool verbose,
-    const bool eClassifier = false,
-    const double xtrlCut = 8.5);
+    const bool verbose);
 
 extern void readInputTree(
     const std::string inputPath,

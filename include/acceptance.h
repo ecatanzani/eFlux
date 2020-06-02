@@ -65,11 +65,6 @@ struct acceptance_active_cuts
 //#define _memType "graph"
 //#define _memType "histo"
 
-extern double wtsydp(
-    const float minene,
-    const float maxene,
-    const float index);
-
 extern void computeAcceptance(
     const std::string accInputPath,
     const bool verbose,
@@ -106,13 +101,5 @@ extern void load_acceptance_struct(
     acceptance_conf &acceptance_cuts,
     acceptance_active_cuts &active_cuts,
     const std::string wd);
-
-extern std::shared_ptr<DmpChain> aggregateEventsDmpChain(
-    const std::string accInputPath,
-    const bool verbose);
-
-extern std::shared_ptr<TChain> aggregateEventsTChain(
-    const std::string accInputPath,
-    const bool verbose);
 
 #endif
