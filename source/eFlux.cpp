@@ -3,7 +3,7 @@
 #include "flux.h"
 #include "dataLoop.h"
 
-void buildXtrlFlux(
+void buildFlux(
     const std::vector<float> &eBins,
     const std::string inputPath,
     const unsigned int lvTime,
@@ -11,6 +11,12 @@ void buildXtrlFlux(
     const bool verbose,
     const std::string accInputPath)
 {
+    auto acceptance_tf1 = readAcceptance(
+        outFile,
+        verbose,
+        accInputPath);
+
+    /*
     auto e_dataCounts =
         evLoop(
             eBins,
@@ -18,12 +24,8 @@ void buildXtrlFlux(
             outFile,
             verbose,
             true);
-
-    auto acceptance_tf1 = readAcceptance(
-        outFile,
-        verbose,
-        accInputPath);
-
+    */
+    
     /*
     TH1D *eFlux = nullptr;
     eFlux = (TH1D *)eCounts.Clone("eFlux");
