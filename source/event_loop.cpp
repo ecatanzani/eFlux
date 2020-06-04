@@ -1,5 +1,5 @@
-#include "dataLoop.h"
-#include "aggregateEvents.h"
+#include "data_loop.h"
+#include "aggregate_events.h"
 #include "wtsydp.h"
 
 TH1D evLoop(
@@ -55,5 +55,9 @@ TH1D evLoop(
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
 
     TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles", logEBins.size() - 1, &(logEBins[0]));
+
+    h_trigger.Sumw2();
+
+
 
 }

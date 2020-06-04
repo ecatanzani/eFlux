@@ -1,5 +1,5 @@
-#ifndef WORKINGDIR_H
-#define WORKINGDIR_H
+#ifndef WORKING_DIR_H
+#define WORKING_DIR_H
 
 #include <string>
 #include <unistd.h>

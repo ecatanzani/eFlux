@@ -1,4 +1,4 @@
-#include "energyMatch.h"
+#include "energy_match.h"
 
 void allocateParticleEnergy(
     std::vector<unsigned int> &counts,

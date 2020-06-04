@@ -1,16 +1,15 @@
 #include "acceptance.h"
 #include "acceptance_cuts.h"
-#include "energyMatch.h"
-#include "aggregateEvents.h"
+#include "data_cuts.h"
+#include "energy_match.h"
+#include "aggregate_events.h"
 #include "wtsydp.h"
-#include "workingDir.h"
+#include "working_dir.h"
+#include "BGO_energy_cuts.h"
+#include "DAMPE_geo_structure.h"
+#include "DmpBgoContainer.h"
 
-/**
- * @brief 
- * 
- * @param accInputPath 
- * @param verbose 
- */
+#include "TGraphAsymmErrors.h"
 
 inline void init_BGO_histos(std::vector<TH1D> &h_layer_energy_ratio)
 {
@@ -292,8 +291,8 @@ void buildAcceptance(
     h_layer_max_energy_ratio.Sumw2();
 
     // Create and load acceptance events cuts from config file
-    acceptance_conf acceptance_cuts;
-    acceptance_active_cuts active_cuts;
+    cuts_conf acceptance_cuts;
+    data_active_cuts active_cuts;
     load_acceptance_struct(acceptance_cuts, active_cuts, wd);
 
     double _GeV = 0.001;

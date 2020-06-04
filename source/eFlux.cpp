@@ -1,7 +1,7 @@
 #include "myHeader.h"
 #include "acceptance.h"
 #include "flux.h"
-#include "dataLoop.h"
+#include "data_loop.h"
 
 void buildFlux(
     const std::vector<float> &logEBins,

@@ -1,5 +1,5 @@
-#ifndef DATALOOP_H
-#define DATALOOP_H
+#ifndef DATA_LOOP_H
+#define DATA_LOOP_H
 
 #include <iostream>
 #include <vector>

@@ -1,9 +1,11 @@
 #include "acceptance.h"
-#include "myHeader.h"
+
+#include <fstream>
+#include <sstream>
 
 void load_acceptance_struct(
-    acceptance_conf &acceptance_cuts,
-    acceptance_active_cuts &active_cuts,
+    cuts_conf &acceptance_cuts,
+    data_active_cuts &active_cuts,
     const std::string wd)
 {
     //std::string cwd = GetCurrentWorkingDir();

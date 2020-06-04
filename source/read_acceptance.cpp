@@ -1,5 +1,5 @@
 #include "myHeader.h"
-#include "acceptanceFit.h"
+#include "acceptance_fit.h"
 
 TF1 readAcceptance(
     TFile &outFile, 

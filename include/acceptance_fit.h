@@ -1,5 +1,5 @@
-#ifndef ACCEPTANCEFIT_H
-#define ACCEPTANCEFIT_H
+#ifndef ACCEPTANCE_FIT_H
+#define ACCEPTANCE_FIT_H
 
 #include "TF1.h"
 #include "TH1D.h"

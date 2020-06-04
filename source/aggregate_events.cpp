@@ -1,4 +1,4 @@
-#include "aggregateEvents.h"
+#include "aggregate_events.h"
 
 std::shared_ptr<DmpChain> aggregateEventsDmpChain(
     const std::string listInputPath,

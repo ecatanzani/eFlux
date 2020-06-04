@@ -1,5 +1,5 @@
-#ifndef ENERGYMATCH_H
-#define ENERGYMATCH_H
+#ifndef ENERGY_MATCH_H
+#define ENERGY_MATCH_H
 
 #include <iostream>
 #include <vector>

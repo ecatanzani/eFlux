@@ -1,5 +1,29 @@
-######### Flux Config File #########
+######### eFlux Config File #########
 
-min_energy              20
-max_energy              100
-number_energy_bins      10
+## Cuts
+
+**** CUT VARIABLE ****       **** VALUE ****      **** UNIT ****
+
+min_event_energy                    1                   GeV
+max_event_energy                    10000               GeV
+energy_lRatio                       0.35
+shower_axis_delta                   280                 mm
+max_rms_shower_width                100                 mm
+track_X_clusters                    4
+track_Y_clusters                    4
+track_missingHit_X                  1
+track_missingHit_Y                  1
+STK_BGO_delta_track                 10                  deg
+STK_BGO_delta_position              40                  mm
+xtrl                                8.5
+STK_PSD_delta_position              40                  mm
+PSD_bar_min_energy_release          0.5                 MeV
+
+**** CUT ****                **** ACTIVE ****
+
+BGO_fiducial                        YES
+nBarLayer13                         YES
+maxRms                              YES
+track_selection                     YES
+xtrl_selection                      YES
+psd_charge                          YES

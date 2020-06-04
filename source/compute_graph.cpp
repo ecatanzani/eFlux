@@ -3,6 +3,7 @@
 #include "wtsydp.h"
 
 #include "TH2D.h"
+#include "TGraphAsymmErrors.h"
 
 void generateFinalGraph(
     const bool verbose,
@@ -23,8 +24,8 @@ void generateFinalGraph(
     }
 
     // Create and load acceptance events cuts from config file
-    acceptance_conf acceptance_cuts;
-    acceptance_active_cuts active_cuts;
+    cuts_conf acceptance_cuts;
+    data_active_cuts active_cuts;
     load_acceptance_struct(acceptance_cuts, active_cuts, wd);
 
     // Open input complete histos

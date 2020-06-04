@@ -1,5 +1,5 @@
-#ifndef ENERGYCUTS_H
-#define ENERGYCUTS_H
+#ifndef ENERGY_CUTS_H
+#define ENERGY_CUTS_H
 
 #include <string>
 #include <cstring>

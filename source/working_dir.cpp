@@ -1,4 +1,4 @@
-#include "workingDir.h"
+#include "working_dir.h"
 
 std::string getWorkingDir(const char* exePath)
 {

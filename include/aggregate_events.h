@@ -1,5 +1,5 @@
-#ifndef AGGREGATEEVENTS_H
-#define AGGREGATEEVENTS_H
+#ifndef AGGREGATE_EVENTS_H
+#define AGGREGATE_EVENTS_H
 
 #include <memory>
 #include <string>
