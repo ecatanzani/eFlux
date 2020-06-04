@@ -10,11 +10,21 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1D.h"
+#include "TClonesArray.h"
 
-#define kStep 10000
+// DAMPESW includes
+#include "DmpChain.h"
+#include "DmpBgoContainer.h"
+#include "DmpEvtHeader.h"
+#include "DmpEvtSimuPrimaries.h"
+#include "DmpEvtBgoHits.h"
+#include "DmpEvtBgoRec.h"
+#include "DmpStkSiCluster.h"
+#include "DmpStkTrack.h"
+#include "DmpEvtPsdHits.h"
 
-extern std::vector<unsigned int> evLoop(
-    const std::vector<float> &eBins,
+extern TH1D evLoop(
+    const std::vector<float> &logEBins,
     const std::string inputPath,
     TFile &outFile,
     const bool verbose);

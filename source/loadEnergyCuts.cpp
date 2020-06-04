@@ -1,7 +1,4 @@
-#include "myHeader.h"
-
-#include <fstream>
-#include <sstream>
+#include "energyCuts.h"
 
 void load_energy_struct(energy_cuts &e_cuts, const std::string wd)
 {

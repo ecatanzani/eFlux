@@ -1,5 +1,6 @@
 #include "myHeader.h"
 #include "flux.h"
+#include "binning.h"
 
 void eCore(
     const std::string inputPath,

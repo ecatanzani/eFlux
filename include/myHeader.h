@@ -2,41 +2,12 @@
 #define MYHEADER_H
 
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string>
 #include <vector>
-#include <memory>
 
 #include "anyoption.h"
 
-#include "TTree.h"
-#include "TFile.h"
-#include "TH1D.h"
-#include "TF1.h"
-#include "TDirectory.h"
-#include "TChain.h"
-
-// DAMPESW includes
-
-#include "DmpChain.h"
-#include "DmpEvtBgoHits.h"
-#include "DmpEvtBgoRec.h"
-
 #pragma once
-
-#define GetCurrentDir getcwd
-struct energy_cuts
-{
-    double cut_min_energy;
-    double cut_max_energy;
-    unsigned int e_bins;
-};
-
-extern std::string getWorkingDir(const char *exePath);
-extern void load_energy_struct(energy_cuts &e_cuts, const std::string wd);
-extern std::vector<float> createLogBinning(const energy_cuts e_cuts);
-extern std::vector<float> readLogBinning(const std::string wd);
 
 extern void eCore(
     const std::string inputPath,
@@ -51,8 +22,6 @@ extern void eCore(
 extern const std::string uniqueOutFile(
     const std::string outputPath,
     AnyOption &opt);
-
-extern std::string GetCurrentWorkingDir(void);
 
 extern bool chechFlags(
     AnyOption &opt,

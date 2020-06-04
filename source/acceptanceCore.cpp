@@ -1,4 +1,5 @@
 #include "acceptance.h"
+#include "binning.h"
 #include "myHeader.h"
 
 void computeAcceptance(

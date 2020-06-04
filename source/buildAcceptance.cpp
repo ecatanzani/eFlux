@@ -1,12 +1,9 @@
-#include "myHeader.h"
 #include "acceptance.h"
 #include "acceptance_cuts.h"
 #include "energyMatch.h"
 #include "aggregateEvents.h"
 #include "wtsydp.h"
-
-#include "TClonesArray.h"
-#include "TString.h"
+#include "workingDir.h"
 
 /**
  * @brief 

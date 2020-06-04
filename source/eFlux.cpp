@@ -4,7 +4,7 @@
 #include "dataLoop.h"
 
 void buildFlux(
-    const std::vector<float> &eBins,
+    const std::vector<float> &logEBins,
     const std::string inputPath,
     const unsigned int lvTime,
     TFile &outFile,
@@ -15,10 +15,10 @@ void buildFlux(
         outFile,
         verbose,
         accInputPath);
-    
-    auto e_dataCounts =
+
+    auto eCounts =
         evLoop(
-            eBins,
+            logEBins,
             inputPath,
             outFile,
             verbose);

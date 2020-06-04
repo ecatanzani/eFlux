@@ -12,15 +12,24 @@
 #include <unistd.h>
 #include <numeric>
 
-#include "DmpChain.h"
-#include "DmpBgoContainer.h"
-#include "DmpEvtHeader.h"
-
+#include "TClonesArray.h"
+#include "TString.h"
 #include "TDirectory.h"
 #include "TSystem.h"
 #include "TVector3.h"
 #include "TGraphAsymmErrors.h"
 #include "TH1D.h"
+
+// DAMPESW includes
+#include "DmpChain.h"
+#include "DmpBgoContainer.h"
+#include "DmpEvtHeader.h"
+#include "DmpEvtSimuPrimaries.h"
+#include "DmpEvtBgoHits.h"
+#include "DmpEvtBgoRec.h"
+#include "DmpStkSiCluster.h"
+#include "DmpStkTrack.h"
+#include "DmpEvtPsdHits.h"
 
 #include "anyoption.h"
 

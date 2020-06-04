@@ -10,7 +10,7 @@
 #include "TFile.h"
 
 extern void buildFlux(
-    const std::vector<float> &eBins,
+    const std::vector<float> &logEBins,
     const std::string inputPath,
     const unsigned int lvTime,
     TFile &outFile,
