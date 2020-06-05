@@ -10,8 +10,11 @@ def createMClist(pars, opts):
     maskInputFile = os.getcwd()
     mask_sIdx = maskInputFile.find('/Crawler')
     maskInputFile = maskInputFile[0:mask_sIdx+8] + "/setMask.txt"
-    dListMask = open(maskInputFile).read().splitlines()
-
+    try:
+        dListMask = open(maskInputFile).read().splitlines()
+    except OSError:
+            print('ERROR reading input dataSet mask file in: {}'.format(maskInputFile))
+            raise
     # Parse data json
     with open(pars['jSet'], 'rb') as set_:
         dataSets = json.load(set_)
