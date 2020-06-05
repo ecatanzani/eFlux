@@ -8,6 +8,7 @@
 #include "BGO_energy_cuts.h"
 #include "DAMPE_geo_structure.h"
 #include "DmpBgoContainer.h"
+#include "read_sets_config_file.h"
 
 #include "TGraphAsymmErrors.h"
 
@@ -294,6 +295,10 @@ void buildAcceptance(
     cuts_conf acceptance_cuts;
     data_active_cuts active_cuts;
     load_acceptance_struct(acceptance_cuts, active_cuts, wd);
+
+    // Read dataSets connfig file
+    data_set_conf input_sets;
+    load_input_dsets_config(input_sets, wd);
 
     double _GeV = 0.001;
     int kStep = 10;
@@ -735,7 +740,7 @@ void buildAcceptance(
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
-        energyValues[index] = wtsydp(*it, *(it + 1), -1);
+        energyValues[index] = wtsydp(*it, *(it + 1), getInputPowerLawIndex(*it, *(it + 1), input_sets));
         acceptanceValues_gometric_cut[index] = h_acceptance_gometric_cut->GetBinContent(index + 1);
         acceptanceValues_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinContent(index + 1);
         acceptanceValues_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinContent(index + 1);

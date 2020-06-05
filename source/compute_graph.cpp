@@ -1,6 +1,7 @@
 #include "binning.h"
 #include "acceptance.h"
 #include "wtsydp.h"
+#include "read_sets_config_file.h"
 
 #include "TH2D.h"
 #include "TGraphAsymmErrors.h"
@@ -27,6 +28,10 @@ void generateFinalGraph(
     cuts_conf acceptance_cuts;
     data_active_cuts active_cuts;
     load_acceptance_struct(acceptance_cuts, active_cuts, wd);
+
+    // Read dataSets connfig file
+    data_set_conf input_sets;
+    load_input_dsets_config(input_sets, wd);
 
     // Open input complete histos
     TFile inHisto(complete_histo_path.c_str(), "READ");
@@ -195,7 +200,7 @@ void generateFinalGraph(
     for(auto idx=0; idx<DAMPE_bgo_nLayers; ++idx)
         h_layer_energy_ratio[idx]->SetDirectory(0);
     inHisto.Close();
-    
+
     double genSurface = 4 * TMath::Pi() * pow(acceptance_cuts.vertex_radius, 2) / 2;
     double scaleFactor = TMath::Pi() * genSurface;
 
@@ -270,7 +275,7 @@ void generateFinalGraph(
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
     {
         auto index = std::distance(logEBins.begin(), it);
-        energyValues[index] = wtsydp(*it, *(it + 1), -1);
+        energyValues[index] = wtsydp(*it, *(it + 1), getInputPowerLawIndex(*it, *(it + 1), input_sets));
         acceptanceValues_gometric_cut[index] = h_acceptance_gometric_cut->GetBinContent(index + 1);
         acceptanceValues_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinContent(index + 1);
         acceptanceValues_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinContent(index + 1);

@@ -1,4 +1,5 @@
 #include "energy_match.h"
+#include "read_sets_config_file.h"
 
 void allocateParticleEnergy(
     std::vector<unsigned int> &counts,
@@ -64,4 +65,21 @@ int binarySearch(const std::vector<float> &logEBins, int l, int r, const double 
         return binarySearch(logEBins, mid + 1, r, energy);
     }
     return -1;
+}
+
+int getInputPowerLawIndex(const double lEnergy, const double hEnergy, const data_set_conf input_sets)
+{
+    int plawIndex = 0;
+    for(auto it=input_sets.sets_eMin.begin(); it!=input_sets.sets_eMin.end(); ++it)
+    {
+        auto index = std::distance(input_sets.sets_eMin.begin(), it);
+        auto tmp_eMin = *it;
+        auto tmp_eMax = input_sets.sets_eMax[index];
+        if(lEnergy>=tmp_eMin && hEnergy<=tmp_eMax)
+        {
+            plawIndex = input_sets.sets_powerlaw_idx[index];
+            break;
+        }
+    }
+    return plawIndex;
 }
