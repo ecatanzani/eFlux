@@ -4,49 +4,57 @@
         "particle": "e",
         "eMin": "100",
         "eMax": "10000",
-        "dSet": "allElectron-v6r0p0_100GeV_10TeV"
+        "dSet": "allElectron-v6r0p0_100GeV_10TeV",
+        "pSpectrum": -1
     },
     {
         "geometry": "6r0p0",
         "particle": "e",
         "eMin": "100",
         "eMax": "10000",
-        "dSet": "allElectron-v6r0p0_100GeV_10TeV-p2"
+        "dSet": "allElectron-v6r0p0_100GeV_10TeV-p2",
+        "pSpectrum": -1
     },
     {
         "geometry": "6r0p0",
         "particle": "e",
         "eMin": "100",
         "eMax": "10000",
-        "dSet": "allElectron-v6r0p0_100GeV_10TeV-p3"
+        "dSet": "allElectron-v6r0p0_100GeV_10TeV-p3",
+        "pSpectrum": -1
     },
     {
         "geometry": "6r0p0",
         "particle": "e",
         "eMin": "1",
         "eMax": "100",
-        "dSet": "allElectron-v6r0p0_1GeV_100GeV"
+        "dSet": "allElectron-v6r0p0_1GeV_100GeV",
+        "pSpectrum": -1
     },
     {
         "geometry": "6r0p0",
         "particle": "e",
         "eMin": "1",
         "eMax": "15",
-        "dSet": "allElectron-v6r0p0_1GeV_15GeV"
+        "dSet": "allElectron-v6r0p0_1GeV_15GeV",
+        "pSpectrum": 0
+
     },
     {
         "geometry": "6r0p10",
         "particle": "e",
         "eMin": "100",
         "eMax": "10000",
-        "dSet": "allElectron-v6r0p10_100GeV_10TeV"
+        "dSet": "allElectron-v6r0p10_100GeV_10TeV",
+        "pSpectrum": -1
     },
     {
         "geometry": "6r0p10",
         "particle": "e",
         "eMin": "100",
         "eMax": "1000",
-        "dSet": "allElectron-v6r0p10_100GeV_1TeV_QGSP"
+        "dSet": "allElectron-v6r0p10_100GeV_1TeV_QGSP",
+        "pSpectrum": -1
     },
     {
         "geometry": "6r0p10",
