@@ -1,6 +1,6 @@
 {
     "eMin": 1,
     "eMax": 10000,
-    "bins": 40,
+    "bins": 30,
     "junctions": [100]
 }
