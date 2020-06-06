@@ -106,9 +106,10 @@ void buildAcceptance(
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
 
     // Acceptance - First-Cut histos
+    TH1D h_geo_factor("h_geo_factor", "Energy Distribution of the geometric factor", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_incoming("h_incoming", "Energy Distribution of the incoming particles", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_gometric_cut("h_gometric_cut", "Energy Distribution - geometric cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_gometric_cut("h_gometric_cut", "Energy Distribution - geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxElayer_cut("h_maxElayer_cut", "Energy Distribution - maxElayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxBarLayer_cut("h_maxBarLayer_cut", "Energy Distribution - maxBarLayer cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOTrackContainment_cut("h_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment cut ", logEBins.size() - 1, &(logEBins[0]));
@@ -121,16 +122,16 @@ void buildAcceptance(
     TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
     // Acceptance - Cuts && Geometric Cut
-    TH1D h_geometric_maxElayer_cut("h_geometric_maxElayer_cut", "Energy Distribution - maxElayer + geometric cut ", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_maxBarLayer_cut("h_geometric_maxBarLayer_cut", "Energy Distribution - maxBarLayer + geometric cut ", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_BGOTrackContainment_cut("h_geometric_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment + geometric cut ", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_BGO_fiducial("h_geometric_BGO_fiducial", "Energy Distibution - BGO fiducial + geometric cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_nBarLayer13_cut("h_geometric_nBarLayer13_cut", "Energy Distribution - nBarLayer13 + geometric cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_maxRms_cut("h_geometric_maxRms_cut", "Energy Distribution - maxRms + geometric cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_track_selection_cut("h_geometric_track_selection_cut", "Energy Distribution - track selection + geometric cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_xtrl_cut("h_geometric_xtrl_cut", "Energy Distribution - xtrl + geometric cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_psd_charge_cut("h_geometric_psd_charge_cut", "Energy Distribution - psd charge + geometric cut", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_all_cut("h_geometric_all_cut", "Energy Distribution - All + geometric cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_maxElayer_cut("h_geometric_maxElayer_cut", "Energy Distribution - maxElayer + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_maxBarLayer_cut("h_geometric_maxBarLayer_cut", "Energy Distribution - maxBarLayer + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_BGOTrackContainment_cut("h_geometric_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_BGO_fiducial("h_geometric_BGO_fiducial", "Energy Distibution - BGO fiducial + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_nBarLayer13_cut("h_geometric_nBarLayer13_cut", "Energy Distribution - nBarLayer13 + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_maxRms_cut("h_geometric_maxRms_cut", "Energy Distribution - maxRms + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_track_selection_cut("h_geometric_track_selection_cut", "Energy Distribution - track selection + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_xtrl_cut("h_geometric_xtrl_cut", "Energy Distribution - xtrl + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_psd_charge_cut("h_geometric_psd_charge_cut", "Energy Distribution - psd charge + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_all_cut("h_geometric_all_cut", "Energy Distribution - All + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
 
     // Acceptance - Cuts && BGO fiducial volume cut
     TH1D h_BGOfiducial_nBarLayer13_cut("h_BGOfiducial_nBarLayer13_cut", "Energy Distribution - nBarLayer13 + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
@@ -211,6 +212,7 @@ void buildAcceptance(
     init_BGO_histos(h_layer_energy_ratio);
 
     // Sumw2 Acceptance - First-Cut histos
+    h_geo_factor.Sumw2();
     h_incoming.Sumw2();
     h_trigger.Sumw2();
     h_gometric_cut.Sumw2();
@@ -326,6 +328,9 @@ void buildAcceptance(
         // Don't accept events outside the selected energy window
         if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
             continue;
+
+        if(geometric_cut(simu_primaries))
+            h_geo_factor.Fill(simuEnergy * _GeV);
 
         // Read trigger status
         // For MC events triggers 1 and 2 are always disabled
@@ -639,8 +644,11 @@ void buildAcceptance(
 
         auto refEntries = h_trigger.GetEntries();
 
+        if(h_geo_factor.GetEntries())
+            std::cout << "geometric filtered events (before trigger): " << h_geo_factor.GetEntries() << "/" << h_incoming.GetEntries() << " | statistic efficiency: " << static_cast<double>(h_geo_factor.GetEntries()) / h_incoming.GetEntries() << std::endl;
+
         if (h_gometric_cut.GetEntries())
-            std::cout << "geometric filtered events: " << h_gometric_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_gometric_cut.GetEntries()) / refEntries << std::endl;
+            std::cout << "geometric filtered events (after trigger): " << h_gometric_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_gometric_cut.GetEntries()) / refEntries << std::endl;
 
         if (h_BGO_fiducial_cut.GetEntries())
             std::cout << "BGO fiducial filtered events: " << h_BGO_fiducial_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_BGO_fiducial_cut.GetEntries()) / refEntries << std::endl;
@@ -670,6 +678,7 @@ void buildAcceptance(
     double scaleFactor = TMath::Pi() * genSurface;
 
     // Building acceptance histos
+    auto h_acceptance_geometric_factor = static_cast<TH1D *>(h_geo_factor.Clone("h_acceptance_geometric_factor"));
     auto h_acceptance_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_acceptance_gometric_cut"));
     auto h_acceptance_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_acceptance_maxElayer_cut"));
     auto h_acceptance_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_acceptance_maxBarLayer_cut"));
@@ -687,6 +696,7 @@ void buildAcceptance(
     auto h_acceptance_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_acceptance_psd_charge_cut"));
     auto h_acceptance_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance_all_cut"));
 
+    h_acceptance_geometric_factor->Divide(&h_incoming);
     h_acceptance_gometric_cut->Divide(&h_incoming);
     h_acceptance_maxElayer_cut->Divide(&h_incoming);
     h_acceptance_maxBarLayer_cut->Divide(&h_incoming);
@@ -704,6 +714,7 @@ void buildAcceptance(
     h_acceptance_psd_charge_cut->Divide(&h_incoming);
     h_acceptance_all_cut->Divide(&h_incoming);
 
+    h_acceptance_geometric_factor->Scale(scaleFactor);
     h_acceptance_gometric_cut->Scale(scaleFactor);
     h_acceptance_maxElayer_cut->Scale(scaleFactor);
     h_acceptance_maxBarLayer_cut->Scale(scaleFactor);
@@ -724,6 +735,7 @@ void buildAcceptance(
     // Builing vectors
     std::vector<double> energyValues(h_incoming.GetXaxis()->GetNbins(), 0);
 
+    std::vector<double> acceptanceValues_geometric_factor(energyValues.size(), 0);
     std::vector<double> acceptanceValues_gometric_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_maxElayer_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_maxBarLayer_cut(energyValues.size(), 0);
@@ -742,23 +754,24 @@ void buildAcceptance(
     std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
 
 
-    //Building histo errors on energy and acceptance
-    std::vector<double> acceptanceError_gometric_cut(h_incoming.GetXaxis()->GetNbins(), 0);
-    std::vector<double> acceptanceError_maxElayer_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_maxBarLayer_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_BGOTrackContainment_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_BGO_fiducial_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_BGO_fiducial_nBarLayer13_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_BGO_fiducial_maxRms_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_BGO_fiducial_track_selection_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_BGO_fiducial_xtrl_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_BGO_fiducial_psd_charge_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_nBarLayer13_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_maxRms_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_track_selection_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_xtrl_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_psd_charge_cut(acceptanceError_gometric_cut.size(), 0);
-    std::vector<double> acceptanceError_all_cut(acceptanceError_gometric_cut.size(), 0);
+    //Building histo errors on energy and 
+    std::vector<double> acceptanceError_geometric_factor(h_incoming.GetXaxis()->GetNbins(), 0);
+    std::vector<double> acceptanceError_gometric_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_maxElayer_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_maxBarLayer_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_BGOTrackContainment_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_BGO_fiducial_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_BGO_fiducial_nBarLayer13_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_BGO_fiducial_maxRms_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_BGO_fiducial_track_selection_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_BGO_fiducial_xtrl_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_BGO_fiducial_psd_charge_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_nBarLayer13_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_maxRms_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_track_selection_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_xtrl_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_psd_charge_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_all_cut(acceptanceError_geometric_factor.size(), 0);
     
     std::vector<double> energy_LowError(energyValues.size(), 0);
     std::vector<double> energy_HighError(energyValues.size(), 0);
@@ -767,6 +780,8 @@ void buildAcceptance(
     {
         auto index = std::distance(logEBins.begin(), it);
         energyValues[index] = wtsydp(*it, *(it + 1), getInputPowerLawIndex(*it, *(it + 1), input_sets));
+        
+        acceptanceValues_geometric_factor[index] = h_acceptance_geometric_factor->GetBinContent(index + 1);
         acceptanceValues_gometric_cut[index] = h_acceptance_gometric_cut->GetBinContent(index + 1);
         acceptanceValues_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinContent(index + 1);
         acceptanceValues_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinContent(index + 1);
@@ -784,6 +799,7 @@ void buildAcceptance(
         acceptanceValues_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinContent(index + 1);
         acceptanceValues_all_cut[index] = h_acceptance_all_cut->GetBinContent(index + 1);
 
+        acceptanceError_geometric_factor[index] = h_acceptance_geometric_factor->GetBinError(index+1)/2.;
         acceptanceError_gometric_cut[index] = h_acceptance_gometric_cut->GetBinError(index+1)/2.;
         acceptanceError_maxElayer_cut[index] = h_acceptance_maxElayer_cut->GetBinError(index+1)/2.;
         acceptanceError_maxBarLayer_cut[index] = h_acceptance_maxBarLayer_cut->GetBinError(index+1)/2.;
@@ -806,6 +822,7 @@ void buildAcceptance(
     }
 
     // Building graphs
+     TGraphAsymmErrors gr_acceptance_geometric_factor(energyValues.size(), &energyValues[0], &acceptanceValues_geometric_factor[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_geometric_factor[0], &acceptanceError_geometric_factor[0]);
     TGraphAsymmErrors gr_acceptance_gometric_cut(energyValues.size(), &energyValues[0], &acceptanceValues_gometric_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_gometric_cut[0], &acceptanceError_gometric_cut[0]);
     TGraphAsymmErrors gr_acceptance_maxElayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxElayer_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_maxElayer_cut[0], &acceptanceError_maxElayer_cut[0]);
     TGraphAsymmErrors gr_acceptance_maxBarLayer_cut(energyValues.size(), &energyValues[0], &acceptanceValues_maxBarLayer_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_maxBarLayer_cut[0], &acceptanceError_maxBarLayer_cut[0]);
@@ -823,6 +840,7 @@ void buildAcceptance(
     TGraphAsymmErrors gr_acceptance_psd_charge_cut(energyValues.size(), &energyValues[0], &acceptanceValues_psd_charge_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_psd_charge_cut[0], &acceptanceError_psd_charge_cut[0]);
     TGraphAsymmErrors gr_acceptance_all_cut(energyValues.size(), &energyValues[0], &acceptanceValues_all_cut[0], &energy_LowError[0], &energy_HighError[0], &acceptanceError_all_cut[0], &acceptanceError_all_cut[0]);
 
+    gr_acceptance_geometric_factor.SetName("gr_acceptance_geometric_factor");
     gr_acceptance_gometric_cut.SetName("gr_acceptance_gometric_cut");
     gr_acceptance_maxElayer_cut.SetName("gr_acceptance_maxElayer_cut");
     gr_acceptance_maxBarLayer_cut.SetName("gr_acceptance_maxBarLayer_cut");
@@ -840,6 +858,7 @@ void buildAcceptance(
     gr_acceptance_psd_charge_cut.SetName("gr_acceptance_psd_charge_cut");
     gr_acceptance_all_cut.SetName("gr_acceptance_all_cut");
 
+    gr_acceptance_geometric_factor.SetTitle("Geometric Factor");
     gr_acceptance_gometric_cut.SetTitle("Acceptance - geometric cut");
     gr_acceptance_maxElayer_cut.SetTitle("Acceptance - maxElateral cut");
     gr_acceptance_maxBarLayer_cut.SetTitle("Acceptance - maxBarLayer cut");
@@ -859,6 +878,7 @@ void buildAcceptance(
 
     // Write histos to file
     // Acceptance - First-Cut histos
+    h_geo_factor.Write();
     h_incoming.Write();
     h_trigger.Write();
     h_gometric_cut.Write();
@@ -872,6 +892,7 @@ void buildAcceptance(
     h_xtrl_cut.Write();
     h_psd_charge_cut.Write();
     h_all_cut.Write();
+
     // Acceptance - Cuts && Geometric Cut
     h_geometric_maxElayer_cut.Write();
     h_geometric_maxBarLayer_cut.Write();
@@ -916,6 +937,13 @@ void buildAcceptance(
     // Return to main TFile directory
     outFile.cd();
 
+    auto geoFactor = outFile.mkdir("GeometricFactor");
+    geoFactor->cd();
+    
+    gr_acceptance_geometric_factor.Write();
+
+     outFile.cd();
+
     // Create output ratio dir in the output TFile
     auto ratioDir = outFile.mkdir("Efficiency");
 
@@ -924,6 +952,7 @@ void buildAcceptance(
     trigger_dir->cd();
 
     // Building ratio histos
+    auto h_trigger_efficiency = static_cast<TH1D *>(h_gometric_cut.Clone("h_trigger_efficiency"));
     auto h_ratio_tr_gometric_cut = static_cast<TH1D *>(h_gometric_cut.Clone("h_ratio_tr_gometric_cut"));
     auto h_ratio_tr_maxElayer_cut = static_cast<TH1D *>(h_maxElayer_cut.Clone("h_ratio_tr_maxElayer_cut"));
     auto h_ratio_tr_maxBarLayer_cut = static_cast<TH1D *>(h_maxBarLayer_cut.Clone("h_ratio_tr_maxBarLayer_cut"));
@@ -937,6 +966,7 @@ void buildAcceptance(
     auto h_ratio_tr_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_ratio_tr_all_cut"));
 
     // Scale histos respect to the trigger cut events
+    h_trigger_efficiency->Divide(&h_geo_factor);
     h_ratio_tr_gometric_cut->Divide(&h_trigger);
     h_ratio_tr_maxElayer_cut->Divide(&h_trigger);
     h_ratio_tr_maxBarLayer_cut->Divide(&h_trigger);
@@ -950,6 +980,7 @@ void buildAcceptance(
     h_ratio_tr_all_cut->Divide(&h_trigger);
 
     //Write histos to disk
+    h_trigger_efficiency->Write();
     h_ratio_tr_gometric_cut->Write();
     h_ratio_tr_maxElayer_cut->Write();
     h_ratio_tr_maxBarLayer_cut->Write();
