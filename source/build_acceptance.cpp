@@ -942,7 +942,7 @@ void buildAcceptance(
     
     gr_acceptance_geometric_factor.Write();
 
-     outFile.cd();
+    outFile.cd();
 
     // Create output ratio dir in the output TFile
     auto ratioDir = outFile.mkdir("Efficiency");
