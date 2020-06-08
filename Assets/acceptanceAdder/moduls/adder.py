@@ -5,6 +5,7 @@ import os
 def compute_final_histos(condor_dir_list, opts):
     
     # Acceptance - First-Cut histos
+    h_geo_factor = TH1D()
     h_incoming = TH1D()
     h_trigger = TH1D()
     h_gometric_cut = TH1D()
@@ -156,6 +157,7 @@ def compute_final_histos(condor_dir_list, opts):
             sys.exit()
         
         # Reading histos
+        h_geo_factor_tmp = rFile.Get("h_geo_factor")
         h_incoming_tmp = rFile.Get("h_incoming")
         h_trigger_tmp = rFile.Get("h_trigger")
         h_gometric_cut_tmp = rFile.Get("h_gometric_cut")
@@ -235,6 +237,7 @@ def compute_final_histos(condor_dir_list, opts):
             h_layer_energy_ratio_tmp.append(rFile.Get(histoName))
 
         # Unlink histos
+        h_geo_factor_tmp.SetDirectory(0)
         h_incoming_tmp.SetDirectory(0)
         h_trigger_tmp.SetDirectory(0)
         h_gometric_cut_tmp.SetDirectory(0)
@@ -331,6 +334,7 @@ def compute_final_histos(condor_dir_list, opts):
         # Add histos
         if dIdx == 0:
             
+            h_geo_factor = h_geo_factor_tmp.Clone("h_geo_factor")
             h_incoming = h_incoming_tmp.Clone("h_incoming")
             h_trigger = h_trigger_tmp.Clone("h_trigger")
             h_gometric_cut = h_gometric_cut_tmp.Clone("h_gometric_cut")
@@ -409,6 +413,8 @@ def compute_final_histos(condor_dir_list, opts):
                 h_layer_energy_ratio[idx] = h_layer_energy_ratio_tmp[idx].Clone(h_ratio_name)
 
         else:
+
+            h_geo_factor.Add(h_geo_factor_tmp)
             h_incoming.Add(h_incoming_tmp)
             h_trigger.Add(h_trigger_tmp)
             h_gometric_cut.Add(h_gometric_cut_tmp)
@@ -495,6 +501,7 @@ def compute_final_histos(condor_dir_list, opts):
         sys.exit()
 
     # Writing final histos to file
+    h_geo_factor.Write()
     h_incoming.Write()
     h_trigger.Write()
     h_gometric_cut.Write()
