@@ -3,6 +3,7 @@
 #include "TGraph.h"
 #include <memory>
 #include <algorithm>
+#include <numeric>
 
 void tmpFit(
     TDirectory *accDir,
