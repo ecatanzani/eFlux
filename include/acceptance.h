@@ -10,9 +10,6 @@
 #include "anyoption.h"
 #include "data_cuts.h"
 
-//#define _memType "graph"
-//#define _memType "histo"
-
 extern void computeAcceptance(
     const std::string accInputPath,
     const bool verbose,

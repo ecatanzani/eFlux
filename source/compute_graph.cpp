@@ -448,6 +448,30 @@ void generateFinalGraph(
     h_BGOfiducial_psd_charge_cut->Write();
     h_BGOfiducial_all_cut->Write();
 
+    // Create output acceptance_histo dir in the output TFile
+    auto acceptanceHistoDir = outFile.mkdir("Acceptance_histos");
+    acceptanceHistoDir->cd();
+
+    h_acceptance_geometric_factor->Write();
+    h_acceptance_gometric_cut->Write();
+    h_acceptance_maxElayer_cut->Write();
+    h_acceptance_maxBarLayer_cut->Write();
+    h_acceptance_BGOTrackContainment_cut->Write();
+    h_acceptance_BGO_fiducial_cut->Write();
+    h_acceptance_BGO_fiducial_nBarLayer13_cut->Write();
+    h_acceptance_BGO_fiducial_maxRms_cut->Write();
+    h_acceptance_BGO_fiducial_track_selection_cut->Write();
+    h_acceptance_BGO_fiducial_xtrl_cut->Write();
+    h_acceptance_BGO_fiducial_psd_charge_cut->Write();
+    h_acceptance_nBarLayer13_cut->Write();
+    h_acceptance_maxRms_cut->Write();
+    h_acceptance_track_selection_cut->Write();
+    h_acceptance_xtrl_cut->Write();
+    h_acceptance_psd_charge_cut->Write();
+    h_acceptance_all_cut->Write();
+
+    outFile.cd();
+
     // Create output acceptance dir in the output TFile
     auto acceptanceDir = outFile.mkdir("Acceptance");
     acceptanceDir->cd();
