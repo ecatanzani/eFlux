@@ -21,6 +21,6 @@ def listMCsample(pars, opts):
     listOutPath = createOutSetSimuFile(dSetName)
     with open(listOutPath, "w") as outList:
         for elm in _setList:
-            tmpFinalPath = elm + "\n"
+            tmpFinalPath = pars['farmAddress'] + elm + "\n"
             outList.write(tmpFinalPath)    
 
