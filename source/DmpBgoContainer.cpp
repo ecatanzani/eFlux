@@ -5,7 +5,6 @@ void DmpBgoContainer::scanBGOHits(
     const double bgoTotalE,
     const int DAMPE_bgo_nLayers)
 {
-#if 1
     // Get the number of BGO hits
     int nBgoHits = bgohits->GetHittedBarNumber();
 
@@ -92,82 +91,6 @@ void DmpBgoContainer::scanBGOHits(
 
     // Build XTR
     Xtr = pow(sumRms, 4) * fracLayer[13] / 8000000.;
-
-#else
-
-    int nBgoHits = bgohits->GetHittedBarNumber();
-    
-    for (int ihit = 0; ihit <nBgoHits; ihit++)
-    {
-        short layerID = bgohits-> GetLayerID(ihit);
-        int iBar = ((bgohits-> fGlobalBarID)[ihit]>>6) & 0x1f;
-        layerBarIndex[layerID] .push_back(ihit);
-        layerBarNumber[layerID].push_back(iBar);
-    }
-        
-    double sumRms = 0;
-    for(int lay = 0; lay <14; lay++) 
-    {
-        int imax = -1;
-        double maxE = 0;
-        for(unsigned int ind = 0; ind <layerBarNumber[lay].size(); ind++) 
-        {
-            int ihit = layerBarIndex[lay][ind];
-            double hitE = (bgohits->fEnergy)[ihit];
-            if(hitE > maxE) 
-            {
-                maxE = hitE;
-                imax = ihit;
-            }
-        }
-            
-        rmsLayer [lay] = 0;
-        fracLayer[lay] = 0;
-        eLayer[lay]    = 0;
-        if(maxE > 0) 
-        {
-            int iBarMax = ((bgohits-> fGlobalBarID)[imax]>>6) & 0x1f;
-            eCoreLayer[lay] = maxE;
-            double coordMax = lay%2 ? bgohits->GetHitX(imax) : bgohits->GetHitY(imax);
-            eCoreCoord[lay] = maxE*coordMax;
-            if(iBarMax > 0 && iBarMax < 21) 
-            {
-                for(unsigned int ind = 0; ind <layerBarNumber[lay].size(); ind++) 
-                {
-                    int ihit = layerBarIndex[lay][ind];
-                    int iBar = ((bgohits-> fGlobalBarID)[ihit]>>6) & 0x1f;
-                    if(iBar-iBarMax==1 || iBar-iBarMax==-1) 
-                    {
-                        double hitE = (bgohits->fEnergy)[ihit];
-                        double thisCoord = lay%2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
-                        eCoreLayer[lay] += hitE;
-                        eCoreCoord[lay] += hitE*thisCoord;
-                    }
-                }
-            }
-            eCoreCoord[lay] /= eCoreLayer[lay];
-            for(unsigned int ind = 0; ind <layerBarNumber[lay].size(); ind++) 
-            {
-                int ihit = layerBarIndex[lay][ind];
-                double hitE = (bgohits->fEnergy)[ihit];
-                double thisCoord = lay%2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
-                eLayer[lay]   += hitE;
-                rmsLayer[lay] += hitE*(thisCoord-eCoreCoord[lay])*(thisCoord-eCoreCoord[lay]);
-            }
-            rmsLayer[lay]  = sqrt(rmsLayer[lay]/eLayer[lay]);
-            fracLayer[lay] = eLayer[lay]/bgoTotalE;
-            if(layerBarNumber[lay].size()<=1) 
-            {
-                rmsLayer[lay]  = 0;
-            }
-        }
-        sumRms += rmsLayer[lay];
-    }
-        
-    double Xtr=sumRms*sumRms*sumRms*sumRms*fracLayer[13]/8000000.;
-
-#endif
-
 }
 
 std::vector<short> DmpBgoContainer::GetSingleLayerBarNumber(int nLayer)
