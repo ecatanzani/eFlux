@@ -169,12 +169,13 @@ TF1 fitAcceptance(TGraphAsymmErrors *finalAcceptance, TFile &outFile, const bool
     setStartingParameters(fitter_1, fitter_2, fitter_1.GetNpar(), fitter_2.GetNpar());
     fitter_2.SetLineColor(kMagenta + 1);
     tmpFit(accDir, fitter_2, finalAcceptance, verbose, false, 2);
-
+    
     TF1 fitter_3("fitter_3", logisticFunction_3, 1, 1e+4, 8);
     setStartingParameters(fitter_2, fitter_3, fitter_2.GetNpar(), fitter_3.GetNpar());
     fitter_3.SetLineColor(kCyan + 3);
     tmpFit(accDir, fitter_3, finalAcceptance, verbose, false, 3);
-    
+
+    /*
     TF1 fitter_4("fitter_4", logisticFunction_4, 1, 1e+4, 10);
     setStartingParameters(fitter_3, fitter_4, fitter_3.GetNpar(), fitter_4.GetNpar());
     fitter_4.SetLineColor(kBlue + 3);
@@ -189,7 +190,7 @@ TF1 fitAcceptance(TGraphAsymmErrors *finalAcceptance, TFile &outFile, const bool
     setStartingParameters(fitter_5, fitter_6, fitter_5.GetNpar(), fitter_6.GetNpar());
     fitter_6.SetLineColor(kCyan);
     tmpFit(accDir,fitter_6, finalAcceptance, verbose, false, 6);
-
+    */
     /*
     TF1 fitter_7("fitter_7", logisticFunction_7, 1, 1e+4, 15);
     setStartingParameters(fitter_6, fitter_7, fitter_6.GetNpar(), fitter_7.GetNpar());
@@ -200,5 +201,5 @@ TF1 fitAcceptance(TGraphAsymmErrors *finalAcceptance, TFile &outFile, const bool
     // Returning to main TFile directory
     outFile.cd();
 
-    return fitter_2;
+    return fitter_3;
 }
