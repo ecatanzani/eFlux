@@ -1,5 +1,87 @@
 #include <data_cuts.h>
 
+#include "DmpStkTrack.h"
+#include "DmpStkSiCluster.h"
+#include "DmpStkTrackHelper.h"
+
+bool checkBGOreco_data(const std::shared_ptr<DmpEvtBgoRec> bgorec)
+{
+    bool passed_BGO_check = true;
+    std::vector<double> bgoRec_slope(2);
+    std::vector<double> bgoRec_intercept(2);
+
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
+
+    if ((bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0) || (bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0))
+        passed_BGO_check = false;
+    
+    return passed_BGO_check;
+}
+
+bool geometric_cut_data(const std::shared_ptr<DmpEvtBgoRec> bgorec)
+{
+    bool passed_geometric_cut = false;
+
+    std::vector<double> bgoRec_slope(2);
+    std::vector<double> bgoRec_intercept(2);
+
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
+
+    double actual_topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    double actual_topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
+
+    double actual_bottomX = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
+    double actual_bottomY = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
+
+    if (fabs(actual_topX) < BGO_SideXY && fabs(actual_topY) < BGO_SideXY &&
+        fabs(actual_bottomX) < BGO_SideXY && fabs(actual_bottomY) < BGO_SideXY)
+        passed_geometric_cut = true;
+    
+    return passed_geometric_cut;
+}
+
+void evaluateTopBottomPosition_data(
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    TH1D &h_BGOrec_slopeX,
+    TH1D &h_BGOrec_slopeY,
+    TH1D &h_BGOrec_interceptX,
+    TH1D &h_BGOrec_interceptY,
+    TH2D &h_BGOreco_topMap,
+    TH2D &h_BGOreco_bottomMap)
+{
+    // Get the reco position
+    std::vector<double> bgoRec_slope(2);
+    std::vector<double> bgoRec_intercept(2);
+
+    bgoRec_slope[0] = bgorec->GetSlopeXZ();
+    bgoRec_slope[1] = bgorec->GetSlopeYZ();
+    bgoRec_intercept[0] = bgorec->GetInterceptXZ();
+    bgoRec_intercept[1] = bgorec->GetInterceptYZ();
+
+    double reco_topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+    double reco_topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
+
+    double reco_bottomX = bgoRec_slope[0] * BGO_BottomZ + bgoRec_intercept[0];
+    double reco_bottomY = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
+
+    // Fill slopes
+    h_BGOrec_slopeX.Fill(bgoRec_slope[0]);
+    h_BGOrec_slopeY.Fill(bgoRec_slope[1]);
+
+    // Fill intercepts
+    h_BGOrec_interceptX.Fill(bgoRec_intercept[0]);
+    h_BGOrec_interceptY.Fill(bgoRec_intercept[1]);
+
+    // Fill maps
+    h_BGOreco_topMap.Fill(reco_topX, reco_topY);
+    h_BGOreco_bottomMap.Fill(reco_bottomX, reco_bottomY);
+}
 
 bool maxElayer_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
