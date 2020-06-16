@@ -8,15 +8,13 @@
 #include "DAMPE_geo_structure.h"
 
 #include "TClonesArray.h"
+#include "TH1D.h"
+#include "TH2D.h"
 
 // DAMPESW includes
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtBgoHits.h"
-#include "DmpStkSiCluster.h"
-#include "DmpStkTrack.h"
 #include "DmpEvtPsdHits.h"
-#include "DmpStkTrackHelper.h"
-
 
 struct cuts_conf
 {
@@ -63,6 +61,18 @@ struct best_track
     double angular_distance_STK_BGO = -999;
 };
 
+extern bool checkBGOreco_data(const std::shared_ptr<DmpEvtBgoRec> bgorec);
+extern bool geometric_cut_data(const std::shared_ptr<DmpEvtBgoRec> bgorec);
+
+extern void evaluateTopBottomPosition_data(
+    const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    TH1D &h_BGOrec_slopeX,
+    TH1D &h_BGOrec_slopeY,
+    TH1D &h_BGOrec_interceptX,
+    TH1D &h_BGOrec_interceptY,
+    TH2D &h_BGOreco_topMap,
+    TH2D &h_BGOreco_bottomMap);
+
 extern bool maxElayer_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const cuts_conf acceptance_cuts,
@@ -99,7 +109,6 @@ extern bool track_selection_cut(
     const std::shared_ptr<TClonesArray> stktracks,
     const cuts_conf data_cuts,
     best_track &event_best_track);
-
 
 extern bool xtrl_cut(
     const double sumRms,
