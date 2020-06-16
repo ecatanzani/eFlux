@@ -27,7 +27,8 @@ extern TH1D evLoop(
     const std::vector<float> &logEBins,
     const std::string inputPath,
     TFile &outFile,
-    const bool verbose);
+    const bool verbose,
+    const std::string wd);
 
 extern void readInputTree(
     const std::string inputPath,

@@ -8,6 +8,10 @@
 #include <algorithm>
 
 #include "TFile.h"
+#include "TH1D.h"
+#include "TH2D.h"
+
+#include "data_cuts.h"
 
 extern void buildFlux(
     const std::vector<float> &logEBins,
@@ -15,6 +19,12 @@ extern void buildFlux(
     const unsigned int lvTime,
     TFile &outFile,
     const bool verbose,
-    const std::string accInputPath);
+    const std::string accInputPath,
+    const std::string wd);
+
+extern void load_flux_struct(
+    cuts_conf &flux_cuts,
+    data_active_cuts &active_cuts,
+    const std::string wd);
 
 #endif
