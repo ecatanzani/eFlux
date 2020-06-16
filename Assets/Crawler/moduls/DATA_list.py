@@ -1,32 +1,41 @@
 import subprocess
 from createFinalLists import createOutDataFile
-
+import sys
 
 def createDATAlist(pars, opts):
     dList = []
-    if pars['geometry'] == "6r0p0":
-        geoPars = "6.0.0"
-    if pars['geometry'] == "5r4p0":
-        geoPars = "5.4.0"
-    dataPath = pars['data_XRDFS_path'] + geoPars
 
-    getDataDirsCommand = 'xrdfs {} ls {}'.format(
-        pars['farmAddress'], dataPath)
+    # Get stage 0 dirs --> /FM/FlightData/2A/
+    getDataDirsCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], pars['data_XRDFS_path'])
     if opts.verbose:
         print('Executing XRDFS command: {}'.format(getDataDirsCommand))
-    dataDirsOut = subprocess.run(
-        getDataDirsCommand, shell=True, check=True, stdout=subprocess.PIPE)
+    dataDirsOut = subprocess.run(getDataDirsCommand, shell=True, check=True, stdout=subprocess.PIPE)
     dataDirs = str.split(dataDirsOut.stdout.decode('utf-8').rstrip(), '\n')
-    for elm in dataDirs:
-        tmpDataCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], elm)
-        tmpData = subprocess.run(
-            tmpDataCommand, shell=True, check=True, stdout=subprocess.PIPE)
-        dataInDir = str.split(
-            tmpData.stdout.decode('utf-8').rstrip(), '\n')
-        for sData in dataInDir:
-            if sData.endswith('.root'):
-                dataTmpCompletePath = pars['farmAddress'] + sData
-                dList.append(dataTmpCompletePath)
+    
+    # Get stage 1 dirs --> /FM/FlightData/2A/DayOfAcquisition/
+    for dir_st1 in dataDirs:
+        # Select interesting data dirs, that starts with the run year (2015, 2016, ...)
+        if "2A/20" in dir_st1:
+            getDataDirsCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], dir_st1)
+            if opts.verbose:
+                print('Executing XRDFS command: {}'.format(getDataDirsCommand))
+            dataDirsOut = subprocess.run(getDataDirsCommand, shell=True, check=True, stdout=subprocess.PIPE)
+            dataDirs_st1 = str.split(dataDirsOut.stdout.decode('utf-8').rstrip(), '\n')
+
+            # Get stage 2 dirs --> /FM/FlightData/2A/DayOfAcquisition/DataDir
+            for dir_st2 in dataDirs_st1:
+                getDataDirsCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], dir_st2)
+                if opts.verbose:
+                    print('Executing XRDFS command: {}'.format(getDataDirsCommand))
+                dataDirsOut = subprocess.run(getDataDirsCommand, shell=True, check=True, stdout=subprocess.PIPE)
+                dataDirs_st2 = str.split(dataDirsOut.stdout.decode('utf-8').rstrip(), '\n')
+
+                # Get ROOT data file
+                for data_elm in dataDirs_st2:
+                    if data_elm.endswith('.root'):
+                        dataTmpCompletePath = pars['farmAddress'] + data_elm
+                        dList.append(dataTmpCompletePath)
+    
     with open(createOutDataFile(opts, pars['data_eMin'], pars['data_eMax']), "w") as outList:
         for file in dList:
             outPath = pars['farmAddress'] + file + "\n"
