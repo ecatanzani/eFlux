@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dampe_5fbgo_5fnlayers_210',['DAMPE_bgo_nLayers',['../acceptance__cuts_8h.html#adb933d51a68247208516004a615ea6fa',1,'acceptance_cuts.h']]]
+  ['ngfitloops_354',['nGFitLoops',['../acceptance__fit_8h.html#aaf14d23eb76a8fd8811676ed5d4cbd61',1,'acceptance_fit.h']]]
 ];

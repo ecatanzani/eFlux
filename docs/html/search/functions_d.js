@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['uniqueoutfile_179',['uniqueOutFile',['../unique_8cpp.html#ac8c15c211fe8da7c31f877410cdfe221',1,'uniqueOutFile(const std::string outputPath, AnyOption &amp;opt):&#160;unique.cpp'],['../my_header_8h.html#ac8c15c211fe8da7c31f877410cdfe221',1,'uniqueOutFile(const std::string outputPath, AnyOption &amp;opt):&#160;unique.cpp']]]
+  ['scanbgohits_297',['scanBGOHits',['../class_dmp_bgo_container.html#acf1894afecc33a32ec295690179cbaf8',1,'DmpBgoContainer']]],
+  ['setstartingparameters_298',['setStartingParameters',['../fit__acceptance_8cpp.html#aedf77a4ac0f37f1a467d8288929baa4b',1,'fit_acceptance.cpp']]]
 ];

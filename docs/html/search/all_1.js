@@ -1,13 +1,21 @@
 var searchData=
 [
-  ['acceptance_2eh_2',['acceptance.h',['../acceptance_8h.html',1,'']]],
-  ['acceptance_5factive_5fcuts_3',['acceptance_active_cuts',['../structacceptance__active__cuts.html',1,'']]],
-  ['acceptance_5fconf_4',['acceptance_conf',['../structacceptance__conf.html',1,'']]],
-  ['acceptance_5fcuts_2eh_5',['acceptance_cuts.h',['../acceptance__cuts_8h.html',1,'']]],
-  ['acceptancecore_2ecpp_6',['acceptanceCore.cpp',['../acceptance_core_8cpp.html',1,'']]],
-  ['acceptancecuts_2ecpp_7',['acceptanceCuts.cpp',['../acceptance_cuts_8cpp.html',1,'']]],
-  ['acceptancefit_2eh_8',['acceptanceFit.h',['../acceptance_fit_8h.html',1,'']]],
-  ['aggregateeventsdmpchain_9',['aggregateEventsDmpChain',['../build_acceptance_8cpp.html#aa41abf6d0935d384436d3840532d8d07',1,'aggregateEventsDmpChain(const std::string accInputPath, const bool verbose):&#160;buildAcceptance.cpp'],['../acceptance_8h.html#aa41abf6d0935d384436d3840532d8d07',1,'aggregateEventsDmpChain(const std::string accInputPath, const bool verbose):&#160;buildAcceptance.cpp']]],
-  ['aggregateeventstchain_10',['aggregateEventsTChain',['../build_acceptance_8cpp.html#a1543f215faba333f06aaf1bc617285a8',1,'aggregateEventsTChain(const std::string accInputPath, const bool verbose):&#160;buildAcceptance.cpp'],['../acceptance_8h.html#a1543f215faba333f06aaf1bc617285a8',1,'aggregateEventsTChain(const std::string accInputPath, const bool verbose):&#160;buildAcceptance.cpp']]],
-  ['allocateparticleenergy_11',['allocateParticleEnergy',['../energy_match_8cpp.html#a34d36e25adbe5a3d2b5cfe314a4a5855',1,'allocateParticleEnergy(std::vector&lt; unsigned int &gt; &amp;counts, const std::vector&lt; float &gt; &amp;logEBins, const double totalE):&#160;energyMatch.cpp'],['../energy_match_8h.html#a34d36e25adbe5a3d2b5cfe314a4a5855',1,'allocateParticleEnergy(std::vector&lt; unsigned int &gt; &amp;counts, const std::vector&lt; float &gt; &amp;logEBins, const double totalE):&#160;energyMatch.cpp']]]
+  ['best_5ftrack_11',['best_track',['../structbest__track.html',1,'']]],
+  ['bgo_5fbottomz_12',['BGO_BottomZ',['../_d_a_m_p_e__geo__structure_8h.html#a0f5cb9863ee2c7db2761809405c625b3',1,'DAMPE_geo_structure.h']]],
+  ['bgo_5fenergy_5fcuts_2ecpp_13',['BGO_energy_cuts.cpp',['../_b_g_o__energy__cuts_8cpp.html',1,'']]],
+  ['bgo_5fenergy_5fcuts_2eh_14',['BGO_energy_cuts.h',['../_b_g_o__energy__cuts_8h.html',1,'']]],
+  ['bgo_5ffiducial_15',['BGO_fiducial',['../structdata__active__cuts.html#a741a94505ed27a673f5b4006f00ee416',1,'data_active_cuts']]],
+  ['bgo_5fsidexy_16',['BGO_SideXY',['../_d_a_m_p_e__geo__structure_8h.html#a763424e6269b90052f0b075ef0d51b29',1,'DAMPE_geo_structure.h']]],
+  ['bgo_5ftopz_17',['BGO_TopZ',['../_d_a_m_p_e__geo__structure_8h.html#a4ab7b9f093bc1aa48a7a07f18b722794',1,'DAMPE_geo_structure.h']]],
+  ['bgotrackcontainment_5fcut_18',['BGOTrackContainment_cut',['../data__cuts_8cpp.html#ab7137839d42b83a7a35a344094966e1a',1,'BGOTrackContainment_cut(const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, const cuts_conf data_cuts):&#160;data_cuts.cpp'],['../data__cuts_8h.html#ab7137839d42b83a7a35a344094966e1a',1,'BGOTrackContainment_cut(const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, const cuts_conf data_cuts):&#160;data_cuts.cpp']]],
+  ['bgotrackcontainment_5ftop_5fcut_19',['BGOTrackContainment_top_cut',['../data__cuts_8cpp.html#ad55d6ae54a9620c4a54b44e10db71cce',1,'BGOTrackContainment_top_cut(const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, const cuts_conf data_cuts):&#160;data_cuts.cpp'],['../data__cuts_8h.html#ad55d6ae54a9620c4a54b44e10db71cce',1,'BGOTrackContainment_top_cut(const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, const cuts_conf data_cuts):&#160;data_cuts.cpp']]],
+  ['binarysearch_20',['binarySearch',['../energy__match_8cpp.html#aa8c258e3d89ab6d38a354cfb25c74559',1,'binarySearch(const std::vector&lt; float &gt; &amp;logEBins, int l, int r, const double energy):&#160;energy_match.cpp'],['../energy__match_8h.html#aa8c258e3d89ab6d38a354cfb25c74559',1,'binarySearch(const std::vector&lt; float &gt; &amp;logEBins, int l, int r, const double energy):&#160;energy_match.cpp']]],
+  ['binning_2ecpp_21',['binning.cpp',['../binning_8cpp.html',1,'']]],
+  ['binning_2eh_22',['binning.h',['../binning_8h.html',1,'']]],
+  ['branchtree_23',['branchTree',['../import__tree_8cpp.html#a8e13cd50cd08af67ca77de2bf8b17cb9',1,'branchTree(TTree &amp;myDataTree, std::vector&lt; float &gt; &amp;dataValues):&#160;import_tree.cpp'],['../data__loop_8h.html#a8e13cd50cd08af67ca77de2bf8b17cb9',1,'branchTree(TTree &amp;myDataTree, std::vector&lt; float &gt; &amp;dataValues):&#160;import_tree.cpp']]],
+  ['build_5facceptance_2ecpp_24',['build_acceptance.cpp',['../build__acceptance_8cpp.html',1,'']]],
+  ['buildacceptance_25',['buildAcceptance',['../build__acceptance_8cpp.html#a927f2b69720afb25b4ac3602f7f23557',1,'buildAcceptance(const std::string accInputPath, const bool verbose, const std::vector&lt; float &gt; &amp;logEBins, TFile &amp;outFile, const std::string wd):&#160;build_acceptance.cpp'],['../acceptance_8h.html#a927f2b69720afb25b4ac3602f7f23557',1,'buildAcceptance(const std::string accInputPath, const bool verbose, const std::vector&lt; float &gt; &amp;logEBins, TFile &amp;outFile, const std::string wd):&#160;build_acceptance.cpp']]],
+  ['buildacceptance_5fvector_26',['buildAcceptance_vector',['../acceptance_8h.html#a41188592d2aff6f12c899f2a955bac3c',1,'acceptance.h']]],
+  ['buildflux_27',['buildFlux',['../e_flux_8cpp.html#ae53cb993dbf9e8f7471b0d2597c3116f',1,'buildFlux(const std::vector&lt; float &gt; &amp;logEBins, const std::string inputPath, const unsigned int lvTime, TFile &amp;outFile, const bool verbose, const std::string accInputPath, const std::string wd):&#160;eFlux.cpp'],['../flux_8h.html#ae53cb993dbf9e8f7471b0d2597c3116f',1,'buildFlux(const std::vector&lt; float &gt; &amp;logEBins, const std::string inputPath, const unsigned int lvTime, TFile &amp;outFile, const bool verbose, const std::string accInputPath, const std::string wd):&#160;eFlux.cpp']]],
+  ['buildhistofromvector_28',['buildHistoFromVector',['../build__acceptance_8cpp.html#a01e2cec35edb98c9c63c586af57b5c8c',1,'build_acceptance.cpp']]]
 ];

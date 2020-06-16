@@ -74,92 +74,46 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define MYHEADER_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;anyoption.h&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;TTree.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;TFile.h&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;TH1D.h&quot;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;TF1.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;TDirectory.h&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;TChain.h&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">// DAMPESW includes</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;anyoption.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="my_header_8h.html#a7f79155bb90ee5ac3e90d1981ae7e009">eCore</a>(</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">const</span> std::string outputPath,</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> pedantic,</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lvTime,</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">const</span> std::string accInputPath,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    AnyOption &amp;opt,</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;DmpChain.h&quot;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoHits.h&quot;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoRec.h&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> std::string <a class="code" href="my_header_8h.html#ab30704a0c025187309a16cf563a2bfec">uniqueOutFile</a>(</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">const</span> std::string outputPath,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    AnyOption &amp;opt);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#pragma once</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="my_header_8h.html#aaf14d23eb76a8fd8811676ed5d4cbd61">   28</a></span>&#160;<span class="preprocessor">#define nGFitLoops 1000000</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="my_header_8h.html#a469ed96cf991b8dccff1b4ce29f4ba0d">   29</a></span>&#160;<span class="preprocessor">#define chiSQLLimit 0.000001</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="my_header_8h.html#af0c0d1034a71f8aa3a08cda83c9d4e7a">   31</a></span>&#160;<span class="preprocessor">#define GetCurrentDir getcwd</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structenergy__cuts.html">   32</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structenergy__cuts.html">energy_cuts</a></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{</div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structenergy__cuts.html#a8c643a8b8ec21a5059036777d0d1275e">   34</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="structenergy__cuts.html#a8c643a8b8ec21a5059036777d0d1275e">cut_min_energy</a>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structenergy__cuts.html#aff74afdbad719c182613b8b5d84fa54e">   35</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="structenergy__cuts.html#aff74afdbad719c182613b8b5d84fa54e">cut_max_energy</a>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structenergy__cuts.html#a04fda1e72e66498404bec02f0fdefcc1">   36</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structenergy__cuts.html#a04fda1e72e66498404bec02f0fdefcc1">e_bins</a>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;};</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="my_header_8h.html#aa6da1ce26a9c7d3e66ba3f0d1732034a">chechFlags</a>(</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    AnyOption &amp;opt,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">const</span> std::string outputPath,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lvTime);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="my_header_8h.html#a495cdb4d7de7aa1fc1dc61c50a8ac7d1">generateFinalGraph</a>(</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> pedantic,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">const</span> std::string outputPath,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">const</span> std::string complete_histo_path,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">extern</span> std::string <a class="code" href="my_header_8h.html#accfa55758057dab85ca768e50554b4fa">getWorkingDir</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *exePath);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="my_header_8h.html#ad889f0f00e1776a9279fe1a0d75e70c5">load_energy_struct</a>(<a class="code" href="structenergy__cuts.html">energy_cuts</a> &amp;e_cuts, <span class="keyword">const</span> std::string wd);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">extern</span> std::vector&lt;float&gt; <a class="code" href="my_header_8h.html#ad732bcd19ee64efdf379ba7d27d3d6b1">createLogBinning</a>(<span class="keyword">const</span> <a class="code" href="structenergy__cuts.html">energy_cuts</a> e_cuts);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="my_header_8h.html#a7f79155bb90ee5ac3e90d1981ae7e009">eCore</a>(</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">const</span> std::string outputPath,</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> pedantic,</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lvTime,</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">const</span> std::string accInputPath,</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    AnyOption &amp;opt,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">extern</span> <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="my_header_8h.html#ac8c15c211fe8da7c31f877410cdfe221">uniqueOutFile</a>(</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">const</span> std::string outputPath,</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    AnyOption &amp;opt);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">extern</span> std::string <a class="code" href="my_header_8h.html#a7770cb36d4f4c6e78ff68516ecb2123c">GetCurrentWorkingDir</a>(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">extern</span> std::string <a class="code" href="my_header_8h.html#a881dbe0bc3e72d29127a32b3dbdcf2ae">getListPath</a>(</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">const</span> std::string accInputPath,</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> MC = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="my_header_8h.html#aa6da1ce26a9c7d3e66ba3f0d1732034a">chechFlags</a>(</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    AnyOption &amp;opt,</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">const</span> std::string outputPath,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lvTime);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="my_header_8h.html#a495cdb4d7de7aa1fc1dc61c50a8ac7d1">generateFinalGraph</a>(</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> pedantic,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">const</span> std::string outputPath,</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">const</span> std::string complete_histo_path,</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="amy_header_8h_html_a881dbe0bc3e72d29127a32b3dbdcf2ae"><div class="ttname"><a href="my_header_8h.html#a881dbe0bc3e72d29127a32b3dbdcf2ae">getListPath</a></div><div class="ttdeci">std::string getListPath(const std::string accInputPath, const bool MC=false)</div><div class="ttdef"><b>Definition:</b> buildAcceptance.cpp:19</div></div>
-<div class="ttc" id="astructenergy__cuts_html_a04fda1e72e66498404bec02f0fdefcc1"><div class="ttname"><a href="structenergy__cuts.html#a04fda1e72e66498404bec02f0fdefcc1">energy_cuts::e_bins</a></div><div class="ttdeci">unsigned int e_bins</div><div class="ttdef"><b>Definition:</b> myHeader.h:36</div></div>
-<div class="ttc" id="amy_header_8h_html_aa6da1ce26a9c7d3e66ba3f0d1732034a"><div class="ttname"><a href="my_header_8h.html#aa6da1ce26a9c7d3e66ba3f0d1732034a">chechFlags</a></div><div class="ttdeci">bool chechFlags(AnyOption &amp;opt, const std::string inputPath, const std::string outputPath, const unsigned int lvTime)</div><div class="ttdef"><b>Definition:</b> Gear.cpp:19</div></div>
-<div class="ttc" id="amy_header_8h_html_a7f79155bb90ee5ac3e90d1981ae7e009"><div class="ttname"><a href="my_header_8h.html#a7f79155bb90ee5ac3e90d1981ae7e009">eCore</a></div><div class="ttdeci">void eCore(const std::string inputPath, const std::string outputPath, const bool verbose, const bool pedantic, const unsigned int lvTime, const std::string accInputPath, AnyOption &amp;opt, const std::string wd)</div><div class="ttdef"><b>Definition:</b> Core.cpp:4</div></div>
-<div class="ttc" id="astructenergy__cuts_html_a8c643a8b8ec21a5059036777d0d1275e"><div class="ttname"><a href="structenergy__cuts.html#a8c643a8b8ec21a5059036777d0d1275e">energy_cuts::cut_min_energy</a></div><div class="ttdeci">double cut_min_energy</div><div class="ttdef"><b>Definition:</b> myHeader.h:34</div></div>
-<div class="ttc" id="amy_header_8h_html_ac8c15c211fe8da7c31f877410cdfe221"><div class="ttname"><a href="my_header_8h.html#ac8c15c211fe8da7c31f877410cdfe221">uniqueOutFile</a></div><div class="ttdeci">const char * uniqueOutFile(const std::string outputPath, AnyOption &amp;opt)</div><div class="ttdef"><b>Definition:</b> unique.cpp:6</div></div>
-<div class="ttc" id="amy_header_8h_html_ad732bcd19ee64efdf379ba7d27d3d6b1"><div class="ttname"><a href="my_header_8h.html#ad732bcd19ee64efdf379ba7d27d3d6b1">createLogBinning</a></div><div class="ttdeci">std::vector&lt; float &gt; createLogBinning(const energy_cuts e_cuts)</div><div class="ttdef"><b>Definition:</b> Gear.cpp:54</div></div>
-<div class="ttc" id="amy_header_8h_html_a495cdb4d7de7aa1fc1dc61c50a8ac7d1"><div class="ttname"><a href="my_header_8h.html#a495cdb4d7de7aa1fc1dc61c50a8ac7d1">generateFinalGraph</a></div><div class="ttdeci">void generateFinalGraph(const bool verbose, const bool pedantic, const std::string outputPath, const std::string complete_histo_path, const std::string wd)</div><div class="ttdef"><b>Definition:</b> computeGraph.cpp:4</div></div>
-<div class="ttc" id="amy_header_8h_html_accfa55758057dab85ca768e50554b4fa"><div class="ttname"><a href="my_header_8h.html#accfa55758057dab85ca768e50554b4fa">getWorkingDir</a></div><div class="ttdeci">std::string getWorkingDir(const char *exePath)</div><div class="ttdef"><b>Definition:</b> Gear.cpp:3</div></div>
-<div class="ttc" id="astructenergy__cuts_html_aff74afdbad719c182613b8b5d84fa54e"><div class="ttname"><a href="structenergy__cuts.html#aff74afdbad719c182613b8b5d84fa54e">energy_cuts::cut_max_energy</a></div><div class="ttdeci">double cut_max_energy</div><div class="ttdef"><b>Definition:</b> myHeader.h:35</div></div>
-<div class="ttc" id="amy_header_8h_html_ad889f0f00e1776a9279fe1a0d75e70c5"><div class="ttname"><a href="my_header_8h.html#ad889f0f00e1776a9279fe1a0d75e70c5">load_energy_struct</a></div><div class="ttdeci">void load_energy_struct(energy_cuts &amp;e_cuts, const std::string wd)</div><div class="ttdef"><b>Definition:</b> loadEnergyCuts.cpp:6</div></div>
-<div class="ttc" id="astructenergy__cuts_html"><div class="ttname"><a href="structenergy__cuts.html">energy_cuts</a></div><div class="ttdef"><b>Definition:</b> myHeader.h:32</div></div>
-<div class="ttc" id="amy_header_8h_html_a7770cb36d4f4c6e78ff68516ecb2123c"><div class="ttname"><a href="my_header_8h.html#a7770cb36d4f4c6e78ff68516ecb2123c">GetCurrentWorkingDir</a></div><div class="ttdeci">std::string GetCurrentWorkingDir(void)</div><div class="ttdef"><b>Definition:</b> Gear.cpp:11</div></div>
+<div class="ttc" id="amy_header_8h_html_aa6da1ce26a9c7d3e66ba3f0d1732034a"><div class="ttname"><a href="my_header_8h.html#aa6da1ce26a9c7d3e66ba3f0d1732034a">chechFlags</a></div><div class="ttdeci">bool chechFlags(AnyOption &amp;opt, const std::string inputPath, const std::string outputPath, const unsigned int lvTime)</div><div class="ttdef"><b>Definition:</b> check_input_flags.cpp:3</div></div>
+<div class="ttc" id="amy_header_8h_html_a7f79155bb90ee5ac3e90d1981ae7e009"><div class="ttname"><a href="my_header_8h.html#a7f79155bb90ee5ac3e90d1981ae7e009">eCore</a></div><div class="ttdeci">void eCore(const std::string inputPath, const std::string outputPath, const bool verbose, const bool pedantic, const unsigned int lvTime, const std::string accInputPath, AnyOption &amp;opt, const std::string wd)</div><div class="ttdef"><b>Definition:</b> Core.cpp:5</div></div>
+<div class="ttc" id="amy_header_8h_html_a495cdb4d7de7aa1fc1dc61c50a8ac7d1"><div class="ttname"><a href="my_header_8h.html#a495cdb4d7de7aa1fc1dc61c50a8ac7d1">generateFinalGraph</a></div><div class="ttdeci">void generateFinalGraph(const bool verbose, const bool pedantic, const std::string outputPath, const std::string complete_histo_path, const std::string wd)</div><div class="ttdef"><b>Definition:</b> compute_graph.cpp:9</div></div>
+<div class="ttc" id="amy_header_8h_html_ab30704a0c025187309a16cf563a2bfec"><div class="ttname"><a href="my_header_8h.html#ab30704a0c025187309a16cf563a2bfec">uniqueOutFile</a></div><div class="ttdeci">const std::string uniqueOutFile(const std::string outputPath, AnyOption &amp;opt)</div><div class="ttdef"><b>Definition:</b> unique.cpp:6</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

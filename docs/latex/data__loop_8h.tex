@@ -1,0 +1,106 @@
+\hypertarget{data__loop_8h}{}\doxysection{include/data\+\_\+loop.h File Reference}
+\label{data__loop_8h}\index{include/data\_loop.h@{include/data\_loop.h}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$memory$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include \char`\"{}T\+File.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Tree.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+H1\+D.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Clones\+Array.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Chain.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Bgo\+Container.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Evt\+Header.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Evt\+Simu\+Primaries.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Evt\+Bgo\+Hits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Evt\+Bgo\+Rec.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Stk\+Si\+Cluster.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Stk\+Track.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Evt\+Psd\+Hits.\+h\char`\"{}}\newline
+Include dependency graph for data\+\_\+loop.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__loop_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__loop_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+T\+H1D \mbox{\hyperlink{data__loop_8h_af112558a1e68ddf429a3a5a717371e94}{ev\+Loop}} (const std\+::vector$<$ float $>$ \&log\+E\+Bins, const std\+::string input\+Path, T\+File \&out\+File, const bool verbose, const std\+::string wd)
+\item 
+void \mbox{\hyperlink{data__loop_8h_a4c8f36c25015830285ef0a3faff6dd24}{read\+Input\+Tree}} (const std\+::string input\+Path, std\+::vector$<$ float $>$ \&data\+Values, T\+Tree \&d\+Tree)
+\item 
+std\+::shared\+\_\+ptr$<$ T\+Tree $>$ \mbox{\hyperlink{data__loop_8h_a4dad2fa5c3f831b6073a04c9ab7314e5}{get\+Data\+Tree}} (const std\+::string input\+Path, std\+::vector$<$ float $>$ \&data\+Values)
+\item 
+void \mbox{\hyperlink{data__loop_8h_a8e13cd50cd08af67ca77de2bf8b17cb9}{branch\+Tree}} (T\+Tree \&my\+Data\+Tree, std\+::vector$<$ float $>$ \&data\+Values)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{data__loop_8h_a8e13cd50cd08af67ca77de2bf8b17cb9}\label{data__loop_8h_a8e13cd50cd08af67ca77de2bf8b17cb9}} 
+\index{data\_loop.h@{data\_loop.h}!branchTree@{branchTree}}
+\index{branchTree@{branchTree}!data\_loop.h@{data\_loop.h}}
+\doxysubsubsection{\texorpdfstring{branchTree()}{branchTree()}}
+{\footnotesize\ttfamily void branch\+Tree (\begin{DoxyParamCaption}\item[{T\+Tree \&}]{my\+Data\+Tree,  }\item[{std\+::vector$<$ float $>$ \&}]{data\+Values }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=254pt]{data__loop_8h_a8e13cd50cd08af67ca77de2bf8b17cb9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__loop_8h_af112558a1e68ddf429a3a5a717371e94}\label{data__loop_8h_af112558a1e68ddf429a3a5a717371e94}} 
+\index{data\_loop.h@{data\_loop.h}!evLoop@{evLoop}}
+\index{evLoop@{evLoop}!data\_loop.h@{data\_loop.h}}
+\doxysubsubsection{\texorpdfstring{evLoop()}{evLoop()}}
+{\footnotesize\ttfamily T\+H1D ev\+Loop (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ float $>$ \&}]{log\+E\+Bins,  }\item[{const std\+::string}]{input\+Path,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose,  }\item[{const std\+::string}]{wd }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{data__loop_8h_af112558a1e68ddf429a3a5a717371e94_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__loop_8h_af112558a1e68ddf429a3a5a717371e94_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__loop_8h_a4dad2fa5c3f831b6073a04c9ab7314e5}\label{data__loop_8h_a4dad2fa5c3f831b6073a04c9ab7314e5}} 
+\index{data\_loop.h@{data\_loop.h}!getDataTree@{getDataTree}}
+\index{getDataTree@{getDataTree}!data\_loop.h@{data\_loop.h}}
+\doxysubsubsection{\texorpdfstring{getDataTree()}{getDataTree()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$T\+Tree$>$ get\+Data\+Tree (\begin{DoxyParamCaption}\item[{const std\+::string}]{input\+Path,  }\item[{std\+::vector$<$ float $>$ \&}]{data\+Values }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=254pt]{data__loop_8h_a4dad2fa5c3f831b6073a04c9ab7314e5_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__loop_8h_a4c8f36c25015830285ef0a3faff6dd24}\label{data__loop_8h_a4c8f36c25015830285ef0a3faff6dd24}} 
+\index{data\_loop.h@{data\_loop.h}!readInputTree@{readInputTree}}
+\index{readInputTree@{readInputTree}!data\_loop.h@{data\_loop.h}}
+\doxysubsubsection{\texorpdfstring{readInputTree()}{readInputTree()}}
+{\footnotesize\ttfamily void read\+Input\+Tree (\begin{DoxyParamCaption}\item[{const std\+::string}]{input\+Path,  }\item[{std\+::vector$<$ float $>$ \&}]{data\+Values,  }\item[{T\+Tree \&}]{d\+Tree }\end{DoxyParamCaption})}
+

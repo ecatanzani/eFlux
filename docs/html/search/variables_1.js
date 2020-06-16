@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['cut_5fmax_5fenergy_183',['cut_max_energy',['../structenergy__cuts.html#aff74afdbad719c182613b8b5d84fa54e',1,'energy_cuts']]],
-  ['cut_5fmin_5fenergy_184',['cut_min_energy',['../structenergy__cuts.html#a8c643a8b8ec21a5059036777d0d1275e',1,'energy_cuts']]]
+  ['bgo_5fbottomz_307',['BGO_BottomZ',['../_d_a_m_p_e__geo__structure_8h.html#a0f5cb9863ee2c7db2761809405c625b3',1,'DAMPE_geo_structure.h']]],
+  ['bgo_5ffiducial_308',['BGO_fiducial',['../structdata__active__cuts.html#a741a94505ed27a673f5b4006f00ee416',1,'data_active_cuts']]],
+  ['bgo_5fsidexy_309',['BGO_SideXY',['../_d_a_m_p_e__geo__structure_8h.html#a763424e6269b90052f0b075ef0d51b29',1,'DAMPE_geo_structure.h']]],
+  ['bgo_5ftopz_310',['BGO_TopZ',['../_d_a_m_p_e__geo__structure_8h.html#a4ab7b9f093bc1aa48a7a07f18b722794',1,'DAMPE_geo_structure.h']]]
 ];

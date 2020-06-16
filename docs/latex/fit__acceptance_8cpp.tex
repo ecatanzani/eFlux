@@ -1,0 +1,78 @@
+\hypertarget{fit__acceptance_8cpp}{}\doxysection{source/fit\+\_\+acceptance.cpp File Reference}
+\label{fit__acceptance_8cpp}\index{source/fit\_acceptance.cpp@{source/fit\_acceptance.cpp}}
+{\ttfamily \#include \char`\"{}acceptance\+\_\+fit.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+String.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Graph.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$memory$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$numeric$>$}\newline
+Include dependency graph for fit\+\_\+acceptance.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{fit__acceptance_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{fit__acceptance_8cpp_a503912cc02251121e4925b18bfe7514a}{tmp\+Fit}} (T\+Directory $\ast$acc\+Dir, T\+F1 \&my\+Fitter, T\+Graph\+Asymm\+Errors $\ast$acceptance, const bool verbose, const bool base\+Fit, const unsigned int fit\+Number)
+\item 
+void \mbox{\hyperlink{fit__acceptance_8cpp_aedf77a4ac0f37f1a467d8288929baa4b}{set\+Starting\+Parameters}} (const T\+F1 \&old\+Fitter, T\+F1 \&new\+Fitter, const unsigned int n\+Old\+Pars, const unsigned int n\+New\+Pars)
+\item 
+T\+F1 \mbox{\hyperlink{fit__acceptance_8cpp_a4d552c96727393f61ab1c921046a9989}{fit\+Acceptance}} (T\+Graph\+Asymm\+Errors $\ast$final\+Acceptance, T\+File \&out\+File, const bool verbose)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{fit__acceptance_8cpp_a4d552c96727393f61ab1c921046a9989}\label{fit__acceptance_8cpp_a4d552c96727393f61ab1c921046a9989}} 
+\index{fit\_acceptance.cpp@{fit\_acceptance.cpp}!fitAcceptance@{fitAcceptance}}
+\index{fitAcceptance@{fitAcceptance}!fit\_acceptance.cpp@{fit\_acceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{fitAcceptance()}{fitAcceptance()}}
+{\footnotesize\ttfamily T\+F1 fit\+Acceptance (\begin{DoxyParamCaption}\item[{T\+Graph\+Asymm\+Errors $\ast$}]{final\+Acceptance,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=308pt]{fit__acceptance_8cpp_a4d552c96727393f61ab1c921046a9989_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{fit__acceptance_8cpp_a4d552c96727393f61ab1c921046a9989_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{fit__acceptance_8cpp_aedf77a4ac0f37f1a467d8288929baa4b}\label{fit__acceptance_8cpp_aedf77a4ac0f37f1a467d8288929baa4b}} 
+\index{fit\_acceptance.cpp@{fit\_acceptance.cpp}!setStartingParameters@{setStartingParameters}}
+\index{setStartingParameters@{setStartingParameters}!fit\_acceptance.cpp@{fit\_acceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{setStartingParameters()}{setStartingParameters()}}
+{\footnotesize\ttfamily void set\+Starting\+Parameters (\begin{DoxyParamCaption}\item[{const T\+F1 \&}]{old\+Fitter,  }\item[{T\+F1 \&}]{new\+Fitter,  }\item[{const unsigned int}]{n\+Old\+Pars,  }\item[{const unsigned int}]{n\+New\+Pars }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{fit__acceptance_8cpp_aedf77a4ac0f37f1a467d8288929baa4b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{fit__acceptance_8cpp_a503912cc02251121e4925b18bfe7514a}\label{fit__acceptance_8cpp_a503912cc02251121e4925b18bfe7514a}} 
+\index{fit\_acceptance.cpp@{fit\_acceptance.cpp}!tmpFit@{tmpFit}}
+\index{tmpFit@{tmpFit}!fit\_acceptance.cpp@{fit\_acceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{tmpFit()}{tmpFit()}}
+{\footnotesize\ttfamily void tmp\+Fit (\begin{DoxyParamCaption}\item[{T\+Directory $\ast$}]{acc\+Dir,  }\item[{T\+F1 \&}]{my\+Fitter,  }\item[{T\+Graph\+Asymm\+Errors $\ast$}]{acceptance,  }\item[{const bool}]{verbose,  }\item[{const bool}]{base\+Fit,  }\item[{const unsigned int}]{fit\+Number }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{fit__acceptance_8cpp_a503912cc02251121e4925b18bfe7514a_icgraph}
+\end{center}
+\end{figure}

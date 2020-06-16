@@ -1,0 +1,235 @@
+\hypertarget{data__cuts_8h}{}\doxysection{include/data\+\_\+cuts.h File Reference}
+\label{data__cuts_8h}\index{include/data\_cuts.h@{include/data\_cuts.h}}
+{\ttfamily \#include $<$memory$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$numeric$>$}\newline
+{\ttfamily \#include \char`\"{}D\+A\+M\+P\+E\+\_\+geo\+\_\+structure.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Clones\+Array.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+H1\+D.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+H2\+D.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Evt\+Bgo\+Rec.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Evt\+Bgo\+Hits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Evt\+Psd\+Hits.\+h\char`\"{}}\newline
+Include dependency graph for data\+\_\+cuts.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}
+\item 
+struct \mbox{\hyperlink{structdata__active__cuts}{data\+\_\+active\+\_\+cuts}}
+\item 
+struct \mbox{\hyperlink{structbest__track}{best\+\_\+track}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_a5a67f1e4b246bbd00a5e035f250e31cc}{check\+B\+G\+Oreco\+\_\+data}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_a6df081020ab86fe508866c8dda294f4c}{geometric\+\_\+cut\+\_\+data}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec)
+\item 
+void \mbox{\hyperlink{data__cuts_8h_a7b6fce6e8d6d18bfb6cde21089c61701}{evaluate\+Top\+Bottom\+Position\+\_\+data}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec, T\+H1D \&h\+\_\+\+B\+G\+Orec\+\_\+slopeX, T\+H1D \&h\+\_\+\+B\+G\+Orec\+\_\+slopeY, T\+H1D \&h\+\_\+\+B\+G\+Orec\+\_\+interceptX, T\+H1D \&h\+\_\+\+B\+G\+Orec\+\_\+interceptY, T\+H2D \&h\+\_\+\+B\+G\+Oreco\+\_\+top\+Map, T\+H2D \&h\+\_\+\+B\+G\+Oreco\+\_\+bottom\+Map)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_a7c60899fb315f53cedc29bd6e4b9c424}{max\+Elayer\+\_\+cut}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} acceptance\+\_\+cuts, const double bgo\+TotalE)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_a660fc53e4ee55f7ccde6849e3c41cdee}{max\+Bar\+Layer\+\_\+cut}} (const std\+::vector$<$ std\+::vector$<$ short $>$$>$ layer\+Bar\+Number, const std\+::vector$<$ int $>$ i\+Max\+Layer, const std\+::vector$<$ int $>$ idx\+Bar\+Max\+Layer)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_ab7137839d42b83a7a35a344094966e1a}{B\+G\+O\+Track\+Containment\+\_\+cut}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} data\+\_\+cuts)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_ad55d6ae54a9620c4a54b44e10db71cce}{B\+G\+O\+Track\+Containment\+\_\+top\+\_\+cut}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} data\+\_\+cuts)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_a7b228cbf9790d6e77c324893024ff4a1}{n\+Bar\+Layer13\+\_\+cut}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Hits $>$ bgohits, const std\+::vector$<$ short $>$ layer\+Bar\+Number, const double bgo\+TotalE)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_af0246c8563a18a5baab8b832b35b3d5e}{max\+Rms\+\_\+cut}} (const std\+::vector$<$ std\+::vector$<$ short $>$$>$ layer\+Bar\+Number, const std\+::vector$<$ double $>$ rms\+Layer, const double bgo\+TotalE, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} data\+\_\+cuts)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_a736d83d9d6327d06647febf87d34897c}{track\+\_\+selection\+\_\+cut}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec, const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Hits $>$ bgohits, const std\+::shared\+\_\+ptr$<$ T\+Clones\+Array $>$ stkclusters, const std\+::shared\+\_\+ptr$<$ T\+Clones\+Array $>$ stktracks, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} data\+\_\+cuts, \mbox{\hyperlink{structbest__track}{best\+\_\+track}} \&event\+\_\+best\+\_\+track)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_a9424648bcaa0b9c29608a47c8029126c}{xtrl\+\_\+cut}} (const double sum\+Rms, const std\+::vector$<$ double $>$ frac\+Layer, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} data\+\_\+cuts)
+\item 
+bool \mbox{\hyperlink{data__cuts_8h_aceb51aedbd5e8885c629030a1f094619}{psd\+\_\+charge\+\_\+cut}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Psd\+Hits $>$ psdhits, const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} acceptance\+\_\+cuts, const \mbox{\hyperlink{structbest__track}{best\+\_\+track}} data\+\_\+cuts)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{data__cuts_8h_ab7137839d42b83a7a35a344094966e1a}\label{data__cuts_8h_ab7137839d42b83a7a35a344094966e1a}} 
+\index{data\_cuts.h@{data\_cuts.h}!BGOTrackContainment\_cut@{BGOTrackContainment\_cut}}
+\index{BGOTrackContainment\_cut@{BGOTrackContainment\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{BGOTrackContainment\_cut()}{BGOTrackContainment\_cut()}}
+{\footnotesize\ttfamily bool B\+G\+O\+Track\+Containment\+\_\+cut (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}}]{data\+\_\+cuts }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_ab7137839d42b83a7a35a344094966e1a_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_ad55d6ae54a9620c4a54b44e10db71cce}\label{data__cuts_8h_ad55d6ae54a9620c4a54b44e10db71cce}} 
+\index{data\_cuts.h@{data\_cuts.h}!BGOTrackContainment\_top\_cut@{BGOTrackContainment\_top\_cut}}
+\index{BGOTrackContainment\_top\_cut@{BGOTrackContainment\_top\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{BGOTrackContainment\_top\_cut()}{BGOTrackContainment\_top\_cut()}}
+{\footnotesize\ttfamily bool B\+G\+O\+Track\+Containment\+\_\+top\+\_\+cut (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}}]{data\+\_\+cuts }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{data__cuts_8h_a5a67f1e4b246bbd00a5e035f250e31cc}\label{data__cuts_8h_a5a67f1e4b246bbd00a5e035f250e31cc}} 
+\index{data\_cuts.h@{data\_cuts.h}!checkBGOreco\_data@{checkBGOreco\_data}}
+\index{checkBGOreco\_data@{checkBGOreco\_data}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{checkBGOreco\_data()}{checkBGOreco\_data()}}
+{\footnotesize\ttfamily bool check\+B\+G\+Oreco\+\_\+data (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_a5a67f1e4b246bbd00a5e035f250e31cc_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_a7b6fce6e8d6d18bfb6cde21089c61701}\label{data__cuts_8h_a7b6fce6e8d6d18bfb6cde21089c61701}} 
+\index{data\_cuts.h@{data\_cuts.h}!evaluateTopBottomPosition\_data@{evaluateTopBottomPosition\_data}}
+\index{evaluateTopBottomPosition\_data@{evaluateTopBottomPosition\_data}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{evaluateTopBottomPosition\_data()}{evaluateTopBottomPosition\_data()}}
+{\footnotesize\ttfamily void evaluate\+Top\+Bottom\+Position\+\_\+data (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec,  }\item[{T\+H1D \&}]{h\+\_\+\+B\+G\+Orec\+\_\+slopeX,  }\item[{T\+H1D \&}]{h\+\_\+\+B\+G\+Orec\+\_\+slopeY,  }\item[{T\+H1D \&}]{h\+\_\+\+B\+G\+Orec\+\_\+interceptX,  }\item[{T\+H1D \&}]{h\+\_\+\+B\+G\+Orec\+\_\+interceptY,  }\item[{T\+H2D \&}]{h\+\_\+\+B\+G\+Oreco\+\_\+top\+Map,  }\item[{T\+H2D \&}]{h\+\_\+\+B\+G\+Oreco\+\_\+bottom\+Map }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_a7b6fce6e8d6d18bfb6cde21089c61701_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_a6df081020ab86fe508866c8dda294f4c}\label{data__cuts_8h_a6df081020ab86fe508866c8dda294f4c}} 
+\index{data\_cuts.h@{data\_cuts.h}!geometric\_cut\_data@{geometric\_cut\_data}}
+\index{geometric\_cut\_data@{geometric\_cut\_data}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{geometric\_cut\_data()}{geometric\_cut\_data()}}
+{\footnotesize\ttfamily bool geometric\+\_\+cut\+\_\+data (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_a6df081020ab86fe508866c8dda294f4c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_a660fc53e4ee55f7ccde6849e3c41cdee}\label{data__cuts_8h_a660fc53e4ee55f7ccde6849e3c41cdee}} 
+\index{data\_cuts.h@{data\_cuts.h}!maxBarLayer\_cut@{maxBarLayer\_cut}}
+\index{maxBarLayer\_cut@{maxBarLayer\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{maxBarLayer\_cut()}{maxBarLayer\_cut()}}
+{\footnotesize\ttfamily bool max\+Bar\+Layer\+\_\+cut (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ std\+::vector$<$ short $>$$>$}]{layer\+Bar\+Number,  }\item[{const std\+::vector$<$ int $>$}]{i\+Max\+Layer,  }\item[{const std\+::vector$<$ int $>$}]{idx\+Bar\+Max\+Layer }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_a660fc53e4ee55f7ccde6849e3c41cdee_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_a7c60899fb315f53cedc29bd6e4b9c424}\label{data__cuts_8h_a7c60899fb315f53cedc29bd6e4b9c424}} 
+\index{data\_cuts.h@{data\_cuts.h}!maxElayer\_cut@{maxElayer\_cut}}
+\index{maxElayer\_cut@{maxElayer\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{maxElayer\_cut()}{maxElayer\_cut()}}
+{\footnotesize\ttfamily bool max\+Elayer\+\_\+cut (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}}]{acceptance\+\_\+cuts,  }\item[{const double}]{bgo\+TotalE }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_a7c60899fb315f53cedc29bd6e4b9c424_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_af0246c8563a18a5baab8b832b35b3d5e}\label{data__cuts_8h_af0246c8563a18a5baab8b832b35b3d5e}} 
+\index{data\_cuts.h@{data\_cuts.h}!maxRms\_cut@{maxRms\_cut}}
+\index{maxRms\_cut@{maxRms\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{maxRms\_cut()}{maxRms\_cut()}}
+{\footnotesize\ttfamily bool max\+Rms\+\_\+cut (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ std\+::vector$<$ short $>$$>$}]{layer\+Bar\+Number,  }\item[{const std\+::vector$<$ double $>$}]{rms\+Layer,  }\item[{const double}]{bgo\+TotalE,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}}]{data\+\_\+cuts }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_af0246c8563a18a5baab8b832b35b3d5e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_a7b228cbf9790d6e77c324893024ff4a1}\label{data__cuts_8h_a7b228cbf9790d6e77c324893024ff4a1}} 
+\index{data\_cuts.h@{data\_cuts.h}!nBarLayer13\_cut@{nBarLayer13\_cut}}
+\index{nBarLayer13\_cut@{nBarLayer13\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{nBarLayer13\_cut()}{nBarLayer13\_cut()}}
+{\footnotesize\ttfamily bool n\+Bar\+Layer13\+\_\+cut (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Hits $>$}]{bgohits,  }\item[{const std\+::vector$<$ short $>$}]{layer\+Bar\+Number,  }\item[{const double}]{bgo\+TotalE }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_a7b228cbf9790d6e77c324893024ff4a1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_aceb51aedbd5e8885c629030a1f094619}\label{data__cuts_8h_aceb51aedbd5e8885c629030a1f094619}} 
+\index{data\_cuts.h@{data\_cuts.h}!psd\_charge\_cut@{psd\_charge\_cut}}
+\index{psd\_charge\_cut@{psd\_charge\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{psd\_charge\_cut()}{psd\_charge\_cut()}}
+{\footnotesize\ttfamily bool psd\+\_\+charge\+\_\+cut (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Psd\+Hits $>$}]{psdhits,  }\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}}]{acceptance\+\_\+cuts,  }\item[{const \mbox{\hyperlink{structbest__track}{best\+\_\+track}}}]{data\+\_\+cuts }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_aceb51aedbd5e8885c629030a1f094619_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_a736d83d9d6327d06647febf87d34897c}\label{data__cuts_8h_a736d83d9d6327d06647febf87d34897c}} 
+\index{data\_cuts.h@{data\_cuts.h}!track\_selection\_cut@{track\_selection\_cut}}
+\index{track\_selection\_cut@{track\_selection\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{track\_selection\_cut()}{track\_selection\_cut()}}
+{\footnotesize\ttfamily bool track\+\_\+selection\+\_\+cut (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec,  }\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Hits $>$}]{bgohits,  }\item[{const std\+::shared\+\_\+ptr$<$ T\+Clones\+Array $>$}]{stkclusters,  }\item[{const std\+::shared\+\_\+ptr$<$ T\+Clones\+Array $>$}]{stktracks,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}}]{data\+\_\+cuts,  }\item[{\mbox{\hyperlink{structbest__track}{best\+\_\+track}} \&}]{event\+\_\+best\+\_\+track }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=309pt]{data__cuts_8h_a736d83d9d6327d06647febf87d34897c_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_a736d83d9d6327d06647febf87d34897c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{data__cuts_8h_a9424648bcaa0b9c29608a47c8029126c}\label{data__cuts_8h_a9424648bcaa0b9c29608a47c8029126c}} 
+\index{data\_cuts.h@{data\_cuts.h}!xtrl\_cut@{xtrl\_cut}}
+\index{xtrl\_cut@{xtrl\_cut}!data\_cuts.h@{data\_cuts.h}}
+\doxysubsubsection{\texorpdfstring{xtrl\_cut()}{xtrl\_cut()}}
+{\footnotesize\ttfamily bool xtrl\+\_\+cut (\begin{DoxyParamCaption}\item[{const double}]{sum\+Rms,  }\item[{const std\+::vector$<$ double $>$}]{frac\+Layer,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}}]{data\+\_\+cuts }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{data__cuts_8h_a9424648bcaa0b9c29608a47c8029126c_icgraph}
+\end{center}
+\end{figure}

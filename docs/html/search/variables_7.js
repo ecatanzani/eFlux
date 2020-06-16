@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['track_5fmissinghit_5fx_200',['track_missingHit_X',['../structacceptance__conf.html#a2243bb72f58ed5df9aadaf4375d4c106',1,'acceptance_conf']]],
-  ['track_5fmissinghit_5fy_201',['track_missingHit_Y',['../structacceptance__conf.html#af9935d5bffe844191e59e50fbfa6967a',1,'acceptance_conf']]],
-  ['track_5fselection_202',['track_selection',['../structacceptance__active__cuts.html#ab87af0184b8f59f353f9881700f4ad38',1,'acceptance_active_cuts']]],
-  ['track_5fx_5fclusters_203',['track_X_clusters',['../structacceptance__conf.html#a37b3bc4898420fac98375ba7d4796cd4',1,'acceptance_conf']]],
-  ['track_5fy_5fclusters_204',['track_Y_clusters',['../structacceptance__conf.html#a9e806078d9f7a135cd977db07bfb63c4',1,'acceptance_conf']]]
+  ['n_5fholes_323',['n_holes',['../structbest__track.html#a848112ffa521e633dd94469cddfcabc9',1,'best_track']]],
+  ['n_5fpoints_324',['n_points',['../structbest__track.html#af76bf57fd0b69c9ebe6f0bee2041f381',1,'best_track']]],
+  ['nactivecuts_325',['nActiveCuts',['../structdata__active__cuts.html#a89ab8d8d9768a22da38e6eabf23b465b',1,'data_active_cuts']]],
+  ['nbarlayer13_326',['nBarLayer13',['../structdata__active__cuts.html#a0b8ed9eb7b93ba2789a8451a3103c7fd',1,'data_active_cuts']]],
+  ['nstkladders_327',['nSTKladders',['../_d_a_m_p_e__geo__structure_8h.html#a43768e5b9de09cabece01f38cbc53e60',1,'DAMPE_geo_structure.h']]]
 ];

@@ -1,0 +1,82 @@
+\hypertarget{energy__match_8cpp}{}\doxysection{source/energy\+\_\+match.cpp File Reference}
+\label{energy__match_8cpp}\index{source/energy\_match.cpp@{source/energy\_match.cpp}}
+{\ttfamily \#include \char`\"{}energy\+\_\+match.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}read\+\_\+sets\+\_\+config\+\_\+file.\+h\char`\"{}}\newline
+Include dependency graph for energy\+\_\+match.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{energy__match_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{energy__match_8cpp_a34d36e25adbe5a3d2b5cfe314a4a5855}{allocate\+Particle\+Energy}} (std\+::vector$<$ unsigned int $>$ \&counts, const std\+::vector$<$ float $>$ \&log\+E\+Bins, const double totalE)
+\item 
+int \mbox{\hyperlink{energy__match_8cpp_a1dc7ee0f3148dde99cb197c8b2868946}{linear\+Search}} (const std\+::vector$<$ float $>$ \&log\+E\+Bins, const double energy)
+\item 
+int \mbox{\hyperlink{energy__match_8cpp_aa8c258e3d89ab6d38a354cfb25c74559}{binary\+Search}} (const std\+::vector$<$ float $>$ \&log\+E\+Bins, int l, int r, const double energy)
+\item 
+int \mbox{\hyperlink{energy__match_8cpp_a7f7692c87c58626c0c743d3677e901bc}{get\+Input\+Power\+Law\+Index}} (const double l\+Energy, const double h\+Energy, const \mbox{\hyperlink{structdata__set__conf}{data\+\_\+set\+\_\+conf}} input\+\_\+sets)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{energy__match_8cpp_a34d36e25adbe5a3d2b5cfe314a4a5855}\label{energy__match_8cpp_a34d36e25adbe5a3d2b5cfe314a4a5855}} 
+\index{energy\_match.cpp@{energy\_match.cpp}!allocateParticleEnergy@{allocateParticleEnergy}}
+\index{allocateParticleEnergy@{allocateParticleEnergy}!energy\_match.cpp@{energy\_match.cpp}}
+\doxysubsubsection{\texorpdfstring{allocateParticleEnergy()}{allocateParticleEnergy()}}
+{\footnotesize\ttfamily void allocate\+Particle\+Energy (\begin{DoxyParamCaption}\item[{std\+::vector$<$ unsigned int $>$ \&}]{counts,  }\item[{const std\+::vector$<$ float $>$ \&}]{log\+E\+Bins,  }\item[{const double}]{totalE }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=306pt]{energy__match_8cpp_a34d36e25adbe5a3d2b5cfe314a4a5855_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{energy__match_8cpp_aa8c258e3d89ab6d38a354cfb25c74559}\label{energy__match_8cpp_aa8c258e3d89ab6d38a354cfb25c74559}} 
+\index{energy\_match.cpp@{energy\_match.cpp}!binarySearch@{binarySearch}}
+\index{binarySearch@{binarySearch}!energy\_match.cpp@{energy\_match.cpp}}
+\doxysubsubsection{\texorpdfstring{binarySearch()}{binarySearch()}}
+{\footnotesize\ttfamily int binary\+Search (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ float $>$ \&}]{log\+E\+Bins,  }\item[{int}]{l,  }\item[{int}]{r,  }\item[{const double}]{energy }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=155pt]{energy__match_8cpp_aa8c258e3d89ab6d38a354cfb25c74559_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{energy__match_8cpp_aa8c258e3d89ab6d38a354cfb25c74559_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{energy__match_8cpp_a7f7692c87c58626c0c743d3677e901bc}\label{energy__match_8cpp_a7f7692c87c58626c0c743d3677e901bc}} 
+\index{energy\_match.cpp@{energy\_match.cpp}!getInputPowerLawIndex@{getInputPowerLawIndex}}
+\index{getInputPowerLawIndex@{getInputPowerLawIndex}!energy\_match.cpp@{energy\_match.cpp}}
+\doxysubsubsection{\texorpdfstring{getInputPowerLawIndex()}{getInputPowerLawIndex()}}
+{\footnotesize\ttfamily int get\+Input\+Power\+Law\+Index (\begin{DoxyParamCaption}\item[{const double}]{l\+Energy,  }\item[{const double}]{h\+Energy,  }\item[{const \mbox{\hyperlink{structdata__set__conf}{data\+\_\+set\+\_\+conf}}}]{input\+\_\+sets }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{energy__match_8cpp_a7f7692c87c58626c0c743d3677e901bc_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{energy__match_8cpp_a1dc7ee0f3148dde99cb197c8b2868946}\label{energy__match_8cpp_a1dc7ee0f3148dde99cb197c8b2868946}} 
+\index{energy\_match.cpp@{energy\_match.cpp}!linearSearch@{linearSearch}}
+\index{linearSearch@{linearSearch}!energy\_match.cpp@{energy\_match.cpp}}
+\doxysubsubsection{\texorpdfstring{linearSearch()}{linearSearch()}}
+{\footnotesize\ttfamily int linear\+Search (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ float $>$ \&}]{log\+E\+Bins,  }\item[{const double}]{energy }\end{DoxyParamCaption})}
+

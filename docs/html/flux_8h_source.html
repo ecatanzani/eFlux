@@ -80,18 +80,32 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;TFile.h&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="flux_8h.html#a1f5f24865e651ac7d408fbd288ec981a">buildXtrlFlux</a>(</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">const</span> std::vector&lt;float&gt; &amp;eBins,</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lvTime,</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    TFile &amp;outFile,</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">const</span> std::string accInputPath);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;TH1D.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;TH2D.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="data__cuts_8h.html">data_cuts.h</a>&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="flux_8h.html#ae53cb993dbf9e8f7471b0d2597c3116f">buildFlux</a>(</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">const</span> std::vector&lt;float&gt; &amp;logEBins,</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> lvTime,</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    TFile &amp;outFile,</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">const</span> std::string accInputPath,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="flux_8h.html#a6d9196a8b3074c0430193f12aaa83afc">load_flux_struct</a>(</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="structcuts__conf.html">cuts_conf</a> &amp;flux_cuts,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="structdata__active__cuts.html">data_active_cuts</a> &amp;active_cuts,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aflux_8h_html_a1f5f24865e651ac7d408fbd288ec981a"><div class="ttname"><a href="flux_8h.html#a1f5f24865e651ac7d408fbd288ec981a">buildXtrlFlux</a></div><div class="ttdeci">void buildXtrlFlux(const std::vector&lt; float &gt; &amp;eBins, const std::string inputPath, const unsigned int lvTime, TFile &amp;outFile, const bool verbose, const std::string accInputPath)</div><div class="ttdef"><b>Definition:</b> eFlux.cpp:6</div></div>
+<div class="ttc" id="aflux_8h_html_ae53cb993dbf9e8f7471b0d2597c3116f"><div class="ttname"><a href="flux_8h.html#ae53cb993dbf9e8f7471b0d2597c3116f">buildFlux</a></div><div class="ttdeci">void buildFlux(const std::vector&lt; float &gt; &amp;logEBins, const std::string inputPath, const unsigned int lvTime, TFile &amp;outFile, const bool verbose, const std::string accInputPath, const std::string wd)</div><div class="ttdef"><b>Definition:</b> eFlux.cpp:6</div></div>
+<div class="ttc" id="astructdata__active__cuts_html"><div class="ttname"><a href="structdata__active__cuts.html">data_active_cuts</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:38</div></div>
+<div class="ttc" id="aflux_8h_html_a6d9196a8b3074c0430193f12aaa83afc"><div class="ttname"><a href="flux_8h.html#a6d9196a8b3074c0430193f12aaa83afc">load_flux_struct</a></div><div class="ttdeci">void load_flux_struct(cuts_conf &amp;flux_cuts, data_active_cuts &amp;active_cuts, const std::string wd)</div><div class="ttdef"><b>Definition:</b> read_flux_config_file.cpp:6</div></div>
+<div class="ttc" id="adata__cuts_8h_html"><div class="ttname"><a href="data__cuts_8h.html">data_cuts.h</a></div></div>
+<div class="ttc" id="astructcuts__conf_html"><div class="ttname"><a href="structcuts__conf.html">cuts_conf</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:19</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

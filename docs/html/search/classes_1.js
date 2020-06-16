@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['energy_5fcuts_109',['energy_cuts',['../structenergy__cuts.html',1,'']]]
+  ['cuts_5fconf_178',['cuts_conf',['../structcuts__conf.html',1,'']]]
 ];

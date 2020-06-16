@@ -1,12 +1,9 @@
 var searchData=
 [
-  ['e_5fbins_32',['e_bins',['../structenergy__cuts.html#a04fda1e72e66498404bec02f0fdefcc1',1,'energy_cuts']]],
-  ['ecore_33',['eCore',['../_core_8cpp.html#a7f79155bb90ee5ac3e90d1981ae7e009',1,'eCore(const std::string inputPath, const std::string outputPath, const bool verbose, const bool pedantic, const unsigned int lvTime, const std::string accInputPath, AnyOption &amp;opt, const std::string wd):&#160;Core.cpp'],['../my_header_8h.html#a7f79155bb90ee5ac3e90d1981ae7e009',1,'eCore(const std::string inputPath, const std::string outputPath, const bool verbose, const bool pedantic, const unsigned int lvTime, const std::string accInputPath, AnyOption &amp;opt, const std::string wd):&#160;Core.cpp']]],
-  ['eflux_2ecpp_34',['eFlux.cpp',['../e_flux_8cpp.html',1,'']]],
-  ['energy_5fcuts_35',['energy_cuts',['../structenergy__cuts.html',1,'']]],
-  ['energy_5flratio_36',['energy_lRatio',['../structacceptance__conf.html#a122e526b676c6763947e1129c310de2a',1,'acceptance_conf']]],
-  ['energymatch_2ecpp_37',['energyMatch.cpp',['../energy_match_8cpp.html',1,'']]],
-  ['energymatch_2eh_38',['energyMatch.h',['../energy_match_8h.html',1,'']]],
-  ['eventloop_2ecpp_39',['eventLoop.cpp',['../event_loop_8cpp.html',1,'']]],
-  ['evloop_40',['evLoop',['../event_loop_8cpp.html#ae44cad95edd62aeab8e3bba259e6b407',1,'evLoop(const std::vector&lt; float &gt; &amp;eBins, const std::string inputPath, TFile &amp;outFile, const bool verbose, const bool eClassifier, const double xtrlCut):&#160;eventLoop.cpp'],['../data_loop_8h.html#a9892b2c3af2ebd6c690100a334596705',1,'evLoop(const std::vector&lt; float &gt; &amp;eBins, const std::string inputPath, TFile &amp;outFile, const bool verbose, const bool eClassifier=false, const double xtrlCut=8.5):&#160;eventLoop.cpp']]]
+  ['fill_5fbgo_5fvectors_66',['fill_BGO_vectors',['../data__cuts_8cpp.html#a637888f241984d0a2d496dbea472d7f6',1,'data_cuts.cpp']]],
+  ['fillexternalmap_67',['fillExternalMap',['../acceptance__cuts_8cpp.html#a2cdea51103f3543c27608f4f7afcfbf5',1,'fillExternalMap(const std::shared_ptr&lt; DmpEvtSimuPrimaries &gt; simu_primaries, TH2D &amp;h_noBGOenergy_real_topMap):&#160;acceptance_cuts.cpp'],['../acceptance__cuts_8h.html#a2cdea51103f3543c27608f4f7afcfbf5',1,'fillExternalMap(const std::shared_ptr&lt; DmpEvtSimuPrimaries &gt; simu_primaries, TH2D &amp;h_noBGOenergy_real_topMap):&#160;acceptance_cuts.cpp']]],
+  ['fit_5facceptance_2ecpp_68',['fit_acceptance.cpp',['../fit__acceptance_8cpp.html',1,'']]],
+  ['fitacceptance_69',['fitAcceptance',['../fit__acceptance_8cpp.html#a4d552c96727393f61ab1c921046a9989',1,'fitAcceptance(TGraphAsymmErrors *finalAcceptance, TFile &amp;outFile, const bool verbose):&#160;fit_acceptance.cpp'],['../acceptance__fit_8h.html#a4d552c96727393f61ab1c921046a9989',1,'fitAcceptance(TGraphAsymmErrors *finalAcceptance, TFile &amp;outFile, const bool verbose):&#160;fit_acceptance.cpp']]],
+  ['fitting_5ffunctions_2ecpp_70',['fitting_functions.cpp',['../fitting__functions_8cpp.html',1,'']]],
+  ['flux_2eh_71',['flux.h',['../flux_8h.html',1,'']]]
 ];

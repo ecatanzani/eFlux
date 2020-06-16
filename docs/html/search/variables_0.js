@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['bgotrackcontainment_182',['BGOTrackContainment',['../structacceptance__active__cuts.html#a94321f042513451fd44e934e558ea67b',1,'acceptance_active_cuts']]]
+  ['angular_5fdistance_5fstk_5fbgo_306',['angular_distance_STK_BGO',['../structbest__track.html#a5cd1fc0464b9d51fef039cb67903f62a',1,'best_track']]]
 ];

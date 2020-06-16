@@ -1,0 +1,79 @@
+\hypertarget{event__loop_8cpp}{}\doxysection{source/event\+\_\+loop.cpp File Reference}
+\label{event__loop_8cpp}\index{source/event\_loop.cpp@{source/event\_loop.cpp}}
+{\ttfamily \#include \char`\"{}data\+\_\+loop.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}aggregate\+\_\+events.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}read\+\_\+sets\+\_\+config\+\_\+file.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}data\+\_\+cuts.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}B\+G\+O\+\_\+energy\+\_\+cuts.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}flux.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}wtsydp.\+h\char`\"{}}\newline
+Include dependency graph for event\+\_\+loop.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{event__loop_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{event__loop_8cpp_aa00f68506ced7afef10cbe9c32991dea}{init\+\_\+\+B\+G\+O\+\_\+histos}} (std\+::vector$<$ T\+H1D $>$ \&h\+\_\+layer\+\_\+energy\+\_\+ratio)
+\item 
+void \mbox{\hyperlink{event__loop_8cpp_a48dfbc1bef50d2a8bbbbbff4a6dad425}{update\+Process\+Status}} (const int ev\+Idx, int \&k\+Step, const int nevents)
+\item 
+T\+H1D \mbox{\hyperlink{event__loop_8cpp_af112558a1e68ddf429a3a5a717371e94}{ev\+Loop}} (const std\+::vector$<$ float $>$ \&log\+E\+Bins, const std\+::string input\+Path, T\+File \&out\+File, const bool verbose, const std\+::string wd)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{event__loop_8cpp_af112558a1e68ddf429a3a5a717371e94}\label{event__loop_8cpp_af112558a1e68ddf429a3a5a717371e94}} 
+\index{event\_loop.cpp@{event\_loop.cpp}!evLoop@{evLoop}}
+\index{evLoop@{evLoop}!event\_loop.cpp@{event\_loop.cpp}}
+\doxysubsubsection{\texorpdfstring{evLoop()}{evLoop()}}
+{\footnotesize\ttfamily T\+H1D ev\+Loop (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ float $>$ \&}]{log\+E\+Bins,  }\item[{const std\+::string}]{input\+Path,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose,  }\item[{const std\+::string}]{wd }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{event__loop_8cpp_af112558a1e68ddf429a3a5a717371e94_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{event__loop_8cpp_af112558a1e68ddf429a3a5a717371e94_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{event__loop_8cpp_aa00f68506ced7afef10cbe9c32991dea}\label{event__loop_8cpp_aa00f68506ced7afef10cbe9c32991dea}} 
+\index{event\_loop.cpp@{event\_loop.cpp}!init\_BGO\_histos@{init\_BGO\_histos}}
+\index{init\_BGO\_histos@{init\_BGO\_histos}!event\_loop.cpp@{event\_loop.cpp}}
+\doxysubsubsection{\texorpdfstring{init\_BGO\_histos()}{init\_BGO\_histos()}}
+{\footnotesize\ttfamily void init\+\_\+\+B\+G\+O\+\_\+histos (\begin{DoxyParamCaption}\item[{std\+::vector$<$ T\+H1D $>$ \&}]{h\+\_\+layer\+\_\+energy\+\_\+ratio }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{event__loop_8cpp_aa00f68506ced7afef10cbe9c32991dea_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{event__loop_8cpp_a48dfbc1bef50d2a8bbbbbff4a6dad425}\label{event__loop_8cpp_a48dfbc1bef50d2a8bbbbbff4a6dad425}} 
+\index{event\_loop.cpp@{event\_loop.cpp}!updateProcessStatus@{updateProcessStatus}}
+\index{updateProcessStatus@{updateProcessStatus}!event\_loop.cpp@{event\_loop.cpp}}
+\doxysubsubsection{\texorpdfstring{updateProcessStatus()}{updateProcessStatus()}}
+{\footnotesize\ttfamily void update\+Process\+Status (\begin{DoxyParamCaption}\item[{const int}]{ev\+Idx,  }\item[{int \&}]{k\+Step,  }\item[{const int}]{nevents }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{event__loop_8cpp_a48dfbc1bef50d2a8bbbbbff4a6dad425_icgraph}
+\end{center}
+\end{figure}

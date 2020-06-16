@@ -77,68 +77,55 @@ $(function() {
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;TVector3.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="acceptance_8h.html">acceptance.h</a>&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;TH1D.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;TH2D.h&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoHits.h&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoRec.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;DmpEvtSimuPrimaries.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">// DAMPE struct</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="acceptance__cuts_8h.html#adb933d51a68247208516004a615ea6fa">   16</a></span>&#160;<span class="preprocessor">#define DAMPE_bgo_nLayers 14</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="acceptance_8h.html">acceptance.h</a>&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="data__cuts_8h.html">data_cuts.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">// DAMPESW includes</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;DmpEvtSimuPrimaries.h&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoRec.h&quot;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#ac0901bf2f8e6f7f093cd391274310b75">maxElater_cut</a>(</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoRec&gt; bgorec,</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">const</span> <a class="code" href="structacceptance__conf.html">acceptance_conf</a> &amp;acceptance_cuts,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> bgoTotalE);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#a836c2135b163aaba2b7cdb5d067e22a1">maxBarLayer_cut</a>(</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoHits&gt; bgohits,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">int</span> nBgoHits);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#a78911980d946ac66cba4c2f53686446a">BGOTrackContainment_cut</a>(</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoRec&gt; bgorec,</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">const</span> <a class="code" href="structacceptance__conf.html">acceptance_conf</a> &amp;acceptance_cuts,</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">bool</span> &amp;passEvent);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#aa4fd5f5f5b518390b85e58eb381cac0a">nBarLayer13_cut</a>(</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoHits&gt; bgohits,</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">const</span> std::vector&lt;short&gt; &amp;layerBarNumber,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> bgoTotalE);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#a5838ccbd4939ebf3a0a56e27616d465f">maxRms_cut</a>(</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">const</span> std::vector&lt;std::vector&lt;short&gt;&gt; &amp;layerBarNumber, </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">const</span> std::vector&lt;double&gt; &amp;rmsLayer, </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> bgoTotalE,</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">const</span> <a class="code" href="structacceptance__conf.html">acceptance_conf</a> &amp;acceptance_cuts);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#a0be42c053ace45416699a40d84840005">track_selection_cut</a>(</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoRec&gt; bgorec,</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    TClonesArray* stkclusters,</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    TClonesArray* stktracks, </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">const</span> <a class="code" href="structacceptance__conf.html">acceptance_conf</a> &amp;acceptance_cuts);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#a55df7ca64786b164d0420bfb2e165574">xtrl_cut</a>(</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> sumRms,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">const</span> std::vector&lt;double&gt; fracLayer,</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">const</span> <a class="code" href="structacceptance__conf.html">acceptance_conf</a> &amp;acceptance_cuts);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#abba1ca98a40fca550048c5d2192e85fe">psd_charge_cut</a>(</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtPsdHits&gt; psdhits, </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">const</span> <a class="code" href="structacceptance__conf.html">acceptance_conf</a> &amp;acceptance_cuts);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#aa8745529a1d51f2522ad43355d86fd0d">geometric_cut</a>(<span class="keyword">const</span> std::shared_ptr&lt;DmpEvtSimuPrimaries&gt; simu_primaries);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#aa318b19a0bf0fffd20ae336e061c8c5b">geometric_top_cut</a>(<span class="keyword">const</span> std::shared_ptr&lt;DmpEvtSimuPrimaries&gt; simu_primaries);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">// Analysis functions</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="acceptance__cuts_8h.html#a068539593e7351ebbe0254b2829391c5">evaluateTopBottomPosition</a>(</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtSimuPrimaries&gt; simu_primaries,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoRec&gt; bgorec,</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    TH1D &amp;h_BGOrec_topX_vs_realX,</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    TH1D &amp;h_BGOrec_topY_vs_realY,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    TH1D &amp;h_real_slopeX,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    TH1D &amp;h_real_slopeY,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    TH1D &amp;h_BGOrec_slopeX,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    TH1D &amp;h_BGOrec_slopeY,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    TH1D &amp;h_real_interceptX,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    TH1D &amp;h_real_interceptY,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    TH1D &amp;h_BGOrec_interceptX,</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    TH1D &amp;h_BGOrec_interceptY,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    TH2D &amp;h_real_topMap,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    TH2D &amp;h_BGOreco_topMap,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    TH2D &amp;h_real_bottomMap,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    TH2D &amp;h_BGOreco_bottomMap);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="acceptance__cuts_8h.html#a14674768a0dbbfb64e382b19f36e4c69">checkBGOreco</a>(</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoRec&gt; bgorec,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtSimuPrimaries&gt; simu_primaries);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="acceptance__cuts_8h.html#a2cdea51103f3543c27608f4f7afcfbf5">fillExternalMap</a>(</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtSimuPrimaries&gt; simu_primaries, </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    TH2D &amp;h_noBGOenergy_real_topMap);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aacceptance__cuts_8h_html_aa4fd5f5f5b518390b85e58eb381cac0a"><div class="ttname"><a href="acceptance__cuts_8h.html#aa4fd5f5f5b518390b85e58eb381cac0a">nBarLayer13_cut</a></div><div class="ttdeci">bool nBarLayer13_cut(const std::shared_ptr&lt; DmpEvtBgoHits &gt; bgohits, const std::vector&lt; short &gt; &amp;layerBarNumber, const double bgoTotalE)</div><div class="ttdef"><b>Definition:</b> acceptanceCuts.cpp:100</div></div>
-<div class="ttc" id="aacceptance__cuts_8h_html_a55df7ca64786b164d0420bfb2e165574"><div class="ttname"><a href="acceptance__cuts_8h.html#a55df7ca64786b164d0420bfb2e165574">xtrl_cut</a></div><div class="ttdeci">bool xtrl_cut(const double sumRms, const std::vector&lt; double &gt; fracLayer, const acceptance_conf &amp;acceptance_cuts)</div><div class="ttdef"><b>Definition:</b> acceptanceCuts.cpp:231</div></div>
-<div class="ttc" id="aacceptance__cuts_8h_html_ac0901bf2f8e6f7f093cd391274310b75"><div class="ttname"><a href="acceptance__cuts_8h.html#ac0901bf2f8e6f7f093cd391274310b75">maxElater_cut</a></div><div class="ttdeci">bool maxElater_cut(const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, const acceptance_conf &amp;acceptance_cuts, const double bgoTotalE)</div><div class="ttdef"><b>Definition:</b> acceptanceCuts.cpp:4</div></div>
-<div class="ttc" id="aacceptance__cuts_8h_html_a0be42c053ace45416699a40d84840005"><div class="ttname"><a href="acceptance__cuts_8h.html#a0be42c053ace45416699a40d84840005">track_selection_cut</a></div><div class="ttdeci">bool track_selection_cut(const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, TClonesArray *stkclusters, TClonesArray *stktracks, const acceptance_conf &amp;acceptance_cuts)</div><div class="ttdef"><b>Definition:</b> acceptanceCuts.cpp:147</div></div>
-<div class="ttc" id="aacceptance__cuts_8h_html_abba1ca98a40fca550048c5d2192e85fe"><div class="ttname"><a href="acceptance__cuts_8h.html#abba1ca98a40fca550048c5d2192e85fe">psd_charge_cut</a></div><div class="ttdeci">bool psd_charge_cut(const std::shared_ptr&lt; DmpEvtPsdHits &gt; psdhits, const acceptance_conf &amp;acceptance_cuts)</div><div class="ttdef"><b>Definition:</b> acceptanceCuts.cpp:257</div></div>
-<div class="ttc" id="aacceptance__cuts_8h_html_a836c2135b163aaba2b7cdb5d067e22a1"><div class="ttname"><a href="acceptance__cuts_8h.html#a836c2135b163aaba2b7cdb5d067e22a1">maxBarLayer_cut</a></div><div class="ttdeci">bool maxBarLayer_cut(const std::shared_ptr&lt; DmpEvtBgoHits &gt; bgohits, const int nBgoHits)</div><div class="ttdef"><b>Definition:</b> acceptanceCuts.cpp:40</div></div>
+<div class="ttc" id="aacceptance__cuts_8h_html_a2cdea51103f3543c27608f4f7afcfbf5"><div class="ttname"><a href="acceptance__cuts_8h.html#a2cdea51103f3543c27608f4f7afcfbf5">fillExternalMap</a></div><div class="ttdeci">void fillExternalMap(const std::shared_ptr&lt; DmpEvtSimuPrimaries &gt; simu_primaries, TH2D &amp;h_noBGOenergy_real_topMap)</div><div class="ttdef"><b>Definition:</b> acceptance_cuts.cpp:52</div></div>
+<div class="ttc" id="aacceptance__cuts_8h_html_a14674768a0dbbfb64e382b19f36e4c69"><div class="ttname"><a href="acceptance__cuts_8h.html#a14674768a0dbbfb64e382b19f36e4c69">checkBGOreco</a></div><div class="ttdeci">bool checkBGOreco(const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, const std::shared_ptr&lt; DmpEvtSimuPrimaries &gt; simu_primaries)</div><div class="ttdef"><b>Definition:</b> acceptance_cuts.cpp:4</div></div>
+<div class="ttc" id="aacceptance__cuts_8h_html_aa8745529a1d51f2522ad43355d86fd0d"><div class="ttname"><a href="acceptance__cuts_8h.html#aa8745529a1d51f2522ad43355d86fd0d">geometric_cut</a></div><div class="ttdeci">bool geometric_cut(const std::shared_ptr&lt; DmpEvtSimuPrimaries &gt; simu_primaries)</div><div class="ttdef"><b>Definition:</b> acceptance_cuts.cpp:80</div></div>
+<div class="ttc" id="aacceptance__cuts_8h_html_aa318b19a0bf0fffd20ae336e061c8c5b"><div class="ttname"><a href="acceptance__cuts_8h.html#aa318b19a0bf0fffd20ae336e061c8c5b">geometric_top_cut</a></div><div class="ttdeci">bool geometric_top_cut(const std::shared_ptr&lt; DmpEvtSimuPrimaries &gt; simu_primaries)</div><div class="ttdef"><b>Definition:</b> acceptance_cuts.cpp:140</div></div>
+<div class="ttc" id="aacceptance__cuts_8h_html_a068539593e7351ebbe0254b2829391c5"><div class="ttname"><a href="acceptance__cuts_8h.html#a068539593e7351ebbe0254b2829391c5">evaluateTopBottomPosition</a></div><div class="ttdeci">void evaluateTopBottomPosition(const std::shared_ptr&lt; DmpEvtSimuPrimaries &gt; simu_primaries, const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, TH1D &amp;h_BGOrec_topX_vs_realX, TH1D &amp;h_BGOrec_topY_vs_realY, TH1D &amp;h_real_slopeX, TH1D &amp;h_real_slopeY, TH1D &amp;h_BGOrec_slopeX, TH1D &amp;h_BGOrec_slopeY, TH1D &amp;h_real_interceptX, TH1D &amp;h_real_interceptY, TH1D &amp;h_BGOrec_interceptX, TH1D &amp;h_BGOrec_interceptY, TH2D &amp;h_real_topMap, TH2D &amp;h_BGOreco_topMap, TH2D &amp;h_real_bottomMap, TH2D &amp;h_BGOreco_bottomMap)</div><div class="ttdef"><b>Definition:</b> acceptance_cuts.cpp:196</div></div>
+<div class="ttc" id="adata__cuts_8h_html"><div class="ttname"><a href="data__cuts_8h.html">data_cuts.h</a></div></div>
 <div class="ttc" id="aacceptance_8h_html"><div class="ttname"><a href="acceptance_8h.html">acceptance.h</a></div></div>
-<div class="ttc" id="aacceptance__cuts_8h_html_a5838ccbd4939ebf3a0a56e27616d465f"><div class="ttname"><a href="acceptance__cuts_8h.html#a5838ccbd4939ebf3a0a56e27616d465f">maxRms_cut</a></div><div class="ttdeci">bool maxRms_cut(const std::vector&lt; std::vector&lt; short &gt;&gt; &amp;layerBarNumber, const std::vector&lt; double &gt; &amp;rmsLayer, const double bgoTotalE, const acceptance_conf &amp;acceptance_cuts)</div><div class="ttdef"><b>Definition:</b> acceptanceCuts.cpp:123</div></div>
-<div class="ttc" id="astructacceptance__conf_html"><div class="ttname"><a href="structacceptance__conf.html">acceptance_conf</a></div><div class="ttdef"><b>Definition:</b> acceptance.h:25</div></div>
-<div class="ttc" id="aacceptance__cuts_8h_html_a78911980d946ac66cba4c2f53686446a"><div class="ttname"><a href="acceptance__cuts_8h.html#a78911980d946ac66cba4c2f53686446a">BGOTrackContainment_cut</a></div><div class="ttdeci">bool BGOTrackContainment_cut(const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, const acceptance_conf &amp;acceptance_cuts, bool &amp;passEvent)</div><div class="ttdef"><b>Definition:</b> acceptanceCuts.cpp:70</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

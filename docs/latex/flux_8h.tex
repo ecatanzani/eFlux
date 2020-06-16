@@ -6,6 +6,9 @@
 {\ttfamily \#include $<$vector$>$}\newline
 {\ttfamily \#include $<$algorithm$>$}\newline
 {\ttfamily \#include \char`\"{}T\+File.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+H1\+D.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+H2\+D.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}data\+\_\+cuts.\+h\char`\"{}}\newline
 Include dependency graph for flux.\+h\+:
 \nopagebreak
 \begin{figure}[H]
@@ -19,29 +22,31 @@ This graph shows which files directly or indirectly include this file\+:
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=280pt]{flux_8h__dep__incl}
+\includegraphics[width=350pt]{flux_8h__dep__incl}
 \end{center}
 \end{figure}
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{flux_8h_a1f5f24865e651ac7d408fbd288ec981a}{build\+Xtrl\+Flux}} (const std\+::vector$<$ float $>$ \&e\+Bins, const std\+::string input\+Path, const unsigned int lv\+Time, T\+File \&out\+File, const bool verbose, const std\+::string acc\+Input\+Path)
+void \mbox{\hyperlink{flux_8h_ae53cb993dbf9e8f7471b0d2597c3116f}{build\+Flux}} (const std\+::vector$<$ float $>$ \&log\+E\+Bins, const std\+::string input\+Path, const unsigned int lv\+Time, T\+File \&out\+File, const bool verbose, const std\+::string acc\+Input\+Path, const std\+::string wd)
+\item 
+void \mbox{\hyperlink{flux_8h_a6d9196a8b3074c0430193f12aaa83afc}{load\+\_\+flux\+\_\+struct}} (\mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} \&flux\+\_\+cuts, \mbox{\hyperlink{structdata__active__cuts}{data\+\_\+active\+\_\+cuts}} \&active\+\_\+cuts, const std\+::string wd)
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{flux_8h_a1f5f24865e651ac7d408fbd288ec981a}\label{flux_8h_a1f5f24865e651ac7d408fbd288ec981a}} 
-\index{flux.h@{flux.h}!buildXtrlFlux@{buildXtrlFlux}}
-\index{buildXtrlFlux@{buildXtrlFlux}!flux.h@{flux.h}}
-\doxysubsubsection{\texorpdfstring{buildXtrlFlux()}{buildXtrlFlux()}}
-{\footnotesize\ttfamily void build\+Xtrl\+Flux (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ float $>$ \&}]{e\+Bins,  }\item[{const std\+::string}]{input\+Path,  }\item[{const unsigned int}]{lv\+Time,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose,  }\item[{const std\+::string}]{acc\+Input\+Path }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{flux_8h_ae53cb993dbf9e8f7471b0d2597c3116f}\label{flux_8h_ae53cb993dbf9e8f7471b0d2597c3116f}} 
+\index{flux.h@{flux.h}!buildFlux@{buildFlux}}
+\index{buildFlux@{buildFlux}!flux.h@{flux.h}}
+\doxysubsubsection{\texorpdfstring{buildFlux()}{buildFlux()}}
+{\footnotesize\ttfamily void build\+Flux (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ float $>$ \&}]{log\+E\+Bins,  }\item[{const std\+::string}]{input\+Path,  }\item[{const unsigned int}]{lv\+Time,  }\item[{T\+File \&}]{out\+File,  }\item[{const bool}]{verbose,  }\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const std\+::string}]{wd }\end{DoxyParamCaption})}
 
 Here is the call graph for this function\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{flux_8h_a1f5f24865e651ac7d408fbd288ec981a_cgraph}
+\includegraphics[height=550pt]{flux_8h_ae53cb993dbf9e8f7471b0d2597c3116f_cgraph}
 \end{center}
 \end{figure}
 Here is the caller graph for this function\+:
@@ -49,6 +54,20 @@ Here is the caller graph for this function\+:
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=304pt]{flux_8h_a1f5f24865e651ac7d408fbd288ec981a_icgraph}
+\includegraphics[width=289pt]{flux_8h_ae53cb993dbf9e8f7471b0d2597c3116f_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{flux_8h_a6d9196a8b3074c0430193f12aaa83afc}\label{flux_8h_a6d9196a8b3074c0430193f12aaa83afc}} 
+\index{flux.h@{flux.h}!load\_flux\_struct@{load\_flux\_struct}}
+\index{load\_flux\_struct@{load\_flux\_struct}!flux.h@{flux.h}}
+\doxysubsubsection{\texorpdfstring{load\_flux\_struct()}{load\_flux\_struct()}}
+{\footnotesize\ttfamily void load\+\_\+flux\+\_\+struct (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} \&}]{flux\+\_\+cuts,  }\item[{\mbox{\hyperlink{structdata__active__cuts}{data\+\_\+active\+\_\+cuts}} \&}]{active\+\_\+cuts,  }\item[{const std\+::string}]{wd }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{flux_8h_a6d9196a8b3074c0430193f12aaa83afc_icgraph}
 \end{center}
 \end{figure}

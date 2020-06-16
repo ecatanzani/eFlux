@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['readacceptance_174',['readAcceptance',['../read_acceptance_8cpp.html#a46216dfc75952b65a213b24c21594dd1',1,'readAcceptance(TFile &amp;outFile, const bool verbose, const std::string accInputPath):&#160;readAcceptance.cpp'],['../acceptance_8h.html#a46216dfc75952b65a213b24c21594dd1',1,'readAcceptance(TFile &amp;outFile, const bool verbose, const std::string accInputPath):&#160;readAcceptance.cpp']]],
-  ['readinputtree_175',['readInputTree',['../data_loop_8h.html#a4c8f36c25015830285ef0a3faff6dd24',1,'dataLoop.h']]]
+  ['nbarlayer13_5fcut_291',['nBarLayer13_cut',['../data__cuts_8cpp.html#a7b228cbf9790d6e77c324893024ff4a1',1,'nBarLayer13_cut(const std::shared_ptr&lt; DmpEvtBgoHits &gt; bgohits, const std::vector&lt; short &gt; layerBarNumber, const double bgoTotalE):&#160;data_cuts.cpp'],['../data__cuts_8h.html#a7b228cbf9790d6e77c324893024ff4a1',1,'nBarLayer13_cut(const std::shared_ptr&lt; DmpEvtBgoHits &gt; bgohits, const std::vector&lt; short &gt; layerBarNumber, const double bgoTotalE):&#160;data_cuts.cpp']]]
 ];
