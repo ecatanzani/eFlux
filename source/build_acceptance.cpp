@@ -4,7 +4,6 @@
 #include "energy_match.h"
 #include "aggregate_events.h"
 #include "wtsydp.h"
-#include "working_dir.h"
 #include "BGO_energy_cuts.h"
 #include "DAMPE_geo_structure.h"
 #include "DmpBgoContainer.h"
@@ -992,10 +991,7 @@ void buildAcceptance(
     h_ratio_tr_xtrl_cut->Write();
     h_ratio_tr_psd_charge_cut->Write();
     h_ratio_tr_all_cut->Write();
-
-    // Return to main ratio dir
-    ratioDir->cd();
-
+    
     // Create geometric folder
     auto geometric_dir = ratioDir->mkdir("Geometric");
     geometric_dir->cd();
@@ -1063,8 +1059,6 @@ void buildAcceptance(
     h_ratio_BGOfiducial_psd_charge_cut->Write();
     h_ratio_BGOfiducial_all_cut->Write();
 
-    outFile.cd();
-
     // Create output analysis dir in the output TFile
     auto preGeo_analysisDir = outFile.mkdir("Analysis_preGeoCut");
     preGeo_analysisDir->cd();
@@ -1086,8 +1080,6 @@ void buildAcceptance(
 
     h_noBGOenergy_real_topMap.Write();
 
-    outFile.cd();
-
     auto geo_analysisDir = outFile.mkdir("Analysis_GeoCut");
     geo_analysisDir->cd();
 
@@ -1105,8 +1097,6 @@ void buildAcceptance(
     h_geo_BGOreco_topMap.Write();
     h_geo_real_bottomMap.Write();
     h_geo_BGOreco_bottomMap.Write();
-
-    outFile.cd();
 
     auto BGOdir = outFile.mkdir("BGO_Energy");
     BGOdir->cd();
