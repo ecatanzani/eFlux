@@ -2,7 +2,7 @@
 
 farmAddress         root://xrootd-dampe.cloud.ba.infn.it//
 simu_XRDFS_path     /MC/reco/
-data_XRDFS_path     /FM/FlightData/2A/releases/
+data_XRDFS_path     /FM/FlightData/2A/
 geometry            6r0p0
 simu_eMin           1
 simu_eMax           10000
