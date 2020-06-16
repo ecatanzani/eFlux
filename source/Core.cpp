@@ -52,7 +52,8 @@ void eCore(
         lvTime,
         outFile,
         verbose,
-        accInputPath);
+        accInputPath,
+        wd);
 
     // Close output file ...
     outFile.Close();
