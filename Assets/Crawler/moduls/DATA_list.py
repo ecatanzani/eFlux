@@ -33,8 +33,7 @@ def createDATAlist(pars, opts):
                 # Get ROOT data file
                 for data_elm in dataDirs_st2:
                     if data_elm.endswith('.root'):
-                        dataTmpCompletePath = pars['farmAddress'] + data_elm
-                        dList.append(dataTmpCompletePath)
+                        dList.append(data_elm)
     
     with open(createOutDataFile(opts, pars['data_eMin'], pars['data_eMax']), "w") as outList:
         for file in dList:
