@@ -29,7 +29,7 @@ inline void updateProcessStatus(const int evIdx, int &kStep, const int nevents)
     if (floor(percentage) != 0 && ((int)floor(percentage) % kStep) == 0)
     {
         std::cout << "\n"
-                  << percentage << " %\t | \tProcessed " << evIdx + 1 << " events / " << nevents;
+                  << floor(percentage) << " %\t | \tProcessed " << evIdx + 1 << " events / " << nevents;
         kStep += 10;
     }
 }
@@ -47,11 +47,7 @@ TH1D evLoop(
     // Register Header container
     std::shared_ptr<DmpEvtHeader> evt_header = std::make_shared<DmpEvtHeader>();
     dmpch->SetBranchAddress("EventHeader", &evt_header);
-
-    // Register SimuPrimaries container
-    std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::make_shared<DmpEvtSimuPrimaries>();
-    dmpch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
-
+    
     // Register BGO constainer
     std::shared_ptr<DmpEvtBgoHits> bgohits = std::make_shared<DmpEvtBgoHits>();
     dmpch->SetBranchAddress("DmpEvtBgoHits", &bgohits);
