@@ -12,5 +12,9 @@
 
 extern std::vector<float> createLogBinning(const energy_cuts e_cuts);
 extern std::vector<float> readLogBinning(const std::string wd);
+extern std::vector<float> LinearSpacedArray(
+    float a, 
+    float b, 
+    std::size_t N);
 
 #endif
