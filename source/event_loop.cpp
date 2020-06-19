@@ -5,6 +5,7 @@
 #include "BGO_energy_cuts.h"
 #include "flux.h"
 #include "wtsydp.h"
+#include "binning.h"
 
 inline void init_BGO_histos(std::vector<TH1D> &h_layer_energy_ratio)
 {
@@ -145,6 +146,12 @@ TH1D evLoop(
     std::vector<TH1D> h_layer_energy_ratio;
     init_BGO_histos(h_layer_energy_ratio);
 
+    // XTRL histos
+    auto xtrl_bins = LinearSpacedArray(0, 100, 1000);
+
+    TH1D h_xtrl_energy_int("h_xtrl_energy_int","Energy integrated XTRL distribution", xtrl_bins.size() -1, &(xtrl_bins[0]));
+    TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size(), &(xtrl_bins[0]));
+
     // Sumw2 Acceptance - First-Cut histos
     h_trigger.Sumw2();
     h_gometric_cut.Sumw2();
@@ -195,6 +202,10 @@ TH1D evLoop(
     h_geo_BGOreco_topMap.Sumw2();
     h_geo_BGOreco_bottomMap.Sumw2();
     h_layer_max_energy_ratio.Sumw2();
+
+    // Sumw2 XTRL histos
+    h_xtrl_energy_int.Sumw2();
+    h_xtrl.Sumw2();
 
     // Create and load acceptance events cuts from config file
     cuts_conf flux_cuts;
@@ -354,7 +365,10 @@ TH1D evLoop(
             filter_xtrl_cut = xtrl_cut(
                 bgoVault.GetSumRMS(),
                 bgoVault.GetFracLayer(),
-                flux_cuts);
+                flux_cuts,
+                bgoTotalE,
+                h_xtrl_energy_int,
+                h_xtrl);
             filter_all_cut *= filter_xtrl_cut;
         }
 
@@ -681,6 +695,12 @@ TH1D evLoop(
     
     for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
         h_layer_energy_ratio[lIdx].Write();
+
+    auto XTRLdir = outFile.mkdir("xtrl");
+    XTRLdir->cd();
+
+    h_xtrl_energy_int.Write();
+    h_xtrl.Write();
 
     outFile.cd();
 
