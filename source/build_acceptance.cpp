@@ -212,10 +212,10 @@ void buildAcceptance(
     init_BGO_histos(h_layer_energy_ratio);
 
     // XTRL histos
-    auto xtrl_bins = LinearSpacedArray(0, 100, 1000);
-
+    auto xtrl_bins = LinearSpacedArray(0, 100, 100);
+    
     TH1D h_xtrl_energy_int("h_xtrl_energy_int","Energy integrated XTRL distribution", xtrl_bins.size() -1, &(xtrl_bins[0]));
-    TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size(), &(xtrl_bins[0]));
+    TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size()-1, &(xtrl_bins[0]));
 
     // Sumw2 Acceptance - First-Cut histos
     h_geo_factor.Sumw2();

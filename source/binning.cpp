@@ -50,8 +50,8 @@ std::vector<float> LinearSpacedArray(
     float b, 
     std::size_t N)
 {
-    float h = (b - a) / static_cast<float>(N-1);
-    std::vector<float> xs(N);
+    float h = (b - a) / static_cast<float>(N);
+    std::vector<float> xs(N+1);
     std::vector<float>::iterator x;
     float val;
     for(x = xs.begin(), val = a; x != xs.end(); ++x, val += h)
