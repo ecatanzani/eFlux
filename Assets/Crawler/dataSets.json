@@ -41,6 +41,30 @@
 
     },
     {
+        "geometry": "6r0p0",
+        "particle": "p",
+        "eMin": "1",
+        "eMax": "100",
+        "dSet": "allProton-v6r0p0_1GeV_100GeV",
+        "pSpectrum": -1
+    },
+    {
+        "geometry": "6r0p0",
+        "particle": "p",
+        "eMin": "100",
+        "eMax": "10000",
+        "dSet": "allProton-v6r0p0_100GeV_10TeV-p2",
+        "pSpectrum": -1
+    },
+    {
+        "geometry": "6r0p0",
+        "particle": "p",
+        "eMin": "100",
+        "eMax": "10000",
+        "dSet": "allProton-v6r0p0_100GeV_10TeV-p3",
+        "pSpectrum": -1
+    },
+    {
         "geometry": "6r0p10",
         "particle": "e",
         "eMin": "100",
