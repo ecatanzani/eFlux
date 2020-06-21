@@ -126,7 +126,7 @@ void buildAcceptance(
     TH1D h_geometric_maxElayer_cut("h_geometric_maxElayer_cut", "Energy Distribution - maxElayer + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_maxBarLayer_cut("h_geometric_maxBarLayer_cut", "Energy Distribution - maxBarLayer + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_BGOTrackContainment_cut("h_geometric_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_BGO_fiducial("h_geometric_BGO_fiducial", "Energy Distibution - BGO fiducial + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_BGO_fiducial_cut("h_geometric_BGO_fiducial_cut", "Energy Distibution - BGO fiducial + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_nBarLayer13_cut("h_geometric_nBarLayer13_cut", "Energy Distribution - nBarLayer13 + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_maxRms_cut("h_geometric_maxRms_cut", "Energy Distribution - maxRms + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_track_selection_cut("h_geometric_track_selection_cut", "Energy Distribution - track selection + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
@@ -213,7 +213,7 @@ void buildAcceptance(
     init_BGO_histos(h_layer_energy_ratio);
 
     // XTRL histos
-    auto xtrl_bins = LinearSpacedArray(0, 100, 100);
+    auto xtrl_bins = LinearSpacedArray(0, 100, 1000);
 
     TH1D h_xtrl_energy_int("h_xtrl_energy_int", "Energy integrated XTRL distribution", xtrl_bins.size() - 1, &(xtrl_bins[0]));
     TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
@@ -238,7 +238,7 @@ void buildAcceptance(
     h_geometric_maxElayer_cut.Sumw2();
     h_geometric_maxBarLayer_cut.Sumw2();
     h_geometric_BGOTrackContainment_cut.Sumw2();
-    h_geometric_BGO_fiducial.Sumw2();
+    h_geometric_BGO_fiducial_cut.Sumw2();
     h_geometric_nBarLayer13_cut.Sumw2();
     h_geometric_maxRms_cut.Sumw2();
     h_geometric_track_selection_cut.Sumw2();
@@ -555,7 +555,7 @@ void buildAcceptance(
 
             // Geometric cut && BGO fiducial cut
             if (filter_BGO_fiducial_cut)
-                h_geometric_BGO_fiducial.Fill(simuEnergy * _GeV);
+                h_geometric_BGO_fiducial_cut.Fill(simuEnergy * _GeV);
 
             // Geometric cut && nBarLayer13 cut
             if (filter_nBarLayer13_cut)
@@ -906,7 +906,7 @@ void buildAcceptance(
     h_geometric_maxElayer_cut.Write();
     h_geometric_maxBarLayer_cut.Write();
     h_geometric_BGOTrackContainment_cut.Write();
-    h_geometric_BGO_fiducial.Write();
+    h_geometric_BGO_fiducial_cut.Write();
     h_geometric_nBarLayer13_cut.Write();
     h_geometric_maxRms_cut.Write();
     h_geometric_track_selection_cut.Write();
@@ -921,6 +921,30 @@ void buildAcceptance(
     h_BGOfiducial_psd_charge_cut.Write();
     h_BGOfiducial_all_cut.Write();
 
+    // Create output acceptance_histo dir in the output TFile
+    auto acceptanceHistoDir = outFile.mkdir("Acceptance_histos");
+    acceptanceHistoDir->cd();
+
+    h_acceptance_geometric_factor->Write();
+    h_acceptance_gometric_cut->Write();
+    h_acceptance_maxElayer_cut->Write();
+    h_acceptance_maxBarLayer_cut->Write();
+    h_acceptance_BGOTrackContainment_cut->Write();
+    h_acceptance_BGO_fiducial_cut->Write();
+    h_acceptance_BGO_fiducial_nBarLayer13_cut->Write();
+    h_acceptance_BGO_fiducial_maxRms_cut->Write();
+    h_acceptance_BGO_fiducial_track_selection_cut->Write();
+    h_acceptance_BGO_fiducial_xtrl_cut->Write();
+    h_acceptance_BGO_fiducial_psd_charge_cut->Write();
+    h_acceptance_nBarLayer13_cut->Write();
+    h_acceptance_maxRms_cut->Write();
+    h_acceptance_track_selection_cut->Write();
+    h_acceptance_xtrl_cut->Write();
+    h_acceptance_psd_charge_cut->Write();
+    h_acceptance_all_cut->Write();
+
+    outFile.cd();
+    
     // Create output acceptance dir in the output TFile
     auto acceptanceDir = outFile.mkdir("Acceptance");
     acceptanceDir->cd();
@@ -1103,8 +1127,8 @@ void buildAcceptance(
     if (TEfficiency::CheckConsistency(h_geometric_BGOTrackContainment_cut, h_gometric_cut))
         geo_eff_BGOTrackContainment_cut = new TEfficiency(h_geometric_BGOTrackContainment_cut, h_gometric_cut);
     
-    if (TEfficiency::CheckConsistency(h_geometric_BGO_fiducial, h_gometric_cut))
-        geo_eff_BGO_fiducial = new TEfficiency(h_geometric_BGO_fiducial, h_gometric_cut);
+    if (TEfficiency::CheckConsistency(h_geometric_BGO_fiducial_cut, h_gometric_cut))
+        geo_eff_BGO_fiducial = new TEfficiency(h_geometric_BGO_fiducial_cut, h_gometric_cut);
 
     if (TEfficiency::CheckConsistency(h_geometric_nBarLayer13_cut, h_gometric_cut))
         geo_eff_nBarLayer13_cut = new TEfficiency(h_geometric_nBarLayer13_cut, h_gometric_cut);
@@ -1148,6 +1172,19 @@ void buildAcceptance(
     geo_eff_psd_charge_cut->Write();
     geo_eff_all_cut->Write();
 
+    // Clean memory
+    geo_eff_maxElayer_cut->Delete();
+    geo_eff_maxBarLayer_cut->Delete();
+    geo_eff_BGOTrackContainment_cut->Delete();
+    geo_eff_BGO_fiducial->Delete();
+    geo_eff_nBarLayer13_cut->Delete();
+    geo_eff_maxRms_cut->Delete();
+    geo_eff_track_selection_cut->Delete();
+    geo_eff_xtrl_cut->Delete();
+    geo_eff_psd_charge_cut->Delete();
+    geo_eff_all_cut->Delete();
+
+    // Create BGO_fiducial_volume folder
     auto BGOfiducial_dir = ratioDir->mkdir("BGO_fiducial_volume");
     BGOfiducial_dir->cd();
 
@@ -1185,13 +1222,21 @@ void buildAcceptance(
     BGOfiducial_eff_psd_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
     BGOfiducial_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
 
-    //Write histos to disk
+    // Write histos to disk
     BGOfiducial_eff_nBarLayer13_cut->Write();
     BGOfiducial_eff_maxRms_cut->Write();
     BGOfiducial_eff_track_selection_cut->Write();
     BGOfiducial_eff_xtrl_cut->Write();
     BGOfiducial_eff_psd_charge_cut->Write();
     BGOfiducial_eff_all_cut->Write();
+
+    // Clean memory
+    BGOfiducial_eff_nBarLayer13_cut->Delete();
+    BGOfiducial_eff_maxRms_cut->Delete();
+    BGOfiducial_eff_track_selection_cut->Delete();
+    BGOfiducial_eff_xtrl_cut->Delete();
+    BGOfiducial_eff_psd_charge_cut->Delete();
+    BGOfiducial_eff_all_cut->Delete();
 
     // Create output analysis dir in the output TFile
     auto preGeo_analysisDir = outFile.mkdir("Analysis_preGeoCut");
