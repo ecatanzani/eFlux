@@ -135,7 +135,10 @@ def compute_final_histos(condor_dir_list, opts):
     h_ratio_BGOfiducial_xtrl_cut = TH1D()
     h_ratio_BGOfiducial_psd_charge_cut = TH1D()
     h_ratio_BGOfiducial_all_cut = TH1D()
-    
+
+    # XTRL histos
+    h_xtrl_energy_int = TH1D()
+    h_xtrl = TH2D()
 
     for dIdx, tmp_dir in enumerate(condor_dir_list):
         tmp_dir += "/outFiles"
@@ -175,7 +178,7 @@ def compute_final_histos(condor_dir_list, opts):
         h_geometric_maxElayer_cut_tmp = rFile.Get("h_geometric_maxElayer_cut")
         h_geometric_maxBarLayer_cut_tmp = rFile.Get("h_geometric_maxBarLayer_cut")
         h_geometric_BGOTrackContainment_cut_tmp = rFile.Get("h_geometric_BGOTrackContainment_cut")
-        h_geometric_BGO_fiducial_cut_tmp = rFile.Get("h_geometric_BGO_fiducial")
+        h_geometric_BGO_fiducial_cut_tmp = rFile.Get("h_geometric_BGO_fiducial_cut")
         h_geometric_nBarLayer13_cut_tmp = rFile.Get("h_geometric_nBarLayer13_cut")
         h_geometric_maxRms_cut_tmp = rFile.Get("h_geometric_maxRms_cut")
         h_geometric_track_selection_cut_tmp = rFile.Get("h_geometric_track_selection_cut")
@@ -236,6 +239,9 @@ def compute_final_histos(condor_dir_list, opts):
             histoName += str(idx)
             h_layer_energy_ratio_tmp.append(rFile.Get(histoName))
 
+        h_xtrl_energy_int_tmp = rFile.Get("xtrl/h_xtrl_energy_int")
+        h_xtrl_tmp = rFile.Get("xtrl/h_xtrl")
+        
         # Unlink histos
         h_geo_factor_tmp.SetDirectory(0)
         h_incoming_tmp.SetDirectory(0)
@@ -328,6 +334,9 @@ def compute_final_histos(condor_dir_list, opts):
         for idx in range(0,14):
             h_layer_energy_ratio_tmp[idx].SetDirectory(0)
 
+        h_xtrl_energy_int_tmp.SetDirectory(0)
+        h_xtrl_tmp.SetDirectory(0)
+
         # Clone output file
         rFile.Close()
 
@@ -412,6 +421,9 @@ def compute_final_histos(condor_dir_list, opts):
                 h_ratio_name += str(idx)
                 h_layer_energy_ratio[idx] = h_layer_energy_ratio_tmp[idx].Clone(h_ratio_name)
 
+            h_xtrl_energy_int = h_xtrl_energy_int_tmp.Clone("h_xtrl_energy_int")
+            h_xtrl = h_xtrl_tmp.Clone("h_xtrl")
+
         else:
 
             h_geo_factor.Add(h_geo_factor_tmp)
@@ -490,6 +502,8 @@ def compute_final_histos(condor_dir_list, opts):
             for idx in range(0,14):
                 h_layer_energy_ratio[idx].Add(h_layer_energy_ratio_tmp[idx])
 
+            h_xtrl_energy_int.Add(h_xtrl_energy_int_tmp)
+            h_xtrl.Add(h_xtrl_tmp)
     
     # Create output file for full histos
     fOut = TFile.Open(opts.output, "RECREATE")
@@ -590,5 +604,11 @@ def compute_final_histos(condor_dir_list, opts):
 
     fOut.cd()
     
+    fOut.mkdir("xtrl")
+    fOut.cd("xtrl")
+
+    h_xtrl_energy_int.Write()
+    h_xtrl.Write()    
+
     # Closing output file
     fOut.Close()
