@@ -17,6 +17,7 @@ void buildFlux(
         verbose,
         accInputPath);
     
+    /*
     auto eCounts =
         evLoop(
             logEBins,
@@ -24,5 +25,5 @@ void buildFlux(
             outFile,
             verbose,
             wd);
-    
+    */
 }
