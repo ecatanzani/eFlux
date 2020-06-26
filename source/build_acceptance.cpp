@@ -9,6 +9,7 @@
 #include "DmpBgoContainer.h"
 #include "read_sets_config_file.h"
 #include "binning.h"
+#include "charge.h"
 
 #include "TGraphErrors.h"
 #include "TEfficiency.h"
@@ -251,6 +252,10 @@ void buildAcceptance(
     TH1D h_xtrl_energy_int("h_xtrl_energy_int", "Energy integrated XTRL distribution", xtrl_bins.size() - 1, &(xtrl_bins[0]));
     TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
 
+    // STK charge histos
+    TH1D h_chargeX("h_chargeX", "Charge distribution X", 100, 0, 100);
+    TH1D h_chargeY("h_chargeY", "Charge distribution Y", 100, 0, 100);
+
     // Sumw2 Acceptance - First-Cut histos
     h_geo_factor.Sumw2();
     h_incoming.Sumw2();
@@ -369,6 +374,10 @@ void buildAcceptance(
     // Sumw2 XTRL histos
     h_xtrl_energy_int.Sumw2();
     h_xtrl.Sumw2();
+
+    // Sumw2 STK charge histos
+    h_chargeX.Sumw2();
+    h_chargeY.Sumw2();
 
     // Create and load acceptance events cuts from config file
     cuts_conf acceptance_cuts;
@@ -776,6 +785,11 @@ void buildAcceptance(
         {
             h_track_selection_cut.Fill(simuEnergy * _GeV);
             h_track_selection_cut_w.Fill(simuEnergy * _GeV, energy_w);
+            fillChargeHistos(
+                h_chargeX, 
+                h_chargeY, 
+                event_best_track,
+                stkclusters);
         }
 
         // Fill XTRL cut histo
@@ -1489,6 +1503,12 @@ void buildAcceptance(
 
     h_xtrl_energy_int.Write();
     h_xtrl.Write();
+
+    auto chargeDir = outFile.mkdir("STKcharge");
+    chargeDir->cd();
+
+    h_chargeX.Write();
+    h_chargeY.Write();
 
     outFile.cd();
 }

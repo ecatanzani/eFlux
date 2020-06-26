@@ -15,6 +15,7 @@
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtBgoHits.h"
 #include "DmpEvtPsdHits.h"
+#include "DmpStkTrack.h"
 
 struct cuts_conf
 {
@@ -59,6 +60,7 @@ struct best_track
     double STK_BGO_topX_distance = -999;
     double STK_BGO_topY_distance = -999;
     double angular_distance_STK_BGO = -999;
+    std::shared_ptr<DmpStkTrack> myBestTrack;
 };
 
 extern bool checkBGOreco_data(const std::shared_ptr<DmpEvtBgoRec> bgorec);
