@@ -94,14 +94,11 @@ TH1D evLoop(
     std::unique_ptr<DmpFilterOrbit> pFilter = std::make_unique<DmpFilterOrbit>("EventHeader");
     // Activate orbit filter
     pFilter->ActiveMe(); // Call this function to calculate SAA through House Keeping Data
-    
 
     // Event loop
     auto nevents = dmpch->GetEntries();
     if (verbose)
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
-
-    exit(123);
 
     // Acceptance - First-Cut histos
     TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles", logEBins.size() - 1, &(logEBins[0]));
@@ -168,8 +165,8 @@ TH1D evLoop(
     // XTRL histos
     auto xtrl_bins = LinearSpacedArray(0, 100, 1000);
 
-    TH1D h_xtrl_energy_int("h_xtrl_energy_int","Energy integrated XTRL distribution", xtrl_bins.size() -1, &(xtrl_bins[0]));
-    TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size(), &(xtrl_bins[0]));
+    TH1D h_xtrl_energy_int("h_xtrl_energy_int", "Energy integrated XTRL distribution", xtrl_bins.size() - 1, &(xtrl_bins[0]));
+    TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
 
     // Sumw2 Acceptance - First-Cut histos
     h_trigger.Sumw2();
@@ -243,7 +240,8 @@ TH1D evLoop(
         // Get chain event
         dmpch->GetEvent(evIdx);
 
-        std::cout << "\nSecond: " << evt_header->GetSecond();
+        if (pFilter->IsInSAA(evt_header->GetSecond()))
+            continue;
 
         // Event printout
         if (verbose)
