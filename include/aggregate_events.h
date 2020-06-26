@@ -8,6 +8,8 @@
 
 #include "DmpChain.h"
 #include "DmpIOSvc.h"
+#include "DmpCore.h"
+#include "DmpFilterOrbit.h"
 
 #include "TChain.h"
 

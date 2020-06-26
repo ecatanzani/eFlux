@@ -12,6 +12,7 @@
 #include "DmpFilterOrbit.h"
 #include "DmpEvtHeader.h"
 #include "DmpIOSvc.h"
+#include "DmpCore.h"
 
 inline void init_BGO_histos(std::vector<TH1D> &h_layer_energy_ratio)
 {
