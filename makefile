@@ -54,7 +54,7 @@ LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
 	CC_FLAGS += -I$(DIPS_INCLUDE) -I$(ANYOPT_INC) -I$(DAMPE_INC) -I$(DAMPE_INC_CNAF)
-	LDFLAGS += $(DIPS_LIBS) -lTreePlayer -L$(DAMPE_LIB) -L$(DAMPE_LIB_CNAF) -lDmpEvent -lDmpEventFilter -lDmpKernel -lDmpService
+	LDFLAGS += -lboost_system $(DIPS_LIBS) -lTreePlayer -L$(DAMPE_LIB) -L$(DAMPE_LIB_CNAF) -lDmpEvent -lDmpEventFilter -lDmpKernel -lDmpService
 endif
 ####################################################
 # Flags by OS
