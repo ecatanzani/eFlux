@@ -7,12 +7,19 @@
 #include <sstream>
 
 #include "DmpChain.h"
+#include "DmpIOSvc.h"
+
+#include "TChain.h"
 
 extern std::shared_ptr<DmpChain> aggregateEventsDmpChain(
     const std::string listInputPath,
     const bool verbose);
 
 extern std::shared_ptr<TChain> aggregateEventsTChain(
+    const std::string listInputPath,
+    const bool verbose);
+
+extern std::shared_ptr<TChain> aggregateDataEventsTChain(
     const std::string listInputPath,
     const bool verbose);
 

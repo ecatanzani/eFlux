@@ -9,8 +9,9 @@
 
 #include "TEfficiency.h"
 
-//#include "DmpFilterOrbit.h"
+#include "DmpFilterOrbit.h"
 #include "DmpEvtHeader.h"
+#include "DmpIOSvc.h"
 
 inline void init_BGO_histos(std::vector<TH1D> &h_layer_energy_ratio)
 {
@@ -48,7 +49,7 @@ TH1D evLoop(
     const std::string wd)
 {
     //auto dmpch = aggregateEventsDmpChain(inputPath,verbose);
-    auto dmpch = aggregateEventsTChain(inputPath, verbose);
+    auto dmpch = aggregateDataEventsTChain(inputPath, verbose);
 
     // Register Header container
     std::shared_ptr<DmpEvtHeader> evt_header = std::make_shared<DmpEvtHeader>();
@@ -83,22 +84,23 @@ TH1D evLoop(
     // Register PSD container
     std::shared_ptr<DmpEvtPsdHits> psdhits = std::make_shared<DmpEvtPsdHits>();
     dmpch->SetBranchAddress("DmpPsdHits", &psdhits);
-
-    /*
-    Waiting complete software !
+    
     // Orbit filter
+    // Set gIOSvc
+    gIOSvc->Set("OutData/NoOutput", "True");
+    gIOSvc->Initialize();
+    // Create orbit filter
     std::unique_ptr<DmpFilterOrbit> pFilter = std::make_unique<DmpFilterOrbit>("EventHeader");
     // Activate orbit filter
     pFilter->ActiveMe(); // Call this function to calculate SAA through House Keeping Data
-
-    // Event header
-    std::unique_ptr<DmpEvtHeader> evtHeader = std:: make_unique<DmpEvtHeader>();
-    */
+    
 
     // Event loop
     auto nevents = dmpch->GetEntries();
     if (verbose)
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
+
+    exit(123);
 
     // Acceptance - First-Cut histos
     TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles", logEBins.size() - 1, &(logEBins[0]));
@@ -240,7 +242,7 @@ TH1D evLoop(
         // Get chain event
         dmpch->GetEvent(evIdx);
 
-        //std::cout << "\nSecond: " << evtHeader->GetSecond();
+        std::cout << "\nSecond: " << evt_header->GetSecond();
 
         // Event printout
         if (verbose)
