@@ -13,8 +13,7 @@ ifeq ($(HAVE_TERM),dumb)
 endif
 
 #dependencie
-#DIPS_INCLUDE = $(shell root-config --cflags)
-DIPS_INCLUDE = -pthread -Wno-deprecated-declarations -m64 -I/DAMPE/packages/root/include
+DIPS_INCLUDE = $(shell root-config --incdir)
 DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) 
 
 DAMPE_INC=/DAMPE/DmpSoftware/build/include
