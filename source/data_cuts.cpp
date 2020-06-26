@@ -476,13 +476,12 @@ bool track_selection_cut(
 
     if (selectedTracks.size() > 0)
     {
-        //DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
-        std::shared_ptr<DmpStkTrack> selected_track(static_cast<DmpStkTrack *>(selectedTracks[0]));
+        DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
         std::vector<unsigned int> track_nHoles(2, 0);
 
         // Fill best track structure
         get_track_points(
-            selected_track.get(),
+            selected_track,
             stkclusters,
             LadderToLayer,
             track_nHoles,
@@ -497,7 +496,7 @@ bool track_selection_cut(
         event_best_track.angular_distance_STK_BGO = event_best_track.track_direction.Angle(bgoRecDirection) * TMath::RadToDeg();
         event_best_track.STK_BGO_topY_distance = sqrt(pow(event_best_track.STK_BGO_topX_distance, 2) + pow(event_best_track.STK_BGO_topY_distance, 2));
         
-        event_best_track.myBestTrack = selected_track;
+        event_best_track.myBestTrack = static_cast<DmpStkTrack>(*selected_track);
 
         passed_track_selection_cut = true;
     }

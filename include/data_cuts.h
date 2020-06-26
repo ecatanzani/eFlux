@@ -60,7 +60,7 @@ struct best_track
     double STK_BGO_topX_distance = -999;
     double STK_BGO_topY_distance = -999;
     double angular_distance_STK_BGO = -999;
-    std::shared_ptr<DmpStkTrack> myBestTrack;
+    DmpStkTrack myBestTrack;
 };
 
 extern bool checkBGOreco_data(const std::shared_ptr<DmpEvtBgoRec> bgorec);
