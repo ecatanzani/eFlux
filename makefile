@@ -13,15 +13,14 @@ ifeq ($(HAVE_TERM),dumb)
 endif
 
 #dependencie
-DIPS_INCLUDE = $(shell root-config --cflags)
+#DIPS_INCLUDE = $(shell root-config --cflags)
+DIPS_INCLUDE = -pthread -Wno-deprecated-declarations -m64 -I/DAMPE/packages/root/include
 DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) 
 
-DAMPE_INC=/DAMPESW/Event/include
-DAMPE_LIB=/DAMPESW/Event
-#DAMPE_INC_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/include
-#DAMPE_LIB_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/DMPSW/DmpSoftware-6-0-4/lib
-DAMPE_INC_CNAF=/storage/gpfs_data/dampe/users/ecatanzani/Softwares/DAMPE/Event/include
-DAMPE_LIB_CNAF=/storage/gpfs_data/dampe/users/ecatanzani/Softwares/DAMPE/Event
+DAMPE_INC=/DAMPE/DmpSoftware/build/include
+DAMPE_LIB=/DAMPE/DmpSoftware/build/lib
+DAMPE_INC_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/releases/trunk/include
+DAMPE_LIB_CNAF=/cvmfs/dampe.cern.ch/centos7/opt/releases/trunk/lib
 
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
@@ -56,7 +55,7 @@ LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
 	CC_FLAGS += -I$(DIPS_INCLUDE) -I$(ANYOPT_INC) -I$(DAMPE_INC) -I$(DAMPE_INC_CNAF)
-	LDFLAGS += $(DIPS_LIBS) -lTreePlayer -L$(DAMPE_LIB) -L$(DAMPE_LIB_CNAF) -lDmpEvent 
+	LDFLAGS += $(DIPS_LIBS) -lTreePlayer -L$(DAMPE_LIB) -L$(DAMPE_LIB_CNAF) -lDmpEvent -lDmpEventFilter -lDmpKernel -lDmpService
 endif
 ####################################################
 # Flags by OS
