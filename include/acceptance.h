@@ -10,6 +10,11 @@
 #include "anyoption.h"
 #include "data_cuts.h"
 
+struct mc_ancillary_cuts
+{
+    bool compute_proton_background = false;
+};
+
 extern void computeAcceptance(
     const std::string accInputPath,
     const bool verbose,
@@ -45,6 +50,7 @@ extern void computeAcceptance(
 extern void load_acceptance_struct(
     cuts_conf &acceptance_cuts,
     data_active_cuts &active_cuts,
+    mc_ancillary_cuts &ancillary_cuts,
     const std::string wd);
 
 #endif
