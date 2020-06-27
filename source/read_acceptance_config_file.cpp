@@ -6,6 +6,7 @@
 void load_acceptance_struct(
     cuts_conf &acceptance_cuts,
     data_active_cuts &active_cuts,
+    mc_ancillary_cuts &ancillary_cuts,
     const std::string wd)
 {
     //std::string cwd = GetCurrentWorkingDir();
@@ -160,6 +161,14 @@ void load_acceptance_struct(
                 active_cuts.psd_charge = true;
                 ++active_cuts.nActiveCuts;
             }
+        }
+
+        // Load ancillary cuts
+        if (!strcmp(tmp_str.c_str(), "compute_proton_background"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+                ancillary_cuts.compute_proton_background = true;
         }
     }
 }
