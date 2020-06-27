@@ -26,10 +26,20 @@ void generateFinalGraph(
     }
 
     // Create and load acceptance events cuts from config file
+    
+    // Create acceptance cuts struct
     cuts_conf acceptance_cuts;
+    // Create active cuts struct
     data_active_cuts active_cuts;
-    load_acceptance_struct(acceptance_cuts, active_cuts, wd);
-
+    // Create ancillary cuts struct
+    mc_ancillary_cuts ancillary_cuts;
+    
+    // Load structs reading config file
+    load_acceptance_struct(
+        acceptance_cuts, 
+        active_cuts, 
+        ancillary_cuts, 
+        wd);
     // Read dataSets connfig file
     data_set_conf input_sets;
     load_input_dsets_config(input_sets, wd);
