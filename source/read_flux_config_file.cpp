@@ -99,17 +99,14 @@ void load_flux_struct(
         }
 
         // Load cuts
-        if (!strcmp(tmp_str.c_str(), "geometry"))
-        {
-            input_stream >> tmp_str;
-            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-                active_cuts.geometry = true;
-        }
         if (!strcmp(tmp_str.c_str(), "BGO_fiducial"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
                 active_cuts.BGO_fiducial = true;
+                ++active_cuts.nActiveCuts;
+            }
         }
         if (!strcmp(tmp_str.c_str(), "nBarLayer13"))
         {

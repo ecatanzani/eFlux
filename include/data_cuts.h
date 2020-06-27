@@ -38,7 +38,6 @@ struct cuts_conf
 
 struct data_active_cuts
 {
-    bool geometry = false;
     bool BGO_fiducial = false;
     bool nBarLayer13 = false;
     bool maxRms = false;
