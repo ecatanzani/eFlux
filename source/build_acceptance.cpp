@@ -10,6 +10,7 @@
 #include "read_sets_config_file.h"
 #include "binning.h"
 #include "charge.h"
+#include "mc_ancillary.h"
 
 #include "TGraphErrors.h"
 #include "TEfficiency.h"
@@ -253,8 +254,12 @@ void buildAcceptance(
     TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
 
     // STK charge histos
-    TH1D h_chargeX("h_chargeX", "Charge distribution X", 100, 0, 100);
-    TH1D h_chargeY("h_chargeY", "Charge distribution Y", 100, 0, 100);
+    TH1D h_chargeX("h_chargeX", "Charge distribution X", 100, 0, 1000);
+    TH1D h_chargeY("h_chargeY", "Charge distribution Y", 100, 0, 1000);
+
+    // Proton background histos
+    TH1D h_background_under_xtrl_cut("h_background_under_xtrl_cut", "Proton background - XTRL < cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_background_over_xtrl_cut("h_background_over_xtrl_cut", "Proton background - 20 < XTRL < 100", logEBins.size() - 1, &(logEBins[0]));
 
     // Sumw2 Acceptance - First-Cut histos
     h_geo_factor.Sumw2();
@@ -379,10 +384,25 @@ void buildAcceptance(
     h_chargeX.Sumw2();
     h_chargeY.Sumw2();
 
+    // Proton background histos
+    h_background_under_xtrl_cut.Sumw2();
+    h_background_over_xtrl_cut.Sumw2();
+
     // Create and load acceptance events cuts from config file
+    
+    // Create acceptance cuts struct
     cuts_conf acceptance_cuts;
+    // Create active cuts struct
     data_active_cuts active_cuts;
-    load_acceptance_struct(acceptance_cuts, active_cuts, wd);
+    // Create ancillary cuts struct
+    mc_ancillary_cuts ancillary_cuts;
+
+    // Load structs reading config file
+    load_acceptance_struct(
+        acceptance_cuts, 
+        active_cuts, 
+        ancillary_cuts, 
+        wd);
 
     // Read dataSets connfig file
     data_set_conf input_sets;
@@ -597,6 +617,19 @@ void buildAcceptance(
                 event_best_track);
             filter_all_cut *= filter_psd_charge_cut;
         }
+
+        // **** ANCILLARY CUTS ****
+
+        // **** compute proton background ****
+        if (ancillary_cuts.compute_proton_background)
+            compute_proton_background(
+                bgoVault.GetSumRMS(),
+                bgoVault.GetFracLayer(),
+                acceptance_cuts,
+                simuEnergy,
+                h_background_under_xtrl_cut,
+                h_background_over_xtrl_cut);
+
 
         // Fill cuts histos
 
@@ -1510,5 +1543,22 @@ void buildAcceptance(
     h_chargeX.Write();
     h_chargeY.Write();
 
+    // Create ancillary output folder
+    if (ancillary_cuts.compute_proton_background)
+    {
+        auto ancillaryDir = outFile.mkdir("mc_ancillary");
+        ancillaryDir->cd();
+
+        h_background_under_xtrl_cut.Write();
+        h_background_over_xtrl_cut.Write();
+        
+        // Create proton background ratio
+        auto proton_background_ratio = static_cast<TH1D*>(h_background_under_xtrl_cut.Clone("proton_background_ratio"));
+        proton_background_ratio->SetTitle("Proton background ratio");
+        proton_background_ratio->Divide(&h_background_over_xtrl_cut);
+
+        proton_background_ratio->Write();
+    }
+    
     outFile.cd();
 }
