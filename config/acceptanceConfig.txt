@@ -28,6 +28,10 @@ track_selection                     YES
 xtrl_selection                      YES
 psd_charge                          YES
 
+**** ANCILLARY ****          **** ACTIVE ****
+
+compute_proton_background           NO
+
 ## Simu Params
 
 generation_vertex_radius            1.381976597885342   m
