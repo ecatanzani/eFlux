@@ -643,21 +643,27 @@ void buildAcceptance(
         // **** stk_charge cut ****
         if (active_cuts.stk_charge)
         {   
-            // Fill charge histos
-            fillChargeHistos(
-                h_chargeX, 
-                h_chargeY,
-                h_charge,
-                h_charge2D,
-                event_best_track,
-                stkclusters);
+            if (active_cuts.track_selection)
+            {
+                if (filter_track_selection_cut)
+                {
+                    // Fill charge histos
+                    fillChargeHistos(
+                        h_chargeX, 
+                        h_chargeY,
+                        h_charge,
+                        h_charge2D,
+                        event_best_track,
+                        stkclusters);
             
-            // Charge cut
-            filter_stk_charge_cut = stk_charge_cut(
-                event_best_track,
-                stkclusters,
-                acceptance_cuts);
-            filter_all_cut *= filter_stk_charge_cut;
+                    // Charge cut
+                    filter_stk_charge_cut = stk_charge_cut(
+                        event_best_track,
+                        stkclusters,
+                        acceptance_cuts);
+                    filter_all_cut *= filter_stk_charge_cut;
+                }
+            }
         }
 
         // **** ANCILLARY CUTS ****
@@ -893,17 +899,20 @@ void buildAcceptance(
         // Fill STK charge histo
         if (filter_stk_charge_cut)
         {   
-            // Fill selected STK charge histos
-            fillChargeHistos(
-                h_selected_chargeX, 
-                h_selected_chargeY,
-                h_selected_charge,
-                h_selected_charge2D,
-                event_best_track,
-                stkclusters);
+            if (filter_track_selection_cut)
+            {
+                // Fill selected STK charge histos
+                fillChargeHistos(
+                    h_selected_chargeX, 
+                    h_selected_chargeY,
+                    h_selected_charge,
+                    h_selected_charge2D,
+                    event_best_track,
+                    stkclusters);
 
-            h_stk_charge_cut.Fill(simuEnergy * _GeV);
-            h_stk_charge_cut_w.Fill(simuEnergy * _GeV, energy_w);
+                h_stk_charge_cut.Fill(simuEnergy * _GeV);
+                h_stk_charge_cut_w.Fill(simuEnergy * _GeV, energy_w);
+            }
         }
 
         // Fill all cut histo
@@ -1422,6 +1431,7 @@ void buildAcceptance(
     tr_eff_all_cut->Write();
 
     // Clean memory
+    /*
     trigger_efficiency->Delete();
     tr_eff_gometric_cut->Delete();
     tr_eff_maxElayer_cut->Delete();
@@ -1435,6 +1445,7 @@ void buildAcceptance(
     tr_eff_psd_charge_cut->Delete();
     tr_eff_stk_charge_cut->Delete();
     tr_eff_all_cut->Delete();
+    */
 
     // Create geometric folder
     auto geometric_dir = ratioDir->mkdir("Geometric");
@@ -1512,6 +1523,7 @@ void buildAcceptance(
     geo_eff_stk_charge_cut->Write();
     geo_eff_all_cut->Write();
 
+    /*
     // Clean memory
     geo_eff_maxElayer_cut->Delete();
     geo_eff_maxBarLayer_cut->Delete();
@@ -1524,6 +1536,7 @@ void buildAcceptance(
     geo_eff_psd_charge_cut->Delete();
     geo_eff_stk_charge_cut->Delete();
     geo_eff_all_cut->Delete();
+    */
 
     // Create BGO_fiducial_volume folder
     auto BGOfiducial_dir = ratioDir->mkdir("BGO_fiducial_volume");
@@ -1577,6 +1590,7 @@ void buildAcceptance(
     BGOfiducial_eff_stk_charge_cut->Write();
     BGOfiducial_eff_all_cut->Write();
 
+    /*
     // Clean memory
     BGOfiducial_eff_nBarLayer13_cut->Delete();
     BGOfiducial_eff_maxRms_cut->Delete();
@@ -1585,6 +1599,7 @@ void buildAcceptance(
     BGOfiducial_eff_psd_charge_cut->Delete();
     BGOfiducial_eff_stk_charge_cut->Delete();
     BGOfiducial_eff_all_cut->Delete();
+    */
 
     // Create output analysis dir in the output TFile
     auto preGeo_analysisDir = outFile.mkdir("Analysis_preGeoCut");

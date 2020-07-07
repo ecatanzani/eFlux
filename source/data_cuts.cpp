@@ -786,12 +786,18 @@ bool stk_charge_cut(
             cluster_chargeY = cluster_y->getEnergy()*track_correction;
     }
 
+    // Check charges
+    if (cluster_chargeX == -999 || cluster_chargeY == -999)
+        return passed_stk_charge_cut;
+
     // Compute mean charge
     auto mean_charge = 0.5*(cluster_chargeX + cluster_chargeY);
     
     // Check STK charge to select electrons
     if (mean_charge < data_cuts.STK_charge)
+    {
         passed_stk_charge_cut = true;
-
+        std::cout << "\nTrue mean charge: " << mean_charge;
+    }
     return passed_stk_charge_cut;
 }
