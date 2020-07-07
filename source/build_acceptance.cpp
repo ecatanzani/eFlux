@@ -632,12 +632,18 @@ void buildAcceptance(
         // **** psd_charge cut ****
         if (active_cuts.psd_charge)
         {
-            filter_psd_charge_cut = psd_charge_cut(
-                psdhits,
-                bgorec,
-                acceptance_cuts,
-                event_best_track);
-            filter_all_cut *= filter_psd_charge_cut;
+            if (active_cuts.track_selection)
+            {
+                if (filter_track_selection_cut)
+                {
+                    filter_psd_charge_cut = psd_charge_cut(
+                        psdhits,
+                        bgorec,
+                        acceptance_cuts,
+                        event_best_track);
+                    filter_all_cut *= filter_psd_charge_cut;
+                }
+            }
         }
 
         // **** stk_charge cut ****
