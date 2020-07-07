@@ -761,3 +761,37 @@ bool psd_charge_cut(
     passed_psd_charge_cut = (fabs(dxCloPsdClu_track[0]) < data_cuts.STK_PSD_delta_position && fabs(dxCloPsdClu_track[1]) < data_cuts.STK_PSD_delta_position) ? true : false;
     return passed_psd_charge_cut;
 }
+
+bool stk_charge_cut(
+    const best_track track,
+    const std::shared_ptr<TClonesArray> stkclusters,
+    const cuts_conf data_cuts)
+{
+    bool passed_stk_charge_cut = false;
+    double cluster_chargeX = -999;
+    double cluster_chargeY = -999;
+    auto btrack = track.myBestTrack;
+    
+    // Charge correction 
+    auto track_correction = btrack.getDirection().CosTheta();
+
+    // Compute charges
+    for(auto clIdx=0; clIdx<track.n_points; ++clIdx)
+    {
+        auto cluster_x = btrack.GetClusterX(clIdx, stkclusters.get());
+        auto cluster_y = btrack.GetClusterY(clIdx, stkclusters.get());
+        if (cluster_x && !cluster_x->getPlane())
+            cluster_chargeX = cluster_x->getEnergy()*track_correction;
+        if (cluster_y && !cluster_y->getPlane())
+            cluster_chargeY = cluster_y->getEnergy()*track_correction;
+    }
+
+    // Compute mean charge
+    auto mean_charge = 0.5*(cluster_chargeX + cluster_chargeY);
+    
+    // Check STK charge to select electrons
+    if (mean_charge < data_cuts.STK_charge)
+        passed_stk_charge_cut = true;
+
+    return passed_stk_charge_cut;
+}

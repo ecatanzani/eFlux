@@ -34,6 +34,7 @@ struct cuts_conf
     double xtrl;
     int STK_PSD_delta_position;
     double PSD_bar_min_energy_release;
+    double STK_charge;
 };
 
 struct data_active_cuts
@@ -44,6 +45,7 @@ struct data_active_cuts
     bool track_selection = false;
     bool xtrl = false;
     bool psd_charge = false;
+    bool stk_charge = false;
     unsigned int nActiveCuts = 0;
 };
 
@@ -124,5 +126,10 @@ extern bool psd_charge_cut(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,
     const cuts_conf acceptance_cuts,
     const best_track data_cuts);
+
+extern bool stk_charge_cut(
+    const best_track track,
+    const std::shared_ptr<TClonesArray> stkclusters,
+    const cuts_conf data_cuts);
 
 #endif

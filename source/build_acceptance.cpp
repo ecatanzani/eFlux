@@ -122,6 +122,7 @@ void buildAcceptance(
     TH1D h_track_selection_cut("h_track_selection_cut", "Energy Distribution - track selection cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_xtrl_cut("h_xtrl_cut", "Energy Distribution - xtrl cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_psd_charge_cut("h_psd_charge_cut", "Energy Distribution - psd charge cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_stk_charge_cut("h_stk_charge_cut", "Energy Distribution - stk charge cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
     TH1D h_geo_factor_w("h_geo_factor_w", "Energy Distribution of the geometric factor", logEBins.size() - 1, &(logEBins[0]));
@@ -137,6 +138,7 @@ void buildAcceptance(
     TH1D h_track_selection_cut_w("h_track_selection_cut_w", "Energy Distribution - track selection cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_xtrl_cut_w("h_xtrl_cut_w", "Energy Distribution - xtrl cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_psd_charge_cut_w("h_psd_charge_cut_w", "Energy Distribution - psd charge cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_stk_charge_cut_w("h_stk_charge_cut_w", "Energy Distribution - stk charge cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_all_cut_w("h_all_cut_w", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
     // Acceptance - Cuts && Geometric Cut
@@ -149,6 +151,7 @@ void buildAcceptance(
     TH1D h_geometric_track_selection_cut("h_geometric_track_selection_cut", "Energy Distribution - track selection + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_xtrl_cut("h_geometric_xtrl_cut", "Energy Distribution - xtrl + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_psd_charge_cut("h_geometric_psd_charge_cut", "Energy Distribution - psd charge + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_stk_charge_cut("h_geometric_stk_charge_cut", "Energy Distribution - stk charge + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_all_cut("h_geometric_all_cut", "Energy Distribution - All + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
 
     TH1D h_geometric_maxElayer_cut_w("h_geometric_maxElayer_cut_w", "Energy Distribution - maxElayer + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
@@ -160,6 +163,7 @@ void buildAcceptance(
     TH1D h_geometric_track_selection_cut_w("h_geometric_track_selection_cut_w", "Energy Distribution - track selection + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_xtrl_cut_w("h_geometric_xtrl_cut_w", "Energy Distribution - xtrl + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_psd_charge_cut_w("h_geometric_psd_charge_cut_w", "Energy Distribution - psd charge + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_stk_charge_cut_w("h_geometric_stk_charge_cut_w", "Energy Distribution - stk charge + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_all_cut_w("h_geometric_all_cut_w", "Energy Distribution - All + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
 
     // Acceptance - Cuts && BGO fiducial volume cut
@@ -168,6 +172,7 @@ void buildAcceptance(
     TH1D h_BGOfiducial_track_selection_cut("h_BGOfiducial_track_selection_cut", "Energy Distribution - track selection + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_xtrl_cut("h_BGOfiducial_xtrl_cut", "Energy Distribution - xtrl + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_psd_charge_cut("h_BGOfiducial_psd_charge_cut", "Energy Distribution - psd charge + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_BGOfiducial_stk_charge_cut("h_BGOfiducial_stk_charge_cut", "Energy Distribution - stk charge + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_all_cut("h_BGOfiducial_all_cut", "Energy Distribution - All + BGO fiducial cut ", logEBins.size() - 1, &(logEBins[0]));
 
     TH1D h_BGOfiducial_nBarLayer13_cut_w("h_BGOfiducial_nBarLayer13_cut_w", "Energy Distribution - nBarLayer13 + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
@@ -175,6 +180,7 @@ void buildAcceptance(
     TH1D h_BGOfiducial_track_selection_cut_w("h_BGOfiducial_track_selection_cut_w", "Energy Distribution - track selection + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_xtrl_cut_w("h_BGOfiducial_xtrl_cut_w", "Energy Distribution - xtrl + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_psd_charge_cut_w("h_BGOfiducial_psd_charge_cut_w", "Energy Distribution - psd charge + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_BGOfiducial_stk_charge_cut_w("h_BGOfiducial_stk_charge_cut_w", "Energy Distribution - stk charge + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_all_cut_w("h_BGOfiducial_all_cut_w", "Energy Distribution - All + BGO fiducial cut ", logEBins.size() - 1, &(logEBins[0]));
 
     // Analysis histos - simu and reco energy of incoming events
@@ -254,8 +260,15 @@ void buildAcceptance(
     TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
 
     // STK charge histos
-    TH1D h_chargeX("h_chargeX", "Charge distribution X", 100, 0, 1000);
-    TH1D h_chargeY("h_chargeY", "Charge distribution Y", 100, 0, 1000);
+    TH1D h_chargeX("h_chargeX", "Charge distribution X", 1000, 0, 1000);
+    TH1D h_chargeY("h_chargeY", "Charge distribution Y", 1000, 0, 1000);
+    TH2D h_charge2D("h_charge2D", "STK charge", 1000, 0, 1000, 1000, 0, 1000);
+    TH1D h_charge("h_charge", "Mean STK charge", 1000, 0, 1000);
+
+    TH1D h_selected_chargeX("h_selected_chargeX", "Charge distribution X", 1000, 0, 1000);
+    TH1D h_selected_chargeY("h_selected_chargeY", "Charge distribution Y", 1000, 0, 1000);
+    TH2D h_selected_charge2D("h_selected_charge2D", "STK charge", 1000, 0, 1000, 1000, 0, 1000);
+    TH1D h_selected_charge("h_selected_charge", "Mean STK charge", 1000, 0, 1000);
 
     // Proton background histos
     TH1D h_background_under_xtrl_cut("h_background_under_xtrl_cut", "Proton background - XTRL < cut", logEBins.size() - 1, &(logEBins[0]));
@@ -275,6 +288,7 @@ void buildAcceptance(
     h_track_selection_cut.Sumw2();
     h_xtrl_cut.Sumw2();
     h_psd_charge_cut.Sumw2();
+    h_stk_charge_cut.Sumw2();
     h_all_cut.Sumw2();
 
     h_geo_factor_w.Sumw2();
@@ -290,6 +304,7 @@ void buildAcceptance(
     h_track_selection_cut_w.Sumw2();
     h_xtrl_cut_w.Sumw2();
     h_psd_charge_cut_w.Sumw2();
+    h_stk_charge_cut_w.Sumw2();
     h_all_cut_w.Sumw2();
 
     // Sumw2 Acceptance - Cuts && Geometric Cut
@@ -302,6 +317,7 @@ void buildAcceptance(
     h_geometric_track_selection_cut.Sumw2();
     h_geometric_xtrl_cut.Sumw2();
     h_geometric_psd_charge_cut.Sumw2();
+    h_geometric_stk_charge_cut.Sumw2();
     h_geometric_all_cut.Sumw2();
 
     h_geometric_maxElayer_cut_w.Sumw2();
@@ -313,6 +329,7 @@ void buildAcceptance(
     h_geometric_track_selection_cut_w.Sumw2();
     h_geometric_xtrl_cut_w.Sumw2();
     h_geometric_psd_charge_cut_w.Sumw2();
+    h_geometric_stk_charge_cut_w.Sumw2();
     h_geometric_all_cut_w.Sumw2();
 
     // Sumw2 Acceptance - Cuts && BGO fiducial volume cut
@@ -321,6 +338,7 @@ void buildAcceptance(
     h_BGOfiducial_track_selection_cut.Sumw2();
     h_BGOfiducial_xtrl_cut.Sumw2();
     h_BGOfiducial_psd_charge_cut.Sumw2();
+    h_BGOfiducial_stk_charge_cut.Sumw2();
     h_BGOfiducial_all_cut.Sumw2();
 
     h_BGOfiducial_nBarLayer13_cut_w.Sumw2();
@@ -328,6 +346,7 @@ void buildAcceptance(
     h_BGOfiducial_track_selection_cut_w.Sumw2();
     h_BGOfiducial_xtrl_cut_w.Sumw2();
     h_BGOfiducial_psd_charge_cut_w.Sumw2();
+    h_BGOfiducial_stk_charge_cut_w.Sumw2();
     h_BGOfiducial_all_cut_w.Sumw2();
 
     // Sumw2 Analysis histos - simu and reco energy of incoming events
@@ -383,6 +402,8 @@ void buildAcceptance(
     // Sumw2 STK charge histos
     h_chargeX.Sumw2();
     h_chargeY.Sumw2();
+    h_charge.Sumw2();
+    h_charge2D.Sumw2();
 
     // Proton background histos
     h_background_under_xtrl_cut.Sumw2();
@@ -528,6 +549,7 @@ void buildAcceptance(
         auto filter_track_selection_cut = false;
         auto filter_xtrl_cut = false;
         auto filter_psd_charge_cut = false;
+        auto filter_stk_charge_cut = false;
         auto filter_all_cut = true;
 
         // Cut check...
@@ -616,6 +638,26 @@ void buildAcceptance(
                 acceptance_cuts,
                 event_best_track);
             filter_all_cut *= filter_psd_charge_cut;
+        }
+
+        // **** stk_charge cut ****
+        if (active_cuts.stk_charge)
+        {   
+            // Fill charge histos
+            fillChargeHistos(
+                h_chargeX, 
+                h_chargeY,
+                h_charge,
+                h_charge2D,
+                event_best_track,
+                stkclusters);
+            
+            // Charge cut
+            filter_stk_charge_cut = stk_charge_cut(
+                event_best_track,
+                stkclusters,
+                acceptance_cuts);
+            filter_all_cut *= filter_stk_charge_cut;
         }
 
         // **** ANCILLARY CUTS ****
@@ -721,6 +763,13 @@ void buildAcceptance(
                 h_geometric_psd_charge_cut_w.Fill(simuEnergy * _GeV, energy_w);
             }
 
+            // Geometric cut && STK charge cut
+            if (filter_stk_charge_cut)
+            {
+                h_geometric_stk_charge_cut.Fill(simuEnergy * _GeV);
+                h_geometric_stk_charge_cut_w.Fill(simuEnergy * _GeV, energy_w);
+            }
+
             // Geometric cut and all cuts
             if (filter_all_cut)
             {
@@ -791,6 +840,13 @@ void buildAcceptance(
                 h_BGOfiducial_psd_charge_cut_w.Fill(simuEnergy * _GeV, energy_w);
             }
 
+            // BGO fiducial cut && STK charge cut
+            if (filter_stk_charge_cut)
+            {
+                h_BGOfiducial_stk_charge_cut.Fill(simuEnergy * _GeV);
+                h_BGOfiducial_stk_charge_cut_w.Fill(simuEnergy * _GeV, energy_w);
+            }
+
             // BGO fiducial cut && all cut
             if (filter_all_cut)
             {
@@ -818,11 +874,6 @@ void buildAcceptance(
         {
             h_track_selection_cut.Fill(simuEnergy * _GeV);
             h_track_selection_cut_w.Fill(simuEnergy * _GeV, energy_w);
-            fillChargeHistos(
-                h_chargeX, 
-                h_chargeY, 
-                event_best_track,
-                stkclusters);
         }
 
         // Fill XTRL cut histo
@@ -837,6 +888,22 @@ void buildAcceptance(
         {
             h_psd_charge_cut.Fill(simuEnergy * _GeV);
             h_psd_charge_cut_w.Fill(simuEnergy * _GeV, energy_w);
+        }
+
+        // Fill STK charge histo
+        if (filter_stk_charge_cut)
+        {   
+            // Fill selected STK charge histos
+            fillChargeHistos(
+                h_selected_chargeX, 
+                h_selected_chargeY,
+                h_selected_charge,
+                h_selected_charge2D,
+                event_best_track,
+                stkclusters);
+
+            h_stk_charge_cut.Fill(simuEnergy * _GeV);
+            h_stk_charge_cut_w.Fill(simuEnergy * _GeV, energy_w);
         }
 
         // Fill all cut histo
@@ -880,6 +947,9 @@ void buildAcceptance(
         if (h_psd_charge_cut.GetEntries())
             std::cout << "psd_charge filtered events: " << h_psd_charge_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_psd_charge_cut.GetEntries()) / refEntries << std::endl;
 
+        if (h_stk_charge_cut.GetEntries())
+            std::cout << "stk_charge filtered events: " << h_stk_charge_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_stk_charge_cut.GetEntries()) / refEntries << std::endl;
+
         if (h_all_cut.GetEntries())
             std::cout << "all-cuts filtered events: " << h_all_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_all_cut.GetEntries()) / refEntries;
 
@@ -906,6 +976,7 @@ void buildAcceptance(
     auto h_acceptance_track_selection_cut = static_cast<TH1D *>(h_track_selection_cut.Clone("h_acceptance_track_selection_cut"));
     auto h_acceptance_xtrl_cut = static_cast<TH1D *>(h_xtrl_cut.Clone("h_acceptance_xtrl_cut"));
     auto h_acceptance_psd_charge_cut = static_cast<TH1D *>(h_psd_charge_cut.Clone("h_acceptance_psd_charge_cut"));
+    auto h_acceptance_stk_charge_cut = static_cast<TH1D *>(h_stk_charge_cut.Clone("h_acceptance_stk_charge_cut"));
     auto h_acceptance_all_cut = static_cast<TH1D *>(h_all_cut.Clone("h_acceptance_all_cut"));
 
     h_acceptance_geometric_factor->Divide(&h_incoming);
@@ -924,6 +995,7 @@ void buildAcceptance(
     h_acceptance_track_selection_cut->Divide(&h_incoming);
     h_acceptance_xtrl_cut->Divide(&h_incoming);
     h_acceptance_psd_charge_cut->Divide(&h_incoming);
+    h_acceptance_stk_charge_cut->Divide(&h_incoming);
     h_acceptance_all_cut->Divide(&h_incoming);
 
     h_acceptance_geometric_factor->Scale(scaleFactor);
@@ -942,6 +1014,7 @@ void buildAcceptance(
     h_acceptance_track_selection_cut->Scale(scaleFactor);
     h_acceptance_xtrl_cut->Scale(scaleFactor);
     h_acceptance_psd_charge_cut->Scale(scaleFactor);
+    h_acceptance_stk_charge_cut->Scale(scaleFactor);
     h_acceptance_all_cut->Scale(scaleFactor);
 
     // Builing vectors
@@ -963,6 +1036,7 @@ void buildAcceptance(
     std::vector<double> acceptanceValues_track_selection_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_xtrl_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_psd_charge_cut(energyValues.size(), 0);
+    std::vector<double> acceptanceValues_stk_charge_cut(energyValues.size(), 0);
     std::vector<double> acceptanceValues_all_cut(energyValues.size(), 0);
 
     //Building histo errors on energy and
@@ -982,6 +1056,7 @@ void buildAcceptance(
     std::vector<double> acceptanceError_track_selection_cut(acceptanceError_geometric_factor.size(), 0);
     std::vector<double> acceptanceError_xtrl_cut(acceptanceError_geometric_factor.size(), 0);
     std::vector<double> acceptanceError_psd_charge_cut(acceptanceError_geometric_factor.size(), 0);
+    std::vector<double> acceptanceError_stk_charge_cut(acceptanceError_geometric_factor.size(), 0);
     std::vector<double> acceptanceError_all_cut(acceptanceError_geometric_factor.size(), 0);
 
     std::vector<double> energyError(energyValues.size(), 0);
@@ -1007,6 +1082,7 @@ void buildAcceptance(
         acceptanceValues_track_selection_cut[index] = h_acceptance_track_selection_cut->GetBinContent(index + 1);
         acceptanceValues_xtrl_cut[index] = h_acceptance_xtrl_cut->GetBinContent(index + 1);
         acceptanceValues_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinContent(index + 1);
+        acceptanceValues_stk_charge_cut[index] = h_acceptance_stk_charge_cut->GetBinContent(index + 1);
         acceptanceValues_all_cut[index] = h_acceptance_all_cut->GetBinContent(index + 1);
 
         acceptanceError_geometric_factor[index] = h_acceptance_geometric_factor->GetBinError(index + 1);
@@ -1025,6 +1101,7 @@ void buildAcceptance(
         acceptanceError_track_selection_cut[index] = h_acceptance_track_selection_cut->GetBinError(index + 1);
         acceptanceError_xtrl_cut[index] = h_acceptance_xtrl_cut->GetBinError(index + 1);
         acceptanceError_psd_charge_cut[index] = h_acceptance_psd_charge_cut->GetBinError(index + 1);
+        acceptanceError_stk_charge_cut[index] = h_acceptance_stk_charge_cut->GetBinError(index + 1);
         acceptanceError_all_cut[index] = h_acceptance_all_cut->GetBinError(index + 1);
     }
 
@@ -1045,6 +1122,7 @@ void buildAcceptance(
     TGraphErrors gr_acceptance_track_selection_cut(energyValues.size(), &energyValues[0], &acceptanceValues_track_selection_cut[0], &(energyError[0]), &(acceptanceError_track_selection_cut[0]));
     TGraphErrors gr_acceptance_xtrl_cut(energyValues.size(), &energyValues[0], &acceptanceValues_xtrl_cut[0], &(energyError[0]),&(acceptanceError_xtrl_cut[0]));
     TGraphErrors gr_acceptance_psd_charge_cut(energyValues.size(), &energyValues[0], &acceptanceValues_psd_charge_cut[0], &(energyError[0]), &(acceptanceError_psd_charge_cut[0]));
+    TGraphErrors gr_acceptance_stk_charge_cut(energyValues.size(), &energyValues[0], &acceptanceValues_stk_charge_cut[0], &(energyError[0]), &(acceptanceError_stk_charge_cut[0]));
     TGraphErrors gr_acceptance_all_cut(energyValues.size(), &energyValues[0], &acceptanceValues_all_cut[0], &(energyError[0]), &(acceptanceError_all_cut[0]));
 
     gr_acceptance_geometric_factor.SetName("gr_acceptance_geometric_factor");
@@ -1063,6 +1141,7 @@ void buildAcceptance(
     gr_acceptance_track_selection_cut.SetName("gr_acceptance_track_selection_cut");
     gr_acceptance_xtrl_cut.SetName("gr_acceptance_xtrl_cut");
     gr_acceptance_psd_charge_cut.SetName("gr_acceptance_psd_charge_cut");
+    gr_acceptance_stk_charge_cut.SetName("gr_acceptance_stk_charge_cut");
     gr_acceptance_all_cut.SetName("gr_acceptance_all_cut");
 
     gr_acceptance_geometric_factor.SetTitle("Geometric Factor");
@@ -1081,6 +1160,7 @@ void buildAcceptance(
     gr_acceptance_track_selection_cut.SetTitle("Acceptance - track selection cut");
     gr_acceptance_xtrl_cut.SetTitle("Acceptance - XTRL cut");
     gr_acceptance_psd_charge_cut.SetTitle("Acceptance - PSD charge selection cut");
+    gr_acceptance_stk_charge_cut.SetTitle("Acceptance - STK charge selection cut");
     gr_acceptance_all_cut.SetTitle("Acceptance - all cut");
 
     // Write histos to file
@@ -1098,6 +1178,7 @@ void buildAcceptance(
     h_track_selection_cut.Write();
     h_xtrl_cut.Write();
     h_psd_charge_cut.Write();
+    h_stk_charge_cut.Write();
     h_all_cut.Write();
 
     // Acceptance - Cuts && Geometric Cut
@@ -1110,6 +1191,7 @@ void buildAcceptance(
     h_geometric_track_selection_cut.Write();
     h_geometric_xtrl_cut.Write();
     h_geometric_psd_charge_cut.Write();
+    h_geometric_stk_charge_cut.Write();
     h_geometric_all_cut.Write();
     // Acceptance - Cuts && BGO fiducial volume cut
     h_BGOfiducial_nBarLayer13_cut.Write();
@@ -1117,6 +1199,7 @@ void buildAcceptance(
     h_BGOfiducial_track_selection_cut.Write();
     h_BGOfiducial_xtrl_cut.Write();
     h_BGOfiducial_psd_charge_cut.Write();
+    h_BGOfiducial_stk_charge_cut.Write();
     h_BGOfiducial_all_cut.Write();
 
     // Writing reweighted histos
@@ -1137,6 +1220,7 @@ void buildAcceptance(
     h_track_selection_cut_w.Write();
     h_xtrl_cut_w.Write();
     h_psd_charge_cut_w.Write();
+    h_stk_charge_cut_w.Write();
     h_all_cut_w.Write();
 
     // Acceptance - Cuts && Geometric Cut
@@ -1149,6 +1233,7 @@ void buildAcceptance(
     h_geometric_track_selection_cut_w.Write();
     h_geometric_xtrl_cut_w.Write();
     h_geometric_psd_charge_cut_w.Write();
+    h_geometric_stk_charge_cut_w.Write();
     h_geometric_all_cut_w.Write();
     // Acceptance - Cuts && BGO fiducial volume cut
     h_BGOfiducial_nBarLayer13_cut_w.Write();
@@ -1156,6 +1241,7 @@ void buildAcceptance(
     h_BGOfiducial_track_selection_cut_w.Write();
     h_BGOfiducial_xtrl_cut_w.Write();
     h_BGOfiducial_psd_charge_cut_w.Write();
+    h_BGOfiducial_stk_charge_cut_w.Write();
     h_BGOfiducial_all_cut_w.Write();
 
     // Create output acceptance_histo dir in the output TFile
@@ -1178,6 +1264,7 @@ void buildAcceptance(
     h_acceptance_track_selection_cut->Write();
     h_acceptance_xtrl_cut->Write();
     h_acceptance_psd_charge_cut->Write();
+    h_acceptance_stk_charge_cut->Write();
     h_acceptance_all_cut->Write();
 
     outFile.cd();
@@ -1202,6 +1289,7 @@ void buildAcceptance(
     gr_acceptance_track_selection_cut.Write();
     gr_acceptance_xtrl_cut.Write();
     gr_acceptance_psd_charge_cut.Write();
+    gr_acceptance_stk_charge_cut.Write();
     gr_acceptance_all_cut.Write();
 
     // Return to main TFile directory
@@ -1233,6 +1321,7 @@ void buildAcceptance(
     TEfficiency *tr_eff_track_selection_cut = nullptr;
     TEfficiency *tr_eff_xtrl_cut = nullptr;
     TEfficiency *tr_eff_psd_charge_cut = nullptr;
+    TEfficiency *tr_eff_stk_charge_cut = nullptr;
     TEfficiency *tr_eff_all_cut = nullptr;
 
     if (TEfficiency::CheckConsistency(h_gometric_cut, h_gometric_cut))
@@ -1268,6 +1357,9 @@ void buildAcceptance(
     if (TEfficiency::CheckConsistency(h_psd_charge_cut, h_trigger))
         tr_eff_psd_charge_cut = new TEfficiency(h_psd_charge_cut, h_trigger);
 
+    if (TEfficiency::CheckConsistency(h_stk_charge_cut, h_trigger))
+        tr_eff_stk_charge_cut = new TEfficiency(h_stk_charge_cut, h_trigger);
+
     if (TEfficiency::CheckConsistency(h_all_cut, h_trigger))
         tr_eff_all_cut = new TEfficiency(h_all_cut, h_trigger);
 
@@ -1283,6 +1375,7 @@ void buildAcceptance(
     tr_eff_track_selection_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_xtrl_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_psd_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
+    tr_eff_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
 
     trigger_efficiency->SetName("trigger_efficiency");
@@ -1296,6 +1389,7 @@ void buildAcceptance(
     tr_eff_track_selection_cut->SetName("tr_eff_track_selection_cut");
     tr_eff_xtrl_cut->SetName("tr_eff_xtrl_cut");
     tr_eff_psd_charge_cut->SetName("tr_eff_psd_charge_cut");
+    tr_eff_stk_charge_cut->SetName("tr_eff_stk_charge_cut");
     tr_eff_all_cut->SetName("tr_eff_all_cut");
 
     trigger_efficiency->SetTitle("Trigger efficiency");
@@ -1309,6 +1403,7 @@ void buildAcceptance(
     tr_eff_track_selection_cut->SetTitle("track selection cut efficiency");
     tr_eff_xtrl_cut->SetTitle("xtrl cut efficiency");
     tr_eff_psd_charge_cut->SetTitle("psd charge cut efficiency");
+    tr_eff_stk_charge_cut->SetTitle("stk charge cut efficiency");
     tr_eff_all_cut->SetTitle("all cut efficiency");
 
     // Write histos to disk
@@ -1323,6 +1418,7 @@ void buildAcceptance(
     tr_eff_track_selection_cut->Write();
     tr_eff_xtrl_cut->Write();
     tr_eff_psd_charge_cut->Write();
+    tr_eff_stk_charge_cut->Write();
     tr_eff_all_cut->Write();
 
     // Clean memory
@@ -1337,6 +1433,7 @@ void buildAcceptance(
     tr_eff_track_selection_cut->Delete();
     tr_eff_xtrl_cut->Delete();
     tr_eff_psd_charge_cut->Delete();
+    tr_eff_stk_charge_cut->Delete();
     tr_eff_all_cut->Delete();
 
     // Create geometric folder
@@ -1353,6 +1450,7 @@ void buildAcceptance(
     TEfficiency *geo_eff_track_selection_cut = nullptr;
     TEfficiency *geo_eff_xtrl_cut = nullptr;
     TEfficiency *geo_eff_psd_charge_cut = nullptr;
+    TEfficiency *geo_eff_stk_charge_cut = nullptr;
     TEfficiency *geo_eff_all_cut = nullptr;
 
     if (TEfficiency::CheckConsistency(h_geometric_maxElayer_cut, h_gometric_cut))
@@ -1381,6 +1479,9 @@ void buildAcceptance(
 
     if (TEfficiency::CheckConsistency(h_geometric_psd_charge_cut, h_gometric_cut))
         geo_eff_psd_charge_cut = new TEfficiency(h_geometric_psd_charge_cut, h_gometric_cut);
+
+    if (TEfficiency::CheckConsistency(h_geometric_stk_charge_cut, h_gometric_cut))
+        geo_eff_stk_charge_cut = new TEfficiency(h_geometric_stk_charge_cut, h_gometric_cut);
     
     if (TEfficiency::CheckConsistency(h_geometric_all_cut, h_gometric_cut))
         geo_eff_all_cut = new TEfficiency(h_geometric_all_cut, h_gometric_cut);
@@ -1395,6 +1496,7 @@ void buildAcceptance(
     geo_eff_track_selection_cut->SetStatisticOption(TEfficiency::kBUniform);
     geo_eff_xtrl_cut->SetStatisticOption(TEfficiency::kBUniform);
     geo_eff_psd_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
+    geo_eff_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
     geo_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
 
     //Write histos to disk
@@ -1407,6 +1509,7 @@ void buildAcceptance(
     geo_eff_track_selection_cut->Write();
     geo_eff_xtrl_cut->Write();
     geo_eff_psd_charge_cut->Write();
+    geo_eff_stk_charge_cut->Write();
     geo_eff_all_cut->Write();
 
     // Clean memory
@@ -1419,6 +1522,7 @@ void buildAcceptance(
     geo_eff_track_selection_cut->Delete();
     geo_eff_xtrl_cut->Delete();
     geo_eff_psd_charge_cut->Delete();
+    geo_eff_stk_charge_cut->Delete();
     geo_eff_all_cut->Delete();
 
     // Create BGO_fiducial_volume folder
@@ -1431,6 +1535,7 @@ void buildAcceptance(
     TEfficiency *BGOfiducial_eff_track_selection_cut = nullptr;
     TEfficiency *BGOfiducial_eff_xtrl_cut = nullptr;
     TEfficiency *BGOfiducial_eff_psd_charge_cut = nullptr;
+    TEfficiency *BGOfiducial_eff_stk_charge_cut = nullptr;
     TEfficiency *BGOfiducial_eff_all_cut = nullptr;
 
     if (TEfficiency::CheckConsistency(h_BGOfiducial_nBarLayer13_cut, h_BGO_fiducial_cut))
@@ -1448,6 +1553,9 @@ void buildAcceptance(
     if (TEfficiency::CheckConsistency(h_BGOfiducial_psd_charge_cut, h_BGO_fiducial_cut))
         BGOfiducial_eff_psd_charge_cut = new TEfficiency(h_BGOfiducial_psd_charge_cut, h_BGO_fiducial_cut);
 
+    if (TEfficiency::CheckConsistency(h_BGOfiducial_stk_charge_cut, h_BGO_fiducial_cut))
+        BGOfiducial_eff_stk_charge_cut = new TEfficiency(h_BGOfiducial_stk_charge_cut, h_BGO_fiducial_cut);
+
     if (TEfficiency::CheckConsistency(h_BGOfiducial_all_cut, h_BGO_fiducial_cut))
         BGOfiducial_eff_all_cut = new TEfficiency(h_BGOfiducial_all_cut, h_BGO_fiducial_cut);
     
@@ -1457,6 +1565,7 @@ void buildAcceptance(
     BGOfiducial_eff_track_selection_cut->SetStatisticOption(TEfficiency::kBUniform);
     BGOfiducial_eff_xtrl_cut->SetStatisticOption(TEfficiency::kBUniform);
     BGOfiducial_eff_psd_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
+    BGOfiducial_eff_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
     BGOfiducial_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
 
     // Write histos to disk
@@ -1465,6 +1574,7 @@ void buildAcceptance(
     BGOfiducial_eff_track_selection_cut->Write();
     BGOfiducial_eff_xtrl_cut->Write();
     BGOfiducial_eff_psd_charge_cut->Write();
+    BGOfiducial_eff_stk_charge_cut->Write();
     BGOfiducial_eff_all_cut->Write();
 
     // Clean memory
@@ -1473,6 +1583,7 @@ void buildAcceptance(
     BGOfiducial_eff_track_selection_cut->Delete();
     BGOfiducial_eff_xtrl_cut->Delete();
     BGOfiducial_eff_psd_charge_cut->Delete();
+    BGOfiducial_eff_stk_charge_cut->Delete();
     BGOfiducial_eff_all_cut->Delete();
 
     // Create output analysis dir in the output TFile
@@ -1542,6 +1653,13 @@ void buildAcceptance(
 
     h_chargeX.Write();
     h_chargeY.Write();
+    h_charge.Write();
+    h_charge2D.Write();
+
+    h_selected_chargeX.Write();
+    h_selected_chargeY.Write();
+    h_selected_charge.Write();
+    h_selected_charge2D.Write();
 
     // Create ancillary output folder
     if (ancillary_cuts.compute_proton_background)
