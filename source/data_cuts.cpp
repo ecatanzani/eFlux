@@ -795,9 +795,7 @@ bool stk_charge_cut(
     
     // Check STK charge to select electrons
     if (mean_charge < data_cuts.STK_charge)
-    {
         passed_stk_charge_cut = true;
-        std::cout << "\nTrue mean charge: " << mean_charge;
-    }
+    
     return passed_stk_charge_cut;
 }
