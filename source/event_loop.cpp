@@ -671,6 +671,8 @@ TH1D evLoop(
         std::cout << "\n\n ****** \n\n";
     }
 
+    outFile.cd();
+    
     // Write histos to file
     // First-Cut histos
     h_trigger.Write();
