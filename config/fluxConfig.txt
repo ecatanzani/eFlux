@@ -18,6 +18,7 @@ STK_BGO_delta_position              40                  mm
 xtrl                                8.5
 STK_PSD_delta_position              40                  mm
 PSD_bar_min_energy_release          0.5                 MeV
+STK_charge                          100                 au
 
 **** CUT ****                **** ACTIVE ****
 
@@ -27,3 +28,4 @@ maxRms                              YES
 track_selection                     YES
 xtrl_selection                      YES
 psd_charge                          YES
+stk_charge                          YES

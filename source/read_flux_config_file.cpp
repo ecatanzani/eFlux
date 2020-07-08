@@ -97,6 +97,11 @@ void load_flux_struct(
             input_stream >> tmp_str;
             flux_cuts.PSD_bar_min_energy_release = stod(tmp_str, &sz);
         }
+        if (!strcmp(tmp_str.c_str(), "STK_charge"))
+        {
+            input_stream >> tmp_str;
+            flux_cuts.STK_charge = stod(tmp_str, &sz);
+        }
 
         // Load cuts
         if (!strcmp(tmp_str.c_str(), "BGO_fiducial"))
@@ -150,6 +155,15 @@ void load_flux_struct(
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
             {
                 active_cuts.psd_charge = true;
+                ++active_cuts.nActiveCuts;
+            }
+        }
+        if (!strcmp(tmp_str.c_str(), "stk_charge"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
+                active_cuts.stk_charge = true;
                 ++active_cuts.nActiveCuts;
             }
         }

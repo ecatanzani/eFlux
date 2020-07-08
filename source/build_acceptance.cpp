@@ -405,6 +405,11 @@ void buildAcceptance(
     h_charge.Sumw2();
     h_charge2D.Sumw2();
 
+    h_selected_chargeX.Sumw2();
+    h_selected_chargeY.Sumw2();
+    h_selected_charge.Sumw2();
+    h_selected_charge2D.Sumw2();
+    
     // Proton background histos
     h_background_under_xtrl_cut.Sumw2();
     h_background_over_xtrl_cut.Sumw2();

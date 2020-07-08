@@ -6,6 +6,8 @@
 #include "flux.h"
 #include "wtsydp.h"
 #include "binning.h"
+#include "charge.h"
+#include "mc_ancillary.h"
 
 #include "TEfficiency.h"
 
@@ -100,7 +102,7 @@ TH1D evLoop(
     if (verbose)
         std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
 
-    // Acceptance - First-Cut histos
+    // First-Cut histos
     TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_gometric_cut("h_gometric_cut", "Energy Distribution - geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_maxElayer_cut("h_maxElayer_cut", "Energy Distribution - maxElayer cut ", logEBins.size() - 1, &(logEBins[0]));
@@ -112,26 +114,29 @@ TH1D evLoop(
     TH1D h_track_selection_cut("h_track_selection_cut", "Energy Distribution - track selection cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_xtrl_cut("h_xtrl_cut", "Energy Distribution - xtrl cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_psd_charge_cut("h_psd_charge_cut", "Energy Distribution - psd charge cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_stk_charge_cut("h_stk_charge_cut", "Energy Distribution - stk charge cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_all_cut("h_all_cut", "Energy Distribution - All cut ", logEBins.size() - 1, &(logEBins[0]));
 
-    // Acceptance - Cuts && Geometric Cut
+    // Cuts && Geometric Cut
     TH1D h_geometric_maxElayer_cut("h_geometric_maxElayer_cut", "Energy Distribution - maxElayer + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_maxBarLayer_cut("h_geometric_maxBarLayer_cut", "Energy Distribution - maxBarLayer + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_BGOTrackContainment_cut("h_geometric_BGOTrackContainment_cut", "Energy Distribution - BGOTrackContainment + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
-    TH1D h_geometric_BGO_fiducial("h_geometric_BGO_fiducial", "Energy Distibution - BGO fiducial + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_BGO_fiducial_cut("h_geometric_BGO_fiducial_cut", "Energy Distibution - BGO fiducial + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_nBarLayer13_cut("h_geometric_nBarLayer13_cut", "Energy Distribution - nBarLayer13 + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_maxRms_cut("h_geometric_maxRms_cut", "Energy Distribution - maxRms + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_track_selection_cut("h_geometric_track_selection_cut", "Energy Distribution - track selection + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_xtrl_cut("h_geometric_xtrl_cut", "Energy Distribution - xtrl + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_psd_charge_cut("h_geometric_psd_charge_cut", "Energy Distribution - psd charge + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_geometric_stk_charge_cut("h_geometric_stk_charge_cut", "Energy Distribution - stk charge + geometric (trigger selection) cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_geometric_all_cut("h_geometric_all_cut", "Energy Distribution - All + geometric (trigger selection) cut ", logEBins.size() - 1, &(logEBins[0]));
 
-    // Acceptance - Cuts && BGO fiducial volume cut
+    // Cuts && BGO fiducial volume cut
     TH1D h_BGOfiducial_nBarLayer13_cut("h_BGOfiducial_nBarLayer13_cut", "Energy Distribution - nBarLayer13 + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_maxRms_cut("h_BGOfiducial_maxRms_cut", "Energy Distribution - maxRms  + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_track_selection_cut("h_BGOfiducial_track_selection_cut", "Energy Distribution - track selection + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_xtrl_cut("h_BGOfiducial_xtrl_cut", "Energy Distribution - xtrl + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_psd_charge_cut("h_BGOfiducial_psd_charge_cut", "Energy Distribution - psd charge + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_BGOfiducial_stk_charge_cut("h_BGOfiducial_stk_charge_cut", "Energy Distribution - stk charge + BGO fiducial cut", logEBins.size() - 1, &(logEBins[0]));
     TH1D h_BGOfiducial_all_cut("h_BGOfiducial_all_cut", "Energy Distribution - All + BGO fiducial cut ", logEBins.size() - 1, &(logEBins[0]));
 
     // Analysis histos - simu and reco energy of incoming events
@@ -168,7 +173,22 @@ TH1D evLoop(
     TH1D h_xtrl_energy_int("h_xtrl_energy_int", "Energy integrated XTRL distribution", xtrl_bins.size() - 1, &(xtrl_bins[0]));
     TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
 
-    // Sumw2 Acceptance - First-Cut histos
+    // STK charge histos
+    TH1D h_chargeX("h_chargeX", "Charge distribution X", 1000, 0, 1000);
+    TH1D h_chargeY("h_chargeY", "Charge distribution Y", 1000, 0, 1000);
+    TH2D h_charge2D("h_charge2D", "STK charge", 1000, 0, 1000, 1000, 0, 1000);
+    TH1D h_charge("h_charge", "Mean STK charge", 1000, 0, 1000);
+
+    TH1D h_selected_chargeX("h_selected_chargeX", "Charge distribution X", 1000, 0, 1000);
+    TH1D h_selected_chargeY("h_selected_chargeY", "Charge distribution Y", 1000, 0, 1000);
+    TH2D h_selected_charge2D("h_selected_charge2D", "STK charge", 1000, 0, 1000, 1000, 0, 1000);
+    TH1D h_selected_charge("h_selected_charge", "Mean STK charge", 1000, 0, 1000);
+    
+    // Proton background histos
+    TH1D h_background_under_xtrl_cut("h_background_under_xtrl_cut", "Proton background - XTRL < cut", logEBins.size() - 1, &(logEBins[0]));
+    TH1D h_background_over_xtrl_cut("h_background_over_xtrl_cut", "Proton background - 20 < XTRL < 100", logEBins.size() - 1, &(logEBins[0]));
+
+    // Sumw2 - First-Cut histos
     h_trigger.Sumw2();
     h_gometric_cut.Sumw2();
     h_maxElayer_cut.Sumw2();
@@ -180,26 +200,29 @@ TH1D evLoop(
     h_track_selection_cut.Sumw2();
     h_xtrl_cut.Sumw2();
     h_psd_charge_cut.Sumw2();
+    h_stk_charge_cut.Sumw2();
     h_all_cut.Sumw2();
 
-    // Sumw2 Acceptance - Cuts && Geometric Cut
+    // Sumw2 - Cuts && Geometric Cut
     h_geometric_maxElayer_cut.Sumw2();
     h_geometric_maxBarLayer_cut.Sumw2();
     h_geometric_BGOTrackContainment_cut.Sumw2();
-    h_geometric_BGO_fiducial.Sumw2();
+    h_geometric_BGO_fiducial_cut.Sumw2();
     h_geometric_nBarLayer13_cut.Sumw2();
     h_geometric_maxRms_cut.Sumw2();
     h_geometric_track_selection_cut.Sumw2();
     h_geometric_xtrl_cut.Sumw2();
     h_geometric_psd_charge_cut.Sumw2();
+    h_geometric_stk_charge_cut.Sumw2();
     h_geometric_all_cut.Sumw2();
 
-    // Sumw2 Acceptance - Cuts && BGO fiducial volume cut
+    // Sumw2 - Cuts && BGO fiducial volume cut
     h_BGOfiducial_nBarLayer13_cut.Sumw2();
     h_BGOfiducial_maxRms_cut.Sumw2();
     h_BGOfiducial_track_selection_cut.Sumw2();
     h_BGOfiducial_xtrl_cut.Sumw2();
     h_BGOfiducial_psd_charge_cut.Sumw2();
+    h_BGOfiducial_stk_charge_cut.Sumw2();
     h_BGOfiducial_all_cut.Sumw2();
 
     // Sumw2 Analysis histos - simu and reco energy of incoming events
@@ -222,6 +245,21 @@ TH1D evLoop(
     // Sumw2 XTRL histos
     h_xtrl_energy_int.Sumw2();
     h_xtrl.Sumw2();
+
+    // Sumw2 STK charge histos
+    h_chargeX.Sumw2();
+    h_chargeY.Sumw2();
+    h_charge.Sumw2();
+    h_charge2D.Sumw2();
+
+    h_selected_chargeX.Sumw2();
+    h_selected_chargeY.Sumw2();
+    h_selected_charge.Sumw2();
+    h_selected_charge2D.Sumw2();
+
+    // Proton background histos
+    h_background_under_xtrl_cut.Sumw2();
+    h_background_over_xtrl_cut.Sumw2();
 
     // Create and load acceptance events cuts from config file
     cuts_conf flux_cuts;
@@ -312,6 +350,7 @@ TH1D evLoop(
         auto filter_track_selection_cut = false;
         auto filter_xtrl_cut = false;
         auto filter_psd_charge_cut = false;
+        auto filter_stk_charge_cut = false;
         auto filter_all_cut = true;
 
         // Cut check...
@@ -394,13 +433,54 @@ TH1D evLoop(
         // **** psd_charge cut ****
         if (active_cuts.psd_charge)
         {
-            filter_psd_charge_cut = psd_charge_cut(
-                psdhits,
-                bgorec,
-                flux_cuts,
-                event_best_track);
-            filter_all_cut *= filter_psd_charge_cut;
+            if (active_cuts.track_selection)
+            {
+                if (filter_track_selection_cut)
+                {
+                    filter_psd_charge_cut = psd_charge_cut(
+                        psdhits,
+                        bgorec,
+                        flux_cuts,
+                        event_best_track);
+                    filter_all_cut *= filter_psd_charge_cut;
+                }
+            }
         }
+
+        // **** stk_charge cut ****
+        if (active_cuts.stk_charge)
+        {   
+            if (active_cuts.track_selection)
+            {
+                if (filter_track_selection_cut)
+                {
+                    // Fill charge histos
+                    fillChargeHistos(
+                        h_chargeX, 
+                        h_chargeY,
+                        h_charge,
+                        h_charge2D,
+                        event_best_track,
+                        stkclusters);
+            
+                    // Charge cut
+                    filter_stk_charge_cut = stk_charge_cut(
+                        event_best_track,
+                        stkclusters,
+                        flux_cuts);
+                    filter_all_cut *= filter_stk_charge_cut;
+                }
+            }
+        }
+
+        // **** compute proton background ****
+        compute_proton_background(
+            bgoVault.GetSumRMS(),
+            bgoVault.GetFracLayer(),
+            flux_cuts,
+            bgoTotalE,
+            h_background_under_xtrl_cut,
+            h_background_over_xtrl_cut);
 
         // Fill cuts histos
 
@@ -433,7 +513,7 @@ TH1D evLoop(
 
             // Geometric cut && BGO fiducial cut
             if (filter_BGO_fiducial_cut)
-                h_geometric_BGO_fiducial.Fill(bgoTotalE * _GeV);
+                h_geometric_BGO_fiducial_cut.Fill(bgoTotalE * _GeV);
 
             // Geometric cut && nBarLayer13 cut
             if (filter_nBarLayer13_cut)
@@ -455,6 +535,10 @@ TH1D evLoop(
             if (filter_psd_charge_cut)
                 h_geometric_psd_charge_cut.Fill(bgoTotalE * _GeV);
 
+            // Geometric cut && STK charge cut
+            if (filter_stk_charge_cut)
+                h_geometric_stk_charge_cut.Fill(bgoTotalE * _GeV);
+                
             // Geometric cut and all cuts
             if (filter_all_cut)
                 h_geometric_all_cut.Fill(bgoTotalE * _GeV);
@@ -497,6 +581,10 @@ TH1D evLoop(
             if (filter_psd_charge_cut)
                 h_BGOfiducial_psd_charge_cut.Fill(bgoTotalE * _GeV);
 
+            // BGO fiducial cut && STK charge cut
+            if (filter_stk_charge_cut)
+                h_BGOfiducial_stk_charge_cut.Fill(bgoTotalE * _GeV);
+                
             // BGO fiducial cut && all cut
             if (filter_all_cut)
                 h_BGOfiducial_all_cut.Fill(bgoTotalE * _GeV);
@@ -521,6 +609,24 @@ TH1D evLoop(
         // Fill PSD charge cut histo
         if (filter_psd_charge_cut)
             h_psd_charge_cut.Fill(bgoTotalE * _GeV);
+
+        // Fill STK charge histo
+        if (filter_stk_charge_cut)
+        {   
+            if (filter_track_selection_cut)
+            {
+                // Fill selected STK charge histos
+                fillChargeHistos(
+                    h_selected_chargeX, 
+                    h_selected_chargeY,
+                    h_selected_charge,
+                    h_selected_charge2D,
+                    event_best_track,
+                    stkclusters);
+
+                h_stk_charge_cut.Fill(bgoTotalE * _GeV);
+            }
+        }
 
         // Fill all cut histo
         if (active_cuts.nActiveCuts)
@@ -555,6 +661,9 @@ TH1D evLoop(
 
         if (h_psd_charge_cut.GetEntries())
             std::cout << "psd_charge filtered events: " << h_psd_charge_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_psd_charge_cut.GetEntries()) / refEntries << std::endl;
+        
+        if (h_stk_charge_cut.GetEntries())
+            std::cout << "stk_charge filtered events: " << h_stk_charge_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_stk_charge_cut.GetEntries()) / refEntries << std::endl;
 
         if (h_all_cut.GetEntries())
             std::cout << "all-cuts filtered events: " << h_all_cut.GetEntries() << "/" << refEntries << " | statistic efficiency: " << static_cast<double>(h_all_cut.GetEntries()) / refEntries;
@@ -563,7 +672,7 @@ TH1D evLoop(
     }
 
     // Write histos to file
-    // Acceptance - First-Cut histos
+    // First-Cut histos
     h_trigger.Write();
     h_gometric_cut.Write();
     h_maxElayer_cut.Write();
@@ -575,7 +684,29 @@ TH1D evLoop(
     h_track_selection_cut.Write();
     h_xtrl_cut.Write();
     h_psd_charge_cut.Write();
+    h_stk_charge_cut.Write();
     h_all_cut.Write();
+
+    // Cuts && Geometric Cut
+    h_geometric_maxElayer_cut.Write();
+    h_geometric_maxBarLayer_cut.Write();
+    h_geometric_BGOTrackContainment_cut.Write();
+    h_geometric_BGO_fiducial_cut.Write();
+    h_geometric_nBarLayer13_cut.Write();
+    h_geometric_maxRms_cut.Write();
+    h_geometric_track_selection_cut.Write();
+    h_geometric_xtrl_cut.Write();
+    h_geometric_psd_charge_cut.Write();
+    h_geometric_stk_charge_cut.Write();
+    h_geometric_all_cut.Write();
+    // Cuts && BGO fiducial volume cut
+    h_BGOfiducial_nBarLayer13_cut.Write();
+    h_BGOfiducial_maxRms_cut.Write();
+    h_BGOfiducial_track_selection_cut.Write();
+    h_BGOfiducial_xtrl_cut.Write();
+    h_BGOfiducial_psd_charge_cut.Write();
+    h_BGOfiducial_stk_charge_cut.Write();
+    h_BGOfiducial_all_cut.Write();
 
     // Create output ratio dir in the output TFile
     auto ratioDir = outFile.mkdir("Efficiency");
@@ -585,54 +716,58 @@ TH1D evLoop(
     trigger_dir->cd();
 
     // Define TEfficiency pointers
-    TEfficiency *trigger_efficiency = nullptr;
-    TEfficiency *tr_eff_gometric_cut = nullptr;
-    TEfficiency *tr_eff_maxElayer_cut = nullptr;
-    TEfficiency *tr_eff_maxBarLayer_cut = nullptr;
-    TEfficiency *tr_eff_BGOTrackContainment_cut = nullptr;
-    TEfficiency *tr_eff_BGO_fiducial_cut = nullptr;
-    TEfficiency *tr_eff_nBarLayer13_cut = nullptr;
-    TEfficiency *tr_eff_maxRms_cut = nullptr;
-    TEfficiency *tr_eff_track_selection_cut = nullptr;
-    TEfficiency *tr_eff_xtrl_cut = nullptr;
-    TEfficiency *tr_eff_psd_charge_cut = nullptr;
-    TEfficiency *tr_eff_all_cut = nullptr;
+    std::shared_ptr<TEfficiency> trigger_efficiency;
+    std::shared_ptr<TEfficiency> tr_eff_gometric_cut;
+    std::shared_ptr<TEfficiency> tr_eff_maxElayer_cut;
+    std::shared_ptr<TEfficiency> tr_eff_maxBarLayer_cut;
+    std::shared_ptr<TEfficiency> tr_eff_BGOTrackContainment_cut;
+    std::shared_ptr<TEfficiency> tr_eff_BGO_fiducial_cut;
+    std::shared_ptr<TEfficiency> tr_eff_nBarLayer13_cut;
+    std::shared_ptr<TEfficiency> tr_eff_maxRms_cut;
+    std::shared_ptr<TEfficiency> tr_eff_track_selection_cut;
+    std::shared_ptr<TEfficiency> tr_eff_xtrl_cut;
+    std::shared_ptr<TEfficiency> tr_eff_psd_charge_cut;
+    std::shared_ptr<TEfficiency> tr_eff_stk_charge_cut;
+    std::shared_ptr<TEfficiency> tr_eff_all_cut;
 
     if (TEfficiency::CheckConsistency(h_gometric_cut, h_gometric_cut))
-        trigger_efficiency = new TEfficiency(h_gometric_cut, h_gometric_cut);
+        trigger_efficiency = std::make_shared<TEfficiency>(h_gometric_cut, h_gometric_cut);
 
     if (TEfficiency::CheckConsistency(h_gometric_cut, h_trigger))
-        tr_eff_gometric_cut = new TEfficiency(h_gometric_cut, h_trigger);
+        tr_eff_gometric_cut = std::make_shared<TEfficiency>(h_gometric_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_maxElayer_cut, h_trigger))
-        tr_eff_maxElayer_cut = new TEfficiency(h_maxElayer_cut, h_trigger);
+        tr_eff_maxElayer_cut = std::make_shared<TEfficiency>(h_maxElayer_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_maxBarLayer_cut, h_trigger))
-        tr_eff_maxBarLayer_cut = new TEfficiency(h_maxBarLayer_cut, h_trigger);
+        tr_eff_maxBarLayer_cut = std::make_shared<TEfficiency>(h_maxBarLayer_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_BGOTrackContainment_cut, h_trigger))
-        tr_eff_BGOTrackContainment_cut = new TEfficiency(h_BGOTrackContainment_cut, h_trigger);
+        tr_eff_BGOTrackContainment_cut = std::make_shared<TEfficiency>(h_BGOTrackContainment_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_BGO_fiducial_cut, h_trigger))
-        tr_eff_BGO_fiducial_cut = new TEfficiency(h_BGO_fiducial_cut, h_trigger);
+        tr_eff_BGO_fiducial_cut = std::make_shared<TEfficiency>(h_BGO_fiducial_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_nBarLayer13_cut, h_trigger))
-        tr_eff_nBarLayer13_cut = new TEfficiency(h_nBarLayer13_cut, h_trigger);
+        tr_eff_nBarLayer13_cut = std::make_shared<TEfficiency>(h_nBarLayer13_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_maxRms_cut, h_trigger))
-        tr_eff_maxRms_cut = new TEfficiency(h_maxRms_cut, h_trigger);
+        tr_eff_maxRms_cut = std::make_shared<TEfficiency>(h_maxRms_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_track_selection_cut, h_trigger))
-        tr_eff_track_selection_cut = new TEfficiency(h_track_selection_cut, h_trigger);
+        tr_eff_track_selection_cut = std::make_shared<TEfficiency>(h_track_selection_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_xtrl_cut, h_trigger))
-        tr_eff_xtrl_cut = new TEfficiency(h_xtrl_cut, h_trigger);
+        tr_eff_xtrl_cut = std::make_shared<TEfficiency>(h_xtrl_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_psd_charge_cut, h_trigger))
-        tr_eff_psd_charge_cut = new TEfficiency(h_psd_charge_cut, h_trigger);
+        tr_eff_psd_charge_cut = std::make_shared<TEfficiency>(h_psd_charge_cut, h_trigger);
+
+    if (TEfficiency::CheckConsistency(h_stk_charge_cut, h_trigger))
+        tr_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_stk_charge_cut, h_trigger);
 
     if (TEfficiency::CheckConsistency(h_all_cut, h_trigger))
-        tr_eff_all_cut = new TEfficiency(h_all_cut, h_trigger);
+        tr_eff_all_cut = std::make_shared<TEfficiency>(h_all_cut, h_trigger);
 
     // Set uniform statistic option
     trigger_efficiency->SetStatisticOption(TEfficiency::kBUniform);
@@ -646,6 +781,7 @@ TH1D evLoop(
     tr_eff_track_selection_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_xtrl_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_psd_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
+    tr_eff_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
 
     trigger_efficiency->SetName("trigger_efficiency");
@@ -659,6 +795,7 @@ TH1D evLoop(
     tr_eff_track_selection_cut->SetName("tr_eff_track_selection_cut");
     tr_eff_xtrl_cut->SetName("tr_eff_xtrl_cut");
     tr_eff_psd_charge_cut->SetName("tr_eff_psd_charge_cut");
+    tr_eff_stk_charge_cut->SetName("tr_eff_stk_charge_cut");
     tr_eff_all_cut->SetName("tr_eff_all_cut");
 
     trigger_efficiency->SetTitle("Trigger efficiency");
@@ -672,6 +809,7 @@ TH1D evLoop(
     tr_eff_track_selection_cut->SetTitle("track selection cut efficiency");
     tr_eff_xtrl_cut->SetTitle("xtrl cut efficiency");
     tr_eff_psd_charge_cut->SetTitle("psd charge cut efficiency");
+    tr_eff_stk_charge_cut->SetTitle("stk charge cut efficiency");
     tr_eff_all_cut->SetTitle("all cut efficiency");
 
     // Write histos to disk
@@ -686,67 +824,58 @@ TH1D evLoop(
     tr_eff_track_selection_cut->Write();
     tr_eff_xtrl_cut->Write();
     tr_eff_psd_charge_cut->Write();
+    tr_eff_stk_charge_cut->Write();
     tr_eff_all_cut->Write();
-
-    // Clean memory
-    trigger_efficiency->Delete();
-    tr_eff_gometric_cut->Delete();
-    tr_eff_maxElayer_cut->Delete();
-    tr_eff_maxBarLayer_cut->Delete();
-    tr_eff_BGOTrackContainment_cut->Delete();
-    tr_eff_BGO_fiducial_cut->Delete();
-    tr_eff_nBarLayer13_cut->Delete();
-    tr_eff_maxRms_cut->Delete();
-    tr_eff_track_selection_cut->Delete();
-    tr_eff_xtrl_cut->Delete();
-    tr_eff_psd_charge_cut->Delete();
-    tr_eff_all_cut->Delete();
 
     // Create geometric folder
     auto geometric_dir = ratioDir->mkdir("Geometric");
     geometric_dir->cd();
 
     // Define TEfficiency pointers
-    TEfficiency *geo_eff_maxElayer_cut = nullptr;
-    TEfficiency *geo_eff_maxBarLayer_cut = nullptr;
-    TEfficiency *geo_eff_BGOTrackContainment_cut = nullptr;
-    TEfficiency *geo_eff_BGO_fiducial = nullptr;
-    TEfficiency *geo_eff_nBarLayer13_cut = nullptr;
-    TEfficiency *geo_eff_maxRms_cut = nullptr;
-    TEfficiency *geo_eff_track_selection_cut = nullptr;
-    TEfficiency *geo_eff_xtrl_cut = nullptr;
-    TEfficiency *geo_eff_psd_charge_cut = nullptr;
-    TEfficiency *geo_eff_all_cut = nullptr;
+    std::shared_ptr<TEfficiency> geo_eff_maxElayer_cut;
+    std::shared_ptr<TEfficiency> geo_eff_maxBarLayer_cut;
+    std::shared_ptr<TEfficiency> geo_eff_BGOTrackContainment_cut;
+    std::shared_ptr<TEfficiency> geo_eff_BGO_fiducial;
+    std::shared_ptr<TEfficiency> geo_eff_nBarLayer13_cut;
+    std::shared_ptr<TEfficiency> geo_eff_maxRms_cut;
+    std::shared_ptr<TEfficiency> geo_eff_track_selection_cut;
+    std::shared_ptr<TEfficiency> geo_eff_xtrl_cut;
+    std::shared_ptr<TEfficiency> geo_eff_psd_charge_cut;
+    std::shared_ptr<TEfficiency> geo_eff_stk_charge_cut;
+    std::shared_ptr<TEfficiency> geo_eff_all_cut;
 
     if (TEfficiency::CheckConsistency(h_geometric_maxElayer_cut, h_gometric_cut))
-        geo_eff_maxElayer_cut = new TEfficiency(h_geometric_maxElayer_cut, h_gometric_cut);
+        geo_eff_maxElayer_cut = std::make_shared<TEfficiency>(h_geometric_maxElayer_cut, h_gometric_cut);
     
     if (TEfficiency::CheckConsistency(h_geometric_maxBarLayer_cut, h_gometric_cut))
-        geo_eff_maxBarLayer_cut = new TEfficiency(h_geometric_maxBarLayer_cut, h_gometric_cut);
+        geo_eff_maxBarLayer_cut = std::make_shared<TEfficiency>(h_geometric_maxBarLayer_cut, h_gometric_cut);
 
     if (TEfficiency::CheckConsistency(h_geometric_BGOTrackContainment_cut, h_gometric_cut))
-        geo_eff_BGOTrackContainment_cut = new TEfficiency(h_geometric_BGOTrackContainment_cut, h_gometric_cut);
+        geo_eff_BGOTrackContainment_cut = std::make_shared<TEfficiency>(h_geometric_BGOTrackContainment_cut, h_gometric_cut);
     
-    if (TEfficiency::CheckConsistency(h_geometric_BGO_fiducial, h_gometric_cut))
-        geo_eff_BGO_fiducial = new TEfficiency(h_geometric_BGO_fiducial, h_gometric_cut);
+    if (TEfficiency::CheckConsistency(h_geometric_BGO_fiducial_cut, h_gometric_cut))
+        geo_eff_BGO_fiducial = std::make_shared<TEfficiency>(h_geometric_BGO_fiducial_cut, h_gometric_cut);
 
     if (TEfficiency::CheckConsistency(h_geometric_nBarLayer13_cut, h_gometric_cut))
-        geo_eff_nBarLayer13_cut = new TEfficiency(h_geometric_nBarLayer13_cut, h_gometric_cut);
+        geo_eff_nBarLayer13_cut = std::make_shared<TEfficiency>(h_geometric_nBarLayer13_cut, h_gometric_cut);
 
     if (TEfficiency::CheckConsistency(h_geometric_maxRms_cut, h_gometric_cut))
-        geo_eff_maxRms_cut = new TEfficiency(h_geometric_maxRms_cut, h_gometric_cut);
+        geo_eff_maxRms_cut = std::make_shared<TEfficiency>(h_geometric_maxRms_cut, h_gometric_cut);
     
     if (TEfficiency::CheckConsistency(h_geometric_track_selection_cut, h_gometric_cut))
-        geo_eff_track_selection_cut = new TEfficiency(h_geometric_track_selection_cut, h_gometric_cut);
+        geo_eff_track_selection_cut = std::make_shared<TEfficiency>(h_geometric_track_selection_cut, h_gometric_cut);
     
     if (TEfficiency::CheckConsistency(h_geometric_xtrl_cut, h_gometric_cut))
-        geo_eff_xtrl_cut = new TEfficiency(h_geometric_xtrl_cut, h_gometric_cut);
+        geo_eff_xtrl_cut = std::make_shared<TEfficiency>(h_geometric_xtrl_cut, h_gometric_cut);
 
     if (TEfficiency::CheckConsistency(h_geometric_psd_charge_cut, h_gometric_cut))
-        geo_eff_psd_charge_cut = new TEfficiency(h_geometric_psd_charge_cut, h_gometric_cut);
+        geo_eff_psd_charge_cut = std::make_shared<TEfficiency>(h_geometric_psd_charge_cut, h_gometric_cut);
+
+    if (TEfficiency::CheckConsistency(h_geometric_stk_charge_cut, h_gometric_cut))
+        geo_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_geometric_stk_charge_cut, h_gometric_cut);
     
     if (TEfficiency::CheckConsistency(h_geometric_all_cut, h_gometric_cut))
-        geo_eff_all_cut = new TEfficiency(h_geometric_all_cut, h_gometric_cut);
+        geo_eff_all_cut = std::make_shared<TEfficiency>(h_geometric_all_cut, h_gometric_cut);
     
     // Set uniform statistic option
     geo_eff_maxElayer_cut->SetStatisticOption(TEfficiency::kBUniform);
@@ -758,7 +887,32 @@ TH1D evLoop(
     geo_eff_track_selection_cut->SetStatisticOption(TEfficiency::kBUniform);
     geo_eff_xtrl_cut->SetStatisticOption(TEfficiency::kBUniform);
     geo_eff_psd_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
+    geo_eff_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
     geo_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
+
+    geo_eff_maxElayer_cut->SetName("geo_eff_maxElayer_cut");
+    geo_eff_maxBarLayer_cut->SetName("geo_eff_maxBarLayer_cut");
+    geo_eff_BGOTrackContainment_cut->SetName("geo_eff_BGOTrackContainment_cut");
+    geo_eff_BGO_fiducial->SetName("geo_eff_BGO_fiducial");
+    geo_eff_nBarLayer13_cut->SetName("geo_eff_nBarLayer13_cut");
+    geo_eff_maxRms_cut->SetName("geo_eff_maxRms_cut");
+    geo_eff_track_selection_cut->SetName("geo_eff_track_selection_cut");
+    geo_eff_xtrl_cut->SetName("geo_eff_xtrl_cut");
+    geo_eff_psd_charge_cut->SetName("geo_eff_psd_charge_cut");
+    geo_eff_stk_charge_cut->SetName("geo_eff_stk_charge_cut");
+    geo_eff_all_cut->SetName("geo_eff_all_cut");
+
+    geo_eff_maxElayer_cut->SetTitle("geometic maxElayer cut efficiency");
+    geo_eff_maxBarLayer_cut->SetTitle("geometric maxBarLayer cut efficiency");
+    geo_eff_BGOTrackContainment_cut->SetTitle("geometric BGOTrackContainment cut efficiency");
+    geo_eff_BGO_fiducial->SetTitle("geometric BGO fiducial cut efficiency");
+    geo_eff_nBarLayer13_cut->SetTitle("geometric nBarLayer13 cut efficiency");
+    geo_eff_maxRms_cut->SetTitle("geometric maxRms cut efficiency");
+    geo_eff_track_selection_cut->SetTitle("geometric track selection cut efficiency");
+    geo_eff_xtrl_cut->SetTitle("geometric xtrl cut efficiency");
+    geo_eff_psd_charge_cut->SetTitle("geometric psd charge cut efficiency");
+    geo_eff_stk_charge_cut->SetTitle("geometric stk charge cut efficiency");
+    geo_eff_all_cut->SetTitle("geometric all cut efficiency");
 
     //Write histos to disk
     geo_eff_maxElayer_cut->Write();
@@ -770,49 +924,42 @@ TH1D evLoop(
     geo_eff_track_selection_cut->Write();
     geo_eff_xtrl_cut->Write();
     geo_eff_psd_charge_cut->Write();
+    geo_eff_stk_charge_cut->Write();
     geo_eff_all_cut->Write();
-
-    // Clean memory
-    geo_eff_maxElayer_cut->Delete();
-    geo_eff_maxBarLayer_cut->Delete();
-    geo_eff_BGOTrackContainment_cut->Delete();
-    geo_eff_BGO_fiducial->Delete();
-    geo_eff_nBarLayer13_cut->Delete();
-    geo_eff_maxRms_cut->Delete();
-    geo_eff_track_selection_cut->Delete();
-    geo_eff_xtrl_cut->Delete();
-    geo_eff_psd_charge_cut->Delete();
-    geo_eff_all_cut->Delete();
 
     // Create BGO_fiducial_volume folder
     auto BGOfiducial_dir = ratioDir->mkdir("BGO_fiducial_volume");
     BGOfiducial_dir->cd();
 
     // Define TEfficiency pointers
-    TEfficiency *BGOfiducial_eff_nBarLayer13_cut = nullptr;
-    TEfficiency *BGOfiducial_eff_maxRms_cut = nullptr;
-    TEfficiency *BGOfiducial_eff_track_selection_cut = nullptr;
-    TEfficiency *BGOfiducial_eff_xtrl_cut = nullptr;
-    TEfficiency *BGOfiducial_eff_psd_charge_cut = nullptr;
-    TEfficiency *BGOfiducial_eff_all_cut = nullptr;
+    std::shared_ptr<TEfficiency> BGOfiducial_eff_nBarLayer13_cut;
+    std::shared_ptr<TEfficiency> BGOfiducial_eff_maxRms_cut;
+    std::shared_ptr<TEfficiency> BGOfiducial_eff_track_selection_cut;
+    std::shared_ptr<TEfficiency> BGOfiducial_eff_xtrl_cut;
+    std::shared_ptr<TEfficiency> BGOfiducial_eff_psd_charge_cut;
+    std::shared_ptr<TEfficiency> BGOfiducial_eff_stk_charge_cut;
+    std::shared_ptr<TEfficiency> BGOfiducial_eff_all_cut;
 
     if (TEfficiency::CheckConsistency(h_BGOfiducial_nBarLayer13_cut, h_BGO_fiducial_cut))
-        BGOfiducial_eff_nBarLayer13_cut = new TEfficiency(h_BGOfiducial_nBarLayer13_cut, h_BGO_fiducial_cut);
+        BGOfiducial_eff_nBarLayer13_cut = std::make_shared<TEfficiency>(h_BGOfiducial_nBarLayer13_cut, h_BGO_fiducial_cut);
 
     if (TEfficiency::CheckConsistency(h_BGOfiducial_maxRms_cut, h_BGO_fiducial_cut))
-        BGOfiducial_eff_maxRms_cut = new TEfficiency(h_BGOfiducial_maxRms_cut, h_BGO_fiducial_cut);
+        BGOfiducial_eff_maxRms_cut = std::make_shared<TEfficiency>(h_BGOfiducial_maxRms_cut, h_BGO_fiducial_cut);
 
     if (TEfficiency::CheckConsistency(h_BGOfiducial_track_selection_cut, h_BGO_fiducial_cut))
-        BGOfiducial_eff_track_selection_cut = new TEfficiency(h_BGOfiducial_track_selection_cut, h_BGO_fiducial_cut);
+        BGOfiducial_eff_track_selection_cut = std::make_shared<TEfficiency>(h_BGOfiducial_track_selection_cut, h_BGO_fiducial_cut);
 
     if (TEfficiency::CheckConsistency(h_BGOfiducial_xtrl_cut, h_BGO_fiducial_cut))
-        BGOfiducial_eff_xtrl_cut = new TEfficiency(h_BGOfiducial_xtrl_cut, h_BGO_fiducial_cut);
+        BGOfiducial_eff_xtrl_cut = std::make_shared<TEfficiency>(h_BGOfiducial_xtrl_cut, h_BGO_fiducial_cut);
 
     if (TEfficiency::CheckConsistency(h_BGOfiducial_psd_charge_cut, h_BGO_fiducial_cut))
-        BGOfiducial_eff_psd_charge_cut = new TEfficiency(h_BGOfiducial_psd_charge_cut, h_BGO_fiducial_cut);
+        BGOfiducial_eff_psd_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_charge_cut, h_BGO_fiducial_cut);
+
+    if (TEfficiency::CheckConsistency(h_BGOfiducial_stk_charge_cut, h_BGO_fiducial_cut))
+        BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_stk_charge_cut, h_BGO_fiducial_cut);
 
     if (TEfficiency::CheckConsistency(h_BGOfiducial_all_cut, h_BGO_fiducial_cut))
-        BGOfiducial_eff_all_cut = new TEfficiency(h_BGOfiducial_all_cut, h_BGO_fiducial_cut);
+        BGOfiducial_eff_all_cut = std::make_shared<TEfficiency>(h_BGOfiducial_all_cut, h_BGO_fiducial_cut);
     
     // Set uniform statistic option
     BGOfiducial_eff_nBarLayer13_cut->SetStatisticOption(TEfficiency::kBUniform);
@@ -820,7 +967,24 @@ TH1D evLoop(
     BGOfiducial_eff_track_selection_cut->SetStatisticOption(TEfficiency::kBUniform);
     BGOfiducial_eff_xtrl_cut->SetStatisticOption(TEfficiency::kBUniform);
     BGOfiducial_eff_psd_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
+    BGOfiducial_eff_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
     BGOfiducial_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
+
+    BGOfiducial_eff_nBarLayer13_cut->SetName("BGOfiducial_eff_nBarLayer13_cut");
+    BGOfiducial_eff_maxRms_cut->SetName("BGOfiducial_eff_maxRms_cut");
+    BGOfiducial_eff_track_selection_cut->SetName("BGOfiducial_eff_track_selection_cut");
+    BGOfiducial_eff_xtrl_cut->SetName("BGOfiducial_eff_xtrl_cut");
+    BGOfiducial_eff_psd_charge_cut->SetName("BGOfiducial_eff_psd_charge_cut");
+    BGOfiducial_eff_stk_charge_cut->SetName("BGOfiducial_eff_stk_charge_cut");
+    BGOfiducial_eff_all_cut->SetName("BGOfiducial_eff_all_cut");
+
+    BGOfiducial_eff_nBarLayer13_cut->SetName("BGOfiducial nBarLayer13 cut efficiency");
+    BGOfiducial_eff_maxRms_cut->SetName("BGOfiducial maxRms cut efficiency");
+    BGOfiducial_eff_track_selection_cut->SetName("BGOfiducial track selection cut efficiency");
+    BGOfiducial_eff_xtrl_cut->SetName("BGOfiducial xtrl cut efficiency");
+    BGOfiducial_eff_psd_charge_cut->SetName("BGOfiducial psd charge cut efficiency");
+    BGOfiducial_eff_stk_charge_cut->SetName("BGOfiducial stk charge cut efficiency");
+    BGOfiducial_eff_all_cut->SetName("BGOfiducial all cut efficiency");
 
     // Write histos to disk
     BGOfiducial_eff_nBarLayer13_cut->Write();
@@ -828,15 +992,8 @@ TH1D evLoop(
     BGOfiducial_eff_track_selection_cut->Write();
     BGOfiducial_eff_xtrl_cut->Write();
     BGOfiducial_eff_psd_charge_cut->Write();
+    BGOfiducial_eff_stk_charge_cut->Write();
     BGOfiducial_eff_all_cut->Write();
-
-    // Clean memory
-    BGOfiducial_eff_nBarLayer13_cut->Delete();
-    BGOfiducial_eff_maxRms_cut->Delete();
-    BGOfiducial_eff_track_selection_cut->Delete();
-    BGOfiducial_eff_xtrl_cut->Delete();
-    BGOfiducial_eff_psd_charge_cut->Delete();
-    BGOfiducial_eff_all_cut->Delete();
 
     auto geo_analysisDir = outFile.mkdir("Analysis_GeoCut");
     geo_analysisDir->cd();
@@ -868,6 +1025,32 @@ TH1D evLoop(
 
     h_xtrl_energy_int.Write();
     h_xtrl.Write();
+
+    auto chargeDir = outFile.mkdir("STKcharge");
+    chargeDir->cd();
+
+    h_chargeX.Write();
+    h_chargeY.Write();
+    h_charge.Write();
+    h_charge2D.Write();
+
+    h_selected_chargeX.Write();
+    h_selected_chargeY.Write();
+    h_selected_charge.Write();
+    h_selected_charge2D.Write();
+
+    auto ancillaryDir = outFile.mkdir("mc_ancillary");
+    ancillaryDir->cd();
+
+    h_background_under_xtrl_cut.Write();
+    h_background_over_xtrl_cut.Write();
+        
+    // Create proton background ratio
+    auto proton_background_ratio = static_cast<TH1D*>(h_background_under_xtrl_cut.Clone("proton_background_ratio"));
+    proton_background_ratio->SetTitle("Proton background ratio");
+    proton_background_ratio->Divide(&h_background_over_xtrl_cut);
+
+    proton_background_ratio->Write();
 
     outFile.cd();
 

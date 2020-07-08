@@ -12,11 +12,13 @@ void buildFlux(
     const std::string accInputPath,
     const std::string wd)
 {
+    /*
     auto acceptance_tf1 = readAcceptance(
         outFile,
         verbose,
         accInputPath);
-    
+    */
+   
     auto eCounts =
         evLoop(
             logEBins,
