@@ -613,19 +613,16 @@ TH1D evLoop(
         // Fill STK charge histo
         if (filter_stk_charge_cut)
         {   
-            if (filter_track_selection_cut)
-            {
-                // Fill selected STK charge histos
-                fillChargeHistos(
-                    h_selected_chargeX, 
-                    h_selected_chargeY,
-                    h_selected_charge,
-                    h_selected_charge2D,
-                    event_best_track,
-                    stkclusters);
+            // Fill selected STK charge histos
+            fillChargeHistos(
+                h_selected_chargeX, 
+                h_selected_chargeY,
+                h_selected_charge,
+                h_selected_charge2D,
+                event_best_track,
+                stkclusters);
 
-                h_stk_charge_cut.Fill(bgoTotalE * _GeV);
-            }
+            h_stk_charge_cut.Fill(bgoTotalE * _GeV);
         }
 
         // Fill all cut histo
@@ -672,7 +669,7 @@ TH1D evLoop(
     }
 
     outFile.cd();
-    
+
     // Write histos to file
     // First-Cut histos
     h_trigger.Write();

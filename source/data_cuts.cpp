@@ -796,6 +796,6 @@ bool stk_charge_cut(
     // Check STK charge to select electrons
     if (mean_charge < data_cuts.STK_charge)
         passed_stk_charge_cut = true;
-    
+
     return passed_stk_charge_cut;
 }
