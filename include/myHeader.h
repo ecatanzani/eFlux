@@ -36,4 +36,11 @@ extern void generateFinalGraph(
     const std::string complete_histo_path,
     const std::string wd);
 
+extern void generateDataFinalGraph(
+    const bool verbose,
+    const bool pedantic,
+    const std::string outputPath,
+    const std::string complete_histo_path,
+    const std::string wd);
+
 #endif
