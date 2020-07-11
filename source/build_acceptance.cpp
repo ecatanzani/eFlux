@@ -1344,7 +1344,7 @@ void buildAcceptance(
     std::shared_ptr<TEfficiency> tr_eff_stk_charge_cut;
     std::shared_ptr<TEfficiency> tr_eff_all_cut;
 
-    if (TEfficiency::CheckConsistency(h_gometric_cut, h_gometric_cut))
+    if (TEfficiency::CheckConsistency(h_trigger, h_geo_factor))
         trigger_efficiency = std::make_shared<TEfficiency>(h_gometric_cut, h_gometric_cut);
 
     if (TEfficiency::CheckConsistency(h_gometric_cut, h_trigger))
