@@ -19,6 +19,10 @@ def main(args=None):
                         dest='output', help='Output ROOT TFile')
     parser.add_argument("-v", "--verbose", dest='verbose', default=False,
                         action='store_true', help='run in high verbosity mode')
+    parser.add_argument("-s", "--simulation", dest='verbose', default=False,
+                        action='store_true', help='MC file adder')
+    parser.add_argument("-d", "--data", dest='verbose', default=False,
+                        action='store_true', help='Data file adder')
     parser.add_argument("-c", "--check", dest='check', default=False,
                         action='store_true', help='check tmp acceptance ROOT files')
     
@@ -26,7 +30,7 @@ def main(args=None):
 
     # Load analysis functions
     sys.path.append("moduls")
-    from adder import compute_final_histos
+    from adder import compute_final_histos_mc, compute_final_histos_data
     from scanDirs import getListOfFiles
     from submitJobs import resubmit_condor_jobs
 
@@ -55,7 +59,10 @@ def main(args=None):
 
     if not opts.check:
         if opts.output:
-            compute_final_histos(good_dirs, opts)
+            if opts.simulation
+                compute_final_histos_mc(good_dirs, opts)
+            if opts.data
+                compute_final_histos_data(good_dirs, opts)
         else:
             print("!!! Missing output ROOT file... please specify a path")
 
