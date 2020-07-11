@@ -19,12 +19,14 @@ def main(args=None):
                         dest='output', help='Output ROOT TFile')
     parser.add_argument("-v", "--verbose", dest='verbose', default=False,
                         action='store_true', help='run in high verbosity mode')
-    parser.add_argument("-s", "--simulation", dest='verbose', default=False,
+    parser.add_argument("-s", "--simulation", dest='simulation', default=False,
                         action='store_true', help='MC file adder')
-    parser.add_argument("-d", "--data", dest='verbose', default=False,
+    parser.add_argument("-d", "--data", dest='data', default=False,
                         action='store_true', help='Data file adder')
     parser.add_argument("-c", "--check", dest='check', default=False,
                         action='store_true', help='check tmp acceptance ROOT files')
+    parser.add_argument("-r", "--resubmit", dest='resubmit', default=False,
+                        action='store_true', help='HTCondor flag to resubmit failed jobs')
     
     opts = parser.parse_args(args)
 
@@ -50,8 +52,9 @@ def main(args=None):
         for idx, elm in enumerate(skipped_dirs):
             print('Skipped {} directory: {}'.format(idx, elm))
 
-        print('\nResubmitting HTCondor jobs for {} directories\n'.format(len(skipped_dirs)))
-        resubmit_condor_jobs(skipped_dirs, opts)
+        if opts.resubmit:
+            print('\nResubmitting HTCondor jobs for {} directories\n'.format(len(skipped_dirs)))
+            resubmit_condor_jobs(skipped_dirs, opts)
 
     else:
         if opts.verbose:
@@ -59,9 +62,9 @@ def main(args=None):
 
     if not opts.check:
         if opts.output:
-            if opts.simulation
+            if opts.simulation:
                 compute_final_histos_mc(good_dirs, opts)
-            if opts.data
+            if opts.data:
                 compute_final_histos_data(good_dirs, opts)
         else:
             print("!!! Missing output ROOT file... please specify a path")
