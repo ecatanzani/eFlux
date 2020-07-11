@@ -15,6 +15,9 @@ void generateFinalGraph(
     const std::string complete_histo_path,
     const std::string wd)
 {
+    if (verbose)
+        std::cout << "\n*** Adder MC facility ***\n\n";
+        
     // Read energy log-binning
     auto logEBins = readLogBinning(wd);
     if (pedantic)
@@ -532,7 +535,7 @@ void generateFinalGraph(
     gr_acceptance_psd_charge_cut.SetTitle("Acceptance - PSD charge selection cut");
     gr_acceptance_stk_charge_cut.SetTitle("Acceptance - STK charge selection cut");
     gr_acceptance_all_cut.SetTitle("Acceptance - all cut");
-    
+
     // Write output TFile
     TFile outFile(outputPath.c_str(), "RECREATE");
     if (!outFile.IsOpen())
@@ -702,8 +705,8 @@ void generateFinalGraph(
     std::shared_ptr<TEfficiency> tr_eff_stk_charge_cut;
     std::shared_ptr<TEfficiency> tr_eff_all_cut;
 
-    if (TEfficiency::CheckConsistency(*h_trigger, *h_geo_factor))
-        trigger_efficiency = std::make_shared<TEfficiency>(*h_gometric_cut, *h_gometric_cut);
+    if (TEfficiency::CheckConsistency(*h_geo_factor, *h_trigger))
+        trigger_efficiency = std::make_shared<TEfficiency>(*h_geo_factor, *h_trigger);
 
     if (TEfficiency::CheckConsistency(*h_gometric_cut, *h_trigger))
         tr_eff_gometric_cut = std::make_shared<TEfficiency>(*h_gometric_cut, *h_trigger);
@@ -1070,6 +1073,8 @@ void generateDataFinalGraph(
     const std::string complete_histo_path,
     const std::string wd)
 {
+    if (verbose)
+        std::cout << "\n*** Adder DATA facility ***\n\n";
     // Read energy log-binning
     auto logEBins = readLogBinning(wd);
     if (pedantic)
@@ -1108,8 +1113,6 @@ void generateDataFinalGraph(
         exit(123);
     }
     
-    auto h_geo_factor = static_cast<TH1D *>(inHisto.Get("h_geo_factor"));
-    auto h_incoming = static_cast<TH1D *>(inHisto.Get("h_incoming"));
     auto h_trigger = static_cast<TH1D *>(inHisto.Get("h_trigger"));
     auto h_gometric_cut = static_cast<TH1D *>(inHisto.Get("h_gometric_cut"));
     auto h_maxElayer_cut = static_cast<TH1D *>(inHisto.Get("h_maxElayer_cut"));
@@ -1182,9 +1185,7 @@ void generateDataFinalGraph(
 
     auto h_background_under_xtrl_cut = static_cast<TH1D *>(inHisto.Get("mc_ancillary/h_background_under_xtrl_cut"));
     auto h_background_over_xtrl_cut = static_cast<TH1D *>(inHisto.Get("mc_ancillary/h_background_over_xtrl_cut"));
-
-    h_geo_factor->SetDirectory(0);
-    h_incoming->SetDirectory(0);
+    
     h_trigger->SetDirectory(0);
     h_gometric_cut->SetDirectory(0);
     h_maxElayer_cut->SetDirectory(0);
@@ -1263,8 +1264,6 @@ void generateDataFinalGraph(
     
     // Write histos to file
     // Acceptance - First-Cut histos
-    h_geo_factor->Write();
-    h_incoming->Write();
     h_trigger->Write();
     h_gometric_cut->Write();
     h_maxElayer_cut->Write();
