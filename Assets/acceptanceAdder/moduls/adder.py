@@ -232,7 +232,7 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_geometric_nBarLayer13_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_nBarLayer13_cut_w")
         h_geometric_maxRms_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_maxRms_cut_w")
         h_geometric_track_selection_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_track_selection_cut_w")
-        h_geometric_xtrl_cut_tmp_w = rFile.Get("reweightedHistoDir/_geometric_xtrl_cut_w")
+        h_geometric_xtrl_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_xtrl_cut_w")
         h_geometric_psd_charge_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_psd_charge_cut_w")
         h_geometric_stk_charge_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_stk_charge_cut_w")
         h_geometric_all_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_all_cut_w")
@@ -329,7 +329,7 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_track_selection_cut_tmp.SetDirectory(0)
         h_xtrl_cut_tmp.SetDirectory(0)
         h_psd_charge_cut_tmp.SetDirectory(0)
-        h_stk_charge_cut_tmp.SetDiretcory(0)
+        h_stk_charge_cut_tmp.SetDirectory(0)
         h_all_cut_tmp.SetDirectory(0)
 
         h_geo_factor_tmp_w.SetDirectory(0)
@@ -345,7 +345,7 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_track_selection_cut_tmp_w.SetDirectory(0)
         h_xtrl_cut_tmp_w.SetDirectory(0)
         h_psd_charge_cut_tmp_w.SetDirectory(0)
-        h_stk_charge_cut_tmp_w.SetDiretcory(0)
+        h_stk_charge_cut_tmp_w.SetDirectory(0)
         h_all_cut_tmp_w.SetDirectory(0)
         
         h_geometric_maxElayer_cut_tmp.SetDirectory(0)
@@ -1075,7 +1075,7 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_track_selection_cut_tmp.SetDirectory(0)
         h_xtrl_cut_tmp.SetDirectory(0)
         h_psd_charge_cut_tmp.SetDirectory(0)
-        h_stk_charge_cut_tmp.SetDiretcory(0)
+        h_stk_charge_cut_tmp.SetDirectory(0)
         h_all_cut_tmp.SetDirectory(0)
         
         h_geometric_maxElayer_cut_tmp.SetDirectory(0)
