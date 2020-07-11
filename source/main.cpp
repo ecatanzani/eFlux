@@ -18,6 +18,7 @@ int main(int argc, char **argv)
     opt.addUsage(" -t  --lvtime         <live_time-value>                   (*) DAMPE live-time ");
     opt.addUsage(" -a  --acceptance     <path_to_MC_list>                   (*) Acceptance calculation");
     opt.addUsage(" -c  --collect        <path_to_complete_histo>            (*) Generate TGraph from final histo");
+    opt.addUsage(" -r  --resume         <mc/data>                           (*) MC/DATA facility");
     opt.addUsage(" -g  --geometry       <path_to_acceptance_ROOT_file>      (*) Acceptance file - flux calculation only");
     opt.addUsage(" -v  --verbose                                                Verbose output");
     opt.addUsage(" -p  --pedantic                                               Pedantic output");
@@ -31,6 +32,7 @@ int main(int argc, char **argv)
     opt.setOption("acceptance", 'a');
     opt.setOption("geometry", 'g');
     opt.setOption("collect", 'c');
+    opt.setOption("resume", 'r');
     opt.setFlag("verbose", 'v');
     opt.setFlag("pedantic", 'p');
 
@@ -54,6 +56,8 @@ int main(int argc, char **argv)
     bool myFlux = false;
     unsigned int lvTime = 0;
     bool genGraph = false;
+    bool pasteMC = false;
+    bool pasteDATA = false;
 
     if (!opt.hasOptions())
         opt.printUsage();
@@ -88,6 +92,19 @@ int main(int argc, char **argv)
         genGraph = true;
         inputCompleteHisto = opt.getValue('c');
     }
+    if (opt.getValue("resume") || opt.getValue('r'))
+    {
+        if (!strcmp(opt.getValue('r'), "mc"))
+            pasteMC = true;
+        else if (!strcmp(opt.getValue('r'), "data"))
+            pasteDATA = true;
+        else
+        {
+            std::cerr << "\n\nWrong --resume config...";
+            opt.printUsage();
+            exit(100);
+        }
+    }
     if (opt.getFlag("pedantic") || opt.getFlag('p'))
         pedantic = opt.getFlag('p');
 
@@ -101,12 +118,21 @@ int main(int argc, char **argv)
             wd);
 
     if (genGraph)
-        generateFinalGraph(
-            verbose,
-            pedantic,
-            outputPath, 
-            inputCompleteHisto,
-            wd);
+        if (pasteMC)
+            generateFinalGraph(
+                verbose,
+                pedantic,
+                outputPath, 
+                inputCompleteHisto,
+                wd);
+        if (pasteDATA)
+            generateDataFinalGraph(
+                verbose,
+                pedantic,
+                outputPath, 
+                inputCompleteHisto,
+                wd);
+
 
     if (myFlux)
         eCore(
