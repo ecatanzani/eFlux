@@ -473,15 +473,6 @@ TH1D evLoop(
             }
         }
 
-        // **** compute proton background ****
-        compute_proton_background(
-            bgoVault.GetSumRMS(),
-            bgoVault.GetFracLayer(),
-            flux_cuts,
-            bgoTotalE,
-            h_background_under_xtrl_cut,
-            h_background_over_xtrl_cut);
-
         // Fill cuts histos
 
         // Fill geometric cut histos
@@ -627,8 +618,21 @@ TH1D evLoop(
 
         // Fill all cut histo
         if (active_cuts.nActiveCuts)
+        {
             if (filter_all_cut)
+            {
                 h_all_cut.Fill(bgoTotalE * _GeV);
+
+                // **** compute proton background ****
+                compute_proton_background(
+                    bgoVault.GetSumRMS(),
+                    bgoVault.GetFracLayer(),
+                    flux_cuts,
+                    bgoTotalE,
+                    h_background_under_xtrl_cut,
+                    h_background_over_xtrl_cut);
+            }
+        }
     }
 
     if (verbose)
