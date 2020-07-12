@@ -180,6 +180,10 @@ def compute_final_histos_mc(condor_dir_list, opts):
             print('Error reading file {}: {}'.format((dIdx+1), rFile_path))
             sys.exit()
         
+        # Check the keys
+        if rFile.GetNkeys() == 0:
+            continue
+
         # Reading histos
         h_geo_factor_tmp = rFile.Get("h_geo_factor")
         h_incoming_tmp = rFile.Get("h_incoming")
