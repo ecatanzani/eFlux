@@ -556,6 +556,7 @@ void buildAcceptance(
         auto filter_psd_charge_cut = false;
         auto filter_stk_charge_cut = false;
         auto filter_all_cut = true;
+        auto filter_all_cut_no_xtrl = true;
 
         // Cut check...
 
@@ -584,6 +585,7 @@ void buildAcceptance(
 
             filter_BGO_fiducial_cut = filter_BGO_fiducial_maxElayer_cut && filter_BGO_fiducial_maxBarLayer_cut && filter_BGO_fiducial_BGOTrackContainment_cut;
             filter_all_cut *= filter_BGO_fiducial_cut;
+            filter_all_cut_no_xtrl *= filter_BGO_fiducial_cut;
         }
 
         // **** nBarLayer13 cut ****
@@ -594,6 +596,7 @@ void buildAcceptance(
                 bgoVault.GetSingleLayerBarNumber(13),
                 bgoTotalE);
             filter_all_cut *= filter_nBarLayer13_cut;
+            filter_all_cut_no_xtrl *= filter_nBarLayer13_cut;
         }
 
         // **** maxRms cut ****
@@ -605,6 +608,7 @@ void buildAcceptance(
                 bgoTotalE,
                 acceptance_cuts);
             filter_all_cut *= filter_maxRms_cut;
+            filter_all_cut_no_xtrl *= filter_maxRms_cut;
         }
 
         // **** track_selection cut ****
@@ -619,6 +623,7 @@ void buildAcceptance(
                     acceptance_cuts,
                     event_best_track);
             filter_all_cut *= filter_track_selection_cut;
+            filter_all_cut_no_xtrl *= filter_track_selection_cut;
         }
 
         // **** xtrl cut ****
@@ -647,6 +652,7 @@ void buildAcceptance(
                         acceptance_cuts,
                         event_best_track);
                     filter_all_cut *= filter_psd_charge_cut;
+                    filter_all_cut_no_xtrl *= filter_psd_charge_cut;
                 }
             }
         }
@@ -673,22 +679,10 @@ void buildAcceptance(
                         stkclusters,
                         acceptance_cuts);
                     filter_all_cut *= filter_stk_charge_cut;
+                    filter_all_cut_no_xtrl *= filter_stk_charge_cut;
                 }
             }
         }
-
-        // **** ANCILLARY CUTS ****
-
-        // **** compute proton background ****
-        if (ancillary_cuts.compute_proton_background)
-            compute_proton_background(
-                bgoVault.GetSumRMS(),
-                bgoVault.GetFracLayer(),
-                acceptance_cuts,
-                simuEnergy,
-                h_background_under_xtrl_cut,
-                h_background_over_xtrl_cut);
-
 
         // Fill cuts histos
 
@@ -928,11 +922,27 @@ void buildAcceptance(
 
         // Fill all cut histo
         if (active_cuts.nActiveCuts)
+        {
             if (filter_all_cut)
             {
                 h_all_cut.Fill(simuEnergy * _GeV);
                 h_all_cut_w.Fill(simuEnergy * _GeV, energy_w);
             }
+            if (filter_all_cut_no_xtrl)
+            {
+                // **** ANCILLARY CUTS ****
+
+                // **** compute proton background ****
+                if (ancillary_cuts.compute_proton_background)
+                    compute_proton_background(
+                        bgoVault.GetSumRMS(),
+                        bgoVault.GetFracLayer(),
+                        acceptance_cuts,
+                        simuEnergy,
+                        h_background_under_xtrl_cut,
+                        h_background_over_xtrl_cut);
+            }
+        }
     }
 
     if (verbose)
