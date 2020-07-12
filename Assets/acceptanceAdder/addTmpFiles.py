@@ -27,6 +27,8 @@ def main(args=None):
                         action='store_true', help='check tmp acceptance ROOT files')
     parser.add_argument("-r", "--resubmit", dest='resubmit', default=False,
                         action='store_true', help='HTCondor flag to resubmit failed jobs')
+    parser.add_argument("-e", "--erase", dest='erase', default=False,
+                        action='store_true', help='Remove ROOT files with no keys')
     
     opts = parser.parse_args(args)
 
@@ -34,7 +36,7 @@ def main(args=None):
     sys.path.append("moduls")
     from adder import compute_final_histos_mc, compute_final_histos_data
     from scanDirs import getListOfFiles
-    from submitJobs import resubmit_condor_jobs
+    from submitJobs import resubmit_condor_jobs, clean_condor_dir
 
     good_dirs, skipped_dirs, skipped_file_notFinalDir, skipped_file_notROOTfile, skipped_file_notReadable, skipped_file_noKeys= getListOfFiles(opts.input)
 
@@ -55,6 +57,9 @@ def main(args=None):
         if opts.resubmit:
             print('\nResubmitting HTCondor jobs for {} directories\n'.format(len(skipped_dirs)))
             resubmit_condor_jobs(skipped_dirs, opts)
+        if opts.erase:
+            for dir in skipped_dirs:
+                clean_condor_dir(dir)
 
     else:
         if opts.verbose:
