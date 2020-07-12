@@ -691,7 +691,7 @@ void generateFinalGraph(
     trigger_dir->cd();
 
     // Define TEfficiency pointers
-    std::shared_ptr<TEfficiency> trigger_efficiency;
+    //std::shared_ptr<TEfficiency> trigger_efficiency;
     std::shared_ptr<TEfficiency> tr_eff_gometric_cut;
     std::shared_ptr<TEfficiency> tr_eff_maxElayer_cut;
     std::shared_ptr<TEfficiency> tr_eff_maxBarLayer_cut;
@@ -705,8 +705,10 @@ void generateFinalGraph(
     std::shared_ptr<TEfficiency> tr_eff_stk_charge_cut;
     std::shared_ptr<TEfficiency> tr_eff_all_cut;
 
+    /*
     if (TEfficiency::CheckConsistency(*h_geo_factor, *h_trigger))
         trigger_efficiency = std::make_shared<TEfficiency>(*h_geo_factor, *h_trigger);
+    */
 
     if (TEfficiency::CheckConsistency(*h_gometric_cut, *h_trigger))
         tr_eff_gometric_cut = std::make_shared<TEfficiency>(*h_gometric_cut, *h_trigger);
@@ -745,7 +747,7 @@ void generateFinalGraph(
         tr_eff_all_cut = std::make_shared<TEfficiency>(*h_all_cut, *h_trigger);
 
     // Set uniform statistic option
-    trigger_efficiency->SetStatisticOption(TEfficiency::kBUniform);
+    //trigger_efficiency->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_gometric_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_maxElayer_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_maxBarLayer_cut->SetStatisticOption(TEfficiency::kBUniform);
@@ -759,7 +761,7 @@ void generateFinalGraph(
     tr_eff_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
     tr_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
 
-    trigger_efficiency->SetName("trigger_efficiency");
+    //trigger_efficiency->SetName("trigger_efficiency");
     tr_eff_gometric_cut->SetName("tr_eff_gometric_cut");
     tr_eff_maxElayer_cut->SetName("tr_eff_maxElayer_cut");
     tr_eff_maxBarLayer_cut->SetName("tr_eff_maxBarLayer_cut");
@@ -773,7 +775,7 @@ void generateFinalGraph(
     tr_eff_stk_charge_cut->SetName("tr_eff_stk_charge_cut");
     tr_eff_all_cut->SetName("tr_eff_all_cut");
 
-    trigger_efficiency->SetTitle("Trigger efficiency");
+    //trigger_efficiency->SetTitle("Trigger efficiency");
     tr_eff_gometric_cut->SetTitle("Gometric cut efficiency");
     tr_eff_maxElayer_cut->SetTitle("maxElayer cut efficiency");
     tr_eff_maxBarLayer_cut->SetTitle("maxBarLayer cut efficiency");
@@ -788,7 +790,7 @@ void generateFinalGraph(
     tr_eff_all_cut->SetTitle("all cut efficiency");
 
     // Write histos to disk
-    trigger_efficiency->Write();
+    //trigger_efficiency->Write();
     tr_eff_gometric_cut->Write();
     tr_eff_maxElayer_cut->Write();
     tr_eff_maxBarLayer_cut->Write();
