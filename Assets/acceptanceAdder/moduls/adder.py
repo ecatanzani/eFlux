@@ -998,6 +998,10 @@ def compute_final_histos_data(condor_dir_list, opts):
             print('Error reading file {}: {}'.format((dIdx+1), rFile_path))
             sys.exit()
         
+        # Check the keys
+        if rFile.GetNkeys() == 0:
+            continue
+        
         # Reading histos
         h_trigger_tmp = rFile.Get("h_trigger")
         h_gometric_cut_tmp = rFile.Get("h_gometric_cut")
