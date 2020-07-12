@@ -13,6 +13,8 @@ def main(args=None):
     parser = ArgumentParser(
         usage="Usage: %(prog)s [options]", description="Acceptance Adder")
 
+    parser.add_argument("-l", "--location", type=str,
+                        dest='location', help='Python software WD')
     parser.add_argument("-i", "--input", type=str,
                         dest='input', help='Input condor jobs WD')
     parser.add_argument("-o", "--output", type=str,
@@ -33,7 +35,11 @@ def main(args=None):
     opts = parser.parse_args(args)
 
     # Load analysis functions
-    sys.path.append("moduls")
+    if opts.location:
+        moduls_path = opts.location + "/moduls"
+    else:
+        moduls_path = "moduls"
+    sys.path.append(moduls_path)
     from adder import compute_final_histos_mc, compute_final_histos_data
     from scanDirs import getListOfFiles
     from submitJobs import resubmit_condor_jobs, clean_condor_dir
