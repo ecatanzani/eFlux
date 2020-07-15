@@ -117,9 +117,7 @@ extern bool xtrl_cut(
     const double sumRms,
     const std::vector<double> fracLayer,
     const cuts_conf data_cuts,
-    const double energy,
-    TH1D &h_xtrl_energy_int,
-    TH2D &h_xtrl);
+    const double energy);
 
 extern bool psd_charge_cut(
     const std::shared_ptr<DmpEvtPsdHits> psdhits,
