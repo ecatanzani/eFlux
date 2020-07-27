@@ -2,10 +2,8 @@
 
 void load_input_dsets_config(data_set_conf &input_sets, const std::string wd)
 {
-    std::string cwd = wd;
-    std::size_t index = cwd.find("eFlux");
-    std::string configPath = cwd.substr(0, index + 5);
-    configPath += "/config/powerlowMCsets.txt";
+    std::string configPath = wd;
+    configPath += "/powerlowMCsets.txt";
     std::ifstream input_file(configPath.c_str());
     if (!input_file.is_open())
     {

@@ -1,18 +1,17 @@
 #include "data_cuts.h"
+#include "binning.h"
 
 #include <fstream>
 #include <sstream>
 
-void load_flux_struct(
+std::vector<float> load_flux_struct(
     cuts_conf &flux_cuts,
     data_active_cuts &active_cuts,
     const std::string wd)
 {
     //std::string cwd = GetCurrentWorkingDir();
-    std::string cwd = wd;
-    std::size_t index = cwd.find("eFlux");
-    std::string configPath = cwd.substr(0, index + 5);
-    configPath += "/config/fluxConfig.txt";
+    std::string configPath = wd;
+    configPath += "/fluxConfig.txt";
     std::ifstream input_file(configPath.c_str());
     if (!input_file.is_open())
     {
@@ -24,8 +23,14 @@ void load_flux_struct(
     std::string tmp_str;
     std::istringstream input_stream(input_string);
     std::string::size_type sz;
+    std::size_t n_bins;
+
     while (input_stream >> tmp_str)
     {
+        // Load flux params
+        if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
+            input_stream >> n_bins;
+
         // Load cuts variables
         if (!strcmp(tmp_str.c_str(), "min_event_energy"))
         {
@@ -104,15 +109,6 @@ void load_flux_struct(
         }
 
         // Load cuts
-        if (!strcmp(tmp_str.c_str(), "BGO_fiducial"))
-        {
-            input_stream >> tmp_str;
-            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-            {
-                active_cuts.BGO_fiducial = true;
-                ++active_cuts.nActiveCuts;
-            }
-        }
         if (!strcmp(tmp_str.c_str(), "nBarLayer13"))
         {
             input_stream >> tmp_str;
@@ -140,12 +136,12 @@ void load_flux_struct(
                 ++active_cuts.nActiveCuts;
             }
         }
-        if (!strcmp(tmp_str.c_str(), "xtrl_selection"))
+        if (!strcmp(tmp_str.c_str(), "psd_stk_match"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
             {
-                active_cuts.xtrl = true;
+                active_cuts.psd_stk_match = true;
                 ++active_cuts.nActiveCuts;
             }
         }
@@ -167,5 +163,20 @@ void load_flux_struct(
                 ++active_cuts.nActiveCuts;
             }
         }
+        if (!strcmp(tmp_str.c_str(), "xtrl_selection"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
+                active_cuts.xtrl = true;
+                ++active_cuts.nActiveCuts;
+            }
+        }
     }
+
+    // Build energy binning vector
+    return createLogBinning(
+        flux_cuts.min_event_energy, 
+        flux_cuts.max_event_energy, 
+        n_bins);
 }

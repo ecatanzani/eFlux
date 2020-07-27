@@ -1,19 +1,17 @@
 #include "acceptance.h"
+#include "binning.h"
 
 #include <fstream>
 #include <sstream>
-
-void load_acceptance_struct(
+ 
+std::vector<float> load_acceptance_struct(
     cuts_conf &acceptance_cuts,
     data_active_cuts &active_cuts,
     mc_ancillary_cuts &ancillary_cuts,
     const std::string wd)
 {
-    //std::string cwd = GetCurrentWorkingDir();
-    std::string cwd = wd;
-    std::size_t index = cwd.find("eFlux");
-    std::string configPath = cwd.substr(0, index + 5);
-    configPath += "/config/acceptanceConfig.txt";
+    std::string configPath = wd;
+    configPath += "/acceptanceConfig.txt";
     std::ifstream input_file(configPath.c_str());
     if (!input_file.is_open())
     {
@@ -25,8 +23,14 @@ void load_acceptance_struct(
     std::string tmp_str;
     std::istringstream input_stream(input_string);
     std::string::size_type sz;
+    std::size_t n_bins;
+
     while (input_stream >> tmp_str)
     {
+        // Load acceptance params
+        if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
+            input_stream >> n_bins;
+
         // Load cuts variables
         if (!strcmp(tmp_str.c_str(), "min_event_energy"))
         {
@@ -52,6 +56,11 @@ void load_acceptance_struct(
         {
             input_stream >> tmp_str;
             acceptance_cuts.max_rms_shower_width = stoi(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "layer_min_energy"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.layer_min_energy = stod(tmp_str, &sz);
         }
         if (!strcmp(tmp_str.c_str(), "generation_vertex_radius"))
         {
@@ -103,6 +112,16 @@ void load_acceptance_struct(
             input_stream >> tmp_str;
             acceptance_cuts.PSD_bar_min_energy_release = stod(tmp_str, &sz);
         }
+        if (!strcmp(tmp_str.c_str(), "PSD_charge"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.PSD_charge = stod(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "PSD_charge_sum"))
+        {
+            input_stream >> tmp_str;
+            acceptance_cuts.PSD_charge_sum = stod(tmp_str, &sz);
+        }
         if (!strcmp(tmp_str.c_str(), "STK_charge"))
         {
             input_stream >> tmp_str;
@@ -110,15 +129,6 @@ void load_acceptance_struct(
         }
 
         // Load cuts
-        if (!strcmp(tmp_str.c_str(), "BGO_fiducial"))
-        {
-            input_stream >> tmp_str;
-            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-            {
-                active_cuts.BGO_fiducial = true;
-                ++active_cuts.nActiveCuts;
-            }
-        }
         if (!strcmp(tmp_str.c_str(), "nBarLayer13"))
         {
             input_stream >> tmp_str;
@@ -146,12 +156,12 @@ void load_acceptance_struct(
                 ++active_cuts.nActiveCuts;
             }
         }
-        if (!strcmp(tmp_str.c_str(), "xtrl_selection"))
+        if (!strcmp(tmp_str.c_str(), "psd_stk_match"))
         {
             input_stream >> tmp_str;
             if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
             {
-                active_cuts.xtrl = true;
+                active_cuts.psd_stk_match = true;
                 ++active_cuts.nActiveCuts;
             }
         }
@@ -173,6 +183,15 @@ void load_acceptance_struct(
                 ++active_cuts.nActiveCuts;
             }
         }
+        if (!strcmp(tmp_str.c_str(), "xtrl_selection"))
+        {
+            input_stream >> tmp_str;
+            if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+            {
+                active_cuts.xtrl = true;
+                ++active_cuts.nActiveCuts;
+            }
+        }
 
         // Load ancillary cuts
         if (!strcmp(tmp_str.c_str(), "compute_proton_background"))
@@ -182,4 +201,10 @@ void load_acceptance_struct(
                 ancillary_cuts.compute_proton_background = true;
         }
     }
+
+    // Build energy binning vector
+    return createLogBinning(
+        acceptance_cuts.min_event_energy, 
+        acceptance_cuts.max_event_energy, 
+        n_bins);
 }
