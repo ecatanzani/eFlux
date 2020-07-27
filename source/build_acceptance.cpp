@@ -774,9 +774,9 @@ void buildAcceptance(
 				if (ancillary_cuts.compute_proton_background)
 					compute_proton_background(
 						bgoVault.GetSumRMS(),
-						bgoVault.GetFracLayer(),
-						acceptance_cuts,
+						bgoVault.GetLastFFracLayer(),
 						simuEnergy,
+						acceptance_cuts,
 						h_background_under_xtrl_cut,
 						h_background_over_xtrl_cut);
 			}
