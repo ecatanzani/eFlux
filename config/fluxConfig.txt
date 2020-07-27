@@ -1,5 +1,9 @@
 ######### eFlux Config File #########
 
+## Flux Params
+
+n_energy_bins               30
+
 ## Cuts
 
 **** CUT VARIABLE ****       **** VALUE ****      **** UNIT ****
@@ -22,10 +26,10 @@ STK_charge                          100                 au
 
 **** CUT ****                **** ACTIVE ****
 
-BGO_fiducial                        YES
 nBarLayer13                         YES
 maxRms                              YES
 track_selection                     YES
-xtrl_selection                      YES
+psd_stk_match                       YES
 psd_charge                          YES
 stk_charge                          YES
+xtrl_selection                      YES
