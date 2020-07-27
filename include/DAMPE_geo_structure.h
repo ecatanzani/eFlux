@@ -2,6 +2,7 @@
 #define DAMPE_GEO_STRUCTURE_H
 
 // DAMPE struct
+const int DAMPE_psd_nLayers = 2;
 const int DAMPE_bgo_nLayers = 14;
 const int nSTKladders = 192;
 const double BGO_TopZ = 46;
