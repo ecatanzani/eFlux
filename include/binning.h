@@ -8,10 +8,11 @@
 #include <fstream>
 #include <sstream>
 
-#include "energy_cuts.h"
+extern std::vector<float> createLogBinning(
+	const double eMin, 
+	const double eMax, 
+	const size_t n_bins);
 
-extern std::vector<float> createLogBinning(const energy_cuts e_cuts);
-extern std::vector<float> readLogBinning(const std::string wd);
 extern std::vector<float> LinearSpacedArray(
     float a, 
     float b, 
