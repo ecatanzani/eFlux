@@ -2,6 +2,7 @@
 #define FILL_EVENT_HISTO_H
 
 #include <vector>
+#include <memory>
 
 #include "TH1D.h"
 #include "TH2D.h"
@@ -9,11 +10,18 @@
 #include <data_cuts.h>
 
 extern void fill_XTRL_histo(
-    const double sumRms,
-    const std::vector<double> fracLayer,
-    const cuts_conf data_cuts,
-    const double energy,
-    TH1D &h_xtrl_energy_int,
-    TH2D &h_xtrl);
+	const double sumRms,
+	const double lastFracLayer,
+	const double energy,
+	std::vector<std::shared_ptr<TH1D>> &bin_xtrl,
+	TH1D &h_xtrl_energy_int,
+	TH2D &h_xtrl);
+
+extern void fill_ep_histos(
+	const double sumRMS,
+	const double lastFracLayer,
+	const double frac_layer_13,
+	TH2D &e_discrimination,
+	TH2D &e_discrimination_last);
 
 #endif
