@@ -14,7 +14,6 @@
 #include "data_cuts.h"
 
 extern void buildFlux(
-    const std::vector<float> &logEBins,
     const std::string inputPath,
     const unsigned int lvTime,
     TFile &outFile,
@@ -22,7 +21,7 @@ extern void buildFlux(
     const std::string accInputPath,
     const std::string wd);
 
-extern void load_flux_struct(
+extern std::vector<float> load_flux_struct(
     cuts_conf &flux_cuts,
     data_active_cuts &active_cuts,
     const std::string wd);

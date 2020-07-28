@@ -24,7 +24,6 @@
 #include "DmpEvtPsdHits.h"
 
 extern TH1D evLoop(
-    const std::vector<float> &logEBins,
     const std::string inputPath,
     TFile &outFile,
     const bool verbose,
