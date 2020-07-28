@@ -259,8 +259,8 @@ void buildAcceptance(
 	TH1D h_xtrl_energy_int("h_xtrl_energy_int", "Energy integrated XTRL distribution", xtrl_bins.size() - 1, &(xtrl_bins[0]));
 	// 2D XTRL energy distribution
 	TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
-	TH2D e_discrimination_last("e_discrimination_last", "Electron Discrimination; Shower spread (mm); F_{last}", 1000, 0, 1000, 1000, 0, 1);
-	TH2D e_discrimination("e_discrimination", "Electron Discrimination; Shower spread (mm); F", 1000, 0, 1000, 1000, 0, 1);
+	TH2D e_discrimination_last("e_discrimination_last", "Electron Discrimination; Shower spread (mm); F_{last}", 1000, 0, 1500, 1000, 1e-5, 2e-1);
+	TH2D e_discrimination("e_discrimination", "Electron Discrimination; Shower spread (mm); F", 1000, 0, 1500, 1000, 1e-5, 2e-1);
 
 	// Bin energy integrated XTRL distributions
 	std::vector<std::shared_ptr<TH1D>> bin_xtrl(logEBins.size() - 1);
@@ -1200,31 +1200,70 @@ void buildAcceptance(
 	std::shared_ptr<TEfficiency> BGOfiducial_eff_xtrl_cut;
 	std::shared_ptr<TEfficiency> BGOfiducial_eff_all_cut;
 
+	std::shared_ptr<TEfficiency> BGOfiducial_eff_l13_maxRms_cut;
+	std::shared_ptr<TEfficiency> BGOfiducial_eff_l13_rms_track_selection_cut;
+	std::shared_ptr<TEfficiency> BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut;
+	std::shared_ptr<TEfficiency> BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut;
+	std::shared_ptr<TEfficiency> BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut;
+	std::shared_ptr<TEfficiency> BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut;
+
+
 	if (TEfficiency::CheckConsistency(h_BGOfiducial_nBarLayer13_cut, h_BGO_fiducial_cut))
 		BGOfiducial_eff_nBarLayer13_cut = std::make_shared<TEfficiency>(h_BGOfiducial_nBarLayer13_cut, h_BGO_fiducial_cut);
 
 	if (TEfficiency::CheckConsistency(h_BGOfiducial_maxRms_cut, h_BGO_fiducial_cut))
-		BGOfiducial_eff_maxRms_cut = std::make_shared<TEfficiency>(h_BGOfiducial_maxRms_cut, h_BGO_fiducial_cut);
+		BGOfiducial_eff_l13_maxRms_cut = std::make_shared<TEfficiency>(h_BGOfiducial_maxRms_cut, h_BGO_fiducial_cut);
 
 	if (TEfficiency::CheckConsistency(h_BGOfiducial_track_selection_cut, h_BGO_fiducial_cut))
-		BGOfiducial_eff_track_selection_cut = std::make_shared<TEfficiency>(h_BGOfiducial_track_selection_cut, h_BGO_fiducial_cut);
+		BGOfiducial_eff_l13_rms_track_selection_cut = std::make_shared<TEfficiency>(h_BGOfiducial_track_selection_cut, h_BGO_fiducial_cut);
 
 	if (TEfficiency::CheckConsistency(h_BGOfiducial_psd_stk_match_cut, h_BGO_fiducial_cut))
-		BGOfiducial_eff_psd_stk_match_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_stk_match_cut, h_BGO_fiducial_cut);
+		BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_stk_match_cut, h_BGO_fiducial_cut);
 
 	if (TEfficiency::CheckConsistency(h_BGOfiducial_psd_charge_cut, h_BGO_fiducial_cut))
-		BGOfiducial_eff_psd_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_charge_cut, h_BGO_fiducial_cut);
+		BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_charge_cut, h_BGO_fiducial_cut);
 
 	if (TEfficiency::CheckConsistency(h_BGOfiducial_stk_charge_cut, h_BGO_fiducial_cut))
-		BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_stk_charge_cut, h_BGO_fiducial_cut);
+		BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_stk_charge_cut, h_BGO_fiducial_cut);
 
 	if (TEfficiency::CheckConsistency(h_BGOfiducial_xtrl_cut, h_BGO_fiducial_cut))
-		BGOfiducial_eff_xtrl_cut = std::make_shared<TEfficiency>(h_BGOfiducial_xtrl_cut, h_BGO_fiducial_cut);
+		BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut = std::make_shared<TEfficiency>(h_BGOfiducial_xtrl_cut, h_BGO_fiducial_cut);
 
 	if (TEfficiency::CheckConsistency(h_BGOfiducial_all_cut, h_BGO_fiducial_cut))
 		BGOfiducial_eff_all_cut = std::make_shared<TEfficiency>(h_BGOfiducial_all_cut, h_BGO_fiducial_cut);
 
+	if (active_cuts.maxRms && active_cuts.nBarLayer13)
+		if (TEfficiency::CheckConsistency(h_BGOfiducial_maxRms_cut, h_BGOfiducial_nBarLayer13_cut))
+			BGOfiducial_eff_maxRms_cut = std::make_shared<TEfficiency>(h_BGOfiducial_maxRms_cut, h_BGOfiducial_nBarLayer13_cut);
+
+	if (active_cuts.track_selection && active_cuts.maxRms)
+		if (TEfficiency::CheckConsistency(h_BGOfiducial_track_selection_cut, h_BGOfiducial_maxRms_cut))
+			BGOfiducial_eff_track_selection_cut = std::make_shared<TEfficiency>(h_BGOfiducial_track_selection_cut, h_BGOfiducial_maxRms_cut);
+
+	if (active_cuts.psd_stk_match && active_cuts.track_selection)
+		if (TEfficiency::CheckConsistency(h_BGOfiducial_psd_stk_match_cut, h_BGOfiducial_track_selection_cut))
+			BGOfiducial_eff_psd_stk_match_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_stk_match_cut, h_BGOfiducial_track_selection_cut);
+
+	if (active_cuts.psd_charge && active_cuts.psd_stk_match)
+		if (TEfficiency::CheckConsistency(h_BGOfiducial_psd_charge_cut, h_BGOfiducial_psd_stk_match_cut))
+			BGOfiducial_eff_psd_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_charge_cut, h_BGOfiducial_psd_stk_match_cut);
+
+	if (active_cuts.stk_charge && active_cuts.psd_charge)
+		if (TEfficiency::CheckConsistency(h_BGOfiducial_stk_charge_cut, h_BGOfiducial_psd_charge_cut))
+			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_stk_charge_cut, h_BGOfiducial_psd_charge_cut);
+
+	if (active_cuts.xtrl && active_cuts.stk_charge)
+		if (TEfficiency::CheckConsistency(h_BGOfiducial_xtrl_cut, h_BGOfiducial_stk_charge_cut))
+			BGOfiducial_eff_xtrl_cut = std::make_shared<TEfficiency>(h_BGOfiducial_xtrl_cut, h_BGOfiducial_stk_charge_cut);
+
 	// Set uniform statistic option
+	BGOfiducial_eff_l13_maxRms_cut->SetStatisticOption(TEfficiency::kBUniform);
+	BGOfiducial_eff_l13_rms_track_selection_cut->SetStatisticOption(TEfficiency::kBUniform);
+	BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut->SetStatisticOption(TEfficiency::kBUniform);
+	BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
+	BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
+	BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut->SetStatisticOption(TEfficiency::kBUniform);
+
 	BGOfiducial_eff_nBarLayer13_cut->SetStatisticOption(TEfficiency::kBUniform);
 	BGOfiducial_eff_maxRms_cut->SetStatisticOption(TEfficiency::kBUniform);
 	BGOfiducial_eff_track_selection_cut->SetStatisticOption(TEfficiency::kBUniform);
@@ -1233,6 +1272,13 @@ void buildAcceptance(
 	BGOfiducial_eff_stk_charge_cut->SetStatisticOption(TEfficiency::kBUniform);
 	BGOfiducial_eff_xtrl_cut->SetStatisticOption(TEfficiency::kBUniform);
 	BGOfiducial_eff_all_cut->SetStatisticOption(TEfficiency::kBUniform);
+
+	BGOfiducial_eff_l13_maxRms_cut->SetName("BGOfiducial_eff_l13_maxRms_cut");
+	BGOfiducial_eff_l13_rms_track_selection_cut->SetName("BGOfiducial_eff_l13_rms_track_selection_cut");
+	BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut->SetName("BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut");
+	BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut->SetName("BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut");
+	BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut->SetName("BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut");
+	BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut->SetName("BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut");
 
 	BGOfiducial_eff_nBarLayer13_cut->SetName("BGOfiducial_eff_nBarLayer13_cut");
 	BGOfiducial_eff_maxRms_cut->SetName("BGOfiducial_eff_maxRms_cut");
@@ -1243,16 +1289,30 @@ void buildAcceptance(
 	BGOfiducial_eff_xtrl_cut->SetName("BGOfiducial_eff_xtrl_cut");
 	BGOfiducial_eff_all_cut->SetName("BGOfiducial_eff_all_cut");
 
-	BGOfiducial_eff_nBarLayer13_cut->SetName("BGOfiducial nBarLayer13 cut efficiency");
-	BGOfiducial_eff_maxRms_cut->SetName("BGOfiducial maxRms cut efficiency");
-	BGOfiducial_eff_track_selection_cut->SetName("BGOfiducial track selection cut efficiency");
-	BGOfiducial_eff_psd_stk_match_cut->SetName("BGOfiducial PSD-STK match cut efficiency");
-	BGOfiducial_eff_psd_charge_cut->SetName("BGOfiducial PSD charge cut efficiency");
-	BGOfiducial_eff_stk_charge_cut->SetName("BGOfiducial STK charge cut efficiency");
-	BGOfiducial_eff_xtrl_cut->SetName("BGOfiducial xtrl cut efficiency");
-	BGOfiducial_eff_all_cut->SetName("BGOfiducial all cut efficiency");
+	BGOfiducial_eff_l13_maxRms_cut->SetTitle("BGOfiducial l13 + maxRms cut efficiency");
+	BGOfiducial_eff_l13_rms_track_selection_cut->SetTitle("BGOfiducial l13 + rms + track_selection cut efficiency");
+	BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut->SetTitle("BGOfiducial l13 + rms + ts + PSD-STK match cut efficiency");
+	BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut->SetTitle("BGOfiducial l13 + rms + ts + psdstk + PSD charge cut efficiency");
+	BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut->SetTitle("BGOfiducial l13 + rms + ts + psdstk + pc + STK charge cut efficiency");
+	BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut->SetTitle("BGOfiducial l13 + rms + ts + psdstk + pc + sc + xtrl cut efficiency");
+
+	BGOfiducial_eff_nBarLayer13_cut->SetTitle("BGOfiducial nBarLayer13 cut efficiency");
+	BGOfiducial_eff_maxRms_cut->SetTitle("BGOfiducial maxRms cut efficiency");
+	BGOfiducial_eff_track_selection_cut->SetTitle("BGOfiducial track selection cut efficiency");
+	BGOfiducial_eff_psd_stk_match_cut->SetTitle("BGOfiducial PSD-STK match cut efficiency");
+	BGOfiducial_eff_psd_charge_cut->SetTitle("BGOfiducial PSD charge cut efficiency");
+	BGOfiducial_eff_stk_charge_cut->SetTitle("BGOfiducial STK charge cut efficiency");
+	BGOfiducial_eff_xtrl_cut->SetTitle("BGOfiducial xtrl cut efficiency");
+	BGOfiducial_eff_all_cut->SetTitle("BGOfiducial all cut efficiency");
 
 	// Write histos to disk
+	BGOfiducial_eff_l13_maxRms_cut->Write();
+	BGOfiducial_eff_l13_rms_track_selection_cut->Write();
+	BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut->Write();
+	BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut->Write();
+	BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut->Write();
+	BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut->Write();
+
 	BGOfiducial_eff_nBarLayer13_cut->Write();
 	BGOfiducial_eff_maxRms_cut->Write();
 	BGOfiducial_eff_track_selection_cut->Write();
