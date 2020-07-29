@@ -13,6 +13,7 @@ max_event_energy                    10000               GeV
 energy_lRatio                       0.35
 shower_axis_delta                   280                 mm
 max_rms_shower_width                100                 mm
+layer_min_energy                    10                  MeV
 track_X_clusters                    4
 track_Y_clusters                    4
 track_missingHit_X                  1
@@ -22,7 +23,9 @@ STK_BGO_delta_position              40                  mm
 xtrl                                8.5
 STK_PSD_delta_position              40                  mm
 PSD_bar_min_energy_release          0.5                 MeV
-STK_charge                          100                 au
+PSD_charge                          2.6                 au
+PSD_charge_sum                      10                  au
+STK_charge                          40                  au
 
 **** CUT ****                **** ACTIVE ****
 
