@@ -961,7 +961,7 @@ void buildAcceptance(
 	gr_acceptance_all_cut.SetTitle("Acceptance - all cut");
 
 	// Write histos to file
-	// First-Cut histos
+	// Cut histos
 	h_geo_factor.Write();
 	h_incoming.Write();
 	h_trigger.Write();
@@ -991,7 +991,7 @@ void buildAcceptance(
 	auto reweightedHistoDir = outFile.mkdir("reweightedHistoDir");
 	reweightedHistoDir->cd();
 
-	// First-Cut histos
+	//Cut histos
 	h_geo_factor_w.Write();
 	h_incoming_w.Write();
 	h_trigger_w.Write();
