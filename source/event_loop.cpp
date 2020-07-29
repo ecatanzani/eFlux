@@ -121,7 +121,7 @@ TH1D evLoop(
 	// Event loop
 	auto nevents = dmpch->GetEntries();
 	if (verbose)
-		std::cout << "\n\nTotal number of events: " << nevents << "\n\n";
+		std::cout << "Total number of events: " << nevents << "\n\n";
 
 	// Cut histos
 	TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
@@ -582,7 +582,7 @@ TH1D evLoop(
 		std::cout << "Particles surviving the selection cuts: " << data_selection.selected_events << "\t | " << ((double)data_selection.selected_events / data_selection.triggered_events) * 100 << "%";
 		std::cout << "\n\n ***********************\n\n";
 	}
-
+	
 	outFile.cd();
 	
 	// Write histos to file
@@ -727,6 +727,7 @@ TH1D evLoop(
 	geo_eff_BGO_fiducial->Write();
 	geo_eff_all_cut->Write();
 
+	
 	// Create BGO_fiducial_volume folder
 	auto BGOfiducial_dir = ratioDir->mkdir("BGO_fiducial_volume");
 	BGOfiducial_dir->cd();
@@ -922,5 +923,6 @@ TH1D evLoop(
 	proton_background_ratio->Divide(&h_background_over_xtrl_cut);
 
 	proton_background_ratio->Write();
-	
+
+	return h_BGOfiducial_all_cut_ce;
 }
