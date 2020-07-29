@@ -128,6 +128,8 @@ struct psd_charge
 	double chargeY = -999;
 };
 
+extern void print_filter_status(data_active_cuts active_cuts);
+
 extern bool checkBGOreco_data(const std::shared_ptr<DmpEvtBgoRec> bgorec);
 extern bool geometric_cut_data(const std::shared_ptr<DmpEvtBgoRec> bgorec);
 
