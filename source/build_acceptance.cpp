@@ -132,7 +132,7 @@ void buildAcceptance(
 	if (verbose)
 		std::cout << "Total number of events: " << nevents << "\n\n";
 
-	// First-Cut histos
+	// Cut histos
 	TH1D h_geo_factor("h_geo_factor", "Energy Distribution of the geometric factor; Real Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 	TH1D h_incoming("h_incoming", "Energy Distribution of the incoming particles; Real Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 	TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles; Real Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
@@ -186,12 +186,12 @@ void buildAcceptance(
 	TH1D h_BGOfiducial_all_cut_w("h_BGOfiducial_all_cut_w", "Energy Distribution - All + BGO fiducial cut; Real Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 
 	// Analysis histos - simu and reco energy of incoming events
-	auto energy_ration_line_binning = LinearSpacedArray(0, 1, 100);
+	auto energy_ratio_line_binning = LinearSpacedArray(0, 1, 100);
 
 	TH1D h_BGOrec_energy("h_BGOrec_energy", "BGO Energy: Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 	TH1D h_simu_energy("h_simu_energy", "Simu Energy; Real Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 	TH1D h_energy_diff("h_energy_diff", "Simu vs Corrected Reco BGO energy: Real Energy - Corrected Energy (GeV); counts", 100, 0, 1);
-	TH2D h_energy_diff2D("h_energy_diff2D", "Energy Ratio; Real Energy (GeV); (Real - Raw)/Raw", logEBins.size() - 1, &(logEBins[0]), energy_ration_line_binning.size() - 1, &(energy_ration_line_binning[0]));
+	TH2D h_energy_diff2D("h_energy_diff2D", "Energy Ratio; Real Energy (GeV); (Real - Raw)/Raw", logEBins.size() - 1, &(logEBins[0]), energy_ratio_line_binning.size() - 1, &(energy_ratio_line_binning[0]));
 	TH2D h_energy_unfold("h_energy_unfold", "Energy Unfolding Matrix; Real Energy (GeV); Raw Energy (GeV)", logEBins.size() - 1, &(logEBins[0]), logEBins.size() - 1, &(logEBins[0]));
 
 	// Pre Geometric Cut
@@ -294,7 +294,7 @@ void buildAcceptance(
 
 	// Proton background histos
 	TH1D h_background_under_xtrl_cut("h_background_under_xtrl_cut", "Proton background - XTRL < cut", logEBins.size() - 1, &(logEBins[0]));
-	TH1D h_background_over_xtrl_cut("h_background_over_xtrl_cut", "Proton background - 20 < XTRL < 100", logEBins.size() - 1, &(logEBins[0]));
+	TH1D h_background_over_xtrl_cut("h_background_over_xtrl_cut", "Proton background - XTRL > cut", logEBins.size() - 1, &(logEBins[0]));
 
 	// Sumw2 Acceptance - First-Cut histos
 	h_geo_factor.Sumw2();
@@ -334,19 +334,19 @@ void buildAcceptance(
 	h_BGOfiducial_nBarLayer13_cut.Sumw2();
 	h_BGOfiducial_maxRms_cut.Sumw2();
 	h_BGOfiducial_track_selection_cut.Sumw2();
-	h_BGOfiducial_xtrl_cut.Sumw2();
 	h_BGOfiducial_psd_stk_match_cut.Sumw2();
 	h_BGOfiducial_psd_charge_cut.Sumw2();
 	h_BGOfiducial_stk_charge_cut.Sumw2();
+	h_BGOfiducial_xtrl_cut.Sumw2();
 	h_BGOfiducial_all_cut.Sumw2();
 
 	h_BGOfiducial_nBarLayer13_cut_w.Sumw2();
 	h_BGOfiducial_maxRms_cut_w.Sumw2();
 	h_BGOfiducial_track_selection_cut_w.Sumw2();
-	h_BGOfiducial_xtrl_cut_w.Sumw2();
 	h_BGOfiducial_psd_stk_match_cut_w.Sumw2();
 	h_BGOfiducial_psd_charge_cut_w.Sumw2();
 	h_BGOfiducial_stk_charge_cut_w.Sumw2();
+	h_BGOfiducial_xtrl_cut_w.Sumw2();
 	h_BGOfiducial_all_cut_w.Sumw2();
 
 	// Sumw2 Analysis histos - simu and reco energy of incoming events
@@ -537,8 +537,6 @@ void buildAcceptance(
 			psdhits,
 			acceptance_cuts);
 
-		
-
 		// Create PSD charge struct
 		psd_charge extracted_psd_charge;
 
@@ -568,8 +566,7 @@ void buildAcceptance(
 				extracted_stk_charge,
 				stkclusters,
 				stktracks,
-				active_cuts,
-				ancillary_cuts))
+				active_cuts))
 			++mc_selection.selected_events;
 
 		// Fill cuts histos
@@ -671,15 +668,15 @@ void buildAcceptance(
 				h_BGOfiducial_track_selection_cut_w.Fill(simuEnergy * _GeV, energy_w_p);
 			}
 
-			// BGO fiducial cut && PSD charge cut
+			// BGO fiducial cut && PSD-STK match cut
 			if (filter.psd_stk_match_cut)
 			{
 				h_BGOfiducial_psd_stk_match_cut.Fill(simuEnergy * _GeV);
 				h_BGOfiducial_psd_stk_match_cut_w.Fill(simuEnergy * _GeV, energy_w_p);
 			}
 
-			// BGO fiducial cut && STK charge cut
-			if (filter.stk_charge_cut)
+			// BGO fiducial cut && PSD charge cut
+			if (filter.psd_charge_cut)
 			{
 				h_BGOfiducial_psd_charge_cut.Fill(simuEnergy * _GeV);
 				h_BGOfiducial_psd_charge_cut_w.Fill(simuEnergy * _GeV, energy_w_p);
@@ -787,8 +784,8 @@ void buildAcceptance(
 	{
 		std::cout << "\n\n ****** \n\n";
 		std::cout << "Generated events: " << mc_selection.event_counter << std::endl;
-		std::cout << "Generated events in good energy range: " << mc_selection.generated_events_in_range << std::endl;
-		std::cout << "Generated events out of the energy range: " << mc_selection.generated_events_out_range << std::endl;
+		std::cout << "Generated events in energy range: " << mc_selection.generated_events_in_range << std::endl;
+		std::cout << "Generated events out of energy range: " << mc_selection.generated_events_out_range << std::endl;
 		std::cout << "Triggered events: " << mc_selection.triggered_events << std::endl;
 		std::cout << "\n\n**** Filter result ****\n";
 		std::cout << "***********************\n\n";
@@ -974,7 +971,6 @@ void buildAcceptance(
 	h_BGOTrackContainment_cut.Write();
 	h_BGO_fiducial_cut.Write();
 	h_all_cut.Write();
-
 	// Cuts && Geometric Cut
 	h_geometric_maxElayer_cut.Write();
 	h_geometric_maxBarLayer_cut.Write();
