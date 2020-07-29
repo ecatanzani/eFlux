@@ -121,6 +121,7 @@ int main(int argc, char **argv)
 			wd);
 
 	if (genGraph)
+	{
 		if (pasteMC)
 			generateFinalGraph(
 				verbose,
@@ -128,13 +129,15 @@ int main(int argc, char **argv)
 				outputPath,
 				inputCompleteHisto,
 				wd);
-	if (pasteDATA)
-		generateDataFinalGraph(
-			verbose,
-			pedantic,
-			outputPath,
-			inputCompleteHisto,
-			wd);
+				
+		if (pasteDATA)
+			generateDataFinalGraph(
+				verbose,
+				pedantic,
+				outputPath,
+				inputCompleteHisto,
+				wd);
+	}
 
 	if (myFlux)
 		eCore(
