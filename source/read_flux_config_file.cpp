@@ -57,6 +57,11 @@ std::vector<float> load_flux_struct(
             input_stream >> tmp_str;
             flux_cuts.max_rms_shower_width = stoi(tmp_str, &sz);
         }
+        if (!strcmp(tmp_str.c_str(), "layer_min_energy"))
+        {
+            input_stream >> tmp_str;
+            flux_cuts.layer_min_energy = stod(tmp_str, &sz);
+        }
         if (!strcmp(tmp_str.c_str(), "track_X_clusters"))
         {
             input_stream >> tmp_str;
@@ -101,6 +106,16 @@ std::vector<float> load_flux_struct(
         {
             input_stream >> tmp_str;
             flux_cuts.PSD_bar_min_energy_release = stod(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "PSD_charge"))
+        {
+            input_stream >> tmp_str;
+            flux_cuts.PSD_charge = stod(tmp_str, &sz);
+        }
+        if (!strcmp(tmp_str.c_str(), "PSD_charge_sum"))
+        {
+            input_stream >> tmp_str;
+            flux_cuts.PSD_charge_sum = stod(tmp_str, &sz);
         }
         if (!strcmp(tmp_str.c_str(), "STK_charge"))
         {
