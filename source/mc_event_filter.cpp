@@ -15,8 +15,7 @@ bool filter_this_mc_event(
 	stk_charge &extracted_stk_charge,
     const std::shared_ptr<TClonesArray> &stkclusters,
     const std::shared_ptr<TClonesArray> &stktracks,
-	const data_active_cuts &active_cuts,
-    const mc_ancillary_cuts &ancillary_cuts)
+	const data_active_cuts &active_cuts)
 {	
 	// Create best_track struct
 	best_track event_best_track;

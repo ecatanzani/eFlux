@@ -71,8 +71,6 @@ extern std::vector<float> load_acceptance_struct(
     mc_ancillary_cuts &ancillary_cuts,
     const std::string wd);
 
-extern void print_filter_status(data_active_cuts active_cuts);
-
 extern bool filter_this_mc_event(
     event_filter &filter,
     const std::shared_ptr<DmpEvtSimuPrimaries> &simu_primaries,
@@ -86,7 +84,6 @@ extern bool filter_this_mc_event(
 	stk_charge &extracted_stk_charge,
     const std::shared_ptr<TClonesArray> &stkclusters,
     const std::shared_ptr<TClonesArray> &stktracks,
-	const data_active_cuts &active_cuts,
-    const mc_ancillary_cuts &ancillary_cuts);
+	const data_active_cuts &active_cuts);
 
 #endif
