@@ -268,7 +268,7 @@ void generateFinalGraph(
 	h_xtrl_energy_int->SetDirectory(0);
 	h_xtrl->SetDirectory(0);
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
-		(*it)->Sumw2();
+		(*it)->SetDirectory(0);
 
 	e_discrimination_last->SetDirectory(0);
 	e_discrimination->SetDirectory(0);
@@ -919,12 +919,6 @@ void generateFinalGraph(
 	h_stk_selected_chargeY->Write();
 	h_stk_selected_charge->Write();
 	h_stk_selected_charge2D->Write();
-
-	auto ancillaryDir = outFile.mkdir("mc_ancillary");
-	ancillaryDir->cd();
-
-	h_background_under_xtrl_cut->Write();
-	h_background_over_xtrl_cut->Write();
 
 	// Create ancillary output folder
 	if (ancillary_cuts.compute_proton_background)
