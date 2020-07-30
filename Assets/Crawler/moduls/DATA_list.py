@@ -15,7 +15,10 @@ def createDATAlist(pars, opts):
     # Get stage 1 dirs --> /FM/FlightData/2A/DayOfAcquisition/
     for dir_st1 in dataDirs:
         # Select interesting data dirs, that starts with the run year (2015, 2016, ...)
-        if "2A/20" in dir_st1:
+        # Skipping 2015 data
+        if "2A/2015" in dir_st1:
+            continue
+        elif "2A/20" in dir_st1:
             getDataDirsCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], dir_st1)
             if opts.verbose:
                 print('Executing XRDFS command: {}'.format(getDataDirsCommand))
