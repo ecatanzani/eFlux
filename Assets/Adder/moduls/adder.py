@@ -273,7 +273,7 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_xtrl_energy_int_tmp = rFile.Get("xtrl/h_xtrl_energy_int")
         h_xtrl_tmp = rFile.Get("xtrl/h_xtrl")
         e_discrimination_last_tmp = rFile.Get("xtrl/e_discrimination_last")
-        e_discrimination = rFile.Get("xtrl/e_discrimination")
+        e_discrimination_tmp = rFile.Get("xtrl/e_discrimination")
 
         h_bin_xtrl_tmp = []
         for idx in range(n_energy_bins):
@@ -281,15 +281,15 @@ def compute_final_histos_mc(condor_dir_list, opts):
             histoName += str(idx)
             h_bin_xtrl_tmp.append(rFile.Get(histoName))
 
-        h_psd_chargeX_tmp = rFile.Get("STKcharge/h_psd_chargeX")
-        h_psd_chargeY_tmp = rFile.Get("STKcharge/h_psd_chargeY")
-        h_psd_charge_tmp = rFile.Get("STKcharge/h_psd_charge")
-        h_psd_charge2D_tmp = rFile.Get("STKcharge/h_psd_charge2D")
+        h_psd_chargeX_tmp = rFile.Get("PSDcharge/h_psd_chargeX")
+        h_psd_chargeY_tmp = rFile.Get("PSDcharge/h_psd_chargeY")
+        h_psd_charge_tmp = rFile.Get("PSDcharge/h_psd_charge")
+        h_psd_charge2D_tmp = rFile.Get("PSDcharge/h_psd_charge2D")
 
-        h_psd_selected_chargeX_tmp = rFile.Get("STKcharge/h_psd_selected_chargeX")
-        h_psd_selected_chargeY_tmp = rFile.Get("STKcharge/h_psd_selected_chargeY")
-        h_psd_selected_charge_tmp = rFile.Get("STKcharge/h_psd_selected_charge")
-        h_psd_selected_charge2D_tmp = rFile.Get("STKcharge/h_psd_selected_charge2D")
+        h_psd_selected_chargeX_tmp = rFile.Get("PSDcharge/h_psd_selected_chargeX")
+        h_psd_selected_chargeY_tmp = rFile.Get("PSDcharge/h_psd_selected_chargeY")
+        h_psd_selected_charge_tmp = rFile.Get("PSDcharge/h_psd_selected_charge")
+        h_psd_selected_charge2D_tmp = rFile.Get("PSDcharge/h_psd_selected_charge2D")
 
         h_stk_chargeX_tmp = rFile.Get("STKcharge/h_stk_chargeX")
         h_stk_chargeY_tmp = rFile.Get("STKcharge/h_stk_chargeY")
@@ -398,7 +398,7 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_xtrl_energy_int_tmp.SetDirectory(0)
         h_xtrl_tmp.SetDirectory(0)
         e_discrimination_last_tmp.SetDirectory(0)
-        e_discrimination.SetDirectory(0)
+        e_discrimination_tmp.SetDirectory(0)
         for idx in range(n_energy_bins):
             h_bin_xtrl_tmp[idx].SetDirectory(0)
 
