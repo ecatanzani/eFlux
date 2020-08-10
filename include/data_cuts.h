@@ -19,6 +19,12 @@
 #include "DmpSvcPsdEposCor.h"
 #include "DmpVSvc.h"
 
+struct p_type
+{
+	bool is_electron = false;
+	bool is_proton = false;
+};
+
 struct cuts_conf
 {
 	double min_event_energy;
@@ -140,7 +146,8 @@ extern void evaluateTopBottomPosition_data(
 	TH1D &h_BGOrec_interceptX,
 	TH1D &h_BGOrec_interceptY,
 	TH2D &h_BGOreco_topMap,
-	TH2D &h_BGOreco_bottomMap);
+	TH2D &h_BGOreco_bottomMap,
+	const double energy_w = 1);
 
 extern bool maxElayer_cut(
 	const std::shared_ptr<DmpEvtBgoRec> bgorec,
