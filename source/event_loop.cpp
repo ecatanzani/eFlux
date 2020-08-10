@@ -864,6 +864,16 @@ TH1D evLoop(
 	BGOfiducial_eff_xtrl_cut->Write();
 	BGOfiducial_eff_all_cut->Write();
 
+	auto geo_analysisDir = outFile.mkdir("Analysis_GeoCut");
+	geo_analysisDir->cd();
+	
+	h_geo_BGOrec_slopeX.Write();
+	h_geo_BGOrec_slopeY.Write();
+	h_geo_BGOrec_interceptX.Write();
+	h_geo_BGOrec_interceptY.Write();
+	h_geo_BGOreco_topMap.Write();
+	h_geo_BGOreco_bottomMap.Write();
+
 	auto BGOdir = outFile.mkdir("BGO_Energy");
 	BGOdir->cd();
 
