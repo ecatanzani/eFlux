@@ -950,6 +950,11 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_BGO_fiducial_cut_tmp = rFile.Get("h_BGO_fiducial_cut")
         h_all_cut_tmp = rFile.Get("h_all_cut")
 
+        n_energy_bins = h_trigger_tmp.GetNbinsX()
+        # Init bin_xtrl
+        for idx in range(n_energy_bins):
+            h_bin_xtrl.append(TH1D())
+
         h_geometric_maxElayer_cut_tmp = rFile.Get("h_geometric_maxElayer_cut")
         h_geometric_maxBarLayer_cut_tmp = rFile.Get("h_geometric_maxBarLayer_cut")
         h_geometric_BGOTrackContainment_cut_tmp = rFile.Get("h_geometric_BGOTrackContainment_cut")
@@ -965,13 +970,15 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_BGOfiducial_xtrl_cut_tmp = rFile.Get("h_BGOfiducial_xtrl_cut")
         h_BGOfiducial_all_cut_tmp = rFile.Get("h_BGOfiducial_all_cut")
         
+        '''
         h_geo_BGOrec_slopeX_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_slopeX")
         h_geo_BGOrec_slopeY_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_slopeY")
         h_geo_BGOrec_interceptX_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_interceptX")
         h_geo_BGOrec_interceptY_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_interceptY")
         h_geo_BGOreco_topMap_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOreco_topMap")
         h_geo_BGOreco_bottomMap_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOreco_bottomMap")
-        
+        '''
+
         h_BGOrec_energy_tmp = rFile.Get("BGO_Energy/h_BGOrec_energy")
         h_layer_max_energy_ratio_tmp = rFile.Get("BGO_Energy/h_layer_max_energy_ratio")
         h_layer_energy_ratio_tmp = []
@@ -983,7 +990,7 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_xtrl_energy_int_tmp = rFile.Get("xtrl/h_xtrl_energy_int")
         h_xtrl_tmp = rFile.Get("xtrl/h_xtrl")
         e_discrimination_last_tmp = rFile.Get("xtrl/e_discrimination_last")
-        e_discrimination = rFile.Get("xtrl/e_discrimination")
+        e_discrimination_tmp = rFile.Get("xtrl/e_discrimination")
         
         h_bin_xtrl_tmp = []
         for idx in range(n_energy_bins):
@@ -991,15 +998,15 @@ def compute_final_histos_data(condor_dir_list, opts):
             histoName += str(idx)
             h_bin_xtrl_tmp.append(rFile.Get(histoName))
 
-        h_psd_chargeX_tmp = rFile.Get("STKcharge/h_psd_chargeX")
-        h_psd_chargeY_tmp = rFile.Get("STKcharge/h_psd_chargeY")
-        h_psd_charge_tmp = rFile.Get("STKcharge/h_psd_charge")
-        h_psd_charge2D_tmp = rFile.Get("STKcharge/h_psd_charge2D")
+        h_psd_chargeX_tmp = rFile.Get("PSDcharge/h_psd_chargeX")
+        h_psd_chargeY_tmp = rFile.Get("PSDcharge/h_psd_chargeY")
+        h_psd_charge_tmp = rFile.Get("PSDcharge/h_psd_charge")
+        h_psd_charge2D_tmp = rFile.Get("PSDcharge/h_psd_charge2D")
 
-        h_psd_selected_chargeX_tmp = rFile.Get("STKcharge/h_psd_selected_chargeX")
-        h_psd_selected_chargeY_tmp = rFile.Get("STKcharge/h_psd_selected_chargeY")
-        h_psd_selected_charge_tmp = rFile.Get("STKcharge/h_psd_selected_charge")
-        h_psd_selected_charge2D_tmp = rFile.Get("STKcharge/h_psd_selected_charge2D")
+        h_psd_selected_chargeX_tmp = rFile.Get("PSDcharge/h_psd_selected_chargeX")
+        h_psd_selected_chargeY_tmp = rFile.Get("PSDcharge/h_psd_selected_chargeY")
+        h_psd_selected_charge_tmp = rFile.Get("PSDcharge/h_psd_selected_charge")
+        h_psd_selected_charge2D_tmp = rFile.Get("PSDcharge/h_psd_selected_charge2D")
 
         h_stk_chargeX_tmp = rFile.Get("STKcharge/h_stk_chargeX")
         h_stk_chargeY_tmp = rFile.Get("STKcharge/h_stk_chargeY")
@@ -1011,8 +1018,8 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_stk_selected_charge_tmp = rFile.Get("STKcharge/h_stk_selected_charge")
         h_stk_selected_charge2D_tmp = rFile.Get("STKcharge/h_stk_selected_charge2D")
 
-        h_background_under_xtrl_cut_tmp = rFile.Get("mc_ancillary/h_background_under_xtrl_cut")
-        h_background_over_xtrl_cut_tmp = rFile.Get("mc_ancillary/h_background_over_xtrl_cut")
+        h_background_under_xtrl_cut_tmp = rFile.Get("proton_background/h_background_under_xtrl_cut")
+        h_background_over_xtrl_cut_tmp = rFile.Get("proton_background/h_background_over_xtrl_cut")
 
         # Unlink histos
         h_trigger_tmp.SetDirectory(0)
@@ -1038,13 +1045,15 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_BGOfiducial_xtrl_cut_tmp.SetDirectory(0)
         h_BGOfiducial_all_cut_tmp.SetDirectory(0)
         
+        '''
         h_geo_BGOrec_slopeX_tmp.SetDirectory(0)
         h_geo_BGOrec_slopeY_tmp.SetDirectory(0)
         h_geo_BGOrec_interceptX_tmp.SetDirectory(0)
         h_geo_BGOrec_interceptY_tmp.SetDirectory(0)
         h_geo_BGOreco_topMap_tmp.SetDirectory(0)
         h_geo_BGOreco_bottomMap_tmp.SetDirectory(0)
-
+        '''
+        
         h_BGOrec_energy_tmp.SetDirectory(0)
         h_layer_max_energy_ratio_tmp.SetDirectory(0)
         for idx in range(0,14):
@@ -1053,7 +1062,7 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_xtrl_energy_int_tmp.SetDirectory(0)
         h_xtrl_tmp.SetDirectory(0)
         e_discrimination_last_tmp.SetDirectory(0)
-        e_discrimination.SetDirectory(0)
+        e_discrimination_tmp.SetDirectory(0)
         for idx in range(n_energy_bins):
             h_bin_xtrl_tmp[idx].SetDirectory(0)
 
@@ -1109,12 +1118,14 @@ def compute_final_histos_data(condor_dir_list, opts):
             h_BGOfiducial_xtrl_cut = h_BGOfiducial_xtrl_cut_tmp.Clone("h_BGOfiducial_xtrl_cut")
             h_BGOfiducial_all_cut = h_BGOfiducial_all_cut_tmp.Clone("h_BGOfiducial_all_cut")
             
+            '''
             h_geo_BGOrec_slopeX = h_geo_BGOrec_slopeX_tmp.Clone("h_geo_BGOrec_slopeX")
             h_geo_BGOrec_slopeY = h_geo_BGOrec_slopeY_tmp.Clone("h_geo_BGOrec_slopeY")
             h_geo_BGOrec_interceptX = h_geo_BGOrec_interceptX_tmp.Clone("h_geo_BGOrec_interceptX")
             h_geo_BGOrec_interceptY = h_geo_BGOrec_interceptY_tmp.Clone("h_geo_BGOrec_interceptY")
             h_geo_BGOreco_topMap = h_geo_BGOreco_topMap_tmp.Clone("h_geo_BGOreco_topMap")
             h_geo_BGOreco_bottomMap = h_geo_BGOreco_bottomMap_tmp.Clone("h_geo_BGOreco_bottomMap")
+            '''
 
             h_BGOrec_energy = h_BGOrec_energy_tmp.Clone("h_BGOrec_energy")
             h_layer_max_energy_ratio = h_layer_max_energy_ratio_tmp.Clone("h_layer_max_energy_ratio")
@@ -1130,7 +1141,7 @@ def compute_final_histos_data(condor_dir_list, opts):
             for idx in range(n_energy_bins):
                 histoName = "h_xtrl_bin_"
                 histoName += str(idx)
-                h_bin_xtrl[idx] = h_bin_xtrl_tmp[idx].Clone(histoName)("h_xtrl_energy_int")
+                h_bin_xtrl[idx] = h_bin_xtrl_tmp[idx].Clone(histoName)
             h_xtrl = h_xtrl_tmp.Clone("h_xtrl")
 
             h_psd_chargeX = h_psd_chargeX_tmp.Clone("h_psd_chargeX")
@@ -1181,13 +1192,15 @@ def compute_final_histos_data(condor_dir_list, opts):
             h_BGOfiducial_xtrl_cut.Add(h_BGOfiducial_xtrl_cut_tmp)
             h_BGOfiducial_all_cut.Add(h_BGOfiducial_all_cut_tmp)
             
+            '''
             h_geo_BGOrec_slopeX.Add(h_geo_BGOrec_slopeX_tmp)
             h_geo_BGOrec_slopeY.Add(h_geo_BGOrec_slopeY_tmp)
             h_geo_BGOrec_interceptX.Add(h_geo_BGOrec_interceptX_tmp)
             h_geo_BGOrec_interceptY.Add(h_geo_BGOrec_interceptY_tmp)
             h_geo_BGOreco_topMap.Add(h_geo_BGOreco_topMap_tmp)
             h_geo_BGOreco_bottomMap.Add(h_geo_BGOreco_bottomMap_tmp)
-
+            '''
+            
             h_BGOrec_energy.Add(h_BGOrec_energy_tmp)
             h_layer_max_energy_ratio.Add(h_layer_max_energy_ratio_tmp)
             for idx in range(0,14):
