@@ -35,7 +35,8 @@ extern void evaluateTopBottomPosition(
     TH2D &h_real_topMap,
     TH2D &h_BGOreco_topMap,
     TH2D &h_real_bottomMap,
-    TH2D &h_BGOreco_bottomMap);
+    TH2D &h_BGOreco_bottomMap,
+    const double energy_w = 1);
 
 extern bool checkBGOreco(
     const std::shared_ptr<DmpEvtBgoRec> bgorec,

@@ -15,13 +15,15 @@ extern void fill_XTRL_histo(
 	const double energy,
 	std::vector<std::shared_ptr<TH1D>> &bin_xtrl,
 	TH1D &h_xtrl_energy_int,
-	TH2D &h_xtrl);
+	TH2D &h_xtrl,
+	const double energy_w = 1);
 
 extern void fill_ep_histos(
 	const double sumRMS,
 	const double lastFracLayer,
 	const double frac_layer_13,
 	TH2D &e_discrimination,
-	TH2D &e_discrimination_last);
+	TH2D &e_discrimination_last,
+	const double energy_w = 1);
 
 #endif

@@ -16,6 +16,7 @@ extern void evaluateEnergyRatio(
     const cuts_conf acceptance_cuts,
     const double bgoTotalE,
     TH1D &h_layer_max_energy_ratio,
-    std::vector<TH1D> &h_layer_energy_ratio);
+    std::vector<TH1D> &h_layer_energy_ratio,
+    const double energy_w = 1);
 
 #endif

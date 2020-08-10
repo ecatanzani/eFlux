@@ -11,6 +11,7 @@ extern void compute_proton_background(
 	const double energy,
 	const cuts_conf data_cuts,
 	TH1D &h_background_under_xtrl_cut,
-	TH1D &h_background_over_xtrl_cut);
+	TH1D &h_background_over_xtrl_cut,
+	const double energy_w = 1);
 
 #endif

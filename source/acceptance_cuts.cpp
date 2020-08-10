@@ -209,7 +209,8 @@ void evaluateTopBottomPosition(
     TH2D &h_real_topMap,
     TH2D &h_BGOreco_topMap,
     TH2D &h_real_bottomMap,
-    TH2D &h_BGOreco_bottomMap)
+    TH2D &h_BGOreco_bottomMap,
+    const double energy_w)
 {
     // Get the real simu position
     TVector3 orgPosition;
@@ -252,29 +253,29 @@ void evaluateTopBottomPosition(
     double reco_bottomY = bgoRec_slope[1] * BGO_BottomZ + bgoRec_intercept[1];
 
     // Fill slopes
-    h_real_slopeX.Fill(slope[0]);
-    h_real_slopeY.Fill(slope[1]);
-    h_BGOrec_slopeX.Fill(bgoRec_slope[0]);
-    h_BGOrec_slopeY.Fill(bgoRec_slope[1]);
+    h_real_slopeX.Fill(slope[0], energy_w);
+    h_real_slopeY.Fill(slope[1], energy_w);
+    h_BGOrec_slopeX.Fill(bgoRec_slope[0], energy_w);
+    h_BGOrec_slopeY.Fill(bgoRec_slope[1], energy_w);
 
     // Fill intercepts
-    h_real_interceptX.Fill(intercept[0]);
-    h_real_interceptY.Fill(intercept[1]);
-    h_BGOrec_interceptX.Fill(bgoRec_intercept[0]);
-    h_BGOrec_interceptY.Fill(bgoRec_intercept[1]);
+    h_real_interceptX.Fill(intercept[0], energy_w);
+    h_real_interceptY.Fill(intercept[1], energy_w);
+    h_BGOrec_interceptX.Fill(bgoRec_intercept[0], energy_w);
+    h_BGOrec_interceptY.Fill(bgoRec_intercept[1], energy_w);
 
     auto spread_topX = real_topX - reco_topX;
     auto spread_topY = real_topY - reco_topY;
 
     // Fill spreads
-    h_BGOrec_topX_vs_realX.Fill(spread_topX);
-    h_BGOrec_topY_vs_realY.Fill(spread_topY);
+    h_BGOrec_topX_vs_realX.Fill(spread_topX, energy_w);
+    h_BGOrec_topY_vs_realY.Fill(spread_topY, energy_w);
 
     // Fill maps
-    h_real_topMap.Fill(real_topX, real_topY);
-    h_real_bottomMap.Fill(real_bottomX, real_bottomY);
-    h_BGOreco_topMap.Fill(reco_topX, reco_topY);
-    h_BGOreco_bottomMap.Fill(reco_bottomX, reco_bottomY);
+    h_real_topMap.Fill(real_topX, real_topY, energy_w);
+    h_real_bottomMap.Fill(real_bottomX, real_bottomY, energy_w);
+    h_BGOreco_topMap.Fill(reco_topX, reco_topY, energy_w);
+    h_BGOreco_bottomMap.Fill(reco_bottomX, reco_bottomY, energy_w);
 }
 
 
