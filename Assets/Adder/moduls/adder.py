@@ -970,15 +970,13 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_BGOfiducial_xtrl_cut_tmp = rFile.Get("h_BGOfiducial_xtrl_cut")
         h_BGOfiducial_all_cut_tmp = rFile.Get("h_BGOfiducial_all_cut")
         
-        '''
         h_geo_BGOrec_slopeX_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_slopeX")
         h_geo_BGOrec_slopeY_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_slopeY")
         h_geo_BGOrec_interceptX_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_interceptX")
         h_geo_BGOrec_interceptY_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_interceptY")
         h_geo_BGOreco_topMap_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOreco_topMap")
         h_geo_BGOreco_bottomMap_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOreco_bottomMap")
-        '''
-
+        
         h_BGOrec_energy_tmp = rFile.Get("BGO_Energy/h_BGOrec_energy")
         h_layer_max_energy_ratio_tmp = rFile.Get("BGO_Energy/h_layer_max_energy_ratio")
         h_layer_energy_ratio_tmp = []
@@ -1045,14 +1043,12 @@ def compute_final_histos_data(condor_dir_list, opts):
         h_BGOfiducial_xtrl_cut_tmp.SetDirectory(0)
         h_BGOfiducial_all_cut_tmp.SetDirectory(0)
         
-        '''
         h_geo_BGOrec_slopeX_tmp.SetDirectory(0)
         h_geo_BGOrec_slopeY_tmp.SetDirectory(0)
         h_geo_BGOrec_interceptX_tmp.SetDirectory(0)
         h_geo_BGOrec_interceptY_tmp.SetDirectory(0)
         h_geo_BGOreco_topMap_tmp.SetDirectory(0)
         h_geo_BGOreco_bottomMap_tmp.SetDirectory(0)
-        '''
         
         h_BGOrec_energy_tmp.SetDirectory(0)
         h_layer_max_energy_ratio_tmp.SetDirectory(0)
@@ -1118,15 +1114,13 @@ def compute_final_histos_data(condor_dir_list, opts):
             h_BGOfiducial_xtrl_cut = h_BGOfiducial_xtrl_cut_tmp.Clone("h_BGOfiducial_xtrl_cut")
             h_BGOfiducial_all_cut = h_BGOfiducial_all_cut_tmp.Clone("h_BGOfiducial_all_cut")
             
-            '''
             h_geo_BGOrec_slopeX = h_geo_BGOrec_slopeX_tmp.Clone("h_geo_BGOrec_slopeX")
             h_geo_BGOrec_slopeY = h_geo_BGOrec_slopeY_tmp.Clone("h_geo_BGOrec_slopeY")
             h_geo_BGOrec_interceptX = h_geo_BGOrec_interceptX_tmp.Clone("h_geo_BGOrec_interceptX")
             h_geo_BGOrec_interceptY = h_geo_BGOrec_interceptY_tmp.Clone("h_geo_BGOrec_interceptY")
             h_geo_BGOreco_topMap = h_geo_BGOreco_topMap_tmp.Clone("h_geo_BGOreco_topMap")
             h_geo_BGOreco_bottomMap = h_geo_BGOreco_bottomMap_tmp.Clone("h_geo_BGOreco_bottomMap")
-            '''
-
+            
             h_BGOrec_energy = h_BGOrec_energy_tmp.Clone("h_BGOrec_energy")
             h_layer_max_energy_ratio = h_layer_max_energy_ratio_tmp.Clone("h_layer_max_energy_ratio")
             for idx in range(0,14):
@@ -1192,14 +1186,12 @@ def compute_final_histos_data(condor_dir_list, opts):
             h_BGOfiducial_xtrl_cut.Add(h_BGOfiducial_xtrl_cut_tmp)
             h_BGOfiducial_all_cut.Add(h_BGOfiducial_all_cut_tmp)
             
-            '''
             h_geo_BGOrec_slopeX.Add(h_geo_BGOrec_slopeX_tmp)
             h_geo_BGOrec_slopeY.Add(h_geo_BGOrec_slopeY_tmp)
             h_geo_BGOrec_interceptX.Add(h_geo_BGOrec_interceptX_tmp)
             h_geo_BGOrec_interceptY.Add(h_geo_BGOrec_interceptY_tmp)
             h_geo_BGOreco_topMap.Add(h_geo_BGOreco_topMap_tmp)
             h_geo_BGOreco_bottomMap.Add(h_geo_BGOreco_bottomMap_tmp)
-            '''
             
             h_BGOrec_energy.Add(h_BGOrec_energy_tmp)
             h_layer_max_energy_ratio.Add(h_layer_max_energy_ratio_tmp)
