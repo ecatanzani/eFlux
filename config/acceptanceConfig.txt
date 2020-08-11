@@ -2,7 +2,7 @@
 
 ## Acceptance Params
 
-n_energy_bins               30
+n_energy_bins               30      Number of energy bins
 
 ## Cuts
 
