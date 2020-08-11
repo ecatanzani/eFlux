@@ -20,17 +20,8 @@ void fluxBuilder(
     const char* data, 
     const double livetime, 
     const double emin = 1, 
-    const double emax = 1e+4, 
-    const int nbins = 30)
-{
-    // Build energy binning
-    auto logEBins = createLogBinning(emin, emax, nbins);
-
-    // Build energy vector
-    std::vector<double> energyValues (logEBins.size(), 0);
-    for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
-        energyValues[std::distance(logEBins.begin(), it)] = wtsydp(*it, *(it + 1), -3);
-    
+    const double emax = 1e+4)
+{   
     // Extract electron acceptance
     TFile* electron_mc_file = TFile::Open(electronMC, "READ");
     if (electron_mc_file->IsZombie())
@@ -93,6 +84,14 @@ void fluxBuilder(
     all_electron_flux->Divide(electron_acceptance);
     all_electron_flux->Scale(1/livetime);
     
+    // Build energy binning
+    auto logEBins = createLogBinning(emin, emax, all_electron_flux->GetNbinsX());
+
+    // Build energy vector
+    std::vector<double> energyValues (logEBins.size(), 0);
+    for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
+        energyValues[std::distance(logEBins.begin(), it)] = wtsydp(*it, *(it + 1), -3);
+
     // Build flux vectors
     std::vector<double> energy_errors(all_electron_flux->GetNbinsX(), 0);
     std::vector<double> all_electron_flux_values (all_electron_flux->GetNbinsX(), 0);
