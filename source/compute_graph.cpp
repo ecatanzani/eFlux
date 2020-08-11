@@ -1076,7 +1076,7 @@ void generateDataFinalGraph(
 	h_BGOfiducial_stk_charge_cut->SetDirectory(0);
 	h_BGOfiducial_xtrl_cut->SetDirectory(0);
 	h_BGOfiducial_all_cut->SetDirectory(0);
-
+	
 	h_geo_BGOrec_slopeX->SetDirectory(0);
 	h_geo_BGOrec_slopeY->SetDirectory(0);
 	h_geo_BGOrec_interceptX->SetDirectory(0);
@@ -1093,7 +1093,7 @@ void generateDataFinalGraph(
 	h_xtrl_energy_int->SetDirectory(0);
 	h_xtrl->SetDirectory(0);
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
-		(*it)->Sumw2();
+		(*it)->SetDirectory(0);
 
 	e_discrimination_last->SetDirectory(0);
 	e_discrimination->SetDirectory(0);
@@ -1112,6 +1112,11 @@ void generateDataFinalGraph(
 	h_stk_chargeY->SetDirectory(0);
 	h_stk_charge->SetDirectory(0);
 	h_stk_charge2D->SetDirectory(0);
+
+	h_stk_selected_chargeX->SetDirectory(0);
+	h_stk_selected_chargeY->SetDirectory(0);
+	h_stk_selected_charge->SetDirectory(0);
+	h_stk_selected_charge2D->SetDirectory(0);
 
 	h_background_under_xtrl_cut->SetDirectory(0);
 	h_background_over_xtrl_cut->SetDirectory(0);
@@ -1401,7 +1406,7 @@ void generateDataFinalGraph(
 	BGOfiducial_eff_stk_charge_cut->Write();
 	BGOfiducial_eff_xtrl_cut->Write();
 	BGOfiducial_eff_all_cut->Write();
-
+	
 	auto geo_analysisDir = outFile.mkdir("Analysis_GeoCut");
 	geo_analysisDir->cd();
 
@@ -1411,9 +1416,7 @@ void generateDataFinalGraph(
 	h_geo_BGOrec_interceptY->Write();
 	h_geo_BGOreco_topMap->Write();
 	h_geo_BGOreco_bottomMap->Write();
-
-	outFile.cd();
-
+	
 	auto BGOdir = outFile.mkdir("BGO_Energy");
 	BGOdir->cd();
 
