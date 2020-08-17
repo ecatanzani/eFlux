@@ -6,6 +6,7 @@
 
 #include "TH1D.h"
 #include "TH2D.h"
+#include "TVector3.h"
 
 #include <data_cuts.h>
 
@@ -25,5 +26,12 @@ extern void fill_ep_histos(
 	TH2D &e_discrimination,
 	TH2D &e_discrimination_last,
 	const double energy_w = 1);
+
+extern void fill_sumRms_cosine_histo(
+	const double sumRMS,
+	const double costheta,
+	const double energy_corr,
+	const std::vector<float> logEBins,
+	std::vector<std::shared_ptr<TH2D>> &sumRms_cosine);
 
 #endif
