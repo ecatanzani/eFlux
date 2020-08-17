@@ -42,3 +42,20 @@ void fill_ep_histos(
 			energy_w);
 	}
 }
+
+void fill_sumRms_cosine_histo(
+	const double sumRMS,
+	const double costheta,
+	const double energy_corr,
+	const std::vector<float> logEBins,
+	std::vector<std::shared_ptr<TH2D>> &sumRms_cosine)
+{
+	int energy_idx;
+	for (auto it=logEBins.begin(); it != logEBins.end() -1; ++it)
+		if (energy_corr >= (*it) && energy_corr < (*it+1))
+		{
+			energy_idx = std::distance(logEBins.begin(), it);
+			break;
+		}
+	sumRms_cosine[energy_idx]->Fill(costheta, sumRMS);
+}
