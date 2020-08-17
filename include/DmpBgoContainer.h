@@ -57,6 +57,7 @@ public:
 	std::vector<int> GetiMaxLayer();
 	const int GetiMaxSingleLayer(const int layedIdx);
 	const double GetSumRMS();
+	const int GetNhits();
 
 private:
 	std::vector<std::vector<short>> layerBarIndex;	// arrange BGO hits by layer
@@ -68,9 +69,9 @@ private:
 	std::vector<double> eCoreLayer;
 	std::vector<double> eCoreCoord;
 	std::vector<int> iMaxLayer;
+	int nBgoHits = 0;
+	int lastLayer = 0;
 	double sumRms = 0;
-	double Xtr = 0;
-	
 };
 
 #endif

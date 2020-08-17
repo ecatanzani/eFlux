@@ -9,7 +9,7 @@ void DmpBgoContainer::scanBGOHits(
 	const int nLayers)
 {
 	// Get the number of BGO hits
-	int nBgoHits = bgohits->GetHittedBarNumber();
+	nBgoHits = bgohits->GetHittedBarNumber();
 
 	// Scan BGO hits
 	for (int ihit = 0; ihit < nBgoHits; ++ihit)
@@ -92,9 +92,6 @@ void DmpBgoContainer::scanBGOHits(
 		}
 		sumRms += rmsLayer[lay];
 	}
-
-	// Build XTR
-	Xtr = pow(sumRms, 4) * fracLayer[13] / 8000000.;
 }
 
 std::vector<short> DmpBgoContainer::GetSingleLayerBarNumber(int nLayer)
@@ -154,21 +151,26 @@ std::vector<int> DmpBgoContainer::GetIdxBarMaxLayer()
 
 const int DmpBgoContainer::GetIdxLastLayer()
 {
-	int iLastLayer = -1;
-	for (int iLay = 13; iLay >= 0 && iLastLayer == -1; --iLay)
-		if (layerBarNumber[iLay].size() > 0)
-        	iLastLayer = iLay;
-    return iLastLayer;
+	if (!lastLayer)
+	{
+		lastLayer = -1;
+		for (int iLay = 13; iLay >= 0 && lastLayer == -1; --iLay)
+			if (layerBarNumber[iLay].size() > 0)
+				lastLayer = iLay;
+	}
+    return lastLayer;
 }
 
 const int DmpBgoContainer::GetFracIdxLastLayer()
 {
-	int iLastLayer = -1;
-	
-	for (auto it = fracLayer.rbegin(); it != fracLayer.rend() && iLastLayer == -1; ++it)
-		if (*it)
-			iLastLayer = fracLayer.size() -1 - std::distance(fracLayer.rbegin(), it);
-	return iLastLayer;
+	if (!lastLayer)
+	{
+		lastLayer = -1;
+		for (auto it = fracLayer.rbegin(); it != fracLayer.rend() && lastLayer == -1; ++it)
+			if (*it)
+				lastLayer = fracLayer.size() -1 - std::distance(fracLayer.rbegin(), it);
+	}
+	return lastLayer;
 }
 
 const int DmpBgoContainer::GetIdxBarMaxSingleLayer(const int layedIdx)
@@ -194,4 +196,9 @@ std::vector<int> DmpBgoContainer::GetiMaxLayer()
 const int DmpBgoContainer::GetiMaxSingleLayer(const int layedIdx)
 {
 	return iMaxLayer[layedIdx];
+}
+
+const int DmpBgoContainer::GetNhits()
+{
+	return nBgoHits;
 }
