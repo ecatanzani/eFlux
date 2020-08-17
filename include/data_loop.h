@@ -49,20 +49,6 @@ extern bool filter_this_data_event(
 	const double bgoTotalE,
 	DmpBgoContainer &bgoVault,
 	DmpPsdContainer &psdVault,
-	psd_charge &extracted_psd_charge,
-	stk_charge &extracted_stk_charge,
-	const std::shared_ptr<TClonesArray> &stkclusters,
-	const std::shared_ptr<TClonesArray> &stktracks,
-	const data_active_cuts &active_cuts);
-
-extern bool filter_this_data_event_ntuple(
-	event_filter &filter,
-	const std::shared_ptr<DmpEvtBgoRec> &bgorec,
-	const std::shared_ptr<DmpEvtBgoHits> &bgohits,
-	const cuts_conf &flux_cuts,
-	const double bgoTotalE,
-	DmpBgoContainer &bgoVault,
-	DmpPsdContainer &psdVault,
 	best_track &event_best_track,
 	psd_cluster_match &clu_matching,
 	psd_charge &extracted_psd_charge,
