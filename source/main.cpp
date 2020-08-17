@@ -17,6 +17,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -d  --outputDir      <path_to_output_TFile_dir>              Output ROOT TFile directory");
 	opt.addUsage(" -t  --lvtime         <live_time-value>                   (*) DAMPE live-time ");
 	opt.addUsage(" -a  --acceptance     <path_to_MC_list>                   (*) Acceptance calculation");
+	opt.addUsage(" -n  --ntuple                                             (*) nTuple production facility");
 	opt.addUsage(" -c  --collect        <path_to_complete_histo>            (*) Generate TGraph from final histo");
 	opt.addUsage(" -r  --resume         <mc/data>                           (*) MC/DATA facility");
 	opt.addUsage(" -g  --geometry       <path_to_acceptance_ROOT_file>      (*) Acceptance file - flux calculation only");
@@ -36,6 +37,7 @@ int main(int argc, char **argv)
 	opt.setOption("resume", 'r');
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("pedantic", 'p');
+	opt.setFlag("ntuple", 'n');
 
 	opt.processCommandArgs(argc, argv);
 
@@ -55,6 +57,7 @@ int main(int argc, char **argv)
 	bool pedantic = false;
 	bool myAcceptance = false;
 	bool myFlux = false;
+	bool myNtuple = false;
 	unsigned int lvTime = 0;
 	bool genGraph = false;
 	bool pasteMC = false;
@@ -86,6 +89,8 @@ int main(int argc, char **argv)
 		myAcceptance = true;
 		accInputPath = opt.getValue('a');
 	}
+	if (opt.getValue("ntuple") || opt.getValue('n'))
+		myNtuple = true;
 	if (opt.getValue("geometry") || opt.getValue('g'))
 		accInputPath = opt.getValue('g');
 	if (opt.getFlag("verbose") || opt.getFlag('v'))
@@ -139,7 +144,7 @@ int main(int argc, char **argv)
 				wd);
 	}
 
-	if (myFlux)
+	if (myFlux || myNtuple)
 		eCore(
 			inputPath,
 			outputPath,
