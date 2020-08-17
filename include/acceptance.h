@@ -80,6 +80,8 @@ extern bool filter_this_mc_event(
     const double bgoTotalE,
 	DmpBgoContainer &bgoVault,
 	DmpPsdContainer &psdVault,
+    best_track &event_best_track,
+	psd_cluster_match &clu_matching,
     psd_charge &extracted_psd_charge,
 	stk_charge &extracted_stk_charge,
     const std::shared_ptr<TClonesArray> &stkclusters,
