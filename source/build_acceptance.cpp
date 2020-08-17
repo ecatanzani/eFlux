@@ -205,7 +205,7 @@ void buildAcceptance(
 	TH1D h_BGOfiducial_all_cut_nw("h_BGOfiducial_all_cut_nw", "Energy Distribution - All + BGO fiducial cut; Real Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 
 	// Analysis histos - simu and reco energy of incoming events
-	auto energy_ratio_line_binning = LinearSpacedArray(0, 1, 100);
+	auto energy_ratio_line_binning = createLinearBinning(0, 1, 100);
 
 	TH1D h_BGOrec_energy("h_BGOrec_energy", "BGO Energy: Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 	TH1D h_simu_energy("h_simu_energy", "Simu Energy; Real Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
@@ -266,22 +266,31 @@ void buildAcceptance(
 	TH2D h_geo_real_bottomMap("h_geo_real_bottomMap", "Real BGO BOTTOM Map", 500, -500, 500, 500, -500, 500);
 	TH2D h_geo_BGOreco_bottomMap("h_geo_BGOreco_bottomMap", "BGOreco BOTTOM Map", 500, -500, 500, 500, -500, 500);
 
+	// sumRms - cosine correlation
+	std::vector<std::shared_ptr<TH2D>> sumRms_cosine (logEBins.size() - 1);
+	auto cosine_bins = createLinearBinning(0, 1, 1e+2);
+	auto sumRms_bins = createLogBinning(10, 2e+3, 1e+3);
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+	{
+		std::string histo_name = "sumRms_cosine_" + to_string(std::distance(sumRms_cosine.begin(), it));
+		(*it) = std::make_shared<TH2D>(histo_name.c_str(), "sumRms - cos(#theta) correlation; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	}
+
 	// Ratio of layer energy respect to total BGO energy
 	TH1D h_layer_max_energy_ratio("h_layer_max_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
 	std::vector<TH1D> h_layer_energy_ratio;
 	init_BGO_histos(h_layer_energy_ratio);
 
 	// XTRL histos
-	auto xtrl_bins = LinearSpacedArray(0, 150, 1000);
-	auto f_bins = createLogBinning(1e-5,2e-1, 1e+3);
-	auto sumRms_bins = LinearSpacedArray(0, 1.5e+3, 1e+3);
+	auto xtrl_bins = createLinearBinning(0, 150, 1e+3);
+	auto flast_binning = createLogBinning(1e-5, 2e-1, 1e+3);
 
 	// Energy integrated XTRL distribution
 	TH1D h_xtrl_energy_int("h_xtrl_energy_int", "Energy integrated XTRL distribution", xtrl_bins.size() - 1, &(xtrl_bins[0]));
 	// 2D XTRL energy distribution
 	TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
-	TH2D e_discrimination_last("e_discrimination_last", "Electron Discrimination; Shower spread (mm); F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), f_bins.size() -1, &(f_bins[0]));
-	TH2D e_discrimination("e_discrimination", "Electron Discrimination; Shower spread (mm); F", sumRms_bins.size() -1, &(sumRms_bins[0]), f_bins.size() -1, &(f_bins[0]));
+	TH2D e_discrimination_last("e_discrimination_last", "Electron Discrimination; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination("e_discrimination", "Electron Discrimination; sumRms [mm]; F", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
 
 	// Bin energy integrated XTRL distributions
 	std::vector<std::shared_ptr<TH1D>> bin_xtrl(logEBins.size() - 1);
@@ -410,6 +419,9 @@ void buildAcceptance(
 	h_geo_real_bottomMap.Sumw2();
 	h_geo_BGOreco_bottomMap.Sumw2();
 	h_layer_max_energy_ratio.Sumw2();
+
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+		(*it)->Sumw2();
 
 	// Sumw2 XTRL histos
 	h_xtrl_energy_int.Sumw2();
@@ -552,6 +564,12 @@ void buildAcceptance(
 		h_energy_diff2D.Fill(simuEnergy * _GeV, (simuEnergy - bgoTotalE_raw) / simuEnergy, energy_w);
 		h_energy_unfold.Fill(simuEnergy * _GeV, bgoTotalE_raw * _GeV, energy_w);
 
+		// Create best_track struct
+		best_track event_best_track;
+		
+		// Create PSD-STK match struct
+		psd_cluster_match clu_matching;
+
 		// Load BGO event class
 		DmpBgoContainer bgoVault;
 
@@ -593,6 +611,8 @@ void buildAcceptance(
 				bgoTotalE_raw,
 				bgoVault,
 				psdVault,
+				event_best_track,
+				clu_matching,
 				extracted_psd_charge,
 				extracted_stk_charge,
 				stkclusters,
@@ -783,8 +803,16 @@ void buildAcceptance(
 		if (active_cuts.nActiveCuts)
 		{
 			if (filter.all_cut)
+			{
 				h_all_cut.Fill(simuEnergy * _GeV, energy_w);
-
+				// Fill sumRms - cosine correlation histo
+				fill_sumRms_cosine_histo(
+					bgoVault.GetSumRMS(),
+					event_best_track.myBestTrack.getDirection().CosTheta(),
+					bgorec->GetElectronEcor() * _GeV,
+					logEBins,
+					sumRms_cosine);
+			}
 			if (filter.all_cut_no_xtrl)
 			{
 				// Fill xtrl histos
@@ -1408,6 +1436,9 @@ void buildAcceptance(
 
 	for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
 		h_layer_energy_ratio[lIdx].Write();
+
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+		(*it)->Write();
 
 	auto XTRLdir = outFile.mkdir("xtrl");
 	XTRLdir->cd();
