@@ -13,7 +13,7 @@ std::vector<float> createLogBinning(
 	return binning;
 }
 
-std::vector<float> LinearSpacedArray(
+std::vector<float> createLinearBinning(
 	float a,
 	float b,
 	std::size_t N)
