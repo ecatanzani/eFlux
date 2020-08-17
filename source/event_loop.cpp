@@ -107,10 +107,6 @@ TH1D evLoop(
 		active_cuts, 
 		wd);
 
-	// Read dataSets connfig file
-	data_set_conf input_sets;
-	load_input_dsets_config(input_sets, wd);
-
 	// Load MC statistics structure
 	data_statistics data_selection;
 
