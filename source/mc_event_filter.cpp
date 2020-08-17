@@ -11,18 +11,14 @@ bool filter_this_mc_event(
     const double bgoTotalE,
 	DmpBgoContainer &bgoVault,
 	DmpPsdContainer &psdVault,
+	best_track &event_best_track,
+	psd_cluster_match &clu_matching,
 	psd_charge &extracted_psd_charge,
 	stk_charge &extracted_stk_charge,
     const std::shared_ptr<TClonesArray> &stkclusters,
     const std::shared_ptr<TClonesArray> &stktracks,
 	const data_active_cuts &active_cuts)
-{	
-	// Create best_track struct
-	best_track event_best_track;
-		
-	// Create PSD-STK match struct
-	psd_cluster_match clu_matching;
-		
+{		
 	// **** Geometric cut ****
 	filter.geometric = geometric_cut(simu_primaries);
 
@@ -119,34 +115,30 @@ bool filter_this_mc_event(
 							filter.all_cut *= filter.psd_charge_cut;
 						}
 						
-					
+						// **** stk charge cut ****
+						if (active_cuts.stk_charge)
+						{
+							filter.stk_charge_measurement = true;
+							filter.stk_charge_cut = stk_charge_cut(
+								event_best_track,
+								stkclusters,
+								acceptance_cuts,
+								extracted_stk_charge);
+							filter.all_cut *= filter.stk_charge_cut;
+						}
+
 						if (filter.all_cut)
 						{
-							// **** stk charge cut ****
-							if (active_cuts.stk_charge)
-							{
-								filter.stk_charge_measurement = true;
-								filter.stk_charge_cut = stk_charge_cut(
-									event_best_track,
-									stkclusters,
-									acceptance_cuts,
-									extracted_stk_charge);
-								filter.all_cut *= filter.stk_charge_cut;
-							}
+							filter.all_cut_no_xtrl = true;
 
-							if (filter.all_cut)
-							{
-								filter.all_cut_no_xtrl = true;
-
-								// **** xtrl cut ****
-								if (active_cuts.xtrl)
-								{	
-									filter.xtrl_cut = xtrl_cut(
-										bgoVault.GetSumRMS(),
-										bgoVault.GetLastFFracLayer(),
-										acceptance_cuts);
-									filter.all_cut *= filter.xtrl_cut;
-								}
+							// **** xtrl cut ****
+							if (active_cuts.xtrl)
+							{	
+								filter.xtrl_cut = xtrl_cut(
+									bgoVault.GetSumRMS(),
+									bgoVault.GetLastFFracLayer(),
+									acceptance_cuts);
+								filter.all_cut *= filter.xtrl_cut;
 							}
 						}
 					}
