@@ -12,6 +12,7 @@
 #include "TH2D.h"
 
 #include "data_cuts.h"
+#include "anyoption.h"
 
 extern void buildFlux(
     const std::string inputPath,
@@ -19,6 +20,12 @@ extern void buildFlux(
     TFile &outFile,
     const bool verbose,
     const std::string accInputPath,
+    const std::string wd);
+
+extern void produceTuples(
+    AnyOption &opt,
+    const std::string inputPath,
+    const bool verbose,
     const std::string wd);
 
 extern std::vector<float> load_flux_struct(
