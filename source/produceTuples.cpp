@@ -371,7 +371,7 @@ void produceTuples(
 
 		// Event filter
 		event_filter filter;
-		if (filter_this_data_event_ntuple(
+		if (filter_this_data_event(
 				filter,
 				bgorec,
 				bgohits,
