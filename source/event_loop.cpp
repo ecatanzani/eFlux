@@ -176,6 +176,14 @@ TH1D evLoop(
 		(*it) = std::make_shared<TH2D>(histo_name.c_str(), "sumRms - cos(#theta) correlation; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
 	}
 
+	TH2D sumRms_cosine_20_100("sumRms_cosine_20_100", "sumRms - cos(#theta) correlation 20 GeV - 100 GeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_100_250("sumRms_cosine_100_250", "sumRms - cos(#theta) correlation 100 GeV - 250 GeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_250_500("sumRms_cosine_250_500", "sumRms - cos(#theta) correlation 250 GeV - 500 GeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_500_1000("sumRms_cosine_500_1000", "sumRms - cos(#theta) correlation 500 GeV - 1 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_1000_3000("sumRms_cosine_1000_3000", "sumRms - cos(#theta) correlation 1 TeV - 3 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_3000_10000("sumRms_cosine_3000_10000", "sumRms - cos(#theta) correlation 3 TeV - 10 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+
+
 	// Ratio of layer energy respect to total BGO energy
 	TH1D h_layer_max_energy_ratio("h_layer_max_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
 	std::vector<TH1D> h_layer_energy_ratio;
@@ -270,6 +278,13 @@ TH1D evLoop(
 	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
 		(*it)->Sumw2();
 	
+	sumRms_cosine_20_100.Sumw2();
+	sumRms_cosine_100_250.Sumw2();
+	sumRms_cosine_250_500.Sumw2();
+	sumRms_cosine_500_1000.Sumw2();
+	sumRms_cosine_1000_3000.Sumw2();
+	sumRms_cosine_3000_10000.Sumw2();
+
 	// Sumw2 XTRL histos
 	h_xtrl_energy_int.Sumw2();
 	h_xtrl.Sumw2();
@@ -560,7 +575,13 @@ TH1D evLoop(
 					event_best_track.myBestTrack.getDirection().CosTheta(),
 					bgorec->GetElectronEcor() * _GeV,
 					logEBins,
-					sumRms_cosine);
+					sumRms_cosine,
+					sumRms_cosine_20_100,
+					sumRms_cosine_100_250,
+					sumRms_cosine_250_500,
+					sumRms_cosine_500_1000,
+					sumRms_cosine_1000_3000,
+					sumRms_cosine_3000_10000);
 			}
 
 			if (filter.all_cut_no_xtrl)
@@ -908,6 +929,13 @@ TH1D evLoop(
 
 	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
 		(*it)->Write();
+
+	sumRms_cosine_20_100.Write();
+	sumRms_cosine_100_250.Write();
+	sumRms_cosine_250_500.Write();
+	sumRms_cosine_500_1000.Write();
+	sumRms_cosine_1000_3000.Write();
+	sumRms_cosine_3000_10000.Write();
 
 	auto XTRLdir = outFile.mkdir("xtrl");
 	XTRLdir->cd();

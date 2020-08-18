@@ -276,6 +276,13 @@ void buildAcceptance(
 		(*it) = std::make_shared<TH2D>(histo_name.c_str(), "sumRms - cos(#theta) correlation; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
 	}
 
+	TH2D sumRms_cosine_20_100("sumRms_cosine_20_100", "sumRms - cos(#theta) correlation 20 GeV - 100 GeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_100_250("sumRms_cosine_100_250", "sumRms - cos(#theta) correlation 100 GeV - 250 GeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_250_500("sumRms_cosine_250_500", "sumRms - cos(#theta) correlation 250 GeV - 500 GeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_500_1000("sumRms_cosine_500_1000", "sumRms - cos(#theta) correlation 500 GeV - 1 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_1000_3000("sumRms_cosine_1000_3000", "sumRms - cos(#theta) correlation 1 TeV - 3 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+	TH2D sumRms_cosine_3000_10000("sumRms_cosine_3000_10000", "sumRms - cos(#theta) correlation 3 TeV - 10 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
+
 	// Ratio of layer energy respect to total BGO energy
 	TH1D h_layer_max_energy_ratio("h_layer_max_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
 	std::vector<TH1D> h_layer_energy_ratio;
@@ -805,14 +812,22 @@ void buildAcceptance(
 			if (filter.all_cut)
 			{
 				h_all_cut.Fill(simuEnergy * _GeV, energy_w);
+				
 				// Fill sumRms - cosine correlation histo
 				fill_sumRms_cosine_histo(
 					bgoVault.GetSumRMS(),
 					event_best_track.myBestTrack.getDirection().CosTheta(),
 					bgorec->GetElectronEcor() * _GeV,
 					logEBins,
-					sumRms_cosine);
+					sumRms_cosine,
+					sumRms_cosine_20_100,
+					sumRms_cosine_100_250,
+					sumRms_cosine_250_500,
+					sumRms_cosine_500_1000,
+					sumRms_cosine_1000_3000,
+					sumRms_cosine_3000_10000);
 			}
+
 			if (filter.all_cut_no_xtrl)
 			{
 				// Fill xtrl histos
@@ -1312,8 +1327,8 @@ void buildAcceptance(
 			BGOfiducial_eff_psd_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_charge_cut_nw, h_BGOfiducial_psd_stk_match_cut_nw);
 
 	if (active_cuts.stk_charge && active_cuts.psd_charge)
-		if (TEfficiency::CheckConsistency(h_BGOfiducial_stk_charge_cut_nw, h_BGOfiducial_psd_charge_cut_nw))
-			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_stk_charge_cut_nw, h_BGOfiducial_psd_charge_cut_nw);
+		if (TEfficiency::CheckConsistency(h_BGOfiducial_stk_charge_cut_nw, h_BGOfiducial_psd_stk_match_cut_nw))
+			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_stk_charge_cut_nw, h_BGOfiducial_psd_stk_match_cut_nw);
 
 	if (active_cuts.xtrl && active_cuts.stk_charge)
 		if (TEfficiency::CheckConsistency(h_BGOfiducial_xtrl_cut_nw, h_BGOfiducial_stk_charge_cut_nw))
@@ -1433,6 +1448,13 @@ void buildAcceptance(
 	h_energy_diff2D.Write();
 	h_energy_unfold.Write();
 	h_layer_max_energy_ratio.Write();
+
+	sumRms_cosine_20_100.Write();
+	sumRms_cosine_100_250.Write();
+	sumRms_cosine_250_500.Write();
+	sumRms_cosine_500_1000.Write();
+	sumRms_cosine_1000_3000.Write();
+	sumRms_cosine_3000_10000.Write();
 
 	for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
 		h_layer_energy_ratio[lIdx].Write();
