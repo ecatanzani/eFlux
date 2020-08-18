@@ -312,6 +312,9 @@ TH1D evLoop(
 		// Get chain event
 		dmpch->GetEvent(evIdx);
 
+		if (evIdx == 1e+3)
+			break;
+
 		// Update event counter
 		++data_selection.event_counter;
 
@@ -751,7 +754,6 @@ TH1D evLoop(
 	geo_eff_BGO_fiducial->Write();
 	geo_eff_all_cut->Write();
 
-	
 	// Create BGO_fiducial_volume folder
 	auto BGOfiducial_dir = ratioDir->mkdir("BGO_fiducial_volume");
 	BGOfiducial_dir->cd();
@@ -815,8 +817,8 @@ TH1D evLoop(
 			BGOfiducial_eff_psd_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_psd_charge_cut, h_BGOfiducial_psd_stk_match_cut);
 
 	if (active_cuts.stk_charge && active_cuts.psd_charge)
-		if (TEfficiency::CheckConsistency(h_BGOfiducial_stk_charge_cut, h_BGOfiducial_psd_charge_cut))
-			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_stk_charge_cut, h_BGOfiducial_psd_charge_cut);
+		if (TEfficiency::CheckConsistency(h_BGOfiducial_stk_charge_cut, h_BGOfiducial_psd_stk_match_cut))
+			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(h_BGOfiducial_stk_charge_cut, h_BGOfiducial_psd_stk_match_cut);
 
 	if (active_cuts.xtrl && active_cuts.stk_charge)
 		if (TEfficiency::CheckConsistency(h_BGOfiducial_xtrl_cut, h_BGOfiducial_stk_charge_cut))
