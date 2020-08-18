@@ -312,9 +312,6 @@ TH1D evLoop(
 		// Get chain event
 		dmpch->GetEvent(evIdx);
 
-		if (evIdx == 1e+3)
-			break;
-
 		// Update event counter
 		++data_selection.event_counter;
 
