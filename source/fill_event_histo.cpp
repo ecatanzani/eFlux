@@ -56,26 +56,25 @@ void fill_sumRms_cosine_histo(
 	TH2D &sumRms_cosine_1000_3000,
 	TH2D &sumRms_cosine_3000_10000)
 {
-	int energy_idx;
 	for (auto it=logEBins.begin(); it != logEBins.end() -1; ++it)
 		if (energy_corr >= (*it) && energy_corr < (*it+1))
 		{
-			energy_idx = std::distance(logEBins.begin(), it);
+			auto energy_idx = std::distance(logEBins.begin(), it);
+			sumRms_cosine[energy_idx]->Fill(costheta, sumRMS);
 			break;
 		}
-	sumRms_cosine[energy_idx]->Fill(costheta, sumRMS);
-
+	
 	if (energy_corr >= 20 && energy_corr < 100)
 		sumRms_cosine_20_100.Fill(costheta, sumRMS);
-	if (energy_corr >= 100 && energy_corr < 250)
+	else if (energy_corr >= 100 && energy_corr < 250)
 		sumRms_cosine_100_250.Fill(costheta, sumRMS);
-	if (energy_corr >= 250 && energy_corr < 500)
+	else if (energy_corr >= 250 && energy_corr < 500)
 		sumRms_cosine_250_500.Fill(costheta, sumRMS);
-	if (energy_corr >= 500 && energy_corr < 1000)
+	else if (energy_corr >= 500 && energy_corr < 1000)
 		sumRms_cosine_500_1000.Fill(costheta, sumRMS);
-	if (energy_corr >= 1000 && energy_corr < 3000)
+	else if (energy_corr >= 1000 && energy_corr < 3000)
 		sumRms_cosine_1000_3000.Fill(costheta, sumRMS);
-	if (energy_corr >= 3000 && energy_corr < 10000)
+	else
 		sumRms_cosine_3000_10000.Fill(costheta, sumRMS);
 	
 }
