@@ -35,7 +35,7 @@ struct data_statistics
 	unsigned int selected_events = 0;
 };
 
-extern TH1D evLoop(
+extern std::vector<TH1D> evLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool verbose,

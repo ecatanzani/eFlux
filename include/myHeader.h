@@ -16,6 +16,7 @@ extern void eCore(
     const bool pedantic,
     const unsigned int lvTime,
     const std::string accInputPath,
+    const std::string p_accInputPath,
     AnyOption &opt,
     const std::string wd);
 
