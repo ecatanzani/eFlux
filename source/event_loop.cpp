@@ -45,7 +45,7 @@ inline void updateProcessStatus(const int evIdx, int &kStep, const int nevents)
 	}
 }
 
-TH1D evLoop(
+std::vector<TH1D> evLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool verbose,
@@ -988,5 +988,10 @@ TH1D evLoop(
 
 	proton_background_ratio->Write();
 
-	return h_BGOfiducial_all_cut_ce;
+	// Fill final vector
+	std::vector<TH1D> data_selection_result (2, TH1D());
+	data_selection_result[0] = h_BGOfiducial_all_cut_ce;
+	data_selection_result[1] = h_background_over_xtrl_cut;
+
+	return data_selection_result;
 }
