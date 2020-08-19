@@ -67,9 +67,9 @@
     {
         "geometry": "6r0p10",
         "particle": "e",
-        "eMin": "100",
-        "eMax": "10000",
-        "dSet": "allElectron-v6r0p10_100GeV_10TeV",
+        "eMin": "1",
+        "eMax": "100",
+        "dSet": "allElectron-v6r0p10_1GeV_100GeV_FTFP_HP",
         "pSpectrum": -1
     },
     {
@@ -77,28 +77,55 @@
         "particle": "e",
         "eMin": "100",
         "eMax": "1000",
-        "dSet": "allElectron-v6r0p10_100GeV_1TeV_QGSP",
+        "dSet": "allElectron-v6r0p10_100GeV_1TeV_FTFP_HP",
         "pSpectrum": -1
-    },
-    {
-        "geometry": "6r0p10",
-        "particle": "e",
-        "eMin": "10000",
-        "eMax": "20000",
-        "dSet": "allElectron-v6r0p10_10TeV_20TeV_FTFP"
-    },
-    {
-        "geometry": "6r0p10",
-        "particle": "e",
-        "eMin": "1",
-        "eMax": "100",
-        "dSet": "allElectron-v6r0p10_1GeV_100GeV_FTFP_HP"
     },
     {
         "geometry": "6r0p10",
         "particle": "e",
         "eMin": "1000",
         "eMax": "10000",
-        "dSet": "allElectron-v6r0p10_1TeV_10TeV_FTFP"
+        "dSet": "allElectron-v6r0p10_1TeV_10TeV_FTFP",
+        "pSpectrum": -1
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "p",
+        "eMin": "1",
+        "eMax": "100",
+        "dSet": "allProton-v6r0p10_1GeV_100GeV_FTFP_HP",
+        "pSpectrum": -1
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "p",
+        "eMin": "100",
+        "eMax": "1000",
+        "dSet": "allProton-v6r0p10_100GeV_1TeV_FTFP_HP",
+        "pSpectrum": -1
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "p",
+        "eMin": "100",
+        "eMax": "1000",
+        "dSet": "allProton-v6r0p10_100GeV_1TeV_FTFP_HP-p2",
+        "pSpectrum": -1
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "p",
+        "eMin": "1000",
+        "eMax": "10000",
+        "dSet": "allProton-v6r0p10_1TeV_10TeV_FTFP",
+        "pSpectrum": -1
+    },
+    {
+        "geometry": "6r0p10",
+        "particle": "p",
+        "eMin": "1000",
+        "eMax": "10000",
+        "dSet": "allProton-v6r0p10_1TeV_10TeV_FTFP-p2",
+        "pSpectrum": -1
     }
 ]
