@@ -322,6 +322,8 @@ std::vector<TH1D> evLoop(
 	double _GeV = 0.001;
 	int kStep = 10;
 
+	if (verbose)
+		std::cout << "Starting analysing data...\n\n";
 	for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
 	{
 		// Get chain event
