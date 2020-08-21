@@ -24,7 +24,20 @@ extern void fill_ep_histos(
 	const double lastFracLayer,
 	const double frac_layer_13,
 	TH2D &e_discrimination,
+	TH2D &e_discrimination_20_100,
+	TH2D &e_discrimination_100_250,
+	TH2D &e_discrimination_250_500,
+	TH2D &e_discrimination_500_1000,
+	TH2D &e_discrimination_1000_3000,
+	TH2D &e_discrimination_3000_10000,
 	TH2D &e_discrimination_last,
+	TH2D &e_discrimination_last_20_100,
+	TH2D &e_discrimination_last_100_250,
+	TH2D &e_discrimination_last_250_500,
+	TH2D &e_discrimination_last_500_1000,
+	TH2D &e_discrimination_last_1000_3000,
+	TH2D &e_discrimination_last_3000_10000,
+	const double energy,
 	const double energy_w = 1);
 
 extern void fill_sumRms_cosine_histo(

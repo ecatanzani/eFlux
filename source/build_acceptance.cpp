@@ -297,7 +297,20 @@ void buildAcceptance(
 	// 2D XTRL energy distribution
 	TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
 	TH2D e_discrimination_last("e_discrimination_last", "Electron Discrimination; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_last_20_100("e_discrimination_last_20_100", "Electron Discrimination 20 GeV - 100 GeV; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_last_100_250("e_discrimination_last_100_250", "Electron Discrimination 100 GeV - 250 GeV; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_last_250_500("e_discrimination_last_250_500", "Electron Discrimination 250 GeV - 500 GeV; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_last_500_1000("e_discrimination_last_500_1000", "Electron Discrimination 500 GeV - 1 TeV; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_last_1000_3000("e_discrimination_last_1000_3000", "Electron Discrimination 1 TeV - 3 TeV; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_last_3000_10000("e_discrimination_last_3000_10000", "Electron Discrimination 3 TeV - 10 TeV; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+
 	TH2D e_discrimination("e_discrimination", "Electron Discrimination; sumRms [mm]; F", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_20_100("e_discrimination_20_100", "Electron Discrimination 20 GeV - 100 GeV; sumRms [mm]; F", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_100_250("e_discrimination_100_250", "Electron Discrimination 100 GeV - 250 GeV; sumRms [mm]; F", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_250_500("e_discrimination_250_500", "Electron Discrimination 250 GeV - 500 GeV; sumRms [mm]; F", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_500_1000("e_discrimination_500_1000", "Electron Discrimination 500 GeV - 1 TeV; sumRms [mm]; F", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_1000_3000("e_discrimination_1000_3000", "Electron Discrimination 1 TeV - 3 TeV; sumRms [mm]; F", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
+	TH2D e_discrimination_3000_10000("e_discrimination_3000_10000", "Electron Discrimination 3 TeV - 10 TeV; sumRms [mm]; F", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
 
 	// Bin energy integrated XTRL distributions
 	std::vector<std::shared_ptr<TH1D>> bin_xtrl(logEBins.size() - 1);
@@ -436,7 +449,20 @@ void buildAcceptance(
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->Sumw2();
 	e_discrimination.Sumw2();
+	e_discrimination_20_100.Sumw2();
+	e_discrimination_100_250.Sumw2();
+	e_discrimination_250_500.Sumw2();
+	e_discrimination_500_1000.Sumw2();
+	e_discrimination_1000_3000.Sumw2();
+	e_discrimination_3000_10000.Sumw2();
+
 	e_discrimination_last.Sumw2();
+	e_discrimination_last_20_100.Sumw2();
+	e_discrimination_last_100_250.Sumw2();
+	e_discrimination_last_250_500.Sumw2();
+	e_discrimination_last_500_1000.Sumw2();
+	e_discrimination_last_1000_3000.Sumw2();
+	e_discrimination_last_3000_10000.Sumw2();
 
 	// Sumw2 PSD charge histos
 	h_psd_chargeX.Sumw2();
@@ -846,8 +872,20 @@ void buildAcceptance(
 					bgoVault.GetLastFFracLayer(),
 					bgoVault.GetSingleFracLayer(13),
 					e_discrimination,
+					e_discrimination_20_100,
+					e_discrimination_100_250,
+					e_discrimination_250_500,
+					e_discrimination_500_1000,
+					e_discrimination_1000_3000,
+					e_discrimination_3000_10000,
 					e_discrimination_last,
-					energy_w);
+					e_discrimination_last_20_100,
+					e_discrimination_last_100_250,
+					e_discrimination_last_250_500,
+					e_discrimination_last_500_1000,
+					e_discrimination_last_1000_3000,
+					e_discrimination_last_3000_10000,
+					simuEnergy);
 
 				// Compute proton background
 				if (ancillary_cuts.compute_proton_background)
@@ -1468,7 +1506,20 @@ void buildAcceptance(
 	h_xtrl_energy_int.Write();
 	h_xtrl.Write();
 	e_discrimination.Write();
+	e_discrimination_20_100.Sumw2();
+	e_discrimination_100_250.Sumw2();
+	e_discrimination_250_500.Sumw2();
+	e_discrimination_500_1000.Sumw2();
+	e_discrimination_1000_3000.Sumw2();
+	e_discrimination_3000_10000.Sumw2();
+
 	e_discrimination_last.Write();
+	e_discrimination_last_20_100.Sumw2();
+	e_discrimination_last_100_250.Sumw2();
+	e_discrimination_last_250_500.Sumw2();
+	e_discrimination_last_500_1000.Sumw2();
+	e_discrimination_last_1000_3000.Sumw2();
+	e_discrimination_last_3000_10000.Sumw2();
 
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->Write();
