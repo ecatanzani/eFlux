@@ -16,7 +16,7 @@ void compute_proton_background(
 		auto xtrl = 0.125e-6 * pow(sumRms, 4) * lastFracLayer;	
 		if (xtrl < data_cuts.xtrl)
 			h_background_under_xtrl_cut.Fill(energy * _GeV, energy_w);
-		if (xtrl > data_cuts.xtrl)
+		if (xtrl > 20 && xtrl < 100)
 			h_background_over_xtrl_cut.Fill(energy * _GeV, energy_w);
 	}
 }
