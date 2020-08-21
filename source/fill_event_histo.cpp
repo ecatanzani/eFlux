@@ -27,7 +27,20 @@ void fill_ep_histos(
 	const double lastFracLayer,
 	const double frac_layer_13,
 	TH2D &e_discrimination,
+	TH2D &e_discrimination_20_100,
+	TH2D &e_discrimination_100_250,
+	TH2D &e_discrimination_250_500,
+	TH2D &e_discrimination_500_1000,
+	TH2D &e_discrimination_1000_3000,
+	TH2D &e_discrimination_3000_10000,
 	TH2D &e_discrimination_last,
+	TH2D &e_discrimination_last_20_100,
+	TH2D &e_discrimination_last_100_250,
+	TH2D &e_discrimination_last_250_500,
+	TH2D &e_discrimination_last_500_1000,
+	TH2D &e_discrimination_last_1000_3000,
+	TH2D &e_discrimination_last_3000_10000,
+	const double energy,
 	const double energy_w)
 {
 	if (lastFracLayer != -1 && frac_layer_13 != -1)
@@ -40,6 +53,73 @@ void fill_ep_histos(
 			sumRMS, 
 			frac_layer_13,
 			energy_w);
+	
+		if (energy >= 20 && energy < 100)
+		{
+			e_discrimination_20_100.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+			e_discrimination_last_20_100.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+		}
+		else if (energy >= 100 && energy < 250)
+		{
+			e_discrimination_100_250.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+			e_discrimination_last_100_250.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+		}
+		else if (energy >= 250 && energy < 500)
+		{
+			e_discrimination_250_500.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+			e_discrimination_last_250_500.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+		}
+		else if (energy >= 500 && energy < 1000)
+		{
+			e_discrimination_500_1000.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+			e_discrimination_last_500_1000.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+		}
+		else if (energy >= 1000 && energy < 3000)
+		{
+			e_discrimination_1000_3000.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+			e_discrimination_last_1000_3000.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+		}
+		else
+		{
+			e_discrimination_3000_10000.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+			e_discrimination_last_3000_10000.Fill(
+				sumRMS, 
+				lastFracLayer,
+				energy_w);
+		}
 	}
 }
 
