@@ -2,14 +2,14 @@
 
 ## Flux Params
 
-n_energy_bins               30
+n_energy_bins               44      Number of energy bins
 
 ## Cuts
 
 **** CUT VARIABLE ****       **** VALUE ****      **** UNIT ****
 
-min_event_energy                    1                   GeV
-max_event_energy                    10000               GeV
+min_event_energy                    24                  GeV
+max_event_energy                    10468.4             GeV
 energy_lRatio                       0.35
 shower_axis_delta                   280                 mm
 max_rms_shower_width                100                 mm
