@@ -53,15 +53,15 @@ void generateFinalGraph(
 	auto h_BGO_fiducial_cut = static_cast<TH1D *>(inHisto.Get("h_BGO_fiducial_cut"));
 	auto h_all_cut = static_cast<TH1D *>(inHisto.Get("h_all_cut"));
 
-	auto h_geo_factor_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_geo_factor_w"));
-	auto h_incoming_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_incoming_w"));
-	auto h_trigger_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_trigger_w"));
-	auto h_geometric_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_geometric_cut_w"));
-	auto h_maxElayer_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_maxElayer_cut_w"));
-	auto h_maxBarLayer_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_maxBarLayer_cut_w"));
-	auto h_BGOTrackContainment_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOTrackContainment_cut_w"));
-	auto h_BGO_fiducial_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGO_fiducial_cut_w"));
-	auto h_all_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_all_cut_w"));
+	auto h_geo_factor_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geo_factor_nw"));
+	auto h_incoming_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_incoming_nw"));
+	auto h_trigger_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_trigger_nw"));
+	auto h_geometric_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geometric_cut_nw"));
+	auto h_maxElayer_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_maxElayer_cut_nw"));
+	auto h_maxBarLayer_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_maxBarLayer_cut_nw"));
+	auto h_BGOTrackContainment_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOTrackContainment_cut_nw"));
+	auto h_BGO_fiducial_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGO_fiducial_cut_nw"));
+	auto h_all_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_all_cut_nw"));
 
 	auto h_geometric_maxElayer_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_maxElayer_cut"));
 	auto h_geometric_maxBarLayer_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_maxBarLayer_cut"));
@@ -69,11 +69,11 @@ void generateFinalGraph(
 	auto h_geometric_BGO_fiducial_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_BGO_fiducial_cut"));
 	auto h_geometric_all_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_all_cut"));
 
-	auto h_geometric_maxElayer_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_geometric_maxElayer_cut_w"));
-	auto h_geometric_maxBarLayer_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_geometric_maxBarLayer_cut_w"));
-	auto h_geometric_BGOTrackContainment_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_geometric_BGOTrackContainment_cut_w"));
-	auto h_geometric_BGO_fiducial_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_geometric_BGO_fiducial_cut_w"));
-	auto h_geometric_all_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_geometric_all_cut_w"));
+	auto h_geometric_maxElayer_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_maxElayer_cut_nw"));
+	auto h_geometric_maxBarLayer_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_maxBarLayer_cut_nw"));
+	auto h_geometric_BGOTrackContainment_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_BGOTrackContainment_cut_nw"));
+	auto h_geometric_BGO_fiducial_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_BGO_fiducial_cut_nw"));
+	auto h_geometric_all_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_all_cut_nw"));
 
 	auto h_BGOfiducial_nBarLayer13_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_nBarLayer13_cut"));
 	auto h_BGOfiducial_maxRms_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_maxRms_cut"));
@@ -84,14 +84,14 @@ void generateFinalGraph(
 	auto h_BGOfiducial_xtrl_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_xtrl_cut"));
 	auto h_BGOfiducial_all_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_all_cut"));
 
-	auto h_BGOfiducial_nBarLayer13_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOfiducial_nBarLayer13_cut_w"));
-	auto h_BGOfiducial_maxRms_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOfiducial_maxRms_cut_w"));
-	auto h_BGOfiducial_track_selection_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOfiducial_track_selection_cut_w"));
-	auto h_BGOfiducial_psd_stk_match_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOfiducial_psd_stk_match_cut_w"));
-	auto h_BGOfiducial_psd_charge_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOfiducial_psd_charge_cut_w"));
-	auto h_BGOfiducial_stk_charge_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOfiducial_stk_charge_cut_w"));
-	auto h_BGOfiducial_xtrl_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOfiducial_xtrl_cut_w"));
-	auto h_BGOfiducial_all_cut_w = static_cast<TH1D *>(inHisto.Get("reweightedHistoDir/h_BGOfiducial_all_cut_w"));
+	auto h_BGOfiducial_nBarLayer13_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_nBarLayer13_cut_nw"));
+	auto h_BGOfiducial_maxRms_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_maxRms_cut_nw"));
+	auto h_BGOfiducial_track_selection_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_track_selection_cut_nw"));
+	auto h_BGOfiducial_psd_stk_match_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_psd_stk_match_cut_nw"));
+	auto h_BGOfiducial_psd_charge_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_psd_charge_cut_nw"));
+	auto h_BGOfiducial_stk_charge_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_stk_charge_cut_nw"));
+	auto h_BGOfiducial_xtrl_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_xtrl_cut_nw"));
+	auto h_BGOfiducial_all_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_all_cut_nw"));
 
 	auto h_preGeo_BGOrec_topX_vs_realX = static_cast<TH1D *>(inHisto.Get("Analysis_preGeoCut/h_preGeo_BGOrec_topX_vs_realX"));
 	auto h_preGeo_BGOrec_topY_vs_realY = static_cast<TH1D *>(inHisto.Get("Analysis_preGeoCut/h_preGeo_BGOrec_topY_vs_realY"));
@@ -141,10 +141,37 @@ void generateFinalGraph(
 		h_layer_energy_ratio[idx] = static_cast<TH1D *>(static_cast<TH1D *>(inHisto.Get(histoName.c_str())));
 	}
 
+	std::vector<TH2D*> sumRms_cosine (logEBins.size() - 1);
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+	{
+		std::string histo_name = "BGO_Energy/sumRms_cosine_" + to_string(std::distance(sumRms_cosine.begin(), it));
+		(*it) = static_cast<TH2D *>(inHisto.Get(histo_name.c_str()));
+	}
+
+	auto sumRms_cosine_20_100 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_20_100"));
+	auto sumRms_cosine_100_250 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_100_250"));
+	auto sumRms_cosine_250_500 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_250_500"));
+	auto sumRms_cosine_500_1000 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_500_1000"));
+	auto sumRms_cosine_1000_3000 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_1000_3000"));
+	auto sumRms_cosine_3000_10000 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_3000_10000"));
+
 	auto h_xtrl_energy_int = static_cast<TH1D *>(inHisto.Get("xtrl/h_xtrl_energy_int"));
 	auto h_xtrl = static_cast<TH2D *>(inHisto.Get("xtrl/h_xtrl"));
 	auto e_discrimination_last = static_cast<TH2D *>(inHisto.Get("xtrl/e_discrimination_last"));
+	auto e_discrimination_last_20_100 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_20_100"));
+	auto e_discrimination_last_100_250 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_100_250"));
+	auto e_discrimination_last_250_500 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_250_500"));
+	auto e_discrimination_last_500_1000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_500_1000"));
+	auto e_discrimination_last_1000_3000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_1000_3000"));
+	auto e_discrimination_last_3000_10000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_3000_10000"));
 	auto e_discrimination = static_cast<TH2D *>(inHisto.Get("xtrl/e_discrimination"));
+	auto e_discrimination_20_100 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_20_100"));
+	auto e_discrimination_100_250 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_100_250"));
+	auto e_discrimination_250_500 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_250_500"));
+	auto e_discrimination_500_1000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_500_1000"));
+	auto e_discrimination_1000_3000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_1000_3000"));
+	auto e_discrimination_3000_10000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_3000_10000"));
+
 	std::vector<TH1D*> bin_xtrl(logEBins.size() - 1);
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 	{
@@ -265,13 +292,35 @@ void generateFinalGraph(
 	for (auto idx = 0; idx < DAMPE_bgo_nLayers; ++idx)
 		h_layer_energy_ratio[idx]->SetDirectory(0);
 
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+		(*it)->SetDirectory(0);
+	
+	sumRms_cosine_20_100->SetDirectory(0);
+	sumRms_cosine_100_250->SetDirectory(0);
+	sumRms_cosine_250_500->SetDirectory(0);
+	sumRms_cosine_500_1000->SetDirectory(0);
+	sumRms_cosine_1000_3000->SetDirectory(0);
+	sumRms_cosine_3000_10000->SetDirectory(0);
+
 	h_xtrl_energy_int->SetDirectory(0);
 	h_xtrl->SetDirectory(0);
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->SetDirectory(0);
 
 	e_discrimination_last->SetDirectory(0);
+	e_discrimination_last_20_100->SetDirectory(0);
+	e_discrimination_last_100_250->SetDirectory(0);
+	e_discrimination_last_250_500->SetDirectory(0);
+	e_discrimination_last_500_1000->SetDirectory(0);
+	e_discrimination_last_1000_3000->SetDirectory(0);
+	e_discrimination_last_3000_10000->SetDirectory(0);
 	e_discrimination->SetDirectory(0);
+	e_discrimination_20_100->SetDirectory(0);
+	e_discrimination_100_250->SetDirectory(0);
+	e_discrimination_250_500->SetDirectory(0);
+	e_discrimination_500_1000->SetDirectory(0);
+	e_discrimination_1000_3000->SetDirectory(0);
+	e_discrimination_3000_10000->SetDirectory(0);
 
 	h_psd_chargeX->SetDirectory(0);
 	h_psd_chargeY->SetDirectory(0);
@@ -882,6 +931,9 @@ void generateFinalGraph(
 
 	for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
 		h_layer_energy_ratio[lIdx]->Write();
+	
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+		(*it)->Write();
 
 	auto XTRLdir = outFile.mkdir("xtrl");
 	XTRLdir->cd();
@@ -889,7 +941,19 @@ void generateFinalGraph(
 	h_xtrl_energy_int->Write();
 	h_xtrl->Write();
 	e_discrimination->Write();
+	e_discrimination_20_100->Sumw2();
+	e_discrimination_100_250->Sumw2();
+	e_discrimination_250_500->Sumw2();
+	e_discrimination_500_1000->Sumw2();
+	e_discrimination_1000_3000->Sumw2();
+	e_discrimination_3000_10000->Sumw2();
 	e_discrimination_last->Write();
+	e_discrimination_last_20_100->Sumw2();
+	e_discrimination_last_100_250->Sumw2();
+	e_discrimination_last_250_500->Sumw2();
+	e_discrimination_last_500_1000->Sumw2();
+	e_discrimination_last_1000_3000->Sumw2();
+	e_discrimination_last_3000_10000->Sumw2();
 
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->Write();
