@@ -213,6 +213,11 @@ void buildAcceptance(
 	TH2D h_energy_diff2D("h_energy_diff2D", "Energy Ratio; Real Energy (GeV); (Real - Raw)/Raw", logEBins.size() - 1, &(logEBins[0]), energy_ratio_line_binning.size() - 1, &(energy_ratio_line_binning[0]));
 	TH2D h_energy_unfold("h_energy_unfold", "Energy Unfolding Matrix; Real Energy (GeV); Raw Energy (GeV)", logEBins.size() - 1, &(logEBins[0]), logEBins.size() - 1, &(logEBins[0]));
 
+	// Ratio of layer energy respect to total BGO energy
+	TH1D h_layer_max_energy_ratio("h_layer_max_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
+	std::vector<TH1D> h_layer_energy_ratio;
+	init_BGO_histos(h_layer_energy_ratio);
+	
 	// Pre Geometric Cut
 	// Top X and Y
 	TH1D h_preGeo_BGOrec_topX_vs_realX("h_preGeo_BGOrec_topX_vs_realX", "Real X - BGOrec TOP X", 100, -100, 100);
@@ -282,11 +287,6 @@ void buildAcceptance(
 	TH2D sumRms_cosine_500_1000("sumRms_cosine_500_1000", "sumRms - cos(#theta) correlation 500 GeV - 1 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
 	TH2D sumRms_cosine_1000_3000("sumRms_cosine_1000_3000", "sumRms - cos(#theta) correlation 1 TeV - 3 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
 	TH2D sumRms_cosine_3000_10000("sumRms_cosine_3000_10000", "sumRms - cos(#theta) correlation 3 TeV - 10 TeV; cos(#theta); sumRms [mm]", cosine_bins.size() -1, &(cosine_bins[0]),  sumRms_bins.size() -1, &(sumRms_bins[0]));
-
-	// Ratio of layer energy respect to total BGO energy
-	TH1D h_layer_max_energy_ratio("h_layer_max_energy_ratio", "Layer Energy Ratio", 100, 0, 1);
-	std::vector<TH1D> h_layer_energy_ratio;
-	init_BGO_histos(h_layer_energy_ratio);
 
 	// XTRL histos
 	auto xtrl_bins = createLinearBinning(0, 150, 1e+3);
