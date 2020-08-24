@@ -15,15 +15,15 @@ def compute_final_histos_mc(condor_dir_list, opts):
     h_BGO_fiducial_cut = TH1D()
     h_all_cut = TH1D()
 
-    h_geo_factor_w = TH1D()
-    h_incoming_w = TH1D()
-    h_trigger_w = TH1D()
-    h_geometric_cut_w = TH1D()
-    h_maxElayer_cut_w = TH1D()
-    h_maxBarLayer_cut_w = TH1D()
-    h_BGOTrackContainment_cut_w = TH1D()
-    h_BGO_fiducial_cut_w = TH1D()
-    h_all_cut_w = TH1D()
+    h_geo_factor_nw = TH1D()
+    h_incoming_nw = TH1D()
+    h_trigger_nw = TH1D()
+    h_geometric_cut_nw = TH1D()
+    h_maxElayer_cut_nw = TH1D()
+    h_maxBarLayer_cut_nw = TH1D()
+    h_BGOTrackContainment_cut_nw = TH1D()
+    h_BGO_fiducial_cut_nw = TH1D()
+    h_all_cut_nw = TH1D()
 
     # Cuts && Geometric Cut
     h_geometric_maxElayer_cut = TH1D()
@@ -32,11 +32,11 @@ def compute_final_histos_mc(condor_dir_list, opts):
     h_geometric_BGO_fiducial_cut = TH1D()
     h_geometric_all_cut = TH1D()
 
-    h_geometric_maxElayer_cut_w = TH1D()
-    h_geometric_maxBarLayer_cut_w = TH1D()
-    h_geometric_BGOTrackContainment_cut_w = TH1D()
-    h_geometric_BGO_fiducial_cut_w = TH1D()
-    h_geometric_all_cut_w = TH1D()
+    h_geometric_maxElayer_cut_nw = TH1D()
+    h_geometric_maxBarLayer_cut_nw = TH1D()
+    h_geometric_BGOTrackContainment_cut_nw = TH1D()
+    h_geometric_BGO_fiducial_cut_nw = TH1D()
+    h_geometric_all_cut_nw = TH1D()
 
     # Cuts && BGO fiducial volume cut
     h_BGOfiducial_nBarLayer13_cut = TH1D()
@@ -48,14 +48,14 @@ def compute_final_histos_mc(condor_dir_list, opts):
     h_BGOfiducial_xtrl_cut = TH1D()
     h_BGOfiducial_all_cut = TH1D()
 
-    h_BGOfiducial_nBarLayer13_cut_w = TH1D()
-    h_BGOfiducial_maxRms_cut_w = TH1D()
-    h_BGOfiducial_track_selection_cut_w = TH1D()
-    h_BGOfiducial_psd_stk_match_cut_w = TH1D()
-    h_BGOfiducial_psd_charge_cut_w = TH1D()
-    h_BGOfiducial_stk_charge_cut_w = TH1D()
-    h_BGOfiducial_xtrl_cut_w = TH1D()
-    h_BGOfiducial_all_cut_w = TH1D()
+    h_BGOfiducial_nBarLayer13_cut_nw = TH1D()
+    h_BGOfiducial_maxRms_cut_nw = TH1D()
+    h_BGOfiducial_track_selection_cut_nw = TH1D()
+    h_BGOfiducial_psd_stk_match_cut_nw = TH1D()
+    h_BGOfiducial_psd_charge_cut_nw = TH1D()
+    h_BGOfiducial_stk_charge_cut_nw = TH1D()
+    h_BGOfiducial_xtrl_cut_nw = TH1D()
+    h_BGOfiducial_all_cut_nw = TH1D()
 
     # Analysis histos - simu and reco energy of incoming events
     h_BGOrec_energy = TH1D()
@@ -115,11 +115,32 @@ def compute_final_histos_mc(condor_dir_list, opts):
     h_geo_real_bottomMap = TH2D()
     h_geo_BGOreco_bottomMap = TH2D()
 
+    # sumRms - cosine correlation
+    h_sumRms_cosine = []
+    sumRms_cosine_20_100 = TH2D()
+    sumRms_cosine_100_250 = TH2D()
+    sumRms_cosine_250_500 = TH2D()
+    sumRms_cosine_500_1000 = TH2D()
+    sumRms_cosine_1000_3000 = TH2D()
+    sumRms_cosine_3000_10000 = TH2D()
+
     # XTRL histos
     h_xtrl_energy_int = TH1D()
     h_xtrl = TH2D()
     e_discrimination_last = TH2D()
+    e_discrimination_last_20_100 = TH2D()
+    e_discrimination_last_100_250 = TH2D()
+    e_discrimination_last_250_500 = TH2D()
+    e_discrimination_last_500_1000 = TH2D()
+    e_discrimination_last_1000_3000 = TH2D()
+    e_discrimination_last_3000_10000 = TH2D()
     e_discrimination = TH2D()
+    e_discrimination_20_100 = TH2D()
+    e_discrimination_100_250 = TH2D()
+    e_discrimination_250_500 = TH2D()
+    e_discrimination_500_1000 = TH2D()
+    e_discrimination_1000_3000 = TH2D()
+    e_discrimination_3000_10000 = TH2D()
     h_bin_xtrl = []
 
     # PSD charge histos
@@ -183,19 +204,20 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_all_cut_tmp = rFile.Get("h_all_cut")
 
         n_energy_bins = h_geo_factor_tmp.GetNbinsX()
-        # Init bin_xtrl
+        # Init bin_xtrl and sumRms
         for idx in range(n_energy_bins):
-            h_bin_xtrl.append(TH1D()) 
+            h_bin_xtrl.append(TH1D())
+            h_sumRms_cosine.append(TH2D())
 
-        h_geo_factor_tmp_w = rFile.Get("reweightedHistoDir/h_geo_factor_w")
-        h_incoming_tmp_w = rFile.Get("reweightedHistoDir/h_incoming_w")
-        h_trigger_tmp_w = rFile.Get("reweightedHistoDir/h_trigger_w")
-        h_geometric_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_cut_w")
-        h_maxElayer_cut_tmp_w = rFile.Get("reweightedHistoDir/h_maxElayer_cut_w")
-        h_maxBarLayer_cut_tmp_w = rFile.Get("reweightedHistoDir/h_maxBarLayer_cut_w")
-        h_BGOTrackContainment_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOTrackContainment_cut_w")
-        h_BGO_fiducial_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGO_fiducial_cut_w")
-        h_all_cut_tmp_w = rFile.Get("reweightedHistoDir/h_all_cut_w")
+        h_geo_factor_tmp_nw = rFile.Get("nw_histos/h_geo_factor_w")
+        h_incoming_tmp_nw = rFile.Get("nw_histos/h_incoming_w")
+        h_trigger_tmp_nw = rFile.Get("nw_histos/h_trigger_w")
+        h_geometric_cut_tmp_nw = rFile.Get("nw_histos/h_geometric_cut_w")
+        h_maxElayer_cut_tmp_nw = rFile.Get("nw_histos/h_maxElayer_cut_w")
+        h_maxBarLayer_cut_tmp_nw = rFile.Get("nw_histos/h_maxBarLayer_cut_w")
+        h_BGOTrackContainment_cut_tmp_nw = rFile.Get("nw_histos/h_BGOTrackContainment_cut_w")
+        h_BGO_fiducial_cut_tmp_nw = rFile.Get("nw_histos/h_BGO_fiducial_cut_w")
+        h_all_cut_tmp_nw = rFile.Get("nw_histos/h_all_cut_w")
 
         h_geometric_maxElayer_cut_tmp = rFile.Get("h_geometric_maxElayer_cut")
         h_geometric_maxBarLayer_cut_tmp = rFile.Get("h_geometric_maxBarLayer_cut")
@@ -203,11 +225,11 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_geometric_BGO_fiducial_cut_tmp = rFile.Get("h_geometric_BGO_fiducial_cut")
         h_geometric_all_cut_tmp = rFile.Get("h_geometric_all_cut")
 
-        h_geometric_maxElayer_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_maxElayer_cut_w")
-        h_geometric_maxBarLayer_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_maxBarLayer_cut_w")
-        h_geometric_BGOTrackContainment_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_BGOTrackContainment_cut_w")
-        h_geometric_BGO_fiducial_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_BGO_fiducial_cut_w")
-        h_geometric_all_cut_tmp_w = rFile.Get("reweightedHistoDir/h_geometric_all_cut_w")
+        h_geometric_maxElayer_cut_tmp_nw = rFile.Get("nw_histos/h_geometric_maxElayer_cut_w")
+        h_geometric_maxBarLayer_cut_tmp_nw = rFile.Get("nw_histos/h_geometric_maxBarLayer_cut_w")
+        h_geometric_BGOTrackContainment_cut_tmp_nw = rFile.Get("nw_histos/h_geometric_BGOTrackContainment_cut_w")
+        h_geometric_BGO_fiducial_cut_tmp_nw = rFile.Get("nw_histos/h_geometric_BGO_fiducial_cut_w")
+        h_geometric_all_cut_tmp_nw = rFile.Get("nw_histos/h_geometric_all_cut_w")
 
         h_BGOfiducial_nBarLayer13_cut_tmp = rFile.Get("h_BGOfiducial_nBarLayer13_cut")
         h_BGOfiducial_maxRms_cut_tmp = rFile.Get("h_BGOfiducial_maxRms_cut")
@@ -218,14 +240,14 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_BGOfiducial_xtrl_cut_tmp = rFile.Get("h_BGOfiducial_xtrl_cut")
         h_BGOfiducial_all_cut_tmp = rFile.Get("h_BGOfiducial_all_cut")
 
-        h_BGOfiducial_nBarLayer13_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOfiducial_nBarLayer13_cut_w")
-        h_BGOfiducial_maxRms_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOfiducial_maxRms_cut_w")
-        h_BGOfiducial_track_selection_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOfiducial_track_selection_cut_w")
-        h_BGOfiducial_psd_stk_match_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOfiducial_psd_stk_match_cut_w")
-        h_BGOfiducial_psd_charge_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOfiducial_psd_charge_cut_w")
-        h_BGOfiducial_stk_charge_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOfiducial_stk_charge_cut_w")
-        h_BGOfiducial_xtrl_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOfiducial_xtrl_cut_w")
-        h_BGOfiducial_all_cut_tmp_w = rFile.Get("reweightedHistoDir/h_BGOfiducial_all_cut_w")
+        h_BGOfiducial_nBarLayer13_cut_tmp_nw = rFile.Get("nw_histos/h_BGOfiducial_nBarLayer13_cut_w")
+        h_BGOfiducial_maxRms_cut_tmp_nw = rFile.Get("nw_histos/h_BGOfiducial_maxRms_cut_w")
+        h_BGOfiducial_track_selection_cut_tmp_nw = rFile.Get("nw_histos/h_BGOfiducial_track_selection_cut_w")
+        h_BGOfiducial_psd_stk_match_cut_tmp_nw = rFile.Get("nw_histos/h_BGOfiducial_psd_stk_match_cut_w")
+        h_BGOfiducial_psd_charge_cut_tmp_nw = rFile.Get("nw_histos/h_BGOfiducial_psd_charge_cut_w")
+        h_BGOfiducial_stk_charge_cut_tmp_nw = rFile.Get("nw_histos/h_BGOfiducial_stk_charge_cut_w")
+        h_BGOfiducial_xtrl_cut_tmp_nw = rFile.Get("nw_histos/h_BGOfiducial_xtrl_cut_w")
+        h_BGOfiducial_all_cut_tmp_nw = rFile.Get("nw_histos/h_BGOfiducial_all_cut_w")
 
         h_preGeo_BGOrec_topX_vs_realX_tmp = rFile.Get("Analysis_preGeoCut/h_preGeo_BGOrec_topX_vs_realX")
         h_preGeo_BGOrec_topY_vs_realY_tmp = rFile.Get("Analysis_preGeoCut/h_preGeo_BGOrec_topY_vs_realY")
@@ -270,10 +292,36 @@ def compute_final_histos_mc(condor_dir_list, opts):
             histoName += str(idx)
             h_layer_energy_ratio_tmp.append(rFile.Get(histoName))
 
+        h_sumRms_cosine_tmp = []
+        for idx in range(n_energy_bins):
+            histoName = "BGO_Energy/sumRms_cosine_"
+            histoName += str(idx)
+            h_sumRms_cosine_tmp.append(rFile.Get(histoName))
+
+        sumRms_cosine_20_100_tmp = rFile.Get("BGO_Energy/sumRms_cosine_20_100")
+        sumRms_cosine_100_250_tmp = rFile.Get("BGO_Energy/sumRms_cosine_100_250")
+        sumRms_cosine_250_500_tmp = rFile.Get("BGO_Energy/sumRms_cosine_250_500")
+        sumRms_cosine_500_1000_tmp = rFile.Get("BGO_Energy/sumRms_cosine_500_1000")
+        sumRms_cosine_1000_3000_tmp = rFile.Get("BGO_Energy/sumRms_cosine_1000_3000")
+        sumRms_cosine_3000_10000_tmp = rFile.Get("BGO_Energy/sumRms_cosine_3000_10000")
+
         h_xtrl_energy_int_tmp = rFile.Get("xtrl/h_xtrl_energy_int")
         h_xtrl_tmp = rFile.Get("xtrl/h_xtrl")
         e_discrimination_last_tmp = rFile.Get("xtrl/e_discrimination_last")
+        e_discrimination_last_20_100_tmp = rFile.Get("xtrl/e_discrimination_last_20_100")
+        e_discrimination_last_100_250_tmp = rFile.Get("xtrl/e_discrimination_last_100_250")
+        e_discrimination_last_250_500_tmp = rFile.Get("xtrl/e_discrimination_last_250_500")
+        e_discrimination_last_500_1000_tmp = rFile.Get("xtrl/e_discrimination_last_500_1000")
+        e_discrimination_last_1000_3000_tmp = rFile.Get("xtrl/e_discrimination_last_1000_3000")
+        e_discrimination_last_3000_10000_tmp = rFile.Get("xtrl/e_discrimination_last_3000_10000")
+
         e_discrimination_tmp = rFile.Get("xtrl/e_discrimination")
+        e_discrimination_20_100_tmp = rFile.Get("xtrl/e_discrimination_20_100")
+        e_discrimination_100_250_tmp = rFile.Get("xtrl/e_discrimination_100_250")
+        e_discrimination_250_500_tmp = rFile.Get("xtrl/e_discrimination_250_500")
+        e_discrimination_500_1000_tmp = rFile.Get("xtrl/e_discrimination_500_1000")
+        e_discrimination_1000_3000_tmp = rFile.Get("xtrl/e_discrimination_1000_3000")
+        e_discrimination_3000_10000_tmp = rFile.Get("xtrl/e_discrimination_3000_10000")
 
         h_bin_xtrl_tmp = []
         for idx in range(n_energy_bins):
@@ -315,15 +363,15 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_BGO_fiducial_cut_tmp.SetDirectory(0)
         h_all_cut_tmp.SetDirectory(0)
 
-        h_geo_factor_tmp_w.SetDirectory(0)
-        h_incoming_tmp_w.SetDirectory(0)
+        h_geo_factor_tmp_nw.SetDirectory(0)
+        h_incoming_tmp_nw.SetDirectory(0)
         h_trigger_tmp_w.SetDirectory(0)
-        h_geometric_cut_tmp_w.SetDirectory(0)
-        h_maxElayer_cut_tmp_w.SetDirectory(0)
-        h_maxBarLayer_cut_tmp_w.SetDirectory(0)
-        h_BGOTrackContainment_cut_tmp_w.SetDirectory(0)
-        h_BGO_fiducial_cut_tmp_w.SetDirectory(0)
-        h_all_cut_tmp_w.SetDirectory(0)
+        h_geometric_cut_tmp_nw.SetDirectory(0)
+        h_maxElayer_cut_tmp_nw.SetDirectory(0)
+        h_maxBarLayer_cut_tmp_nw.SetDirectory(0)
+        h_BGOTrackContainment_cut_tmp_nw.SetDirectory(0)
+        h_BGO_fiducial_cut_tmp_nw.SetDirectory(0)
+        h_all_cut_tmp_nw.SetDirectory(0)
         
         h_geometric_maxElayer_cut_tmp.SetDirectory(0)
         h_geometric_maxBarLayer_cut_tmp.SetDirectory(0)
@@ -331,11 +379,11 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_geometric_BGO_fiducial_cut_tmp.SetDirectory(0)
         h_geometric_all_cut_tmp.SetDirectory(0)
 
-        h_geometric_maxElayer_cut_tmp_w.SetDirectory(0)
-        h_geometric_maxBarLayer_cut_tmp_w.SetDirectory(0)
-        h_geometric_BGOTrackContainment_cut_tmp_w.SetDirectory(0)
-        h_geometric_BGO_fiducial_cut_tmp_w.SetDirectory(0)
-        h_geometric_all_cut_tmp_w.SetDirectory(0)
+        h_geometric_maxElayer_cut_tmp_nw.SetDirectory(0)
+        h_geometric_maxBarLayer_cut_tmp_nw.SetDirectory(0)
+        h_geometric_BGOTrackContainment_cut_tmp_nw.SetDirectory(0)
+        h_geometric_BGO_fiducial_cut_tmp_nw.SetDirectory(0)
+        h_geometric_all_cut_tmp_nw.SetDirectory(0)
 
         h_BGOfiducial_nBarLayer13_cut_tmp.SetDirectory(0)
         h_BGOfiducial_maxRms_cut_tmp.SetDirectory(0)
@@ -346,14 +394,14 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_BGOfiducial_xtrl_cut_tmp.SetDirectory(0)
         h_BGOfiducial_all_cut_tmp.SetDirectory(0)
 
-        h_BGOfiducial_nBarLayer13_cut_tmp_w.SetDirectory(0)
-        h_BGOfiducial_maxRms_cut_tmp_w.SetDirectory(0)
-        h_BGOfiducial_track_selection_cut_tmp_w.SetDirectory(0)
-        h_BGOfiducial_psd_stk_match_cut_tmp_w.SetDirectory(0)
-        h_BGOfiducial_psd_charge_cut_tmp_w.SetDirectory(0)
-        h_BGOfiducial_stk_charge_cut_tmp_w.SetDirectory(0)
-        h_BGOfiducial_xtrl_cut_tmp_w.SetDirectory(0)
-        h_BGOfiducial_all_cut_tmp_w.SetDirectory(0)
+        h_BGOfiducial_nBarLayer13_cut_tmp_nw.SetDirectory(0)
+        h_BGOfiducial_maxRms_cut_tmp_nw.SetDirectory(0)
+        h_BGOfiducial_track_selection_cut_tmp_nw.SetDirectory(0)
+        h_BGOfiducial_psd_stk_match_cut_tmp_nw.SetDirectory(0)
+        h_BGOfiducial_psd_charge_cut_tmp_nw.SetDirectory(0)
+        h_BGOfiducial_stk_charge_cut_tmp_nw.SetDirectory(0)
+        h_BGOfiducial_xtrl_cut_tmp_nw.SetDirectory(0)
+        h_BGOfiducial_all_cut_tmp_nw.SetDirectory(0)
 
         h_preGeo_BGOrec_topX_vs_realX_tmp.SetDirectory(0)
         h_preGeo_BGOrec_topY_vs_realY_tmp.SetDirectory(0)
@@ -394,11 +442,34 @@ def compute_final_histos_mc(condor_dir_list, opts):
         h_layer_max_energy_ratio_tmp.SetDirectory(0)
         for idx in range(0,14):
             h_layer_energy_ratio_tmp[idx].SetDirectory(0)
+        
+        for idx in range(n_energy_bins):
+            h_sumRms_cosine_tmp[idx].SetDirectory(0)
+        sumRms_cosine_20_100_tmp.SetDirectory(0)
+        sumRms_cosine_100_250_tmp.SetDirectory(0)
+        sumRms_cosine_250_500_tmp.SetDirectory(0)
+        sumRms_cosine_500_1000_tmp.SetDirectory(0)
+        sumRms_cosine_1000_3000_tmp.SetDirectory(0)
+        sumRms_cosine_3000_10000_tmp.SetDirectory(0)
 
         h_xtrl_energy_int_tmp.SetDirectory(0)
         h_xtrl_tmp.SetDirectory(0)
         e_discrimination_last_tmp.SetDirectory(0)
+        e_discrimination_last_20_100_tmp.SetDirectory(0)
+        e_discrimination_last_100_250_tmp.SetDirectory(0)
+        e_discrimination_last_250_500_tmp.SetDirectory(0)
+        e_discrimination_last_500_1000_tmp.SetDirectory(0)
+        e_discrimination_last_1000_3000_tmp.SetDirectory(0)
+        e_discrimination_last_3000_10000_tmp.SetDirectory(0)
+
         e_discrimination_tmp.SetDirectory(0)
+        e_discrimination_20_100_tmp.SetDirectory(0)
+        e_discrimination_100_250_tmp.SetDirectory(0)
+        e_discrimination_250_500_tmp.SetDirectory(0)
+        e_discrimination_500_1000_tmp.SetDirectory(0)
+        e_discrimination_1000_3000_tmp.SetDirectory(0)
+        e_discrimination_3000_10000_tmp.SetDirectory(0)
+
         for idx in range(n_energy_bins):
             h_bin_xtrl_tmp[idx].SetDirectory(0)
 
@@ -441,15 +512,15 @@ def compute_final_histos_mc(condor_dir_list, opts):
             h_BGO_fiducial_cut = h_BGO_fiducial_cut_tmp.Clone("h_BGO_fiducial_cut")
             h_all_cut = h_all_cut_tmp.Clone("h_all_cut")
 
-            h_geo_factor_w = h_geo_factor_tmp_w.Clone("h_geo_factor_w")
-            h_incoming_w = h_incoming_tmp_w.Clone("h_incoming_w")
-            h_trigger_w = h_trigger_tmp_w.Clone("h_trigger_w")
-            h_geometric_cut_w = h_geometric_cut_tmp_w.Clone("h_geometric_cut_w")
-            h_maxElayer_cut_w = h_maxElayer_cut_tmp_w.Clone("h_maxElayer_cut_w")
-            h_maxBarLayer_cut_w = h_maxBarLayer_cut_tmp_w.Clone("h_maxBarLayer_cut_w")
-            h_BGOTrackContainment_cut_w = h_BGOTrackContainment_cut_tmp_w.Clone("h_BGOTrackContainment_cut_w")
-            h_BGO_fiducial_cut_w = h_BGO_fiducial_cut_tmp_w.Clone("h_BGO_fiducial_cut_w")
-            h_all_cut_w = h_all_cut_tmp_w.Clone("h_all_cut_w")
+            h_geo_factor_nw = h_geo_factor_tmp_nw.Clone("h_geo_factor_nw")
+            h_incoming_nw = h_incoming_tmp_nw.Clone("h_incoming_nw")
+            h_trigger_nw = h_trigger_tmp_nw.Clone("h_trigger_nw")
+            h_geometric_cut_nw = h_geometric_cut_tmp_nw.Clone("h_geometric_cut_nw")
+            h_maxElayer_cut_nw = h_maxElayer_cut_tmp_nw.Clone("h_maxElayer_cut_nw")
+            h_maxBarLayer_cut_nw = h_maxBarLayer_cut_tmp_nw.Clone("h_maxBarLayer_cut_nw")
+            h_BGOTrackContainment_cut_nw = h_BGOTrackContainment_cut_tmp_nw.Clone("h_BGOTrackContainment_cut_nw")
+            h_BGO_fiducial_cut_nw = h_BGO_fiducial_cut_tmp_nw.Clone("h_BGO_fiducial_cut_nw")
+            h_all_cut_nw = h_all_cut_tmp_nw.Clone("h_all_cut_nw")
 
             h_geometric_maxElayer_cut = h_geometric_maxElayer_cut_tmp.Clone("h_geometric_maxElayer_cut")
             h_geometric_maxBarLayer_cut = h_geometric_maxBarLayer_cut_tmp.Clone("h_geometric_maxBarLayer_cut")
@@ -457,11 +528,11 @@ def compute_final_histos_mc(condor_dir_list, opts):
             h_geometric_BGO_fiducial_cut = h_geometric_BGO_fiducial_cut_tmp.Clone("h_geometric_BGO_fiducial_cut")
             h_geometric_all_cut = h_geometric_all_cut_tmp.Clone("h_geometric_all_cut")
 
-            h_geometric_maxElayer_cut_w = h_geometric_maxElayer_cut_tmp_w.Clone("h_geometric_maxElayer_cut_w")
-            h_geometric_maxBarLayer_cut_w = h_geometric_maxBarLayer_cut_tmp_w.Clone("h_geometric_maxBarLayer_cut_w")
-            h_geometric_BGOTrackContainment_cut_w = h_geometric_BGOTrackContainment_cut_tmp_w.Clone("h_geometric_BGOTrackContainment_cut_w")
-            h_geometric_BGO_fiducial_cut_w = h_geometric_BGO_fiducial_cut_tmp_w.Clone("h_geometric_BGO_fiducial_cut_w")
-            h_geometric_all_cut_w = h_geometric_all_cut_tmp_w.Clone("h_geometric_all_cut_w")
+            h_geometric_maxElayer_cut_nw = h_geometric_maxElayer_cut_tmp_nw.Clone("h_geometric_maxElayer_cut_nw")
+            h_geometric_maxBarLayer_cut_nw = h_geometric_maxBarLayer_cut_tmp_nw.Clone("h_geometric_maxBarLayer_cut_nw")
+            h_geometric_BGOTrackContainment_cut_nw = h_geometric_BGOTrackContainment_cut_tmp_nw.Clone("h_geometric_BGOTrackContainment_cut_nw")
+            h_geometric_BGO_fiducial_cut_nw = h_geometric_BGO_fiducial_cut_tmp_nw.Clone("h_geometric_BGO_fiducial_cut_nw")
+            h_geometric_all_cut_nw = h_geometric_all_cut_tmp_nw.Clone("h_geometric_all_cut_nw")
 
             h_BGOfiducial_nBarLayer13_cut = h_BGOfiducial_nBarLayer13_cut_tmp.Clone("h_BGOfiducial_nBarLayer13_cut")
             h_BGOfiducial_maxRms_cut = h_BGOfiducial_maxRms_cut_tmp.Clone("h_BGOfiducial_maxRms_cut")
@@ -472,14 +543,14 @@ def compute_final_histos_mc(condor_dir_list, opts):
             h_BGOfiducial_xtrl_cut = h_BGOfiducial_xtrl_cut_tmp.Clone("h_BGOfiducial_xtrl_cut")
             h_BGOfiducial_all_cut = h_BGOfiducial_all_cut_tmp.Clone("h_BGOfiducial_all_cut")
 
-            h_BGOfiducial_nBarLayer13_cut_w = h_BGOfiducial_nBarLayer13_cut_tmp_w.Clone("h_BGOfiducial_nBarLayer13_cut_w")
-            h_BGOfiducial_maxRms_cut_w = h_BGOfiducial_maxRms_cut_tmp_w.Clone("h_BGOfiducial_maxRms_cut_w")
-            h_BGOfiducial_track_selection_cut_w = h_BGOfiducial_track_selection_cut_tmp_w.Clone("h_BGOfiducial_track_selection_cut_w")
-            h_BGOfiducial_psd_stk_match_cut_w = h_BGOfiducial_psd_stk_match_cut_tmp_w.Clone("h_BGOfiducial_psd_stk_match_cut_w")
-            h_BGOfiducial_psd_charge_cut_w = h_BGOfiducial_psd_charge_cut_tmp_w.Clone("h_BGOfiducial_psd_charge_cut_w")
-            h_BGOfiducial_stk_charge_cut_w = h_BGOfiducial_stk_charge_cut_tmp_w.Clone("h_BGOfiducial_stk_charge_cut_w")
-            h_BGOfiducial_xtrl_cut_w = h_BGOfiducial_xtrl_cut_tmp_w.Clone("h_BGOfiducial_xtrl_cut_w")
-            h_BGOfiducial_all_cut_w = h_BGOfiducial_all_cut_tmp_w.Clone("h_BGOfiducial_all_cut_w")
+            h_BGOfiducial_nBarLayer13_cut_nw = h_BGOfiducial_nBarLayer13_cut_tmp_nw.Clone("h_BGOfiducial_nBarLayer13_cut_nw")
+            h_BGOfiducial_maxRms_cut_nw = h_BGOfiducial_maxRms_cut_tmp_nw.Clone("h_BGOfiducial_maxRms_cut_nw")
+            h_BGOfiducial_track_selection_cut_nw = h_BGOfiducial_track_selection_cut_tmp_nw.Clone("h_BGOfiducial_track_selection_cut_nw")
+            h_BGOfiducial_psd_stk_match_cut_nw = h_BGOfiducial_psd_stk_match_cut_tmp_nw.Clone("h_BGOfiducial_psd_stk_match_cut_nw")
+            h_BGOfiducial_psd_charge_cut_nw = h_BGOfiducial_psd_charge_cut_tmp_nw.Clone("h_BGOfiducial_psd_charge_cut_nw")
+            h_BGOfiducial_stk_charge_cut_nw = h_BGOfiducial_stk_charge_cut_tmp_nw.Clone("h_BGOfiducial_stk_charge_cut_nw")
+            h_BGOfiducial_xtrl_cut_nw = h_BGOfiducial_xtrl_cut_tmp_nw.Clone("h_BGOfiducial_xtrl_cut_nw")
+            h_BGOfiducial_all_cut_nw = h_BGOfiducial_all_cut_tmp_nw.Clone("h_BGOfiducial_all_cut_nw")
 
             h_preGeo_BGOrec_topX_vs_realX = h_preGeo_BGOrec_topX_vs_realX_tmp.Clone("h_preGeo_BGOrec_topX_vs_realX")
             h_preGeo_BGOrec_topY_vs_realY = h_preGeo_BGOrec_topY_vs_realY_tmp.Clone("h_preGeo_BGOrec_topY_vs_realY")
@@ -523,10 +594,35 @@ def compute_final_histos_mc(condor_dir_list, opts):
                 h_ratio_name += str(idx)
                 h_layer_energy_ratio[idx] = h_layer_energy_ratio_tmp[idx].Clone(h_ratio_name)
 
+            for idx in range(n_energy_bins):
+                histoName = "sumRms_cosine_"
+                histoName += str(idx)
+                h_sumRms_cosine[idx] = h_sumRms_cosine_tmp.Clone(histoName)
+            sumRms_cosine_20_100 = sumRms_cosine_20_100_tmp.Clone("sumRms_cosine_20_100")
+            sumRms_cosine_100_250 = sumRms_cosine_100_250_tmp.Clone("sumRms_cosine_100_250")
+            sumRms_cosine_250_500 = sumRms_cosine_250_500_tmp.Clone("sumRms_cosine_250_500")
+            sumRms_cosine_500_1000 = sumRms_cosine_500_1000_tmp.Clone("sumRms_cosine_500_1000")
+            sumRms_cosine_1000_3000 = sumRms_cosine_1000_3000_tmp.Clone("sumRms_cosine_1000_3000")
+            sumRms_cosine_3000_10000 = sumRms_cosine_3000_10000_tmp.Clone("sumRms_cosine_3000_10000")
+
             h_xtrl_energy_int = h_xtrl_energy_int_tmp.Clone("h_xtrl_energy_int")
             h_xtrl = h_xtrl_tmp.Clone("h_xtrl")
             e_discrimination_last = e_discrimination_last_tmp.Clone("e_discrimination_last")
+            e_discrimination_last_20_100 = e_discrimination_last_20_100_tmp.Clone("e_discrimination_last_20_100")
+            e_discrimination_last_100_250 = e_discrimination_last_100_250_tmp.Clone("e_discrimination_last_100_250")
+            e_discrimination_last_250_500 = e_discrimination_last_250_500_tmp.Clone("e_discrimination_last_250_500")
+            e_discrimination_last_500_1000 = e_discrimination_last_500_1000_tmp.Clone("e_discrimination_last_500_1000")
+            e_discrimination_last_1000_3000 = e_discrimination_last_1000_3000_tmp.Clone("e_discrimination_last_1000_3000")
+            e_discrimination_last_3000_10000 = e_discrimination_last_3000_10000_tmp.Clone("e_discrimination_last_3000_10000")
+
             e_discrimination = e_discrimination_tmp.Clone("e_discrimination")
+            e_discrimination_20_100 = e_discrimination_20_100_tmp.Clone("e_discrimination_20_100")
+            e_discrimination_100_250 = e_discrimination_100_250_tmp.Clone("e_discrimination_100_250")
+            e_discrimination_250_500 = e_discrimination_250_500_tmp.Clone("e_discrimination_250_500")
+            e_discrimination_500_1000 = e_discrimination_500_1000_tmp.Clone("e_discrimination_500_1000")
+            e_discrimination_1000_3000 = e_discrimination_1000_3000_tmp.Clone("e_discrimination_1000_3000")
+            e_discrimination_3000_10000 = e_discrimination_3000_10000_tmp.Clone("e_discrimination_3000_10000")
+
             for idx in range(n_energy_bins):
                 histoName = "h_xtrl_bin_"
                 histoName += str(idx)
@@ -567,15 +663,15 @@ def compute_final_histos_mc(condor_dir_list, opts):
             h_BGO_fiducial_cut.Add(h_BGO_fiducial_cut_tmp)
             h_all_cut.Add(h_all_cut_tmp)
 
-            h_geo_factor_w.Add(h_geo_factor_tmp_w)
-            h_incoming_w.Add(h_incoming_tmp_w)
-            h_trigger_w.Add(h_trigger_tmp_w)
-            h_geometric_cut_w.Add(h_geometric_cut_tmp_w)
-            h_maxElayer_cut_w.Add(h_maxElayer_cut_tmp_w)
-            h_maxBarLayer_cut_w.Add(h_maxBarLayer_cut_tmp_w)
-            h_BGOTrackContainment_cut_w.Add(h_BGOTrackContainment_cut_tmp_w)
-            h_BGO_fiducial_cut_w.Add(h_BGO_fiducial_cut_tmp_w)
-            h_all_cut_w.Add(h_all_cut_tmp_w)
+            h_geo_factor_nw.Add(h_geo_factor_tmp_nw)
+            h_incoming_nw.Add(h_incoming_tmp_nw)
+            h_trigger_nw.Add(h_trigger_tmp_nw)
+            h_geometric_cut_nw.Add(h_geometric_cut_tmp_nw)
+            h_maxElayer_cut_nw.Add(h_maxElayer_cut_tmp_nw)
+            h_maxBarLayer_cut_nw.Add(h_maxBarLayer_cut_tmp_nw)
+            h_BGOTrackContainment_cut_nw.Add(h_BGOTrackContainment_cut_tmp_nw)
+            h_BGO_fiducial_cut_nw.Add(h_BGO_fiducial_cut_tmp_nw)
+            h_all_cut_nw.Add(h_all_cut_tmp_nw)
 
             h_geometric_maxElayer_cut.Add(h_geometric_maxElayer_cut_tmp)
             h_geometric_maxBarLayer_cut.Add(h_geometric_maxBarLayer_cut_tmp)
@@ -583,11 +679,11 @@ def compute_final_histos_mc(condor_dir_list, opts):
             h_geometric_BGO_fiducial_cut.Add(h_geometric_BGO_fiducial_cut_tmp)
             h_geometric_all_cut.Add(h_geometric_all_cut_tmp)
 
-            h_geometric_maxElayer_cut_w.Add(h_geometric_maxElayer_cut_tmp_w)
-            h_geometric_maxBarLayer_cut_w.Add(h_geometric_maxBarLayer_cut_tmp_w)
-            h_geometric_BGOTrackContainment_cut_w.Add(h_geometric_BGOTrackContainment_cut_tmp_w)
-            h_geometric_BGO_fiducial_cut_w.Add(h_geometric_BGO_fiducial_cut_tmp_w)
-            h_geometric_all_cut_w.Add(h_geometric_all_cut_tmp_w)
+            h_geometric_maxElayer_cut_nw.Add(h_geometric_maxElayer_cut_tmp_nw)
+            h_geometric_maxBarLayer_cut_nw.Add(h_geometric_maxBarLayer_cut_tmp_nw)
+            h_geometric_BGOTrackContainment_cut_nw.Add(h_geometric_BGOTrackContainment_cut_tmp_nw)
+            h_geometric_BGO_fiducial_cut_nw.Add(h_geometric_BGO_fiducial_cut_tmp_nw)
+            h_geometric_all_cut_nw.Add(h_geometric_all_cut_tmp_nw)
 
             h_BGOfiducial_nBarLayer13_cut.Add(h_BGOfiducial_nBarLayer13_cut_tmp)
             h_BGOfiducial_maxRms_cut.Add(h_BGOfiducial_maxRms_cut_tmp)
@@ -598,14 +694,14 @@ def compute_final_histos_mc(condor_dir_list, opts):
             h_BGOfiducial_xtrl_cut.Add(h_BGOfiducial_xtrl_cut_tmp)
             h_BGOfiducial_all_cut.Add(h_BGOfiducial_all_cut_tmp)
 
-            h_BGOfiducial_nBarLayer13_cut_w.Add(h_BGOfiducial_nBarLayer13_cut_tmp_w)
-            h_BGOfiducial_maxRms_cut_w.Add(h_BGOfiducial_maxRms_cut_tmp_w)
-            h_BGOfiducial_track_selection_cut_w.Add(h_BGOfiducial_track_selection_cut_tmp_w)
-            h_BGOfiducial_psd_stk_match_cut_w.Add(h_BGOfiducial_psd_stk_match_cut_tmp_w)
-            h_BGOfiducial_psd_charge_cut_w.Add(h_BGOfiducial_psd_charge_cut_tmp_w)
-            h_BGOfiducial_stk_charge_cut_w.Add(h_BGOfiducial_stk_charge_cut_tmp_w)
-            h_BGOfiducial_xtrl_cut_w.Add(h_BGOfiducial_xtrl_cut_tmp_w)
-            h_BGOfiducial_all_cut_w.Add(h_BGOfiducial_all_cut_tmp_w)
+            h_BGOfiducial_nBarLayer13_cut_nw.Add(h_BGOfiducial_nBarLayer13_cut_tmp_nw)
+            h_BGOfiducial_maxRms_cut_nw.Add(h_BGOfiducial_maxRms_cut_tmp_nw)
+            h_BGOfiducial_track_selection_cut_nw.Add(h_BGOfiducial_track_selection_cut_tmp_nw)
+            h_BGOfiducial_psd_stk_match_cut_nw.Add(h_BGOfiducial_psd_stk_match_cut_tmp_nw)
+            h_BGOfiducial_psd_charge_cut_nw.Add(h_BGOfiducial_psd_charge_cut_tmp_nw)
+            h_BGOfiducial_stk_charge_cut_nw.Add(h_BGOfiducial_stk_charge_cut_tmp_nw)
+            h_BGOfiducial_xtrl_cut_nw.Add(h_BGOfiducial_xtrl_cut_tmp_nw)
+            h_BGOfiducial_all_cut_nw.Add(h_BGOfiducial_all_cut_tmp_nw)
 
             h_preGeo_BGOrec_topX_vs_realX.Add(h_preGeo_BGOrec_topX_vs_realX_tmp)
             h_preGeo_BGOrec_topY_vs_realY.Add(h_preGeo_BGOrec_topY_vs_realY_tmp)
@@ -647,10 +743,34 @@ def compute_final_histos_mc(condor_dir_list, opts):
             for idx in range(0,14):
                 h_layer_energy_ratio[idx].Add(h_layer_energy_ratio_tmp[idx])
 
+            for idx in range(n_energy_bins):
+                h_sumRms_cosine[idx].Add(h_sumRms_cosine_tmp[idx])
+            sumRms_cosine_20_100.Add(sumRms_cosine_20_100_tmp)
+            sumRms_cosine_100_250.Add(sumRms_cosine_100_250_tmp)
+            sumRms_cosine_250_500.Add(sumRms_cosine_250_500_tmp)
+            sumRms_cosine_500_1000.Add(sumRms_cosine_500_1000_tmp)
+            sumRms_cosine_1000_3000.Add(sumRms_cosine_1000_3000_tmp)
+            sumRms_cosine_3000_10000.Add(sumRms_cosine_3000_10000_tmp)
+
             h_xtrl_energy_int.Add(h_xtrl_energy_int_tmp)
             h_xtrl.Add(h_xtrl_tmp)
+
             e_discrimination_last.Add(e_discrimination_last_tmp)
+            e_discrimination_last_20_100.Add(e_discrimination_last_20_100_tmp)
+            e_discrimination_last_100_250.Add(e_discrimination_last_100_250_tmp)
+            e_discrimination_last_250_500.Add(e_discrimination_last_250_500_tmp)
+            e_discrimination_last_500_1000.Add(e_discrimination_last_500_1000_tmp)
+            e_discrimination_last_1000_3000.Add(e_discrimination_last_1000_3000_tmp)
+            e_discrimination_last_3000_10000.Add(e_discrimination_last_3000_10000_tmp)
+
             e_discrimination.Add(e_discrimination_tmp)
+            e_discrimination_20_100.Add(e_discrimination_20_100_tmp)
+            e_discrimination_100_250.Add(e_discrimination_100_250_tmp)
+            e_discrimination_250_500.Add(e_discrimination_250_500_tmp)
+            e_discrimination_500_1000.Add(e_discrimination_500_1000_tmp)
+            e_discrimination_1000_3000.Add(e_discrimination_1000_3000_tmp)
+            e_discrimination_3000_10000.Add(e_discrimination_3000_10000_tmp)
+
             for idx in range(n_energy_bins):
                 h_bin_xtrl[idx].Add(h_bin_xtrl_tmp[idx])
 
@@ -712,33 +832,33 @@ def compute_final_histos_mc(condor_dir_list, opts):
     h_BGOfiducial_xtrl_cut.Write()
     h_BGOfiducial_all_cut.Write()
     
-    fOut.mkdir("reweightedHistoDir")
-    fOut.cd("reweightedHistoDir")
+    fOut.mkdir("nw_histos")
+    fOut.cd("nw_histos")
 
-    h_geo_factor_w.Write()
-    h_incoming_w.Write()
-    h_trigger_w.Write()
-    h_geometric_cut_w.Write()
-    h_maxElayer_cut_w.Write()
-    h_maxBarLayer_cut_w.Write()
-    h_BGOTrackContainment_cut_w.Write()
-    h_BGO_fiducial_cut_w.Write()
-    h_all_cut_w.Write()
+    h_geo_factor_nw.Write()
+    h_incoming_nw.Write()
+    h_trigger_nw.Write()
+    h_geometric_cut_nw.Write()
+    h_maxElayer_cut_nw.Write()
+    h_maxBarLayer_cut_nw.Write()
+    h_BGOTrackContainment_cut_nw.Write()
+    h_BGO_fiducial_cut_nw.Write()
+    h_all_cut_nw.Write()
    
-    h_geometric_maxElayer_cut_w.Write()
-    h_geometric_maxBarLayer_cut_w.Write()
-    h_geometric_BGOTrackContainment_cut_w.Write()
-    h_geometric_BGO_fiducial_cut_w.Write()
-    h_geometric_all_cut_w.Write()
+    h_geometric_maxElayer_cut_nw.Write()
+    h_geometric_maxBarLayer_cut_nw.Write()
+    h_geometric_BGOTrackContainment_cut_nw.Write()
+    h_geometric_BGO_fiducial_cut_nw.Write()
+    h_geometric_all_cut_nw.Write()
 
-    h_BGOfiducial_nBarLayer13_cut_w.Write()
-    h_BGOfiducial_maxRms_cut_w.Write()
-    h_BGOfiducial_track_selection_cut_w.Write()
-    h_BGOfiducial_psd_stk_match_cut_w.Write()
-    h_BGOfiducial_psd_charge_cut_w.Write()
-    h_BGOfiducial_stk_charge_cut_w.Write()
-    h_BGOfiducial_xtrl_cut_w.Write()
-    h_BGOfiducial_all_cut_w.Write()
+    h_BGOfiducial_nBarLayer13_cut_nw.Write()
+    h_BGOfiducial_maxRms_cut_nw.Write()
+    h_BGOfiducial_track_selection_cut_nw.Write()
+    h_BGOfiducial_psd_stk_match_cut_nw.Write()
+    h_BGOfiducial_psd_charge_cut_nw.Write()
+    h_BGOfiducial_stk_charge_cut_nw.Write()
+    h_BGOfiducial_xtrl_cut_nw.Write()
+    h_BGOfiducial_all_cut_nw.Write()
 
     fOut.mkdir("Analysis_preGeoCut")
     fOut.cd("Analysis_preGeoCut")
@@ -786,16 +906,40 @@ def compute_final_histos_mc(condor_dir_list, opts):
     h_energy_diff2D.Write()
     h_energy_unfold.Write()
     h_layer_max_energy_ratio.Write()
+    
     for idx in range(0,14):
         h_layer_energy_ratio[idx].Write()
     
+    for idx in range(n_energy_bins):
+        h_sumRms_cosine[idx].Write()
+    
+    sumRms_cosine_20_100.Write()
+    sumRms_cosine_100_250.Write()
+    sumRms_cosine_250_500.Write()
+    sumRms_cosine_500_1000.Write()
+    sumRms_cosine_1000_3000.Write()
+    sumRms_cosine_3000_10000.Write()
+
     fOut.mkdir("xtrl")
     fOut.cd("xtrl")
 
     h_xtrl_energy_int.Write()
     h_xtrl.Write()   
     e_discrimination_last.Write()
+    e_discrimination_last_20_100.Write()
+    e_discrimination_last_100_250.Write()
+    e_discrimination_last_250_500.Write()
+    e_discrimination_last_500_1000.Write()
+    e_discrimination_last_1000_3000.Write()
+    e_discrimination_last_3000_10000.Write()
     e_discrimination.Write()
+    e_discrimination_20_100.Write()
+    e_discrimination_100_250.Write()
+    e_discrimination_250_500.Write()
+    e_discrimination_500_1000.Write()
+    e_discrimination_1000_3000.Write()
+    e_discrimination_3000_10000.Write()
+
     for idx in range(n_energy_bins):
         h_bin_xtrl[idx].Write()
 
@@ -885,11 +1029,32 @@ def compute_final_histos_data(condor_dir_list, opts):
     # Bottom Maps
     h_geo_BGOreco_bottomMap = TH2D()
 
+    # sumRms - cosine correlation
+    h_sumRms_cosine = []
+    sumRms_cosine_20_100 = TH2D()
+    sumRms_cosine_100_250 = TH2D()
+    sumRms_cosine_250_500 = TH2D()
+    sumRms_cosine_500_1000 = TH2D()
+    sumRms_cosine_1000_3000 = TH2D()
+    sumRms_cosine_3000_10000 = TH2D()
+
     # XTRL histos
     h_xtrl_energy_int = TH1D()
     h_xtrl = TH2D()
     e_discrimination_last = TH2D()
+    e_discrimination_last_20_100 = TH2D()
+    e_discrimination_last_100_250 = TH2D()
+    e_discrimination_last_250_500 = TH2D()
+    e_discrimination_last_500_1000 = TH2D()
+    e_discrimination_last_1000_3000 = TH2D()
+    e_discrimination_last_3000_10000 = TH2D()
     e_discrimination = TH2D()
+    e_discrimination_20_100 = TH2D()
+    e_discrimination_100_250 = TH2D()
+    e_discrimination_250_500 = TH2D()
+    e_discrimination_500_1000 = TH2D()
+    e_discrimination_1000_3000 = TH2D()
+    e_discrimination_3000_10000 = TH2D()
     h_bin_xtrl = []
 
     # PSD charge histos
@@ -954,6 +1119,7 @@ def compute_final_histos_data(condor_dir_list, opts):
         # Init bin_xtrl
         for idx in range(n_energy_bins):
             h_bin_xtrl.append(TH1D())
+            h_sumRms_cosine.append(TH2D())
 
         h_geometric_maxElayer_cut_tmp = rFile.Get("h_geometric_maxElayer_cut")
         h_geometric_maxBarLayer_cut_tmp = rFile.Get("h_geometric_maxBarLayer_cut")
@@ -985,11 +1151,37 @@ def compute_final_histos_data(condor_dir_list, opts):
             histoName += str(idx)
             h_layer_energy_ratio_tmp.append(rFile.Get(histoName))
 
+        h_sumRms_cosine_tmp = []
+        for idx in range(n_energy_bins):
+            histoName = "BGO_Energy/sumRms_cosine_"
+            histoName += str(idx)
+            h_sumRms_cosine_tmp.append(rFile.Get(histoName))
+        
+        sumRms_cosine_20_100_tmp = rFile.Get("BGO_Energy/sumRms_cosine_20_100")
+        sumRms_cosine_100_250_tmp = rFile.Get("BGO_Energy/sumRms_cosine_100_250")
+        sumRms_cosine_250_500_tmp = rFile.Get("BGO_Energy/sumRms_cosine_250_500")
+        sumRms_cosine_500_1000_tmp = rFile.Get("BGO_Energy/sumRms_cosine_500_1000")
+        sumRms_cosine_1000_3000_tmp = rFile.Get("BGO_Energy/sumRms_cosine_1000_3000")
+        sumRms_cosine_3000_10000_tmp = rFile.Get("BGO_Energy/sumRms_cosine_3000_10000")
+
         h_xtrl_energy_int_tmp = rFile.Get("xtrl/h_xtrl_energy_int")
         h_xtrl_tmp = rFile.Get("xtrl/h_xtrl")
         e_discrimination_last_tmp = rFile.Get("xtrl/e_discrimination_last")
+        e_discrimination_last_20_100_tmp = rFile.Get("xtrl/e_discrimination_last_20_100")
+        e_discrimination_last_100_250_tmp = rFile.Get("xtrl/e_discrimination_last_100_250")
+        e_discrimination_last_250_500_tmp = rFile.Get("xtrl/e_discrimination_last_250_500")
+        e_discrimination_last_500_1000_tmp = rFile.Get("xtrl/e_discrimination_last_500_1000")
+        e_discrimination_last_1000_3000_tmp = rFile.Get("xtrl/e_discrimination_last_1000_3000")
+        e_discrimination_last_3000_10000_tmp = rFile.Get("xtrl/e_discrimination_last_3000_10000")
+
         e_discrimination_tmp = rFile.Get("xtrl/e_discrimination")
-        
+        e_discrimination_20_100_tmp = rFile.Get("xtrl/e_discrimination_20_100")
+        e_discrimination_100_250_tmp = rFile.Get("xtrl/e_discrimination_100_250")
+        e_discrimination_250_500_tmp = rFile.Get("xtrl/e_discrimination_250_500")
+        e_discrimination_500_1000_tmp = rFile.Get("xtrl/e_discrimination_500_1000")
+        e_discrimination_1000_3000_tmp = rFile.Get("xtrl/e_discrimination_1000_3000")
+        e_discrimination_3000_10000_tmp = rFile.Get("xtrl/e_discrimination_3000_10000")
+
         h_bin_xtrl_tmp = []
         for idx in range(n_energy_bins):
             histoName = "xtrl/h_xtrl_bin_"
@@ -1055,10 +1247,33 @@ def compute_final_histos_data(condor_dir_list, opts):
         for idx in range(0,14):
             h_layer_energy_ratio_tmp[idx].SetDirectory(0)
 
+        for idx in range(n_energy_bins):
+            h_sumRms_cosine_tmp[idx].SetDirectory(0)
+        sumRms_cosine_20_100_tmp.SetDirectory(0)
+        sumRms_cosine_100_250_tmp.SetDirectory(0)
+        sumRms_cosine_250_500_tmp.SetDirectory(0)
+        sumRms_cosine_500_1000_tmp.SetDirectory(0)
+        sumRms_cosine_1000_3000_tmp.SetDirectory(0)
+        sumRms_cosine_3000_10000_tmp.SetDirectory(0)
+
         h_xtrl_energy_int_tmp.SetDirectory(0)
         h_xtrl_tmp.SetDirectory(0)
         e_discrimination_last_tmp.SetDirectory(0)
+        e_discrimination_last_20_100_tmp.SetDirectory(0)
+        e_discrimination_last_100_250_tmp.SetDirectory(0)
+        e_discrimination_last_250_500_tmp.SetDirectory(0)
+        e_discrimination_last_500_1000_tmp.SetDirectory(0)
+        e_discrimination_last_1000_3000_tmp.SetDirectory(0)
+        e_discrimination_last_3000_10000_tmp.SetDirectory(0)
+
         e_discrimination_tmp.SetDirectory(0)
+        e_discrimination_20_100_tmp.SetDirectory(0)
+        e_discrimination_100_250_tmp.SetDirectory(0)
+        e_discrimination_250_500_tmp.SetDirectory(0)
+        e_discrimination_500_1000_tmp.SetDirectory(0)
+        e_discrimination_1000_3000_tmp.SetDirectory(0)
+        e_discrimination_3000_10000_tmp.SetDirectory(0)
+
         for idx in range(n_energy_bins):
             h_bin_xtrl_tmp[idx].SetDirectory(0)
 
@@ -1128,10 +1343,35 @@ def compute_final_histos_data(condor_dir_list, opts):
                 h_ratio_name += str(idx)
                 h_layer_energy_ratio[idx] = h_layer_energy_ratio_tmp[idx].Clone(h_ratio_name)
 
+            for idx in range(n_energy_bins):
+                histoName = "sumRms_cosine_"
+                histoName += str(idx)
+                h_sumRms_cosine[idx] = h_sumRms_cosine_tmp.Clone(histoName)
+            sumRms_cosine_20_100 = sumRms_cosine_20_100_tmp.Clone("sumRms_cosine_20_100")
+            sumRms_cosine_100_250 = sumRms_cosine_100_250_tmp.Clone("sumRms_cosine_100_250")
+            sumRms_cosine_250_500 = sumRms_cosine_250_500_tmp.Clone("sumRms_cosine_250_500")
+            sumRms_cosine_500_1000 = sumRms_cosine_500_1000_tmp.Clone("sumRms_cosine_500_1000")
+            sumRms_cosine_1000_3000 = sumRms_cosine_1000_3000_tmp.Clone("sumRms_cosine_1000_3000")
+            sumRms_cosine_3000_10000 = sumRms_cosine_3000_10000_tmp.Clone("sumRms_cosine_3000_10000")
+
             h_xtrl_energy_int = h_xtrl_energy_int_tmp.Clone("h_xtrl_energy_int")
             h_xtrl = h_xtrl_tmp.Clone("h_xtrl")
             e_discrimination_last = e_discrimination_last_tmp.Clone("e_discrimination_last")
+            e_discrimination_last_20_100 = e_discrimination_last_20_100_tmp.Clone("e_discrimination_last_20_100")
+            e_discrimination_last_100_250 = e_discrimination_last_100_250_tmp.Clone("e_discrimination_last_100_250")
+            e_discrimination_last_250_500 = e_discrimination_last_250_500_tmp.Clone("e_discrimination_last_250_500")
+            e_discrimination_last_500_1000 = e_discrimination_last_500_1000_tmp.Clone("e_discrimination_last_500_1000")
+            e_discrimination_last_1000_3000 = e_discrimination_last_1000_3000_tmp.Clone("e_discrimination_last_1000_3000")
+            e_discrimination_last_3000_10000 = e_discrimination_last_3000_10000_tmp.Clone("e_discrimination_last_3000_10000")
+
             e_discrimination = e_discrimination_tmp.Clone("e_discrimination")
+            e_discrimination_20_100 = e_discrimination_20_100_tmp.Clone("e_discrimination_20_100")
+            e_discrimination_100_250 = e_discrimination_100_250_tmp.Clone("e_discrimination_100_250")
+            e_discrimination_250_500 = e_discrimination_250_500_tmp.Clone("e_discrimination_250_500")
+            e_discrimination_500_1000 = e_discrimination_500_1000_tmp.Clone("e_discrimination_500_1000")
+            e_discrimination_1000_3000 = e_discrimination_1000_3000_tmp.Clone("e_discrimination_1000_3000")
+            e_discrimination_3000_10000 = e_discrimination_3000_10000_tmp.Clone("e_discrimination_3000_10000")
+
             for idx in range(n_energy_bins):
                 histoName = "h_xtrl_bin_"
                 histoName += str(idx)
@@ -1198,10 +1438,33 @@ def compute_final_histos_data(condor_dir_list, opts):
             for idx in range(0,14):
                 h_layer_energy_ratio[idx].Add(h_layer_energy_ratio_tmp[idx])
 
+            for idx in range(n_energy_bins):
+                h_sumRms_cosine[idx].Add(h_sumRms_cosine_tmp[idx])
+            sumRms_cosine_20_100.Add(sumRms_cosine_20_100_tmp)
+            sumRms_cosine_100_250.Add(sumRms_cosine_100_250_tmp)
+            sumRms_cosine_250_500.Add(sumRms_cosine_250_500_tmp)
+            sumRms_cosine_500_1000.Add(sumRms_cosine_500_1000_tmp)
+            sumRms_cosine_1000_3000.Add(sumRms_cosine_1000_3000_tmp)
+            sumRms_cosine_3000_10000.Add(sumRms_cosine_3000_10000_tmp)
+
             h_xtrl_energy_int.Add(h_xtrl_energy_int_tmp)
             h_xtrl.Add(h_xtrl_tmp)
             e_discrimination_last.Add(e_discrimination_last_tmp)
+            e_discrimination_last_20_100.Add(e_discrimination_last_20_100_tmp)
+            e_discrimination_last_100_250.Add(e_discrimination_last_100_250_tmp)
+            e_discrimination_last_250_500.Add(e_discrimination_last_250_500_tmp)
+            e_discrimination_last_500_1000.Add(e_discrimination_last_500_1000_tmp)
+            e_discrimination_last_1000_3000.Add(e_discrimination_last_1000_3000_tmp)
+            e_discrimination_last_3000_10000.Add(e_discrimination_last_3000_10000_tmp)
+
             e_discrimination.Add(e_discrimination_tmp)
+            e_discrimination_20_100.Add(e_discrimination_20_100_tmp)
+            e_discrimination_100_250.Add(e_discrimination_100_250_tmp)
+            e_discrimination_250_500.Add(e_discrimination_250_500_tmp)
+            e_discrimination_500_1000.Add(e_discrimination_500_1000_tmp)
+            e_discrimination_1000_3000.Add(e_discrimination_1000_3000_tmp)
+            e_discrimination_3000_10000.Add(e_discrimination_3000_10000_tmp)
+
             for idx in range(n_energy_bins):
                 h_bin_xtrl[idx].Add(h_bin_xtrl_tmp[idx])
     
@@ -1285,9 +1548,32 @@ def compute_final_histos_data(condor_dir_list, opts):
     h_xtrl_energy_int.Write()
     h_xtrl.Write()   
     e_discrimination_last.Write()
+    e_discrimination_last_20_100.Write()
+    e_discrimination_last_100_250.Write()
+    e_discrimination_last_250_500.Write()
+    e_discrimination_last_500_1000.Write()
+    e_discrimination_last_1000_3000.Write()
+    e_discrimination_last_3000_10000.Write()
     e_discrimination.Write()
+    e_discrimination_20_100.Write()
+    e_discrimination_100_250.Write()
+    e_discrimination_250_500.Write()
+    e_discrimination_500_1000.Write()
+    e_discrimination_1000_3000.Write()
+    e_discrimination_3000_10000.Write()
+
     for idx in range(n_energy_bins):
         h_bin_xtrl[idx].Write()
+
+    for idx in range(n_energy_bins):
+        h_sumRms_cosine[idx].Write()
+    
+    sumRms_cosine_20_100.Write()
+    sumRms_cosine_100_250.Write()
+    sumRms_cosine_250_500.Write()
+    sumRms_cosine_500_1000.Write()
+    sumRms_cosine_1000_3000.Write()
+    sumRms_cosine_3000_10000.Write()
 
     fOut.mkdir("PSDcharge")
     fOut.cd("PSDcharge")
