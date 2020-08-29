@@ -32,6 +32,7 @@ void buildFlux(
 			verbose,
 			wd);
 
+#if 0	
 	std::unique_ptr<TH1D> h_electron_data_all_cut = std::make_unique<TH1D>(data_selection[0]);
 	std::unique_ptr<TH1D> h_electron_data_over_xtrl_cut = std::make_unique<TH1D>(data_selection[1]);
 
@@ -133,4 +134,5 @@ void buildFlux(
 	all_electron_flux_E3->Write();
 	gr_all_electron_flux.Write();
 	gr_all_electron_flux_E3.Write();
+#endif
 }
