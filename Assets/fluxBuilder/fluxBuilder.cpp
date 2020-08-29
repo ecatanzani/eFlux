@@ -72,6 +72,9 @@ void fluxBuilder(
     TH1D* dNdE = static_cast<TH1D*>(h_electron_data_all_cut->Clone("dNdE"));
     dNdE->Add(backgroung_protons, -1);
 
+    TH1D* raw_flux = static_cast<TH1D*>(h_electron_data_all_cut->Clone("raw_flux"));
+
+    TH1D* subtraction = static_cast<TH1D*>(dNdE->Clone("subtraction"));
     // Rescale by energy bin width
     for (int bIdx=1; bIdx <= dNdE->GetNbinsX(); ++bIdx)
     {
@@ -82,7 +85,9 @@ void fluxBuilder(
     // Build flux
     TH1D* all_electron_flux = static_cast<TH1D*>(dNdE->Clone("all_electron_flux"));
     all_electron_flux->Divide(electron_acceptance);
+    raw_flux->Divide(electron_acceptance);
     all_electron_flux->Scale(1/livetime);
+    raw_flux->Scale(1/livetime);
     
     // Build energy binning
     auto logEBins = createLogBinning(emin, emax, all_electron_flux->GetNbinsX());
@@ -96,33 +101,54 @@ void fluxBuilder(
     std::vector<double> energy_errors(all_electron_flux->GetNbinsX(), 0);
     std::vector<double> all_electron_flux_values (all_electron_flux->GetNbinsX(), 0);
     std::vector<double> all_electron_flux_errors (all_electron_flux->GetNbinsX(), 0);
+    std::vector<double> all_electron_raw_flux_values (all_electron_flux->GetNbinsX(), 0);
+    std::vector<double> all_electron_raw_flux_errors (all_electron_flux->GetNbinsX(), 0);
     std::vector<double> all_electron_fluxE3_values (all_electron_flux->GetNbinsX(), 0);
     std::vector<double> all_electron_fluxE3_errors (all_electron_flux->GetNbinsX(), 0);
+	std::vector<double> all_electron_raw_fluxE3_values (all_electron_flux->GetNbinsX(), 0);
+    std::vector<double> all_electron_raw_fluxE3_errors (all_electron_flux->GetNbinsX(), 0);
+
 
     for (int bIdx=1; bIdx<=all_electron_flux->GetNbinsX(); ++bIdx)
     {
         all_electron_flux_values[bIdx-1] = all_electron_flux->GetBinContent(bIdx);
         all_electron_flux_errors[bIdx-1] = all_electron_flux->GetBinError(bIdx);
+    	//std::cout << "\nBin " << bIdx << "\t BinContent: " << all_electron_flux->GetBinContent(bIdx);
+    	all_electron_raw_flux_values[bIdx-1] = raw_flux->GetBinContent(bIdx);
+        all_electron_raw_flux_errors[bIdx-1] = raw_flux->GetBinError(bIdx);
     }
 
     // Build E^3 flux
     TH1D* all_electron_flux_E3 = static_cast<TH1D*>(all_electron_flux->Clone("all_electron_flux_E3"));
+    TH1D* raw_flux_E3 = static_cast<TH1D*>(raw_flux->Clone("all_electron_flux_E3"));
+
     for (int bIdx=1; bIdx<=all_electron_flux_E3->GetNbinsX(); ++bIdx)
     {
         all_electron_flux_E3->SetBinContent(bIdx, all_electron_flux_E3->GetBinContent(bIdx) * pow(all_electron_flux_E3->GetBinCenter(bIdx), 3 )); 
         all_electron_flux_E3->SetBinError(bIdx, all_electron_flux_E3->GetBinError(bIdx) * pow(all_electron_flux_E3->GetBinCenter(bIdx), 3 ));
-        all_electron_fluxE3_values[bIdx-1] = all_electron_flux_E3->GetBinContent(bIdx);
+        raw_flux_E3->SetBinContent(bIdx, raw_flux_E3->GetBinContent(bIdx) * pow(raw_flux_E3->GetBinCenter(bIdx), 3 ));
+        raw_flux_E3->SetBinError(bIdx, raw_flux_E3->GetBinError(bIdx) * pow(raw_flux_E3->GetBinCenter(bIdx), 3 ));
+
+	all_electron_fluxE3_values[bIdx-1] = all_electron_flux_E3->GetBinContent(bIdx);
         all_electron_fluxE3_errors[bIdx-1] = all_electron_flux_E3->GetBinError(bIdx);
+    	all_electron_raw_fluxE3_values[bIdx-1] = raw_flux_E3->GetBinContent(bIdx);
+        all_electron_raw_fluxE3_errors[bIdx-1] = raw_flux_E3->GetBinError(bIdx);
     }
 
     // Build flux TGraphErrors
     TGraphErrors gr_all_electron_flux(energyValues.size(), &(energyValues[0]), &(all_electron_flux_values[0]), &(energy_errors[0]), &(all_electron_flux_errors[0]));
     TGraphErrors gr_all_electron_flux_E3(energyValues.size(), &(energyValues[0]), &(all_electron_fluxE3_values[0]), &(energy_errors[0]), &(all_electron_fluxE3_errors[0]));
 
+	TGraphErrors gr_raw_all_electron_flux(energyValues.size(), &(energyValues[0]), &(all_electron_raw_flux_values[0]), &(energy_errors[0]), &(all_electron_raw_flux_errors[0]));
+    TGraphErrors gr_raw_all_electron_flux_E3(energyValues.size(), &(energyValues[0]), &(all_electron_raw_fluxE3_values[0]), &(energy_errors[0]), &(all_electron_raw_fluxE3_errors[0]));
+
     gr_all_electron_flux.SetName("gr_all_electron_flux");
     gr_all_electron_flux_E3.SetName("gr_all_electron_flux_E3");
     gr_all_electron_flux.SetTitle("All Electron Flux");
     gr_all_electron_flux_E3.SetTitle("All Electron Flux");
+
+    gr_raw_all_electron_flux.SetName("gr_raw_all_electron_flux");
+    gr_raw_all_electron_flux_E3.SetName("gr_raw_all_electron_flux_E3");
 
     TFile* all_electron_flux_file = TFile::Open("all_electron_flux.root", "RECREATE");
     if (all_electron_flux_file->IsZombie())
@@ -141,7 +167,9 @@ void fluxBuilder(
     all_electron_flux_E3->Write();
     gr_all_electron_flux.Write();
     gr_all_electron_flux_E3.Write();
-
+	subtraction->Write();
+	gr_raw_all_electron_flux.Write();
+	gr_raw_all_electron_flux_E3.Write();
     all_electron_flux_file->Close();
 }
 
