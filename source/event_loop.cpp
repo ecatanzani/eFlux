@@ -984,20 +984,20 @@ std::vector<TH1D> evLoop(
 	h_xtrl_energy_int.Write();
 	h_xtrl.Write();
 	e_discrimination.Write();
-	e_discrimination_20_100.Sumw2();
-	e_discrimination_100_250.Sumw2();
-	e_discrimination_250_500.Sumw2();
-	e_discrimination_500_1000.Sumw2();
-	e_discrimination_1000_3000.Sumw2();
-	e_discrimination_3000_10000.Sumw2();
+	e_discrimination_20_100.Write();
+	e_discrimination_100_250.Write();
+	e_discrimination_250_500.Write();
+	e_discrimination_500_1000.Write();
+	e_discrimination_1000_3000.Write();
+	e_discrimination_3000_10000.Write();
 
 	e_discrimination_last.Write();
-	e_discrimination_last_20_100.Sumw2();
-	e_discrimination_last_100_250.Sumw2();
-	e_discrimination_last_250_500.Sumw2();
-	e_discrimination_last_500_1000.Sumw2();
-	e_discrimination_last_1000_3000.Sumw2();
-	e_discrimination_last_3000_10000.Sumw2();
+	e_discrimination_last_20_100.Write();
+	e_discrimination_last_100_250.Write();
+	e_discrimination_last_250_500.Write();
+	e_discrimination_last_500_1000.Write();
+	e_discrimination_last_1000_3000.Write();
+	e_discrimination_last_3000_10000.Write();
 
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->Write();
