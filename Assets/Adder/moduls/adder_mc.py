@@ -991,6 +991,7 @@ class mc_histos():
         self.h_geometric_BGO_fiducial_cut.Write()
         self.h_geometric_all_cut.Write()
 
+        self.h_BGOfiducial_nBarLayer13_cut = Write()
         self.h_BGOfiducial_maxRms_cut.Write()
         self.h_BGOfiducial_track_selection_cut.Write()
         self.h_BGOfiducial_psd_stk_match_cut.Write()
