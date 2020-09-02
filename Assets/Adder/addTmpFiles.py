@@ -39,7 +39,8 @@ def main(args=None):
     else:
         moduls_path = "moduls"
     sys.path.append(moduls_path)
-    from adder import compute_final_histos_mc, compute_final_histos_data
+    from adder_mc import compute_final_histos_mc
+    from adder_data import compute_final_histos_data
     from scanDirs import getListOfFiles
     from submitJobs import resubmit_condor_jobs, clean_condor_dir
     from submitJob import submit_add_job
