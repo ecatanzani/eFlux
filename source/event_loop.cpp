@@ -245,7 +245,7 @@ std::vector<TH1D> evLoop(
 
 	// Proton background histos
 	TH1D h_background_under_xtrl_cut("h_background_under_xtrl_cut", "Proton background - XTRL < cut; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
-	TH1D h_background_over_xtrl_cut("h_background_over_xtrl_cut", "Proton background - XTRL > cut; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
+	TH1D h_background_over_xtrl_cut("h_background_over_xtrl_cut", "Proton background - XTRL > 20 and XTRL < 100 cut; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 
 	// Sumw2 - First-Cut histos
 	h_trigger.Sumw2();
@@ -618,7 +618,7 @@ std::vector<TH1D> evLoop(
 				fill_XTRL_histo(
 					bgoVault.GetSumRMS(),
 					bgoVault.GetLastFFracLayer(),
-					bgoTotalE,
+					bgorec->GetElectronEcor(),
 					bin_xtrl,
 					h_xtrl_energy_int,
 					h_xtrl);
@@ -642,13 +642,14 @@ std::vector<TH1D> evLoop(
 					e_discrimination_last_500_1000,
 					e_discrimination_last_1000_3000,
 					e_discrimination_last_3000_10000,
-					bgoTotalE);
-
+					//bgoTotalE * _GeV);
+					bgorec->GetElectronEcor() * _GeV);
+					
 				// Compute proton background
 				compute_proton_background(
 					bgoVault.GetSumRMS(),
 					bgoVault.GetLastFFracLayer(),
-					bgoTotalE,
+					bgorec->GetElectronEcor(),
 					flux_cuts,
 					h_background_under_xtrl_cut,
 					h_background_over_xtrl_cut);
