@@ -262,8 +262,8 @@ std::vector<TH1D> evLoop(
 	TH1D h_background_under_xtrl_cut("h_background_under_xtrl_cut", "Proton background - XTRL < cut; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 	TH1D h_background_over_xtrl_cut("h_background_over_xtrl_cut", "Proton background - XTRL > 20 and XTRL < 100 cut; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 
-	TH1D h_second("h_second", "second", 1000, evt_time.start_second, evt_time.end_second);
-	TH1D h_msecond("h_msecond", "millisecond", 1000, evt_time.start_msecond, evt_time.end_msecond);
+	TH1D h_second("h_second", "second", 100, evt_time.start_second, evt_time.end_second);
+	TH1D h_msecond("h_msecond", "millisecond", 100, evt_time.start_msecond, evt_time.end_msecond);
 
 	// Sumw2 - First-Cut histos
 	h_trigger.Sumw2();
