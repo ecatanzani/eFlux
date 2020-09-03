@@ -21,7 +21,7 @@ void eCore(
             wd);
     else
     {
-
+        /*
         // Extract electron acceptance
         if (verbose)
             std::cout << "\n\nReading electron acceptance geometry file... [" << accInputPath << "]";
@@ -48,6 +48,7 @@ void eCore(
         TH1D* proton_background_fraction = static_cast<TH1D*>(proton_mc_file->Get("mc_ancillary/proton_background_ratio"));
         proton_background_fraction->SetDirectory(0);
         proton_mc_file->Close();
+        */
 
         // Create output TFile
         const char* outFilePath = static_cast<const char*>(uniqueOutFile(outputPath, opt).c_str());
@@ -59,6 +60,7 @@ void eCore(
             std::cerr << "\n\nError writing output TFile: " << outFilePath << std::endl;
             exit(123);
         }
+        /*
 
         buildFlux(
             inputPath,
@@ -68,6 +70,15 @@ void eCore(
             accInputPath,
             electron_acceptance,
             proton_background_fraction,
+            wd);
+        */
+
+        buildFlux(
+            inputPath,
+            lvTime,
+            outFile,
+            verbose,
+            accInputPath,
             wd);
 
         // Close output file ...

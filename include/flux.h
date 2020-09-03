@@ -14,6 +14,7 @@
 #include "data_cuts.h"
 #include "anyoption.h"
 
+/*
 extern void buildFlux(
     const std::string inputPath,
     const unsigned int lvTime,
@@ -22,6 +23,15 @@ extern void buildFlux(
     const std::string accInputPath,
     const TH1D* electron_acceptance,
     const TH1D* proton_background_fraction,
+    const std::string wd);
+*/
+
+extern void buildFlux(
+    const std::string inputPath,
+    const unsigned int lvTime,
+    TFile &outFile,
+    const bool verbose,
+    const std::string accInputPath,
     const std::string wd);
 
 extern void produceTuples(

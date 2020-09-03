@@ -7,6 +7,7 @@
 
 #include "TGraphErrors.h"
 
+/*
 void buildFlux(
 	const std::string inputPath,
 	const unsigned int lvTime,
@@ -15,6 +16,14 @@ void buildFlux(
 	const std::string accInputPath,
 	const TH1D *electron_acceptance,
 	const TH1D *proton_background_fraction,
+	const std::string wd)
+*/
+void buildFlux(
+	const std::string inputPath,
+	const unsigned int lvTime,
+	TFile &outFile,
+	const bool verbose,
+	const std::string accInputPath,
 	const std::string wd)
 {
 	/*
