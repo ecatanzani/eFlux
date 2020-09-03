@@ -53,15 +53,15 @@ void generateFinalGraph(
 	auto h_BGO_fiducial_cut = static_cast<TH1D *>(inHisto.Get("h_BGO_fiducial_cut"));
 	auto h_all_cut = static_cast<TH1D *>(inHisto.Get("h_all_cut"));
 
-	auto h_geo_factor_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geo_factor_nw"));
-	auto h_incoming_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_incoming_nw"));
-	auto h_trigger_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_trigger_nw"));
-	auto h_geometric_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geometric_cut_nw"));
-	auto h_maxElayer_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_maxElayer_cut_nw"));
-	auto h_maxBarLayer_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_maxBarLayer_cut_nw"));
-	auto h_BGOTrackContainment_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOTrackContainment_cut_nw"));
-	auto h_BGO_fiducial_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGO_fiducial_cut_nw"));
-	auto h_all_cut_w = static_cast<TH1D *>(inHisto.Get("nw_histos/h_all_cut_nw"));
+	auto h_geo_factor_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geo_factor_nw"));
+	auto h_incoming_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_incoming_nw"));
+	auto h_trigger_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_trigger_nw"));
+	auto h_geometric_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geometric_cut_nw"));
+	auto h_maxElayer_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_maxElayer_cut_nw"));
+	auto h_maxBarLayer_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_maxBarLayer_cut_nw"));
+	auto h_BGOTrackContainment_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOTrackContainment_cut_nw"));
+	auto h_BGO_fiducial_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGO_fiducial_cut_nw"));
+	auto h_all_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_all_cut_nw"));
 
 	auto h_geometric_maxElayer_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_maxElayer_cut"));
 	auto h_geometric_maxBarLayer_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_maxBarLayer_cut"));
@@ -69,11 +69,11 @@ void generateFinalGraph(
 	auto h_geometric_BGO_fiducial_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_BGO_fiducial_cut"));
 	auto h_geometric_all_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_all_cut"));
 
-	auto h_geometric_maxElayer_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_maxElayer_cut_nw"));
-	auto h_geometric_maxBarLayer_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_maxBarLayer_cut_nw"));
-	auto h_geometric_BGOTrackContainment_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_BGOTrackContainment_cut_nw"));
-	auto h_geometric_BGO_fiducial_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_BGO_fiducial_cut_nw"));
-	auto h_geometric_all_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_geometric_all_cut_nw"));
+	auto h_geometric_maxElayer_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geometric_maxElayer_cut_nw"));
+	auto h_geometric_maxBarLayer_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geometric_maxBarLayer_cut_nw"));
+	auto h_geometric_BGOTrackContainment_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geometric_BGOTrackContainment_cut_nw"));
+	auto h_geometric_BGO_fiducial_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geometric_BGO_fiducial_cut_nw"));
+	auto h_geometric_all_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_geometric_all_cut_nw"));
 
 	auto h_BGOfiducial_nBarLayer13_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_nBarLayer13_cut"));
 	auto h_BGOfiducial_maxRms_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_maxRms_cut"));
@@ -84,14 +84,14 @@ void generateFinalGraph(
 	auto h_BGOfiducial_xtrl_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_xtrl_cut"));
 	auto h_BGOfiducial_all_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_all_cut"));
 
-	auto h_BGOfiducial_nBarLayer13_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_nBarLayer13_cut_nw"));
-	auto h_BGOfiducial_maxRms_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_maxRms_cut_nw"));
-	auto h_BGOfiducial_track_selection_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_track_selection_cut_nw"));
-	auto h_BGOfiducial_psd_stk_match_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_psd_stk_match_cut_nw"));
-	auto h_BGOfiducial_psd_charge_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_psd_charge_cut_nw"));
-	auto h_BGOfiducial_stk_charge_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_stk_charge_cut_nw"));
-	auto h_BGOfiducial_xtrl_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_xtrl_cut_nw"));
-	auto h_BGOfiducial_all_cut_w = static_cast<TH1D *>(inHisto.Get("h_all_cut_nw/h_BGOfiducial_all_cut_nw"));
+	auto h_BGOfiducial_nBarLayer13_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOfiducial_nBarLayer13_cut_nw"));
+	auto h_BGOfiducial_maxRms_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOfiducial_maxRms_cut_nw"));
+	auto h_BGOfiducial_track_selection_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOfiducial_track_selection_cut_nw"));
+	auto h_BGOfiducial_psd_stk_match_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOfiducial_psd_stk_match_cut_nw"));
+	auto h_BGOfiducial_psd_charge_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOfiducial_psd_charge_cut_nw"));
+	auto h_BGOfiducial_stk_charge_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOfiducial_stk_charge_cut_nw"));
+	auto h_BGOfiducial_xtrl_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOfiducial_xtrl_cut_nw"));
+	auto h_BGOfiducial_all_cut_nw = static_cast<TH1D *>(inHisto.Get("nw_histos/h_BGOfiducial_all_cut_nw"));
 
 	auto h_preGeo_BGOrec_topX_vs_realX = static_cast<TH1D *>(inHisto.Get("Analysis_preGeoCut/h_preGeo_BGOrec_topX_vs_realX"));
 	auto h_preGeo_BGOrec_topY_vs_realY = static_cast<TH1D *>(inHisto.Get("Analysis_preGeoCut/h_preGeo_BGOrec_topY_vs_realY"));
@@ -158,20 +158,23 @@ void generateFinalGraph(
 	auto h_xtrl_energy_int = static_cast<TH1D *>(inHisto.Get("xtrl/h_xtrl_energy_int"));
 	auto h_xtrl = static_cast<TH2D *>(inHisto.Get("xtrl/h_xtrl"));
 	auto e_discrimination_last = static_cast<TH2D *>(inHisto.Get("xtrl/e_discrimination_last"));
+	/*
 	auto e_discrimination_last_20_100 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_20_100"));
 	auto e_discrimination_last_100_250 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_100_250"));
 	auto e_discrimination_last_250_500 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_250_500"));
 	auto e_discrimination_last_500_1000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_500_1000"));
 	auto e_discrimination_last_1000_3000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_1000_3000"));
 	auto e_discrimination_last_3000_10000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_3000_10000"));
+	*/
 	auto e_discrimination = static_cast<TH2D *>(inHisto.Get("xtrl/e_discrimination"));
+	/*
 	auto e_discrimination_20_100 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_20_100"));
 	auto e_discrimination_100_250 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_100_250"));
 	auto e_discrimination_250_500 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_250_500"));
 	auto e_discrimination_500_1000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_500_1000"));
 	auto e_discrimination_1000_3000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_1000_3000"));
 	auto e_discrimination_3000_10000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_3000_10000"));
-
+	*/
 	std::vector<TH1D*> bin_xtrl(logEBins.size() - 1);
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 	{
@@ -211,16 +214,16 @@ void generateFinalGraph(
 	h_BGOTrackContainment_cut->SetDirectory(0);
 	h_BGO_fiducial_cut->SetDirectory(0);
 	h_all_cut->SetDirectory(0);
-
-	h_geo_factor_w->SetDirectory(0);
-	h_incoming_w->SetDirectory(0);
-	h_trigger_w->SetDirectory(0);
-	h_geometric_cut_w->SetDirectory(0);
-	h_maxElayer_cut_w->SetDirectory(0);
-	h_maxBarLayer_cut_w->SetDirectory(0);
-	h_BGOTrackContainment_cut_w->SetDirectory(0);
-	h_BGO_fiducial_cut_w->SetDirectory(0);
-	h_all_cut_w->SetDirectory(0);
+	
+	h_geo_factor_nw->SetDirectory(0);
+	h_incoming_nw->SetDirectory(0);
+	h_trigger_nw->SetDirectory(0);
+	h_geometric_cut_nw->SetDirectory(0);
+	h_maxElayer_cut_nw->SetDirectory(0);
+	h_maxBarLayer_cut_nw->SetDirectory(0);
+	h_BGOTrackContainment_cut_nw->SetDirectory(0);
+	h_BGO_fiducial_cut_nw->SetDirectory(0);
+	h_all_cut_nw->SetDirectory(0);
 
 	h_geometric_maxElayer_cut->SetDirectory(0);
 	h_geometric_maxBarLayer_cut->SetDirectory(0);
@@ -228,11 +231,11 @@ void generateFinalGraph(
 	h_geometric_BGO_fiducial_cut->SetDirectory(0);
 	h_geometric_all_cut->SetDirectory(0);
 
-	h_geometric_maxElayer_cut_w->SetDirectory(0);
-	h_geometric_maxBarLayer_cut_w->SetDirectory(0);
-	h_geometric_BGOTrackContainment_cut_w->SetDirectory(0);
-	h_geometric_BGO_fiducial_cut_w->SetDirectory(0);
-	h_geometric_all_cut_w->SetDirectory(0);
+	h_geometric_maxElayer_cut_nw->SetDirectory(0);
+	h_geometric_maxBarLayer_cut_nw->SetDirectory(0);
+	h_geometric_BGOTrackContainment_cut_nw->SetDirectory(0);
+	h_geometric_BGO_fiducial_cut_nw->SetDirectory(0);
+	h_geometric_all_cut_nw->SetDirectory(0);
 
 	h_BGOfiducial_nBarLayer13_cut->SetDirectory(0);
 	h_BGOfiducial_maxRms_cut->SetDirectory(0);
@@ -243,14 +246,14 @@ void generateFinalGraph(
 	h_BGOfiducial_xtrl_cut->SetDirectory(0);
 	h_BGOfiducial_all_cut->SetDirectory(0);
 
-	h_BGOfiducial_nBarLayer13_cut_w->SetDirectory(0);
-	h_BGOfiducial_maxRms_cut_w->SetDirectory(0);
-	h_BGOfiducial_track_selection_cut_w->SetDirectory(0);
-	h_BGOfiducial_psd_stk_match_cut_w->SetDirectory(0);
-	h_BGOfiducial_psd_charge_cut_w->SetDirectory(0);
-	h_BGOfiducial_stk_charge_cut_w->SetDirectory(0);
-	h_BGOfiducial_xtrl_cut_w->SetDirectory(0);
-	h_BGOfiducial_all_cut_w->SetDirectory(0);
+	h_BGOfiducial_nBarLayer13_cut_nw->SetDirectory(0);
+	h_BGOfiducial_maxRms_cut_nw->SetDirectory(0);
+	h_BGOfiducial_track_selection_cut_nw->SetDirectory(0);
+	h_BGOfiducial_psd_stk_match_cut_nw->SetDirectory(0);
+	h_BGOfiducial_psd_charge_cut_nw->SetDirectory(0);
+	h_BGOfiducial_stk_charge_cut_nw->SetDirectory(0);
+	h_BGOfiducial_xtrl_cut_nw->SetDirectory(0);
+	h_BGOfiducial_all_cut_nw->SetDirectory(0);
 
 	h_preGeo_BGOrec_topX_vs_realX->SetDirectory(0);
 	h_preGeo_BGOrec_topY_vs_realY->SetDirectory(0);
@@ -301,27 +304,31 @@ void generateFinalGraph(
 	sumRms_cosine_500_1000->SetDirectory(0);
 	sumRms_cosine_1000_3000->SetDirectory(0);
 	sumRms_cosine_3000_10000->SetDirectory(0);
-
+	
 	h_xtrl_energy_int->SetDirectory(0);
 	h_xtrl->SetDirectory(0);
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->SetDirectory(0);
 
 	e_discrimination_last->SetDirectory(0);
+	/*
 	e_discrimination_last_20_100->SetDirectory(0);
 	e_discrimination_last_100_250->SetDirectory(0);
 	e_discrimination_last_250_500->SetDirectory(0);
 	e_discrimination_last_500_1000->SetDirectory(0);
 	e_discrimination_last_1000_3000->SetDirectory(0);
 	e_discrimination_last_3000_10000->SetDirectory(0);
+	*/
 	e_discrimination->SetDirectory(0);
+	/*
 	e_discrimination_20_100->SetDirectory(0);
 	e_discrimination_100_250->SetDirectory(0);
 	e_discrimination_250_500->SetDirectory(0);
 	e_discrimination_500_1000->SetDirectory(0);
 	e_discrimination_1000_3000->SetDirectory(0);
 	e_discrimination_3000_10000->SetDirectory(0);
-
+	*/
+	
 	h_psd_chargeX->SetDirectory(0);
 	h_psd_chargeY->SetDirectory(0);
 	h_psd_charge->SetDirectory(0);
@@ -550,34 +557,34 @@ void generateFinalGraph(
 	h_BGOfiducial_all_cut->Write();
 
 	// Writing reweighted histos
-	auto reweightedHistoDir = outFile.mkdir("reweightedHistoDir");
+	auto reweightedHistoDir = outFile.mkdir("nw_histos");
 	reweightedHistoDir->cd();
 
 	//Cut histos
-	h_geo_factor_w->Write();
-	h_incoming_w->Write();
-	h_trigger_w->Write();
-	h_geometric_cut_w->Write();
-	h_maxElayer_cut_w->Write();
-	h_maxBarLayer_cut_w->Write();
-	h_BGOTrackContainment_cut_w->Write();
-	h_BGO_fiducial_cut_w->Write();
-	h_all_cut_w->Write();
+	h_geo_factor_nw->Write();
+	h_incoming_nw->Write();
+	h_trigger_nw->Write();
+	h_geometric_cut_nw->Write();
+	h_maxElayer_cut_nw->Write();
+	h_maxBarLayer_cut_nw->Write();
+	h_BGOTrackContainment_cut_nw->Write();
+	h_BGO_fiducial_cut_nw->Write();
+	h_all_cut_nw->Write();
 	// Cuts && Geometric Cut
-	h_geometric_maxElayer_cut_w->Write();
-	h_geometric_maxBarLayer_cut_w->Write();
-	h_geometric_BGOTrackContainment_cut_w->Write();
-	h_geometric_BGO_fiducial_cut_w->Write();
-	h_geometric_all_cut_w->Write();
+	h_geometric_maxElayer_cut_nw->Write();
+	h_geometric_maxBarLayer_cut_nw->Write();
+	h_geometric_BGOTrackContainment_cut_nw->Write();
+	h_geometric_BGO_fiducial_cut_nw->Write();
+	h_geometric_all_cut_nw->Write();
 	// Cuts && BGO fiducial volume cut
-	h_BGOfiducial_nBarLayer13_cut_w->Write();
-	h_BGOfiducial_maxRms_cut_w->Write();
-	h_BGOfiducial_track_selection_cut_w->Write();
-	h_BGOfiducial_psd_stk_match_cut_w->Write();
-	h_BGOfiducial_psd_charge_cut_w->Write();
-	h_BGOfiducial_stk_charge_cut_w->Write();
-	h_BGOfiducial_xtrl_cut_w->Write();
-	h_BGOfiducial_all_cut_w->Write();
+	h_BGOfiducial_nBarLayer13_cut_nw->Write();
+	h_BGOfiducial_maxRms_cut_nw->Write();
+	h_BGOfiducial_track_selection_cut_nw->Write();
+	h_BGOfiducial_psd_stk_match_cut_nw->Write();
+	h_BGOfiducial_psd_charge_cut_nw->Write();
+	h_BGOfiducial_stk_charge_cut_nw->Write();
+	h_BGOfiducial_xtrl_cut_nw->Write();
+	h_BGOfiducial_all_cut_nw->Write();
 
 	// Create output acceptance_histo dir in the output TFile
 	auto acceptanceHistoDir = outFile.mkdir("Acceptance_histos");
@@ -628,7 +635,7 @@ void generateFinalGraph(
 	// Create trigger folder
 	auto trigger_dir = ratioDir->mkdir("Trigger");
 	trigger_dir->cd();
-
+	
 	// Define TEfficiency pointers
 	std::shared_ptr<TEfficiency> trigger_efficiency;
 	std::shared_ptr<TEfficiency> tr_eff_gometric_cut;
@@ -638,26 +645,26 @@ void generateFinalGraph(
 	std::shared_ptr<TEfficiency> tr_eff_BGO_fiducial_cut;
 	std::shared_ptr<TEfficiency> tr_eff_all_cut;
 
-	if (TEfficiency::CheckConsistency(*h_geometric_cut, *h_geo_factor))
-		trigger_efficiency = std::make_shared<TEfficiency>(*h_geometric_cut, *h_geo_factor);
+	if (TEfficiency::CheckConsistency(*h_geometric_cut_nw, *h_geo_factor_nw))
+		trigger_efficiency = std::make_shared<TEfficiency>(*h_geometric_cut_nw, *h_geo_factor_nw);
 
-	if (TEfficiency::CheckConsistency(*h_geometric_cut, *h_trigger))
-		tr_eff_gometric_cut = std::make_shared<TEfficiency>(*h_geometric_cut, *h_trigger);
+	if (TEfficiency::CheckConsistency(*h_geometric_cut_nw, *h_trigger_nw))
+		tr_eff_gometric_cut = std::make_shared<TEfficiency>(*h_geometric_cut_nw, *h_trigger_nw);
 
-	if (TEfficiency::CheckConsistency(*h_maxElayer_cut, *h_trigger))
-		tr_eff_maxElayer_cut = std::make_shared<TEfficiency>(*h_maxElayer_cut, *h_trigger);
+	if (TEfficiency::CheckConsistency(*h_maxElayer_cut_nw, *h_trigger_nw))
+		tr_eff_maxElayer_cut = std::make_shared<TEfficiency>(*h_maxElayer_cut_nw, *h_trigger_nw);
 
-	if (TEfficiency::CheckConsistency(*h_maxBarLayer_cut, *h_trigger))
-		tr_eff_maxBarLayer_cut = std::make_shared<TEfficiency>(*h_maxBarLayer_cut, *h_trigger);
+	if (TEfficiency::CheckConsistency(*h_maxBarLayer_cut_nw, *h_trigger_nw))
+		tr_eff_maxBarLayer_cut = std::make_shared<TEfficiency>(*h_maxBarLayer_cut_nw, *h_trigger_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGOTrackContainment_cut, *h_trigger))
-		tr_eff_BGOTrackContainment_cut = std::make_shared<TEfficiency>(*h_BGOTrackContainment_cut, *h_trigger);
+	if (TEfficiency::CheckConsistency(*h_BGOTrackContainment_cut_nw, *h_trigger_nw))
+		tr_eff_BGOTrackContainment_cut = std::make_shared<TEfficiency>(*h_BGOTrackContainment_cut_nw, *h_trigger_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGO_fiducial_cut, *h_trigger))
-		tr_eff_BGO_fiducial_cut = std::make_shared<TEfficiency>(*h_BGO_fiducial_cut, *h_trigger);
+	if (TEfficiency::CheckConsistency(*h_BGO_fiducial_cut_nw, *h_trigger_nw))
+		tr_eff_BGO_fiducial_cut = std::make_shared<TEfficiency>(*h_BGO_fiducial_cut_nw, *h_trigger_nw);
 
-	if (TEfficiency::CheckConsistency(*h_all_cut, *h_trigger))
-		tr_eff_all_cut = std::make_shared<TEfficiency>(*h_all_cut, *h_trigger);
+	if (TEfficiency::CheckConsistency(*h_all_cut_nw, *h_trigger_nw))
+		tr_eff_all_cut = std::make_shared<TEfficiency>(*h_all_cut_nw, *h_trigger_nw);
 
 	// Set uniform statistic option
 	trigger_efficiency->SetStatisticOption(TEfficiency::kBUniform);
@@ -695,7 +702,7 @@ void generateFinalGraph(
 	// Create geometric folder
 	auto geometric_dir = ratioDir->mkdir("Geometric");
 	geometric_dir->cd();
-
+	
 	// Define TEfficiency pointers
 	std::shared_ptr<TEfficiency> geo_eff_maxElayer_cut;
 	std::shared_ptr<TEfficiency> geo_eff_maxBarLayer_cut;
@@ -703,20 +710,20 @@ void generateFinalGraph(
 	std::shared_ptr<TEfficiency> geo_eff_BGO_fiducial;
 	std::shared_ptr<TEfficiency> geo_eff_all_cut;
 
-	if (TEfficiency::CheckConsistency(*h_geometric_maxElayer_cut, *h_geometric_cut))
-		geo_eff_maxElayer_cut = std::make_shared<TEfficiency>(*h_geometric_maxElayer_cut, *h_geometric_cut);
+	if (TEfficiency::CheckConsistency(*h_geometric_maxElayer_cut_nw, *h_geometric_cut_nw))
+		geo_eff_maxElayer_cut = std::make_shared<TEfficiency>(*h_geometric_maxElayer_cut_nw, *h_geometric_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_geometric_maxBarLayer_cut, *h_geometric_cut))
-		geo_eff_maxBarLayer_cut = std::make_shared<TEfficiency>(*h_geometric_maxBarLayer_cut, *h_geometric_cut);
+	if (TEfficiency::CheckConsistency(*h_geometric_maxBarLayer_cut_nw, *h_geometric_cut_nw))
+		geo_eff_maxBarLayer_cut = std::make_shared<TEfficiency>(*h_geometric_maxBarLayer_cut_nw, *h_geometric_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_geometric_BGOTrackContainment_cut, *h_geometric_cut))
-		geo_eff_BGOTrackContainment_cut = std::make_shared<TEfficiency>(*h_geometric_BGOTrackContainment_cut, *h_geometric_cut);
+	if (TEfficiency::CheckConsistency(*h_geometric_BGOTrackContainment_cut_nw, *h_geometric_cut_nw))
+		geo_eff_BGOTrackContainment_cut = std::make_shared<TEfficiency>(*h_geometric_BGOTrackContainment_cut_nw, *h_geometric_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_geometric_BGO_fiducial_cut, *h_geometric_cut))
-		geo_eff_BGO_fiducial = std::make_shared<TEfficiency>(*h_geometric_BGO_fiducial_cut, *h_geometric_cut);
+	if (TEfficiency::CheckConsistency(*h_geometric_BGO_fiducial_cut_nw, *h_geometric_cut_nw))
+		geo_eff_BGO_fiducial = std::make_shared<TEfficiency>(*h_geometric_BGO_fiducial_cut_nw, *h_geometric_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_geometric_all_cut, *h_geometric_cut))
-		geo_eff_all_cut = std::make_shared<TEfficiency>(*h_geometric_all_cut, *h_geometric_cut);
+	if (TEfficiency::CheckConsistency(*h_geometric_all_cut_nw, *h_geometric_cut_nw))
+		geo_eff_all_cut = std::make_shared<TEfficiency>(*h_geometric_all_cut_nw, *h_geometric_cut_nw);
 
 	// Set uniform statistic option
 	geo_eff_maxElayer_cut->SetStatisticOption(TEfficiency::kBUniform);
@@ -743,11 +750,11 @@ void generateFinalGraph(
 	geo_eff_BGOTrackContainment_cut->Write();
 	geo_eff_BGO_fiducial->Write();
 	geo_eff_all_cut->Write();
-
+	
 	// Create BGO_fiducial_volume folder
 	auto BGOfiducial_dir = ratioDir->mkdir("BGO_fiducial_volume");
 	BGOfiducial_dir->cd();
-
+	
 	// Define TEfficiency pointers
 	std::shared_ptr<TEfficiency> BGOfiducial_eff_nBarLayer13_cut;
 	std::shared_ptr<TEfficiency> BGOfiducial_eff_maxRms_cut;
@@ -766,53 +773,53 @@ void generateFinalGraph(
 	std::shared_ptr<TEfficiency> BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut;
 
 
-	if (TEfficiency::CheckConsistency(*h_BGOfiducial_nBarLayer13_cut, *h_BGO_fiducial_cut))
-		BGOfiducial_eff_nBarLayer13_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_nBarLayer13_cut, *h_BGO_fiducial_cut);
+	if (TEfficiency::CheckConsistency(*h_BGOfiducial_nBarLayer13_cut_nw, *h_BGO_fiducial_cut_nw))
+		BGOfiducial_eff_nBarLayer13_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_nBarLayer13_cut_nw, *h_BGO_fiducial_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGOfiducial_maxRms_cut, *h_BGO_fiducial_cut))
-		BGOfiducial_eff_l13_maxRms_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_maxRms_cut, *h_BGO_fiducial_cut);
+	if (TEfficiency::CheckConsistency(*h_BGOfiducial_maxRms_cut_nw, *h_BGO_fiducial_cut_nw))
+		BGOfiducial_eff_l13_maxRms_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_maxRms_cut_nw, *h_BGO_fiducial_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGOfiducial_track_selection_cut, *h_BGO_fiducial_cut))
-		BGOfiducial_eff_l13_rms_track_selection_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_track_selection_cut, *h_BGO_fiducial_cut);
+	if (TEfficiency::CheckConsistency(*h_BGOfiducial_track_selection_cut_nw, *h_BGO_fiducial_cut_nw))
+		BGOfiducial_eff_l13_rms_track_selection_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_track_selection_cut_nw, *h_BGO_fiducial_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGOfiducial_psd_stk_match_cut, *h_BGO_fiducial_cut))
-		BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_stk_match_cut, *h_BGO_fiducial_cut);
+	if (TEfficiency::CheckConsistency(*h_BGOfiducial_psd_stk_match_cut_nw, *h_BGO_fiducial_cut_nw))
+		BGOfiducial_eff_l13_rms_ts_psd_stk_match_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_stk_match_cut_nw, *h_BGO_fiducial_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGOfiducial_psd_charge_cut, *h_BGO_fiducial_cut))
-		BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_charge_cut, *h_BGO_fiducial_cut);
+	if (TEfficiency::CheckConsistency(*h_BGOfiducial_psd_charge_cut_nw, *h_BGO_fiducial_cut_nw))
+		BGOfiducial_eff_l13_rms_ts_psdstk_psd_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_charge_cut_nw, *h_BGO_fiducial_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGOfiducial_stk_charge_cut, *h_BGO_fiducial_cut))
-		BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_stk_charge_cut, *h_BGO_fiducial_cut);
+	if (TEfficiency::CheckConsistency(*h_BGOfiducial_stk_charge_cut_nw, *h_BGO_fiducial_cut_nw))
+		BGOfiducial_eff_l13_rms_ts_psdstk_pc_stk_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_stk_charge_cut_nw, *h_BGO_fiducial_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGOfiducial_xtrl_cut, *h_BGO_fiducial_cut))
-		BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_xtrl_cut, *h_BGO_fiducial_cut);
+	if (TEfficiency::CheckConsistency(*h_BGOfiducial_xtrl_cut_nw, *h_BGO_fiducial_cut_nw))
+		BGOfiducial_eff_l13_rms_ts_psdstk_pc_sc_xtrl_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_xtrl_cut_nw, *h_BGO_fiducial_cut_nw);
 
-	if (TEfficiency::CheckConsistency(*h_BGOfiducial_all_cut, *h_BGO_fiducial_cut))
-		BGOfiducial_eff_all_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_all_cut, *h_BGO_fiducial_cut);
+	if (TEfficiency::CheckConsistency(*h_BGOfiducial_all_cut_nw, *h_BGO_fiducial_cut_nw))
+		BGOfiducial_eff_all_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_all_cut_nw, *h_BGO_fiducial_cut_nw);
 
 	if (active_cuts.maxRms && active_cuts.nBarLayer13)
-		if (TEfficiency::CheckConsistency(*h_BGOfiducial_maxRms_cut, *h_BGOfiducial_nBarLayer13_cut))
-			BGOfiducial_eff_maxRms_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_maxRms_cut, *h_BGOfiducial_nBarLayer13_cut);
+		if (TEfficiency::CheckConsistency(*h_BGOfiducial_maxRms_cut_nw, *h_BGOfiducial_nBarLayer13_cut_nw))
+			BGOfiducial_eff_maxRms_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_maxRms_cut_nw, *h_BGOfiducial_nBarLayer13_cut_nw);
 
 	if (active_cuts.track_selection && active_cuts.maxRms)
-		if (TEfficiency::CheckConsistency(*h_BGOfiducial_track_selection_cut, *h_BGOfiducial_maxRms_cut))
-			BGOfiducial_eff_track_selection_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_track_selection_cut, *h_BGOfiducial_maxRms_cut);
+		if (TEfficiency::CheckConsistency(*h_BGOfiducial_track_selection_cut_nw, *h_BGOfiducial_maxRms_cut_nw))
+			BGOfiducial_eff_track_selection_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_track_selection_cut_nw, *h_BGOfiducial_maxRms_cut_nw);
 
 	if (active_cuts.psd_stk_match && active_cuts.track_selection)
-		if (TEfficiency::CheckConsistency(*h_BGOfiducial_psd_stk_match_cut, *h_BGOfiducial_track_selection_cut))
-			BGOfiducial_eff_psd_stk_match_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_stk_match_cut, *h_BGOfiducial_track_selection_cut);
+		if (TEfficiency::CheckConsistency(*h_BGOfiducial_psd_stk_match_cut_nw, *h_BGOfiducial_track_selection_cut_nw))
+			BGOfiducial_eff_psd_stk_match_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_stk_match_cut_nw, *h_BGOfiducial_track_selection_cut_nw);
 
 	if (active_cuts.psd_charge && active_cuts.psd_stk_match)
-		if (TEfficiency::CheckConsistency(*h_BGOfiducial_psd_charge_cut, *h_BGOfiducial_psd_stk_match_cut))
-			BGOfiducial_eff_psd_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_charge_cut, *h_BGOfiducial_psd_stk_match_cut);
+		if (TEfficiency::CheckConsistency(*h_BGOfiducial_psd_charge_cut_nw, *h_BGOfiducial_psd_stk_match_cut_nw))
+			BGOfiducial_eff_psd_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_charge_cut_nw, *h_BGOfiducial_psd_stk_match_cut_nw);
 
 	if (active_cuts.stk_charge && active_cuts.psd_charge)
-		if (TEfficiency::CheckConsistency(*h_BGOfiducial_stk_charge_cut, *h_BGOfiducial_psd_charge_cut))
-			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_stk_charge_cut, *h_BGOfiducial_psd_charge_cut);
+		if (TEfficiency::CheckConsistency(*h_BGOfiducial_stk_charge_cut_nw, *h_BGOfiducial_psd_stk_match_cut_nw))
+			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_stk_charge_cut_nw, *h_BGOfiducial_psd_stk_match_cut_nw);
 
 	if (active_cuts.xtrl && active_cuts.stk_charge)
-		if (TEfficiency::CheckConsistency(*h_BGOfiducial_xtrl_cut, *h_BGOfiducial_stk_charge_cut))
-			BGOfiducial_eff_xtrl_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_xtrl_cut, *h_BGOfiducial_stk_charge_cut);
+		if (TEfficiency::CheckConsistency(*h_BGOfiducial_xtrl_cut_nw, *h_BGOfiducial_stk_charge_cut_nw))
+			BGOfiducial_eff_xtrl_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_xtrl_cut_nw, *h_BGOfiducial_stk_charge_cut_nw);
 
 	// Set uniform statistic option
 	BGOfiducial_eff_l13_maxRms_cut->SetStatisticOption(TEfficiency::kBUniform);
@@ -935,25 +942,36 @@ void generateFinalGraph(
 	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
 		(*it)->Write();
 
+	sumRms_cosine_20_100->Write();
+	sumRms_cosine_100_250->Write();
+	sumRms_cosine_250_500->Write();
+	sumRms_cosine_500_1000->Write();
+	sumRms_cosine_1000_3000->Write();
+	sumRms_cosine_3000_10000->Write();
+
 	auto XTRLdir = outFile.mkdir("xtrl");
 	XTRLdir->cd();
 
 	h_xtrl_energy_int->Write();
 	h_xtrl->Write();
 	e_discrimination->Write();
+	/*
 	e_discrimination_20_100->Sumw2();
 	e_discrimination_100_250->Sumw2();
 	e_discrimination_250_500->Sumw2();
 	e_discrimination_500_1000->Sumw2();
 	e_discrimination_1000_3000->Sumw2();
 	e_discrimination_3000_10000->Sumw2();
+	*/
 	e_discrimination_last->Write();
+	/*
 	e_discrimination_last_20_100->Sumw2();
 	e_discrimination_last_100_250->Sumw2();
 	e_discrimination_last_250_500->Sumw2();
 	e_discrimination_last_500_1000->Sumw2();
 	e_discrimination_last_1000_3000->Sumw2();
 	e_discrimination_last_3000_10000->Sumw2();
+	*/
 
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->Write();
@@ -1048,12 +1066,14 @@ void generateDataFinalGraph(
 	auto h_BGOTrackContainment_cut = static_cast<TH1D *>(inHisto.Get("h_BGOTrackContainment_cut"));
 	auto h_BGO_fiducial_cut = static_cast<TH1D *>(inHisto.Get("h_BGO_fiducial_cut"));
 	auto h_all_cut = static_cast<TH1D *>(inHisto.Get("h_all_cut"));
+	auto h_all_cut_ce = static_cast<TH1D *>(inHisto.Get("h_all_cut_ce"));
 
 	auto h_geometric_maxElayer_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_maxElayer_cut"));
 	auto h_geometric_maxBarLayer_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_maxBarLayer_cut"));
 	auto h_geometric_BGOTrackContainment_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_BGOTrackContainment_cut"));
 	auto h_geometric_BGO_fiducial_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_BGO_fiducial_cut"));
 	auto h_geometric_all_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_all_cut"));
+	auto h_geometric_all_cut_ce = static_cast<TH1D *>(inHisto.Get("h_geometric_all_cut_ce"));
 
 	auto h_BGOfiducial_nBarLayer13_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_nBarLayer13_cut"));
 	auto h_BGOfiducial_maxRms_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_maxRms_cut"));
@@ -1063,6 +1083,7 @@ void generateDataFinalGraph(
 	auto h_BGOfiducial_stk_charge_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_stk_charge_cut"));
 	auto h_BGOfiducial_xtrl_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_xtrl_cut"));
 	auto h_BGOfiducial_all_cut = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_all_cut"));
+	auto h_BGOfiducial_all_cut_ce = static_cast<TH1D *>(inHisto.Get("h_BGOfiducial_all_cut_ce"));
 
 	auto h_geo_BGOrec_slopeX = static_cast<TH1D *>(inHisto.Get("Analysis_GeoCut/h_geo_BGOrec_slopeX"));
 	auto h_geo_BGOrec_slopeY = static_cast<TH1D *>(inHisto.Get("Analysis_GeoCut/h_geo_BGOrec_slopeY"));
@@ -1084,10 +1105,37 @@ void generateDataFinalGraph(
 		h_layer_energy_ratio[idx] = static_cast<TH1D *>(inHisto.Get(histoName.c_str()));
 	}
 
+	std::vector<TH2D*> sumRms_cosine (logEBins.size() - 1);
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+	{
+		std::string histo_name = "BGO_Energy/sumRms_cosine_" + to_string(std::distance(sumRms_cosine.begin(), it));
+		(*it) = static_cast<TH2D *>(inHisto.Get(histo_name.c_str()));
+	}
+
+	auto sumRms_cosine_20_100 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_20_100"));
+	auto sumRms_cosine_100_250 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_100_250"));
+	auto sumRms_cosine_250_500 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_250_500"));
+	auto sumRms_cosine_500_1000 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_500_1000"));
+	auto sumRms_cosine_1000_3000 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_1000_3000"));
+	auto sumRms_cosine_3000_10000 = static_cast<TH2D*>(inHisto.Get("BGO_Energy/sumRms_cosine_3000_10000"));
+
 	auto h_xtrl_energy_int = static_cast<TH1D *>(inHisto.Get("xtrl/h_xtrl_energy_int"));
 	auto h_xtrl = static_cast<TH2D *>(inHisto.Get("xtrl/h_xtrl"));
 	auto e_discrimination_last = static_cast<TH2D *>(inHisto.Get("xtrl/e_discrimination_last"));
+	auto e_discrimination_last_20_100 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_20_100"));
+	auto e_discrimination_last_100_250 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_100_250"));
+	auto e_discrimination_last_250_500 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_250_500"));
+	auto e_discrimination_last_500_1000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_500_1000"));
+	auto e_discrimination_last_1000_3000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_1000_3000"));
+	auto e_discrimination_last_3000_10000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_last_3000_10000"));
 	auto e_discrimination = static_cast<TH2D *>(inHisto.Get("xtrl/e_discrimination"));
+	auto e_discrimination_20_100 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_20_100"));
+	auto e_discrimination_100_250 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_100_250"));
+	auto e_discrimination_250_500 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_250_500"));
+	auto e_discrimination_500_1000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_500_1000"));
+	auto e_discrimination_1000_3000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_1000_3000"));
+	auto e_discrimination_3000_10000 = static_cast<TH2D*>(inHisto.Get("xtrl/e_discrimination_3000_10000"));
+
 	std::vector<TH1D*> bin_xtrl(logEBins.size() - 1);
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 	{
@@ -1125,12 +1173,14 @@ void generateDataFinalGraph(
 	h_BGOTrackContainment_cut->SetDirectory(0);
 	h_BGO_fiducial_cut->SetDirectory(0);
 	h_all_cut->SetDirectory(0);
+	h_all_cut_ce->SetDirectory(0);
 
 	h_geometric_maxElayer_cut->SetDirectory(0);
 	h_geometric_maxBarLayer_cut->SetDirectory(0);
 	h_geometric_BGOTrackContainment_cut->SetDirectory(0);
 	h_geometric_BGO_fiducial_cut->SetDirectory(0);
 	h_geometric_all_cut->SetDirectory(0);
+	h_geometric_all_cut_ce->SetDirectory(0);
 
 	h_BGOfiducial_nBarLayer13_cut->SetDirectory(0);
 	h_BGOfiducial_maxRms_cut->SetDirectory(0);
@@ -1140,6 +1190,7 @@ void generateDataFinalGraph(
 	h_BGOfiducial_stk_charge_cut->SetDirectory(0);
 	h_BGOfiducial_xtrl_cut->SetDirectory(0);
 	h_BGOfiducial_all_cut->SetDirectory(0);
+	h_BGOfiducial_all_cut_ce->SetDirectory(0);
 	
 	h_geo_BGOrec_slopeX->SetDirectory(0);
 	h_geo_BGOrec_slopeY->SetDirectory(0);
@@ -1154,13 +1205,35 @@ void generateDataFinalGraph(
 	for (auto idx = 0; idx < DAMPE_bgo_nLayers; ++idx)
 		h_layer_energy_ratio[idx]->SetDirectory(0);
 
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+		(*it)->SetDirectory(0);
+	
+	sumRms_cosine_20_100->SetDirectory(0);
+	sumRms_cosine_100_250->SetDirectory(0);
+	sumRms_cosine_250_500->SetDirectory(0);
+	sumRms_cosine_500_1000->SetDirectory(0);
+	sumRms_cosine_1000_3000->SetDirectory(0);
+	sumRms_cosine_3000_10000->SetDirectory(0);
+	
 	h_xtrl_energy_int->SetDirectory(0);
 	h_xtrl->SetDirectory(0);
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->SetDirectory(0);
 
 	e_discrimination_last->SetDirectory(0);
+	e_discrimination_last_20_100->SetDirectory(0);
+	e_discrimination_last_100_250->SetDirectory(0);
+	e_discrimination_last_250_500->SetDirectory(0);
+	e_discrimination_last_500_1000->SetDirectory(0);
+	e_discrimination_last_1000_3000->SetDirectory(0);
+	e_discrimination_last_3000_10000->SetDirectory(0);
 	e_discrimination->SetDirectory(0);
+	e_discrimination_20_100->SetDirectory(0);
+	e_discrimination_100_250->SetDirectory(0);
+	e_discrimination_250_500->SetDirectory(0);
+	e_discrimination_500_1000->SetDirectory(0);
+	e_discrimination_1000_3000->SetDirectory(0);
+	e_discrimination_3000_10000->SetDirectory(0);
 
 	h_psd_chargeX->SetDirectory(0);
 	h_psd_chargeY->SetDirectory(0);
@@ -1204,12 +1277,16 @@ void generateDataFinalGraph(
 	h_BGOTrackContainment_cut->Write();
 	h_BGO_fiducial_cut->Write();
 	h_all_cut->Write();
+	h_all_cut_ce->Write();
+
 	// Cuts && Geometric Cut
 	h_geometric_maxElayer_cut->Write();
 	h_geometric_maxBarLayer_cut->Write();
 	h_geometric_BGOTrackContainment_cut->Write();
 	h_geometric_BGO_fiducial_cut->Write();
 	h_geometric_all_cut->Write();
+	h_geometric_all_cut_ce->Write();
+	
 	// Cuts && BGO fiducial volume cut
 	h_BGOfiducial_nBarLayer13_cut->Write();
 	h_BGOfiducial_maxRms_cut->Write();
@@ -1219,6 +1296,7 @@ void generateDataFinalGraph(
 	h_BGOfiducial_stk_charge_cut->Write();
 	h_BGOfiducial_xtrl_cut->Write();
 	h_BGOfiducial_all_cut->Write();
+	h_BGOfiducial_all_cut_ce->Write();
 
 	// Create output ratio dir in the output TFile
 	auto ratioDir = outFile.mkdir("Efficiency");
@@ -1398,8 +1476,8 @@ void generateDataFinalGraph(
 			BGOfiducial_eff_psd_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_psd_charge_cut, *h_BGOfiducial_psd_stk_match_cut);
 
 	if (active_cuts.stk_charge && active_cuts.psd_charge)
-		if (TEfficiency::CheckConsistency(*h_BGOfiducial_stk_charge_cut, *h_BGOfiducial_psd_charge_cut))
-			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_stk_charge_cut, *h_BGOfiducial_psd_charge_cut);
+		if (TEfficiency::CheckConsistency(*h_BGOfiducial_stk_charge_cut, *h_BGOfiducial_psd_stk_match_cut))
+			BGOfiducial_eff_stk_charge_cut = std::make_shared<TEfficiency>(*h_BGOfiducial_stk_charge_cut, *h_BGOfiducial_psd_stk_match_cut);
 
 	if (active_cuts.xtrl && active_cuts.stk_charge)
 		if (TEfficiency::CheckConsistency(*h_BGOfiducial_xtrl_cut, *h_BGOfiducial_stk_charge_cut))
@@ -1487,6 +1565,16 @@ void generateDataFinalGraph(
 	h_BGOrec_energy->Write();
 	h_layer_max_energy_ratio->Write();
 
+	for (auto it = sumRms_cosine.begin(); it != sumRms_cosine.end(); ++it)
+		(*it)->Write();
+
+	sumRms_cosine_20_100->Write();
+	sumRms_cosine_100_250->Write();
+	sumRms_cosine_250_500->Write();
+	sumRms_cosine_500_1000->Write();
+	sumRms_cosine_1000_3000->Write();
+	sumRms_cosine_3000_10000->Write();
+
 	for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
 		h_layer_energy_ratio[lIdx]->Write();
 
@@ -1496,7 +1584,19 @@ void generateDataFinalGraph(
 	h_xtrl_energy_int->Write();
 	h_xtrl->Write();
 	e_discrimination->Write();
+	e_discrimination_20_100->Write();
+	e_discrimination_100_250->Write();
+	e_discrimination_250_500->Write();
+	e_discrimination_500_1000->Write();
+	e_discrimination_1000_3000->Write();
+	e_discrimination_3000_10000->Write();
 	e_discrimination_last->Write();
+	e_discrimination_last_20_100->Write();
+	e_discrimination_last_100_250->Write();
+	e_discrimination_last_250_500->Write();
+	e_discrimination_last_500_1000->Write();
+	e_discrimination_last_1000_3000->Write();
+	e_discrimination_last_3000_10000->Write();
 
 	for (auto it = bin_xtrl.begin(); it != bin_xtrl.end(); ++it)
 		(*it)->Write();
