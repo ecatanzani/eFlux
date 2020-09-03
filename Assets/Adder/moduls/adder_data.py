@@ -15,6 +15,7 @@ class data_histos():
         self.h_BGOTrackContainment_cut = TH1D()
         self.h_BGO_fiducial_cut = TH1D()
         self.h_all_cut = TH1D()
+        self.h_all_cut_ce = TH1D()
 
         # Cuts && Geometric Cut
         self.h_geometric_maxElayer_cut = TH1D()
@@ -22,6 +23,7 @@ class data_histos():
         self.h_geometric_BGOTrackContainment_cut = TH1D()
         self.h_geometric_BGO_fiducial_cut = TH1D()
         self.h_geometric_all_cut = TH1D()
+        self.h_geometric_all_cut_ce = TH1D()
 
         # Cuts && BGO fiducial volume cut
         self.h_BGOfiducial_nBarLayer13_cut = TH1D()
@@ -32,6 +34,7 @@ class data_histos():
         self.h_BGOfiducial_stk_charge_cut = TH1D()
         self.h_BGOfiducial_xtrl_cut = TH1D()
         self.h_BGOfiducial_all_cut = TH1D()
+        self.h_BGOfiducial_all_cut_ce = TH1D()
 
         # Analysis histos - reco energy of incoming events
         self.h_BGOrec_energy = TH1D()
@@ -122,6 +125,7 @@ class data_histos():
         h_BGOTrackContainment_cut_tmp = rFile.Get("h_BGOTrackContainment_cut")
         h_BGO_fiducial_cut_tmp = rFile.Get("h_BGO_fiducial_cut")
         h_all_cut_tmp = rFile.Get("h_all_cut")
+        h_all_cut_ce_tmp = rFile.Get("h_all_cut_ce")
 
         if self.first_file_read:
             self.n_energy_bins = h_trigger_tmp.GetNbinsX()
@@ -135,6 +139,7 @@ class data_histos():
         h_geometric_BGOTrackContainment_cut_tmp = rFile.Get("h_geometric_BGOTrackContainment_cut")
         h_geometric_BGO_fiducial_cut_tmp = rFile.Get("h_geometric_BGO_fiducial_cut")
         h_geometric_all_cut_tmp = rFile.Get("h_geometric_all_cut")
+        h_geometric_all_cut_ce_tmp = rFile.Get("h_geometric_all_cut_ce")
 
         h_BGOfiducial_nBarLayer13_cut_tmp = rFile.Get("h_BGOfiducial_nBarLayer13_cut")
         h_BGOfiducial_maxRms_cut_tmp = rFile.Get("h_BGOfiducial_maxRms_cut")
@@ -144,6 +149,7 @@ class data_histos():
         h_BGOfiducial_stk_charge_cut_tmp = rFile.Get("h_BGOfiducial_stk_charge_cut")
         h_BGOfiducial_xtrl_cut_tmp = rFile.Get("h_BGOfiducial_xtrl_cut")
         h_BGOfiducial_all_cut_tmp = rFile.Get("h_BGOfiducial_all_cut")
+        h_BGOfiducial_all_cut_ce_tmp = rFile.Get("h_BGOfiducial_all_cut_ce")
         
         h_geo_BGOrec_slopeX_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_slopeX")
         h_geo_BGOrec_slopeY_tmp = rFile.Get("Analysis_GeoCut/h_geo_BGOrec_slopeY")
@@ -229,12 +235,14 @@ class data_histos():
             self.h_BGOTrackContainment_cut = h_BGOTrackContainment_cut_tmp.Clone("h_BGOTrackContainment_cut")
             self.h_BGO_fiducial_cut = h_BGO_fiducial_cut_tmp.Clone("h_BGO_fiducial_cut")
             self.h_all_cut = h_all_cut_tmp.Clone("h_all_cut")
+            self.h_all_cut_ce = h_all_cut_ce_tmp.Clone("h_all_cut_ce")
             
             self.h_geometric_maxElayer_cut = h_geometric_maxElayer_cut_tmp.Clone("h_geometric_maxElayer_cut")
             self.h_geometric_maxBarLayer_cut = h_geometric_maxBarLayer_cut_tmp.Clone("h_geometric_maxBarLayer_cut")
             self.h_geometric_BGOTrackContainment_cut = h_geometric_BGOTrackContainment_cut_tmp.Clone("h_geometric_BGOTrackContainment_cut")
             self.h_geometric_BGO_fiducial_cut = h_geometric_BGO_fiducial_cut_tmp.Clone("h_geometric_BGO_fiducial_cut")
             self.h_geometric_all_cut = h_geometric_all_cut_tmp.Clone("h_geometric_all_cut")
+            self.h_geometric_all_cut_ce = h_geometric_all_cut_ce_tmp.Clone("h_geometric_all_cut_ce")
 
             self.h_BGOfiducial_nBarLayer13_cut = h_BGOfiducial_nBarLayer13_cut_tmp.Clone("h_BGOfiducial_nBarLayer13_cut")
             self.h_BGOfiducial_maxRms_cut = h_BGOfiducial_maxRms_cut_tmp.Clone("h_BGOfiducial_maxRms_cut")
@@ -244,6 +252,7 @@ class data_histos():
             self.h_BGOfiducial_stk_charge_cut = h_BGOfiducial_stk_charge_cut_tmp.Clone("h_BGOfiducial_stk_charge_cut")
             self.h_BGOfiducial_xtrl_cut = h_BGOfiducial_xtrl_cut_tmp.Clone("h_BGOfiducial_xtrl_cut")
             self.h_BGOfiducial_all_cut = h_BGOfiducial_all_cut_tmp.Clone("h_BGOfiducial_all_cut")
+            self.h_BGOfiducial_all_cut_ce = h_BGOfiducial_all_cut_ce_tmp.Clone("h_BGOfiducial_all_cut_ce")
             
             self.h_geo_BGOrec_slopeX = h_geo_BGOrec_slopeX_tmp.Clone("h_geo_BGOrec_slopeX")
             self.h_geo_BGOrec_slopeY = h_geo_BGOrec_slopeY_tmp.Clone("h_geo_BGOrec_slopeY")
@@ -327,12 +336,14 @@ class data_histos():
             self.h_BGOTrackContainment_cut.SetDirectory(0)
             self.h_BGO_fiducial_cut.SetDirectory(0)
             self.h_all_cut.SetDirectory(0)
+            self.h_all_cut_ce.SetDirectory(0)
             
             self.h_geometric_maxElayer_cut.SetDirectory(0)
             self.h_geometric_maxBarLayer_cut.SetDirectory(0)
             self.h_geometric_BGOTrackContainment_cut.SetDirectory(0)
             self.h_geometric_BGO_fiducial_cut.SetDirectory(0)
             self.h_geometric_all_cut.SetDirectory(0)
+            self.h_geometric_all_cut_ce.SetDirectory(0)
 
             self.h_BGOfiducial_nBarLayer13_cut.SetDirectory(0)
             self.h_BGOfiducial_maxRms_cut.SetDirectory(0)
@@ -342,6 +353,7 @@ class data_histos():
             self.h_BGOfiducial_stk_charge_cut.SetDirectory(0)
             self.h_BGOfiducial_xtrl_cut.SetDirectory(0)
             self.h_BGOfiducial_all_cut.SetDirectory(0)
+            self.h_BGOfiducial_all_cut_ce.SetDirectory(0)
             
             self.h_geo_BGOrec_slopeX.SetDirectory(0)
             self.h_geo_BGOrec_slopeY.SetDirectory(0)
@@ -417,12 +429,14 @@ class data_histos():
             self.h_BGOTrackContainment_cut.Add(h_BGOTrackContainment_cut_tmp)
             self.h_BGO_fiducial_cut.Add(h_BGO_fiducial_cut_tmp)
             self.h_all_cut.Add(h_all_cut_tmp)
+            self.h_all_cut_ce.Add(h_all_cut_ce_tmp)
 
             self.h_geometric_maxElayer_cut.Add(h_geometric_maxElayer_cut_tmp)
             self.h_geometric_maxBarLayer_cut.Add(h_geometric_maxBarLayer_cut_tmp)
             self.h_geometric_BGOTrackContainment_cut.Add(h_geometric_BGOTrackContainment_cut_tmp)
             self.h_geometric_BGO_fiducial_cut.Add(h_geometric_BGO_fiducial_cut_tmp)
             self.h_geometric_all_cut.Add(h_geometric_all_cut_tmp)
+            self.h_geometric_all_cut_ce.Add(h_geometric_all_cut_ce_tmp)
 
             self.h_BGOfiducial_nBarLayer13_cut.Add(h_BGOfiducial_nBarLayer13_cut_tmp)
             self.h_BGOfiducial_maxRms_cut.Add(h_BGOfiducial_maxRms_cut_tmp)
@@ -432,6 +446,7 @@ class data_histos():
             self.h_BGOfiducial_stk_charge_cut.Add(h_BGOfiducial_stk_charge_cut_tmp)
             self.h_BGOfiducial_xtrl_cut.Add(h_BGOfiducial_xtrl_cut_tmp)
             self.h_BGOfiducial_all_cut.Add(h_BGOfiducial_all_cut_tmp)
+            self.h_BGOfiducial_all_cut_ce.Add(h_BGOfiducial_all_cut_ce_tmp)
             
             self.h_geo_BGOrec_slopeX.Add(h_geo_BGOrec_slopeX_tmp)
             self.h_geo_BGOrec_slopeY.Add(h_geo_BGOrec_slopeY_tmp)
@@ -518,12 +533,14 @@ class data_histos():
         self.h_BGOTrackContainment_cut.Write()
         self.h_BGO_fiducial_cut.Write()
         self.h_all_cut.Write()
+        self.h_all_cut_ce.Write()
     
         self.h_geometric_maxElayer_cut.Write()
         self.h_geometric_maxBarLayer_cut.Write()
         self.h_geometric_BGOTrackContainment_cut.Write()
         self.h_geometric_BGO_fiducial_cut.Write()
         self.h_geometric_all_cut.Write()
+        self.h_geometric_all_cut_ce.Write()
 
         self.h_BGOfiducial_nBarLayer13_cut.Write()
         self.h_BGOfiducial_maxRms_cut.Write()
@@ -533,6 +550,7 @@ class data_histos():
         self.h_BGOfiducial_stk_charge_cut.Write()
         self.h_BGOfiducial_xtrl_cut.Write()
         self.h_BGOfiducial_all_cut.Write()
+        self.h_BGOfiducial_all_cut_ce.Write()
         
         fOut.mkdir("Analysis_GeoCut")
         fOut.cd("Analysis_GeoCut")
@@ -549,9 +567,20 @@ class data_histos():
 
         self.h_BGOrec_energy.Write()
         self.h_layer_max_energy_ratio.Write()
+
         for idx in range(0,14):
             self.h_layer_energy_ratio[idx].Write()
-    
+
+        for idx in range(self.n_energy_bins):
+            self.h_sumRms_cosine[idx].Write()
+            
+        self.sumRms_cosine_20_100.Write()
+        self.sumRms_cosine_100_250.Write()
+        self.sumRms_cosine_250_500.Write()
+        self.sumRms_cosine_500_1000.Write()
+        self.sumRms_cosine_1000_3000.Write()
+        self.sumRms_cosine_3000_10000.Write()
+
         fOut.mkdir("xtrl")
         fOut.cd("xtrl")
 
@@ -574,16 +603,6 @@ class data_histos():
 
         for idx in range(self.n_energy_bins):
             self.h_bin_xtrl[idx].Write()
-
-        for idx in range(self.n_energy_bins):
-            self.h_sumRms_cosine[idx].Write()
-        
-        self.sumRms_cosine_20_100.Write()
-        self.sumRms_cosine_100_250.Write()
-        self.sumRms_cosine_250_500.Write()
-        self.sumRms_cosine_500_1000.Write()
-        self.sumRms_cosine_1000_3000.Write()
-        self.sumRms_cosine_3000_10000.Write()
 
         fOut.mkdir("PSDcharge")
         fOut.cd("PSDcharge")
