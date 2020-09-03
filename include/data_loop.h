@@ -35,6 +35,14 @@ struct data_statistics
 	unsigned int selected_events = 0;
 };
 
+struct data_evt_time
+{
+	int start_second;
+	int end_second;
+	short start_msecond;
+	short end_msecond;
+};
+
 extern std::vector<TH1D> evLoop(
 	const std::string inputPath,
 	TFile &outFile,

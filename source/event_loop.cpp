@@ -116,8 +116,23 @@ std::vector<TH1D> evLoop(
 
 	// Event loop
 	auto nevents = dmpch->GetEntries();
+	
+	data_evt_time evt_time;
+	dmpch->GetEntry(0);
+	evt_time.start_second = evt_header->GetSecond();
+	evt_time.start_msecond = evt_header->GetMillisecond();
+	dmpch->GetEntry(nevents -1);
+	evt_time.end_second = evt_header->GetSecond();
+	evt_time.end_msecond = evt_header->GetMillisecond();
+	
 	if (verbose)
-		std::cout << "Total number of events: " << nevents << "\n\n";
+	{
+		std::cout << "RUN (info) \tTotal number of events: " << nevents << std::endl;
+		std::cout << "RUN (info) \tStart Time (second): " << evt_time.start_second << std::endl;
+		std::cout << "RUN (info) \tStart Time (millisecond): " << evt_time.start_msecond << std::endl;
+		std::cout << "RUN (info) \tEnd Time (second): " << evt_time.end_second << std::endl;
+		std::cout << "RUN (info) \tEnd Time (millisecond): " << evt_time.end_msecond << "\n\n";
+	}
 
 	// Cut histos
 	TH1D h_trigger("h_trigger", "Energy Distribution of the triggered particles; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
@@ -247,6 +262,9 @@ std::vector<TH1D> evLoop(
 	TH1D h_background_under_xtrl_cut("h_background_under_xtrl_cut", "Proton background - XTRL < cut; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 	TH1D h_background_over_xtrl_cut("h_background_over_xtrl_cut", "Proton background - XTRL > 20 and XTRL < 100 cut; Raw Energy (GeV); counts", logEBins.size() - 1, &(logEBins[0]));
 
+	TH1D h_second("h_second", "second", 1000, evt_time.start_second, evt_time.end_second);
+	TH1D h_msecond("h_msecond", "millisecond", 1000, evt_time.start_msecond, evt_time.end_msecond);
+
 	// Sumw2 - First-Cut histos
 	h_trigger.Sumw2();
 	h_geometric_cut.Sumw2();
@@ -344,12 +362,13 @@ std::vector<TH1D> evLoop(
 	// Proton background histos
 	h_background_under_xtrl_cut.Sumw2();
 	h_background_over_xtrl_cut.Sumw2();
-
+	
 	double _GeV = 0.001;
 	int kStep = 10;
 
 	if (verbose)
 		std::cout << "Starting analysing data...\n\n";
+
 	for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
 	{
 		// Get chain event
@@ -357,12 +376,18 @@ std::vector<TH1D> evLoop(
 
 		// Update event counter
 		++data_selection.event_counter;
+		
 
-		if (pFilter->IsInSAA(evt_header->GetSecond()))
+		// Extract data time information
+		int second = evt_header->GetSecond();
+		short msecond = evt_header->GetMillisecond();
+		if (pFilter->IsInSAA(second))
 		{
 			continue;
 			++data_selection.events_in_saa;
 		}
+		h_second.Fill(second);
+		h_msecond.Fill(msecond);
 
 		// Event printout
 		if (verbose)
@@ -1047,6 +1072,13 @@ std::vector<TH1D> evLoop(
 	std::vector<TH1D> data_selection_result (2, TH1D());
 	data_selection_result[0] = h_BGOfiducial_all_cut_ce;
 	data_selection_result[1] = h_background_over_xtrl_cut;
+
+	// Create time output folder
+	auto timeDir = outFile.mkdir("Time");
+	timeDir->cd();
+	
+	h_second.Write();
+	h_msecond.Write();
 
 	return data_selection_result;
 }
