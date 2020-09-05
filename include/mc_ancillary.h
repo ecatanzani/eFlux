@@ -5,6 +5,12 @@
 
 #include "data_cuts.h"
 
+
+struct mc_ancillary_cuts
+{
+    bool compute_proton_background = false;
+};
+
 extern void compute_proton_background(
 	const double sumRms,
 	const double lastFracLayer,

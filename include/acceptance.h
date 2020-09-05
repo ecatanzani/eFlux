@@ -11,6 +11,7 @@
 
 #include "anyoption.h"
 #include "data_cuts.h"
+#include "mc_ancillary.h"
 
 #include "DmpEvtSimuPrimaries.h"
 #include "DmpEvtBgoRec.h"
@@ -20,11 +21,6 @@
 
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
-
-struct mc_ancillary_cuts
-{
-    bool compute_proton_background = false;
-};
 
 struct mc_statistics
 {
