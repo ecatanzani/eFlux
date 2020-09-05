@@ -394,10 +394,10 @@ std::vector<TH1D> evLoop(
 			updateProcessStatus(evIdx, kStep, nevents);
 
 		// Get event total energy
-		double bgoTotalE = bgorec->GetTotalEnergy();
+		double bgoTotalE_raw = bgorec->GetTotalEnergy();
 
 		// Don't accept events outside the selected energy window
-		if (bgoTotalE * _GeV < flux_cuts.min_event_energy || bgoTotalE * _GeV > flux_cuts.max_event_energy)
+		if (bgoTotalE_raw * _GeV < flux_cuts.min_event_energy || bgoTotalE_raw * _GeV > flux_cuts.max_event_energy)
 		{
 			++data_selection.events_out_range;
 			continue;
@@ -420,7 +420,7 @@ std::vector<TH1D> evLoop(
 		if (general_trigger)
 		{
 			++data_selection.triggered_events;
-			h_trigger.Fill(bgoTotalE * _GeV);
+			h_trigger.Fill(bgoTotalE_raw * _GeV);
 			if (!checkBGOreco_data(bgorec))
 				continue;
 		}
@@ -428,7 +428,7 @@ std::vector<TH1D> evLoop(
 			continue;
 
 		// Fill the energy histos only for good reco events
-		h_BGOrec_energy.Fill(bgoTotalE * _GeV);
+		h_BGOrec_energy.Fill(bgoTotalE_raw * _GeV);
 
 		// Load BGO event class
 		DmpBgoContainer bgoVault;
@@ -438,7 +438,7 @@ std::vector<TH1D> evLoop(
 
 		bgoVault.scanBGOHits(
 			bgohits,
-			bgoTotalE,
+			bgoTotalE_raw,
 			flux_cuts);
 
 		psdVault.scanPSDHits(
@@ -461,7 +461,7 @@ std::vector<TH1D> evLoop(
 		evaluateEnergyRatio(
 			bgorec,
 			flux_cuts,
-			bgoTotalE,
+			bgoTotalE_raw,
 			h_layer_max_energy_ratio,
 			h_layer_energy_ratio);
 
@@ -472,7 +472,7 @@ std::vector<TH1D> evLoop(
 				bgorec,
 				bgohits,
 				flux_cuts,
-				bgoTotalE,
+				bgoTotalE_raw,
 				bgoVault,
 				psdVault,
 				event_best_track,
@@ -489,7 +489,7 @@ std::vector<TH1D> evLoop(
 		// Fill geometric cut histos
 		if (filter.geometric)
 		{
-			h_geometric_cut.Fill(bgoTotalE * _GeV);
+			h_geometric_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// Evaluate the position on the First BGO layer (after geometric cut)
 			evaluateTopBottomPosition_data(
@@ -503,77 +503,77 @@ std::vector<TH1D> evLoop(
 
 			// Geometric cut && maxElayer cut
 			if (filter.BGO_fiducial_maxElayer_cut)
-				h_geometric_maxElayer_cut.Fill(bgoTotalE * _GeV);
+				h_geometric_maxElayer_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// Geometric cut && maxBarLayer cut
 			if (filter.BGO_fiducial_maxBarLayer_cut)
-				h_geometric_maxBarLayer_cut.Fill(bgoTotalE * _GeV);
+				h_geometric_maxBarLayer_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// Geometric cut && BGOTrackContainment cut
 			if (filter.BGO_fiducial_BGOTrackContainment_cut)
-				h_geometric_BGOTrackContainment_cut.Fill(bgoTotalE * _GeV);
+				h_geometric_BGOTrackContainment_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// Geometric cut && BGO fiducial cut
 			if (filter.BGO_fiducial)
-				h_geometric_BGO_fiducial_cut.Fill(bgoTotalE * _GeV);
+				h_geometric_BGO_fiducial_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// Geometric cut and all cuts
 			if (filter.all_cut)
 			{
-				h_geometric_all_cut.Fill(bgoTotalE * _GeV);
+				h_geometric_all_cut.Fill(bgoTotalE_raw * _GeV);
 				h_geometric_all_cut_ce.Fill(bgorec->GetElectronEcor() * _GeV);
 			}
 		}
 
 		// Fill BGO_fiducial_maxElayer cut histo
 		if (filter.BGO_fiducial_maxElayer_cut)
-			h_maxElayer_cut.Fill(bgoTotalE * _GeV);
+			h_maxElayer_cut.Fill(bgoTotalE_raw * _GeV);
 
 		// Fill BGO_fiducial_maxBarLayer cut histo
 		if (filter.BGO_fiducial_maxBarLayer_cut)
-			h_maxBarLayer_cut.Fill(bgoTotalE * _GeV);
+			h_maxBarLayer_cut.Fill(bgoTotalE_raw * _GeV);
 
 		// Fill BGO_fiducial_BGOTrackContainment cut histo
 		if (filter.BGO_fiducial_BGOTrackContainment_cut)
-			h_BGOTrackContainment_cut.Fill(bgoTotalE * _GeV);
+			h_BGOTrackContainment_cut.Fill(bgoTotalE_raw * _GeV);
 
 		// Fill BGO fiducial volume cut
 		if (filter.BGO_fiducial)
 		{
-			h_BGO_fiducial_cut.Fill(bgoTotalE * _GeV);
+			h_BGO_fiducial_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// BGO fiducial cut && nBarLayer13 cut
 			if (filter.nBarLayer13_cut)
-				h_BGOfiducial_nBarLayer13_cut.Fill(bgoTotalE * _GeV);
+				h_BGOfiducial_nBarLayer13_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// BGO fiducial cut && maxRms cut
 			if (filter.maxRms_cut)
-				h_BGOfiducial_maxRms_cut.Fill(bgoTotalE * _GeV);
+				h_BGOfiducial_maxRms_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// BGO fiducial cut && track selection cut
 			if (filter.track_selection_cut)
-				h_BGOfiducial_track_selection_cut.Fill(bgoTotalE * _GeV);
+				h_BGOfiducial_track_selection_cut.Fill(bgoTotalE_raw * _GeV);
 			
 			// BGO fiducial cut && PSD-STK match cut
 			if (filter.psd_stk_match_cut)
-				h_BGOfiducial_psd_stk_match_cut.Fill(bgoTotalE * _GeV);
+				h_BGOfiducial_psd_stk_match_cut.Fill(bgoTotalE_raw * _GeV);
 			
 			// BGO fiducial cut && PSD charge cut
 			if (filter.psd_charge_cut)
-				h_BGOfiducial_psd_charge_cut.Fill(bgoTotalE * _GeV);
+				h_BGOfiducial_psd_charge_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// BGO fiducial cut && STK charge cut
 			if (filter.stk_charge_cut)
-				h_BGOfiducial_stk_charge_cut.Fill(bgoTotalE * _GeV);
+				h_BGOfiducial_stk_charge_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// BGO fiducial cut && XTRL cut
 			if (filter.xtrl_cut)
-				h_BGOfiducial_xtrl_cut.Fill(bgoTotalE * _GeV);
+				h_BGOfiducial_xtrl_cut.Fill(bgoTotalE_raw * _GeV);
 
 			// BGO fiducial cut && all cut
 			if (filter.all_cut)
 			{
-				h_BGOfiducial_all_cut.Fill(bgoTotalE * _GeV);
+				h_BGOfiducial_all_cut.Fill(bgoTotalE_raw * _GeV);
 				h_BGOfiducial_all_cut_ce.Fill(bgorec->GetElectronEcor() * _GeV);
 			}
 		}
@@ -619,14 +619,13 @@ std::vector<TH1D> evLoop(
 		{
 			if (filter.all_cut)
 			{
-				h_all_cut.Fill(bgoTotalE * _GeV);
+				h_all_cut.Fill(bgoTotalE_raw * _GeV);
 				h_all_cut_ce.Fill(bgorec->GetElectronEcor() * _GeV);
 
 				// Fill sumRms - cosine correlation histo
 				fill_sumRms_cosine_histo(
 					bgoVault.GetSumRMS(),
 					event_best_track.myBestTrack.getDirection().CosTheta(),
-					bgorec->GetElectronEcor() * _GeV,
 					logEBins,
 					sumRms_cosine,
 					sumRms_cosine_20_100,
@@ -634,7 +633,8 @@ std::vector<TH1D> evLoop(
 					sumRms_cosine_250_500,
 					sumRms_cosine_500_1000,
 					sumRms_cosine_1000_3000,
-					sumRms_cosine_3000_10000);
+					sumRms_cosine_3000_10000,
+					bgoTotalE_raw);
 			}
 
 			if (filter.all_cut_no_xtrl)
@@ -667,8 +667,7 @@ std::vector<TH1D> evLoop(
 					e_discrimination_last_500_1000,
 					e_discrimination_last_1000_3000,
 					e_discrimination_last_3000_10000,
-					//bgoTotalE * _GeV);
-					bgorec->GetElectronEcor() * _GeV);
+					bgorec->GetElectronEcor());
 					
 				// Compute proton background
 				compute_proton_background(
