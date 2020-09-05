@@ -295,7 +295,7 @@ void buildAcceptance(
 	// Energy integrated XTRL distribution
 	TH1D h_xtrl_energy_int("h_xtrl_energy_int", "Energy integrated XTRL distribution", xtrl_bins.size() - 1, &(xtrl_bins[0]));
 	// 2D XTRL energy distribution
-	TH2D h_xtrl("h_xtrl", "XTRL energy Distribution", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
+	TH2D h_xtrl("h_xtrl", "XTRL energy Distribution; Corercted energy [GeV]; xtrl", logEBins.size() - 1, &(logEBins[0]), xtrl_bins.size() - 1, &(xtrl_bins[0]));
 	TH2D e_discrimination_last("e_discrimination_last", "Electron Discrimination; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
 	TH2D e_discrimination_last_20_100("e_discrimination_last_20_100", "Electron Discrimination 20 GeV - 100 GeV; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
 	TH2D e_discrimination_last_100_250("e_discrimination_last_100_250", "Electron Discrimination 100 GeV - 250 GeV; sumRms [mm]; F_{last}", sumRms_bins.size() -1, &(sumRms_bins[0]), flast_binning.size() -1, &(flast_binning[0]));
@@ -511,8 +511,8 @@ void buildAcceptance(
 			updateProcessStatus(evIdx, kStep, nevents);
 		
 		// Get event total energy
-		double bgoTotalE_raw = bgorec->GetTotalEnergy(); 	// Energy in MeV - not correcte
-		double simuEnergy = simu_primaries->pvpart_ekin; 	//Energy of simu primaries particle (MeV)
+		double bgoTotalE_raw = bgorec->GetTotalEnergy(); 	// Energy in MeV - not corrected
+		double simuEnergy = simu_primaries->pvpart_ekin; 	// Energy of simu primaries particle (MeV)
 
 		double energy_w;
 		if (simu_particle.is_electron)
@@ -521,7 +521,7 @@ void buildAcceptance(
 			energy_w = pow(simuEnergy * _GeV, -1.7);
 
 		// Don't accept events outside the selected energy window
-		if (simuEnergy * _GeV < acceptance_cuts.min_event_energy || simuEnergy * _GeV > acceptance_cuts.max_event_energy)
+		if (bgoTotalE_raw * _GeV < acceptance_cuts.min_event_energy || bgoTotalE_raw * _GeV > acceptance_cuts.max_event_energy)
 		{
 			++mc_selection.generated_events_out_range;
 			continue;
@@ -843,7 +843,6 @@ void buildAcceptance(
 				fill_sumRms_cosine_histo(
 					bgoVault.GetSumRMS(),
 					event_best_track.myBestTrack.getDirection().CosTheta(),
-					bgorec->GetElectronEcor() * _GeV,
 					logEBins,
 					sumRms_cosine,
 					sumRms_cosine_20_100,
@@ -851,7 +850,9 @@ void buildAcceptance(
 					sumRms_cosine_250_500,
 					sumRms_cosine_500_1000,
 					sumRms_cosine_1000_3000,
-					sumRms_cosine_3000_10000);
+					sumRms_cosine_3000_10000,
+					bgoTotalE_raw,
+					energy_w);
 			}
 
 			if (filter.all_cut_no_xtrl)
@@ -860,7 +861,7 @@ void buildAcceptance(
 				fill_XTRL_histo(
 					bgoVault.GetSumRMS(),
 					bgoVault.GetLastFFracLayer(),
-					simuEnergy,
+					bgorec->GetElectronEcor(),
 					bin_xtrl,
 					h_xtrl_energy_int,
 					h_xtrl,
@@ -885,14 +886,14 @@ void buildAcceptance(
 					e_discrimination_last_500_1000,
 					e_discrimination_last_1000_3000,
 					e_discrimination_last_3000_10000,
-					simuEnergy);
+					bgorec->GetElectronEcor());
 
 				// Compute proton background
 				if (ancillary_cuts.compute_proton_background)
 					compute_proton_background(
 						bgoVault.GetSumRMS(),
 						bgoVault.GetLastFFracLayer(),
-						simuEnergy,
+						bgorec->GetElectronEcor(),
 						acceptance_cuts,
 						h_background_under_xtrl_cut,
 						h_background_over_xtrl_cut,
@@ -1553,7 +1554,7 @@ void buildAcceptance(
 	// Create ancillary output folder
 	if (ancillary_cuts.compute_proton_background)
 	{
-		auto ancillaryDir = outFile.mkdir("mc_ancillary");
+		auto ancillaryDir = outFile.mkdir("proton_background");
 		ancillaryDir->cd();
 
 		h_background_under_xtrl_cut.Write();
