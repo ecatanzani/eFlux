@@ -1,4 +1,5 @@
 #include "acceptance.h"
+#include "mc_ancillary.h"
 #include "binning.h"
 
 #include <fstream>
