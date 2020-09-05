@@ -43,7 +43,6 @@ extern void fill_ep_histos(
 extern void fill_sumRms_cosine_histo(
 	const double sumRMS,
 	const double costheta,
-	const double energy_corr,
 	const std::vector<float> logEBins,
 	std::vector<std::shared_ptr<TH2D>> &sumRms_cosine,
 	TH2D &sumRms_cosine_20_100,
@@ -51,6 +50,8 @@ extern void fill_sumRms_cosine_histo(
 	TH2D &sumRms_cosine_250_500,
 	TH2D &sumRms_cosine_500_1000,
 	TH2D &sumRms_cosine_1000_3000,
-	TH2D &sumRms_cosine_3000_10000);
+	TH2D &sumRms_cosine_3000_10000,
+	const double energy_raw,
+	const double energy_w = 1);
 
 #endif
