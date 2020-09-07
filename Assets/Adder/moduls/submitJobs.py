@@ -4,7 +4,7 @@ import os
 
 def clean_condor_dir(dir):
     os.chdir(dir)
-    outCondor = [filename for filename in os.listdir('.') if filename.startswith("output")]
+    outCondor = [filename for filename in os.listdir('.') if filename.startswith("out")]
         
     # Clean the job dir
     if outCondor:
