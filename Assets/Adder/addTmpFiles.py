@@ -77,6 +77,8 @@ def main(args=None):
         if opts.resubmit:
             print('\nResubmitting HTCondor jobs for {} directories\n'.format(
                 len(skipped_dirs)))
+            for dir in skipped_dirs:
+                clean_condor_dir(dir)
             resubmit_condor_jobs(skipped_dirs, opts)
         if opts.erase:
             for dir in skipped_dirs:
@@ -99,10 +101,6 @@ def main(args=None):
                     compute_final_histos_mc(good_dirs, opts)
                 if opts.data:
                     compute_final_histos_data(good_dirs, opts)
-                
-        else:
-            print("!!! Missing output ROOT file... please specify a path")
-
 
 if __name__ == "__main__":
     main()
