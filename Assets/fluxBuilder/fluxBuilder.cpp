@@ -88,10 +88,10 @@ void fluxBuilder(
     auto logEBins = createLogBinning(emin, emax, all_electron_flux->GetNbinsX());
 
     // Build energy vector
-    std::vector<double> energyValues (logEBins.size(), 0);
+    std::vector<double> energyValues (logEBins.size()-1, 0);
     for (auto it = logEBins.begin(); it != (logEBins.end() - 1); ++it)
         energyValues[std::distance(logEBins.begin(), it)] = wtsydp(*it, *(it + 1), -3);
-
+    
     // Build flux vectors
     std::vector<double> energy_errors(all_electron_flux->GetNbinsX(), 0);
     std::vector<double> all_electron_flux_values (all_electron_flux->GetNbinsX(), 0);
