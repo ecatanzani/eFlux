@@ -20,7 +20,8 @@ void fill_XTRL_histo(
 		h_xtrl_energy_int.Fill(xtrl, energy_w);
 		h_xtrl.Fill(energy_gev, xtrl, energy_w);
 		auto xtrl_bin_idx = h_xtrl.GetXaxis()->FindBin(energy_gev) -1;
-		bin_xtrl[xtrl_bin_idx]->Fill(xtrl, energy_w);
+		if (xtrl_bin_idx>=0 && xtrl_bin_idx<bin_xtrl.size())
+			bin_xtrl[xtrl_bin_idx]->Fill(xtrl, energy_w);
 	} 
 }
 
