@@ -34,7 +34,7 @@ void generateDataFinalGraph(
 		std::cerr << "Error reading input complete histo: " << complete_histo_path;
 		exit(123);
 	}
-	
+
 	auto h_trigger = static_cast<TH1D *>(inHisto.Get("h_trigger"));
 	auto h_geometric_cut = static_cast<TH1D *>(inHisto.Get("h_geometric_cut"));
 	auto h_maxElayer_cut = static_cast<TH1D *>(inHisto.Get("h_maxElayer_cut"));
@@ -141,7 +141,7 @@ void generateDataFinalGraph(
 
 	auto h_background_under_xtrl_cut = static_cast<TH1D *>(inHisto.Get("proton_background/h_background_under_xtrl_cut"));
 	auto h_background_over_xtrl_cut = static_cast<TH1D *>(inHisto.Get("proton_background/h_background_over_xtrl_cut"));
-	
+
 	h_trigger->SetDirectory(0);
 	h_geometric_cut->SetDirectory(0);
 	h_maxElayer_cut->SetDirectory(0);

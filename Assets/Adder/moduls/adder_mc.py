@@ -345,24 +345,20 @@ class mc_histos():
         h_xtrl_energy_int_tmp = rFile.Get("xtrl/h_xtrl_energy_int")
         h_xtrl_tmp = rFile.Get("xtrl/h_xtrl")
         e_discrimination_last_tmp = rFile.Get("xtrl/e_discrimination_last")
-        '''
         e_discrimination_last_20_100_tmp = rFile.Get("xtrl/e_discrimination_last_20_100")
         e_discrimination_last_100_250_tmp = rFile.Get("xtrl/e_discrimination_last_100_250")
         e_discrimination_last_250_500_tmp = rFile.Get("xtrl/e_discrimination_last_250_500")
         e_discrimination_last_500_1000_tmp = rFile.Get("xtrl/e_discrimination_last_500_1000")
         e_discrimination_last_1000_3000_tmp = rFile.Get("xtrl/e_discrimination_last_1000_3000")
         e_discrimination_last_3000_10000_tmp = rFile.Get("xtrl/e_discrimination_last_3000_10000")
-        '''
 
         e_discrimination_tmp = rFile.Get("xtrl/e_discrimination")
-        '''
         e_discrimination_20_100_tmp = rFile.Get("xtrl/e_discrimination_20_100")
         e_discrimination_100_250_tmp = rFile.Get("xtrl/e_discrimination_100_250")
         e_discrimination_250_500_tmp = rFile.Get("xtrl/e_discrimination_250_500")
         e_discrimination_500_1000_tmp = rFile.Get("xtrl/e_discrimination_500_1000")
         e_discrimination_1000_3000_tmp = rFile.Get("xtrl/e_discrimination_1000_3000")
         e_discrimination_3000_10000_tmp = rFile.Get("xtrl/e_discrimination_3000_10000")
-        '''
 
         h_bin_xtrl_tmp = []
         for idx in range(self.n_energy_bins):
@@ -585,26 +581,22 @@ class mc_histos():
             self.h_xtrl = h_xtrl_tmp.Clone("h_xtrl")
             self.e_discrimination_last = e_discrimination_last_tmp.Clone(
                 "e_discrimination_last")
-
-            '''
+            
             self.e_discrimination_last_20_100 = e_discrimination_last_20_100_tmp.Clone("e_discrimination_last_20_100")
             self.e_discrimination_last_100_250 = e_discrimination_last_100_250_tmp.Clone("e_discrimination_last_100_250")
             self.e_discrimination_last_250_500 = e_discrimination_last_250_500_tmp.Clone("e_discrimination_last_250_500")
             self.e_discrimination_last_500_1000 = e_discrimination_last_500_1000_tmp.Clone("e_discrimination_last_500_1000")
             self.e_discrimination_last_1000_3000 = e_discrimination_last_1000_3000_tmp.Clone("e_discrimination_last_1000_3000")
             self.e_discrimination_last_3000_10000 = e_discrimination_last_3000_10000_tmp.Clone("e_discrimination_last_3000_10000")
-            '''
 
             self.e_discrimination = e_discrimination_tmp.Clone(
                 "e_discrimination")
-            '''
             self.e_discrimination_20_100 = e_discrimination_20_100_tmp.Clone("e_discrimination_20_100")
             self.e_discrimination_100_250 = e_discrimination_100_250_tmp.Clone("e_discrimination_100_250")
             self.e_discrimination_250_500 = e_discrimination_250_500_tmp.Clone("e_discrimination_250_500")
             self.e_discrimination_500_1000 = e_discrimination_500_1000_tmp.Clone("e_discrimination_500_1000")
             self.e_discrimination_1000_3000 = e_discrimination_1000_3000_tmp.Clone("e_discrimination_1000_3000")
             self.e_discrimination_3000_10000 = e_discrimination_3000_10000_tmp.Clone("e_discrimination_3000_10000")
-            '''
 
             for idx in range(self.n_energy_bins):
                 histoName = "h_xtrl_bin_"
@@ -917,24 +909,20 @@ class mc_histos():
             self.h_xtrl.Add(h_xtrl_tmp)
 
             self.e_discrimination_last.Add(e_discrimination_last_tmp)
-            '''
             self.e_discrimination_last_20_100.Add(e_discrimination_last_20_100_tmp)
             self.e_discrimination_last_100_250.Add(e_discrimination_last_100_250_tmp)
             self.e_discrimination_last_250_500.Add(e_discrimination_last_250_500_tmp)
             self.e_discrimination_last_500_1000.Add(e_discrimination_last_500_1000_tmp)
             self.e_discrimination_last_1000_3000.Add(e_discrimination_last_1000_3000_tmp)
             self.e_discrimination_last_3000_10000.Add(e_discrimination_last_3000_10000_tmp)
-            '''
 
             self.e_discrimination.Add(e_discrimination_tmp)
-            '''
             self.e_discrimination_20_100.Add(e_discrimination_20_100_tmp)
             self.e_discrimination_100_250.Add(e_discrimination_100_250_tmp)
             self.e_discrimination_250_500.Add(e_discrimination_250_500_tmp)
             self.e_discrimination_500_1000.Add(e_discrimination_500_1000_tmp)
             self.e_discrimination_1000_3000.Add(e_discrimination_1000_3000_tmp)
             self.e_discrimination_3000_10000.Add(e_discrimination_3000_10000_tmp)
-            '''
 
             for idx in range(self.n_energy_bins):
                 self.h_bin_xtrl[idx].Add(h_bin_xtrl_tmp[idx])

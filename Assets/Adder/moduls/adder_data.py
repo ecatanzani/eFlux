@@ -7,6 +7,8 @@ class data_histos():
 
     def __init__(self):
 
+        self.acq_time = 0
+
         # Cut histos
         self.h_trigger = TH1D()
         self.h_geometric_cut = TH1D()
@@ -116,8 +118,11 @@ class data_histos():
         self.n_energy_bins = 0
 
     def add_file(self, rFile):
-        
+
         # Reading histos
+        h_second_tmp = rFile.Get("h_second")
+        self.acq_time += h_second_tmp.GetXaxis().getXmax() - h_second_tmp.GetXaxis().getXmin()
+
         h_trigger_tmp = rFile.Get("h_trigger")
         h_geometric_cut_tmp = rFile.Get("h_geometric_cut")
         h_maxElayer_cut_tmp = rFile.Get("h_maxElayer_cut")
@@ -329,6 +334,7 @@ class data_histos():
             self.first_file_read = False
 
             # Unlink histos
+
             self.h_trigger.SetDirectory(0)
             self.h_geometric_cut.SetDirectory(0)
             self.h_maxElayer_cut.SetDirectory(0)
@@ -526,6 +532,7 @@ class data_histos():
             sys.exit()
 
         # Writing final histos to file
+
         self.h_trigger.Write()
         self.h_geometric_cut.Write()
         self.h_maxElayer_cut.Write()
@@ -667,3 +674,4 @@ def compute_final_histos_data(condor_dir_list, opts):
         rFile.Close()
 
     my_data_histos.write_histos(opts.output, opts.verbose)
+    print('Total acquisition time: {}'.format(my_data_histos.acq_time))
