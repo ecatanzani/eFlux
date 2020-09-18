@@ -399,9 +399,9 @@ class mc_histos():
             "STKcharge/h_stk_selected_charge2D")
 
         h_background_under_xtrl_cut_tmp = rFile.Get(
-            "mc_ancillary/h_background_under_xtrl_cut")
+            "proton_background/h_background_under_xtrl_cut")
         h_background_over_xtrl_cut_tmp = rFile.Get(
-            "mc_ancillary/h_background_over_xtrl_cut")
+            "proton_background/h_background_over_xtrl_cut")
 
         if self.first_file_read:
 
@@ -1129,8 +1129,8 @@ class mc_histos():
         self.h_stk_selected_charge.Write()
         self.h_stk_selected_charge2D.Write()
 
-        fOut.mkdir("mc_ancillary")
-        fOut.cd("mc_ancillary")
+        fOut.mkdir("proton_background")
+        fOut.cd("proton_background")
 
         self.h_background_under_xtrl_cut.Write()
         self.h_background_over_xtrl_cut.Write()
