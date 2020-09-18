@@ -43,7 +43,7 @@ void fluxBuilder(
         exit(100);
     }
 
-    TH1D* proton_background_fraction = static_cast<TH1D*>(proton_mc_file->Get("mc_ancillary/proton_background_ratio"));
+    TH1D* proton_background_fraction = static_cast<TH1D*>(proton_mc_file->Get("proton_background/proton_background_ratio"));
     proton_background_fraction->SetDirectory(0);
 
     proton_mc_file->Close();
@@ -57,7 +57,7 @@ void fluxBuilder(
     }
 
     TH1D* h_electron_data_all_cut = static_cast<TH1D*>(data_file->Get("h_all_cut_ce"));
-    TH1D* h_electron_data_over_xtrl_cut = static_cast<TH1D*>(data_file->Get("mc_ancillary/h_background_over_xtrl_cut"));
+    TH1D* h_electron_data_over_xtrl_cut = static_cast<TH1D*>(data_file->Get("proton_background/h_background_over_xtrl_cut"));
 
     h_electron_data_all_cut->SetDirectory(0);
     h_electron_data_over_xtrl_cut->SetDirectory(0);
@@ -124,6 +124,9 @@ void fluxBuilder(
     gr_all_electron_flux_E3.SetName("gr_all_electron_flux_E3");
     gr_all_electron_flux.SetTitle("All Electron Flux");
     gr_all_electron_flux_E3.SetTitle("All Electron Flux");
+
+    gr_all_electron_flux_E3.GetYaxis()->SetTitle("e^{-}+e^{+} [GeV m^{2} s sr]^{-1} #times E^{3}");
+    gr_all_electron_flux_E3.GetXaxis()->SetTitle("Energy [GeV]");
 
     TFile* all_electron_flux_file = TFile::Open("all_electron_flux.root", "RECREATE");
     if (all_electron_flux_file->IsZombie())
