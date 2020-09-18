@@ -168,6 +168,10 @@ class mc_histos():
         self.h_stk_selected_charge = TH1D()
         self.h_stk_selected_charge2D = TH2D()
 
+        # Proton background
+        self.h_background_under_xtrl_cut = TH1D()
+        self.h_background_over_xtrl_cut = TH1D()
+        
         self.first_file_read = True
         self.n_energy_bins = 0
 

@@ -49,6 +49,8 @@ struct t_variables
 	double STK_bestTrack_STK_BGO_topX_distance;
 	double STK_bestTrack_STK_BGO_topY_distance;
 	double STK_bestTrack_angular_distance_STK_BGO;
+	double STK_chargeX;
+	double STK_chargeY;
 	double STK_charge;
 
 	// BGO
@@ -61,10 +63,13 @@ struct t_variables
 	double BGOrec_interceptY;
 	double sumRms;
 	double fracLast;
+	double fracLast_13;
 	unsigned int lastBGOLayer;
 	unsigned int nBGOentries;
 
 	// PSD
+	double PSD_chargeX;
+	double PSD_chargeY;
 	double PSD_charge;
 
 	// Classifiers
@@ -85,6 +90,34 @@ struct t_variables
 	double ra_scy;
 	double dec_scy;
 	double verticalRigidityCutoff;
+
+	// Cuts
+	bool cut_nBarLayer13;
+	bool cut_maxRms;
+	bool cut_track_selection;
+	bool cut_psd_stk_match;
+	bool cut_psd_charge;
+	bool cut_stk_charge;
+	bool cut_xtrl;
+	unsigned int nActiveCuts;
+
+	bool evtfilter_geometric;
+	bool evtfilter_BGO_fiducial;
+	bool evtfilter_all_cut;
+	bool evtfilter_all_cut_no_xtrl;
+	bool evtfilter_BGO_fiducial_maxElayer_cut;
+	bool evtfilter_BGO_fiducial_maxBarLayer_cut;
+	bool evtfilter_BGO_fiducial_BGOTrackContainment_cut;
+	bool evtfilter_nBarLayer13_cut;
+	bool evtfilter_maxRms_cut;
+	bool evtfilter_track_selection_cut;
+	bool evtfilter_psd_stk_match_cut;
+	bool evtfilter_psd_charge_cut;
+	bool evtfilter_stk_charge_cut;
+	bool evtfilter_xtrl_cut;
+	bool evtfilter_psd_charge_measurement;
+	bool evtfilter_stk_charge_measurement;
+
 };
 
 inline void updateProcessStatus(const int evIdx, int &kStep, const int nevents)
@@ -122,6 +155,8 @@ inline void branchTree(TTree &tree, t_variables &vars)
 	tree.Branch("STK_bestTrack_STK_BGO_topX_distance", &vars.STK_bestTrack_STK_BGO_topX_distance, "STK_bestTrack_STK_BGO_topX_distance/D");
 	tree.Branch("STK_bestTrack_STK_BGO_topY_distance", &vars.STK_bestTrack_STK_BGO_topY_distance, "STK_bestTrack_STK_BGO_topY_distance/D");
 	tree.Branch("STK_bestTrack_angular_distance_STK_BGO", &vars.STK_bestTrack_angular_distance_STK_BGO, "STK_bestTrack_angular_distance_STK_BGO/D");
+	tree.Branch("STK_chargeX", &vars.STK_chargeX, "STK_chargeX/D");
+	tree.Branch("STK_chargeY", &vars.STK_chargeY, "STK_chargeY/D");
 	tree.Branch("STK_charge", &vars.STK_charge, "STK_charge/D");
 	tree.Branch("energy", &vars.energy, "energy/D");
 	tree.Branch("energy_corr", &vars.energy_corr, "energy_corr/D");
@@ -131,13 +166,40 @@ inline void branchTree(TTree &tree, t_variables &vars)
 	tree.Branch("BGOrec_interceptY", &vars.BGOrec_interceptY, "BGOrec_interceptY/D");
 	tree.Branch("sumRms", &vars.sumRms, "sumRms/D");
 	tree.Branch("fracLast", &vars.fracLast, "fracLast/D");
+	tree.Branch("fracLast_13", &vars.fracLast_13, "fracLast_13/D");
 	tree.Branch("lastBGOLayer", &vars.lastBGOLayer, "lastBGOLayer/i");
 	tree.Branch("nBGOentries", &vars.nBGOentries, "nBGOentries/i");
+	tree.Branch("PSD_chargeX", &vars.PSD_chargeX, "PSD_chargeX/D");
+	tree.Branch("PSD_chargeY", &vars.PSD_chargeY, "PSD_chargeY/D");
 	tree.Branch("PSD_charge", &vars.PSD_charge, "PSD_charge/D");
 	tree.Branch("xtr", &vars.xtr, "xtr/D");
 	tree.Branch("xtrl", &vars.xtrl, "xtrl/D");
 	tree.Branch("glat", &vars.glat, "glat/D");
 	tree.Branch("glon", &vars.glon, "glon/D");
+	tree.Branch("cut_nBarLayer13", &vars.cut_nBarLayer13, "cut_nBarLayer13/O");
+	tree.Branch("cut_maxRms", &vars.cut_maxRms, "cut_maxRms/O");
+	tree.Branch("cut_track_selection", &vars.cut_track_selection, "cut_track_selection/O");
+	tree.Branch("cut_psd_stk_match", &vars.cut_psd_stk_match, "cut_psd_stk_match/O");
+	tree.Branch("cut_psd_charge", &vars.cut_psd_charge, "cut_psd_charge/O");
+	tree.Branch("cut_stk_charge", &vars.cut_stk_charge, "cut_stk_charge/O");
+	tree.Branch("cut_xtrl", &vars.cut_xtrl, "cut_xtrl/O");
+	tree.Branch("nActiveCuts", &vars.nActiveCuts, "nActiveCuts/i");
+	tree.Branch("evtfilter_geometric", &vars.evtfilter_geometric, "evtfilter_geometric/O");
+	tree.Branch("evtfilter_BGO_fiducial", &vars.evtfilter_BGO_fiducial, "evtfilter_BGO_fiducial/O");
+	tree.Branch("evtfilter_all_cut", &vars.evtfilter_all_cut, "evtfilter_all_cut/O");
+	tree.Branch("evtfilter_all_cut_no_xtrl", &vars.evtfilter_all_cut_no_xtrl, "evtfilter_all_cut_no_xtrl/O");
+	tree.Branch("evtfilter_BGO_fiducial_maxElayer_cut", &vars.evtfilter_BGO_fiducial_maxElayer_cut, "evtfilter_BGO_fiducial_maxElayer_cut/O");
+	tree.Branch("evtfilter_BGO_fiducial_maxBarLayer_cut", &vars.evtfilter_BGO_fiducial_maxBarLayer_cut, "evtfilter_BGO_fiducial_maxBarLayer_cut/O");
+	tree.Branch("evtfilter_BGO_fiducial_BGOTrackContainment_cut", &vars.evtfilter_BGO_fiducial_BGOTrackContainment_cut, "evtfilter_BGO_fiducial_BGOTrackContainment_cut/O");
+	tree.Branch("evtfilter_nBarLayer13_cut", &vars.evtfilter_nBarLayer13_cut, "evtfilter_nBarLayer13_cut/O");
+	tree.Branch("evtfilter_maxRms_cut", &vars.evtfilter_maxRms_cut, "evtfilter_maxRms_cut/O");
+	tree.Branch("evtfilter_track_selection_cut", &vars.evtfilter_track_selection_cut, "evtfilter_track_selection_cut/O");
+	tree.Branch("evtfilter_psd_stk_match_cut", &vars.evtfilter_psd_stk_match_cut, "evtfilter_psd_stk_match_cut/O");
+	tree.Branch("evtfilter_psd_charge_cut", &vars.evtfilter_psd_charge_cut, "evtfilter_psd_charge_cut/O");
+	tree.Branch("evtfilter_stk_charge_cut", &vars.evtfilter_stk_charge_cut, "evtfilter_stk_charge_cut/O");
+	tree.Branch("evtfilter_xtrl_cut", &vars.evtfilter_xtrl_cut, "evtfilter_xtrl_cut/O");
+	tree.Branch("evtfilter_psd_charge_measurement", &vars.evtfilter_psd_charge_measurement, "evtfilter_psd_charge_measurement/O");
+	tree.Branch("evtfilter_stk_charge_measurement", &vars.evtfilter_stk_charge_measurement, "evtfilter_stk_charge_measurement/O");
 }
 
 inline void fill_STK_bestTrack_info(best_track event_best_track, t_variables &vars)
@@ -173,6 +235,38 @@ inline void fill_attitude_info(const std::shared_ptr<DmpEvtAttitude> attitude, t
 	vars.ra_scy = attitude->ra_scy;
 	vars.dec_scy = attitude->dec_scy;
 	vars.verticalRigidityCutoff = attitude->verticalRigidityCutoff;
+}
+
+inline void setActiveCuts(t_variables &vars, const data_active_cuts active_cuts)
+{
+	vars.cut_nBarLayer13 = active_cuts.nBarLayer13;
+	vars.cut_maxRms = active_cuts.maxRms;
+	vars.cut_track_selection = active_cuts.track_selection;
+	vars.cut_psd_stk_match = active_cuts.psd_stk_match;
+	vars.cut_psd_charge = active_cuts.psd_charge;
+	vars.cut_stk_charge = active_cuts.stk_charge;
+	vars.cut_xtrl = active_cuts.xtrl;
+	vars.nActiveCuts = active_cuts.nActiveCuts;
+}
+
+inline void setEvtFilter(t_variables &vars, const event_filter filter)
+{
+	vars.evtfilter_geometric = filter.geometric;
+	vars.evtfilter_BGO_fiducial = filter.BGO_fiducial;
+	vars.evtfilter_all_cut = filter.all_cut;
+	vars.evtfilter_all_cut_no_xtrl = filter.all_cut_no_xtrl;
+	vars.evtfilter_BGO_fiducial_maxElayer_cut = filter.BGO_fiducial_maxElayer_cut;
+	vars.evtfilter_BGO_fiducial_maxBarLayer_cut = filter.BGO_fiducial_maxBarLayer_cut;
+	vars.evtfilter_BGO_fiducial_BGOTrackContainment_cut = filter.BGO_fiducial_BGOTrackContainment_cut;
+	vars.evtfilter_nBarLayer13_cut = filter.nBarLayer13_cut;
+	vars.evtfilter_maxRms_cut = filter.maxRms_cut;
+	vars.evtfilter_track_selection_cut = filter.track_selection_cut;
+	vars.evtfilter_psd_stk_match_cut = filter.psd_stk_match_cut;
+	vars.evtfilter_psd_charge_cut = filter.psd_charge_cut;
+	vars.evtfilter_stk_charge_cut = filter.stk_charge_cut;
+	vars.evtfilter_xtrl_cut = filter.xtrl_cut;
+	vars.evtfilter_psd_charge_measurement = filter.psd_charge_measurement;
+	vars.evtfilter_stk_charge_measurement = filter.stk_charge_measurement;
 }
 
 void produceTuples(
@@ -273,6 +367,8 @@ void produceTuples(
 
 	t_variables vars;
 
+	setActiveCuts(vars, active_cuts);
+
 	branchTree(DmpNtupTree_20_100, vars);
 	branchTree(DmpNtupTree_100_250, vars);
 	branchTree(DmpNtupTree_250_500, vars);
@@ -291,7 +387,7 @@ void produceTuples(
 		vars.second = evt_header->GetSecond();
 		vars.msecond = evt_header->GetMillisecond();
 
-		if (pFilter->IsInSAA(evt_header->GetSecond()))
+		if (pFilter->IsInSAA(vars.second))
 		{
 			continue;
 			++data_selection.events_in_saa;
@@ -387,6 +483,7 @@ void produceTuples(
 				stktracks,
 				active_cuts))
 			++data_selection.selected_events;
+		setEvtFilter(vars, filter);
 
 		if (filter.all_cut_no_xtrl)
 		{
@@ -402,11 +499,16 @@ void produceTuples(
 			vars.BGOrec_interceptY = bgorec->GetInterceptYZ();
 			vars.sumRms = bgoVault.GetSumRMS();
 			vars.fracLast = bgoVault.GetLastFFracLayer();
+			vars.fracLast_13 = bgoVault.GetSingleFracLayer(13);
 			vars.lastBGOLayer = bgoVault.GetFracIdxLastLayer();
 			vars.nBGOentries = bgoVault.GetNhits();
 
 			// Filling charges info
+			vars.STK_chargeX = extracted_stk_charge.chargeX;
+			vars.STK_chargeY = extracted_stk_charge.chargeY;
 			vars.STK_charge = 0.5 * (extracted_stk_charge.chargeX + extracted_stk_charge.chargeY);
+			vars.PSD_chargeX = extracted_psd_charge.chargeX;
+			vars.PSD_chargeY = extracted_psd_charge.chargeY;
 			vars.PSD_charge = 0.5 * (extracted_psd_charge.chargeX + extracted_psd_charge.chargeY);
 
 			// Filling classifiers info

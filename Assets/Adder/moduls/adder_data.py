@@ -120,8 +120,8 @@ class data_histos():
     def add_file(self, rFile):
 
         # Reading histos
-        h_second_tmp = rFile.Get("h_second")
-        self.acq_time += h_second_tmp.GetXaxis().getXmax() - h_second_tmp.GetXaxis().getXmin()
+        h_second_tmp = rFile.Get("Time/h_second")
+        self.acq_time += h_second_tmp.GetXaxis().GetXmax() - h_second_tmp.GetXaxis().GetXmin()
 
         h_trigger_tmp = rFile.Get("h_trigger")
         h_geometric_cut_tmp = rFile.Get("h_geometric_cut")
@@ -637,8 +637,8 @@ class data_histos():
         self.h_stk_selected_charge.Write()
         self.h_stk_selected_charge2D.Write()
 
-        fOut.mkdir("mc_ancillary")
-        fOut.cd("mc_ancillary")
+        fOut.mkdir("proton_background")
+        fOut.cd("proton_background")
 
         self.h_background_under_xtrl_cut.Write()
         self.h_background_over_xtrl_cut.Write()
