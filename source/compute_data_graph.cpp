@@ -139,8 +139,8 @@ void generateDataFinalGraph(
 	auto h_stk_selected_charge = static_cast<TH1D *>(inHisto.Get("STKcharge/h_stk_selected_charge"));
 	auto h_stk_selected_charge2D = static_cast<TH1D *>(inHisto.Get("STKcharge/h_stk_selected_charge2D"));
 
-	auto h_background_under_xtrl_cut = static_cast<TH1D *>(inHisto.Get("mc_ancillary/h_background_under_xtrl_cut"));
-	auto h_background_over_xtrl_cut = static_cast<TH1D *>(inHisto.Get("mc_ancillary/h_background_over_xtrl_cut"));
+	auto h_background_under_xtrl_cut = static_cast<TH1D *>(inHisto.Get("proton_background/h_background_under_xtrl_cut"));
+	auto h_background_over_xtrl_cut = static_cast<TH1D *>(inHisto.Get("proton_background/h_background_over_xtrl_cut"));
 
 	h_trigger->SetDirectory(0);
 	h_geometric_cut->SetDirectory(0);
