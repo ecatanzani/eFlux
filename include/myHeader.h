@@ -14,9 +14,9 @@ extern void eCore(
     const std::string outputPath,
     const bool verbose,
     const bool pedantic,
-    const unsigned int lvTime,
-    const std::string accInputPath,
-    const std::string p_accInputPath,
+    const bool rawdata_flag,
+	const bool skimmed_flag,
+	const bool ntuple_flag,
     AnyOption &opt,
     const std::string wd);
 

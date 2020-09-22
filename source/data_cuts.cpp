@@ -84,6 +84,38 @@ void evaluateTopBottomPosition_data(
 	h_BGOreco_bottomMap.Fill(reco_bottomX, reco_bottomY, energy_w);
 }
 
+void evaluateTopBottomPosition_dataskimmed(
+	const double BGOrec_slopeX,
+	const double BGOrec_slopeY,
+	const double BGOrec_interceptX,
+	const double BGOrec_interceptY,
+	TH1D &h_BGOrec_slopeX,
+	TH1D &h_BGOrec_slopeY,
+	TH1D &h_BGOrec_interceptX,
+	TH1D &h_BGOrec_interceptY,
+	TH2D &h_BGOreco_topMap,
+	TH2D &h_BGOreco_bottomMap,
+	const double energy_w)
+{
+	double reco_topX = BGOrec_slopeX * BGO_TopZ + BGOrec_interceptX;
+	double reco_topY = BGOrec_slopeY * BGO_TopZ + BGOrec_interceptY;
+
+	double reco_bottomX = BGOrec_slopeX * BGO_BottomZ + BGOrec_interceptX;
+	double reco_bottomY = BGOrec_slopeY * BGO_BottomZ + BGOrec_interceptY;
+
+	// Fill slopes
+	h_BGOrec_slopeX.Fill(BGOrec_slopeX, energy_w);
+	h_BGOrec_slopeY.Fill(BGOrec_slopeY, energy_w);
+
+	// Fill intercepts
+	h_BGOrec_interceptX.Fill(BGOrec_interceptX, energy_w);
+	h_BGOrec_interceptY.Fill(BGOrec_interceptY, energy_w);
+
+	// Fill maps
+	h_BGOreco_topMap.Fill(reco_topX, reco_topY, energy_w);
+	h_BGOreco_bottomMap.Fill(reco_bottomX, reco_bottomY, energy_w);
+}
+
 bool maxElayer_cut(
 	const std::shared_ptr<DmpEvtBgoRec> bgorec,
 	const cuts_conf data_cuts,

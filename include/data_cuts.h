@@ -149,6 +149,19 @@ extern void evaluateTopBottomPosition_data(
 	TH2D &h_BGOreco_bottomMap,
 	const double energy_w = 1);
 
+extern void evaluateTopBottomPosition_dataskimmed(
+	const double BGOrec_slopeX,
+	const double BGOrec_slopeY,
+	const double BGOrec_interceptX,
+	const double BGOrec_interceptY,
+	TH1D &h_BGOrec_slopeX,
+	TH1D &h_BGOrec_slopeY,
+	TH1D &h_BGOrec_interceptX,
+	TH1D &h_BGOrec_interceptY,
+	TH2D &h_BGOreco_topMap,
+	TH2D &h_BGOreco_bottomMap,
+	const double energy_w = 1);
+
 extern bool maxElayer_cut(
 	const std::shared_ptr<DmpEvtBgoRec> bgorec,
 	const cuts_conf acceptance_cuts,

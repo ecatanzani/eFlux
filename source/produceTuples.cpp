@@ -1,124 +1,4 @@
-#include "data_loop.h"
-#include "aggregate_events.h"
-#include "read_sets_config_file.h"
-#include "data_cuts.h"
-#include "BGO_energy_cuts.h"
-#include "flux.h"
-#include "wtsydp.h"
-#include "binning.h"
-#include "charge.h"
-#include "mc_ancillary.h"
-#include "fill_event_histo.h"
-#include "myHeader.h"
-
-#include "TEfficiency.h"
-#include "TTree.h"
-
-#include "DmpEvtAttitude.h"
-#include "DmpFilterOrbit.h"
-#include "DmpEvtHeader.h"
-#include "DmpIOSvc.h"
-#include "DmpCore.h"
-
-struct t_variables
-{
-	// Trigger
-	bool unbiased_trigger;
-	bool mip1_trigger;
-	bool mip2_trigger;
-	bool HET_trigger;
-	bool LET_trigger;
-	bool MIP_trigger;
-
-	// Event time
-	unsigned int second;
-	unsigned int msecond;
-
-	// STK
-	unsigned int STK_bestTrack_npoints;
-	unsigned int STK_bestTrack_nholesX;
-	unsigned int STK_bestTrack_nholesY;
-	double STK_bestTrack_slopeX;
-	double STK_bestTrack_slopeY;
-	double STK_bestTrack_interceptX;
-	double STK_bestTrack_interceptY;
-	double STK_bestTrack_costheta;
-	double STK_bestTrack_phi;
-	double STK_bestTrack_extr_BGO_topX;
-	double STK_bestTrack_extr_BGO_topY;
-	double STK_bestTrack_STK_BGO_topX_distance;
-	double STK_bestTrack_STK_BGO_topY_distance;
-	double STK_bestTrack_angular_distance_STK_BGO;
-	double STK_chargeX;
-	double STK_chargeY;
-	double STK_charge;
-
-	// BGO
-
-	double energy;
-	double energy_corr;
-	double BGOrec_slopeX;
-	double BGOrec_slopeY;
-	double BGOrec_interceptX;
-	double BGOrec_interceptY;
-	double sumRms;
-	double fracLast;
-	double fracLast_13;
-	unsigned int lastBGOLayer;
-	unsigned int nBGOentries;
-
-	// PSD
-	double PSD_chargeX;
-	double PSD_chargeY;
-	double PSD_charge;
-
-	// Classifiers
-	double xtr;
-	double xtrl;
-
-	// Attitude
-	double glat;
-	double glon;
-	double geo_lat;
-	double geo_lon;
-	double ra_zenith;
-	double dec_zenith;
-	double ra_scz;
-	double dec_scz;
-	double ra_scx;
-	double dec_scx;
-	double ra_scy;
-	double dec_scy;
-	double verticalRigidityCutoff;
-
-	// Cuts
-	bool cut_nBarLayer13;
-	bool cut_maxRms;
-	bool cut_track_selection;
-	bool cut_psd_stk_match;
-	bool cut_psd_charge;
-	bool cut_stk_charge;
-	bool cut_xtrl;
-	unsigned int nActiveCuts;
-
-	bool evtfilter_geometric;
-	bool evtfilter_BGO_fiducial;
-	bool evtfilter_all_cut;
-	bool evtfilter_all_cut_no_xtrl;
-	bool evtfilter_BGO_fiducial_maxElayer_cut;
-	bool evtfilter_BGO_fiducial_maxBarLayer_cut;
-	bool evtfilter_BGO_fiducial_BGOTrackContainment_cut;
-	bool evtfilter_nBarLayer13_cut;
-	bool evtfilter_maxRms_cut;
-	bool evtfilter_track_selection_cut;
-	bool evtfilter_psd_stk_match_cut;
-	bool evtfilter_psd_charge_cut;
-	bool evtfilter_stk_charge_cut;
-	bool evtfilter_xtrl_cut;
-	bool evtfilter_psd_charge_measurement;
-	bool evtfilter_stk_charge_measurement;
-
-};
+#include "produceTuples.h"
 
 inline void updateProcessStatus(const int evIdx, int &kStep, const int nevents)
 {
@@ -131,76 +11,156 @@ inline void updateProcessStatus(const int evIdx, int &kStep, const int nevents)
 	}
 }
 
-inline void branchTree(TTree &tree, t_variables &vars)
+inline void branchTree(
+	std::shared_ptr<TTree> tree, 
+	t_variables &vars)
 {
-	tree.Branch("unbiased_trigger", &vars.unbiased_trigger, "unbiased_trigger/O");
-	tree.Branch("mip1_trigger", &vars.mip1_trigger, "mip1_trigger/O");
-	tree.Branch("mip2_trigger", &vars.mip2_trigger, "mip2_trigger/O");
-	tree.Branch("HET_trigger", &vars.HET_trigger, "HET_trigger/O");
-	tree.Branch("LET_trigger", &vars.LET_trigger, "LET_trigger/O");
-	tree.Branch("MIP_trigger", &vars.MIP_trigger, "MIP_trigger/O");
-	tree.Branch("second", &vars.second, "second/i");
-	tree.Branch("msecond", &vars.msecond, "msecond/i");
-	tree.Branch("STK_bestTrack_npoints", &vars.STK_bestTrack_npoints, "STK_bestTrack_npoints/i");
-	tree.Branch("STK_bestTrack_nholesX", &vars.STK_bestTrack_nholesX, "STK_bestTrack_nholesX/i");
-	tree.Branch("STK_bestTrack_nholesY", &vars.STK_bestTrack_nholesY, "STK_bestTrack_nholesY/i");
-	tree.Branch("STK_bestTrack_slopeX", &vars.STK_bestTrack_slopeX, "STK_bestTrack_slopeX/D");
-	tree.Branch("STK_bestTrack_slopeY", &vars.STK_bestTrack_slopeY, "STK_bestTrack_slopeY/D");
-	tree.Branch("STK_bestTrack_interceptX", &vars.STK_bestTrack_interceptX, "STK_bestTrack_interceptX/D");
-	tree.Branch("STK_bestTrack_interceptY", &vars.STK_bestTrack_interceptY, "STK_bestTrack_interceptY/D");
-	tree.Branch("STK_bestTrack_costheta", &vars.STK_bestTrack_costheta, "STK_bestTrack_costheta/D");
-	tree.Branch("STK_bestTrack_phi", &vars.STK_bestTrack_phi, "STK_bestTrack_phi/D");
-	tree.Branch("STK_bestTrack_extr_BGO_topX", &vars.STK_bestTrack_extr_BGO_topX, "STK_bestTrack_extr_BGO_topX/D");
-	tree.Branch("STK_bestTrack_extr_BGO_topY", &vars.STK_bestTrack_extr_BGO_topY, "STK_bestTrack_extr_BGO_topY/D");
-	tree.Branch("STK_bestTrack_STK_BGO_topX_distance", &vars.STK_bestTrack_STK_BGO_topX_distance, "STK_bestTrack_STK_BGO_topX_distance/D");
-	tree.Branch("STK_bestTrack_STK_BGO_topY_distance", &vars.STK_bestTrack_STK_BGO_topY_distance, "STK_bestTrack_STK_BGO_topY_distance/D");
-	tree.Branch("STK_bestTrack_angular_distance_STK_BGO", &vars.STK_bestTrack_angular_distance_STK_BGO, "STK_bestTrack_angular_distance_STK_BGO/D");
-	tree.Branch("STK_chargeX", &vars.STK_chargeX, "STK_chargeX/D");
-	tree.Branch("STK_chargeY", &vars.STK_chargeY, "STK_chargeY/D");
-	tree.Branch("STK_charge", &vars.STK_charge, "STK_charge/D");
-	tree.Branch("energy", &vars.energy, "energy/D");
-	tree.Branch("energy_corr", &vars.energy_corr, "energy_corr/D");
-	tree.Branch("BGOrec_slopeX", &vars.BGOrec_slopeX, "BGOrec_slopeX/D");
-	tree.Branch("BGOrec_slopeY", &vars.BGOrec_slopeY, "BGOrec_slopeY/D");
-	tree.Branch("BGOrec_interceptX", &vars.BGOrec_interceptX, "BGOrec_interceptX/D");
-	tree.Branch("BGOrec_interceptY", &vars.BGOrec_interceptY, "BGOrec_interceptY/D");
-	tree.Branch("sumRms", &vars.sumRms, "sumRms/D");
-	tree.Branch("fracLast", &vars.fracLast, "fracLast/D");
-	tree.Branch("fracLast_13", &vars.fracLast_13, "fracLast_13/D");
-	tree.Branch("lastBGOLayer", &vars.lastBGOLayer, "lastBGOLayer/i");
-	tree.Branch("nBGOentries", &vars.nBGOentries, "nBGOentries/i");
-	tree.Branch("PSD_chargeX", &vars.PSD_chargeX, "PSD_chargeX/D");
-	tree.Branch("PSD_chargeY", &vars.PSD_chargeY, "PSD_chargeY/D");
-	tree.Branch("PSD_charge", &vars.PSD_charge, "PSD_charge/D");
-	tree.Branch("xtr", &vars.xtr, "xtr/D");
-	tree.Branch("xtrl", &vars.xtrl, "xtrl/D");
-	tree.Branch("glat", &vars.glat, "glat/D");
-	tree.Branch("glon", &vars.glon, "glon/D");
-	tree.Branch("cut_nBarLayer13", &vars.cut_nBarLayer13, "cut_nBarLayer13/O");
-	tree.Branch("cut_maxRms", &vars.cut_maxRms, "cut_maxRms/O");
-	tree.Branch("cut_track_selection", &vars.cut_track_selection, "cut_track_selection/O");
-	tree.Branch("cut_psd_stk_match", &vars.cut_psd_stk_match, "cut_psd_stk_match/O");
-	tree.Branch("cut_psd_charge", &vars.cut_psd_charge, "cut_psd_charge/O");
-	tree.Branch("cut_stk_charge", &vars.cut_stk_charge, "cut_stk_charge/O");
-	tree.Branch("cut_xtrl", &vars.cut_xtrl, "cut_xtrl/O");
-	tree.Branch("nActiveCuts", &vars.nActiveCuts, "nActiveCuts/i");
-	tree.Branch("evtfilter_geometric", &vars.evtfilter_geometric, "evtfilter_geometric/O");
-	tree.Branch("evtfilter_BGO_fiducial", &vars.evtfilter_BGO_fiducial, "evtfilter_BGO_fiducial/O");
-	tree.Branch("evtfilter_all_cut", &vars.evtfilter_all_cut, "evtfilter_all_cut/O");
-	tree.Branch("evtfilter_all_cut_no_xtrl", &vars.evtfilter_all_cut_no_xtrl, "evtfilter_all_cut_no_xtrl/O");
-	tree.Branch("evtfilter_BGO_fiducial_maxElayer_cut", &vars.evtfilter_BGO_fiducial_maxElayer_cut, "evtfilter_BGO_fiducial_maxElayer_cut/O");
-	tree.Branch("evtfilter_BGO_fiducial_maxBarLayer_cut", &vars.evtfilter_BGO_fiducial_maxBarLayer_cut, "evtfilter_BGO_fiducial_maxBarLayer_cut/O");
-	tree.Branch("evtfilter_BGO_fiducial_BGOTrackContainment_cut", &vars.evtfilter_BGO_fiducial_BGOTrackContainment_cut, "evtfilter_BGO_fiducial_BGOTrackContainment_cut/O");
-	tree.Branch("evtfilter_nBarLayer13_cut", &vars.evtfilter_nBarLayer13_cut, "evtfilter_nBarLayer13_cut/O");
-	tree.Branch("evtfilter_maxRms_cut", &vars.evtfilter_maxRms_cut, "evtfilter_maxRms_cut/O");
-	tree.Branch("evtfilter_track_selection_cut", &vars.evtfilter_track_selection_cut, "evtfilter_track_selection_cut/O");
-	tree.Branch("evtfilter_psd_stk_match_cut", &vars.evtfilter_psd_stk_match_cut, "evtfilter_psd_stk_match_cut/O");
-	tree.Branch("evtfilter_psd_charge_cut", &vars.evtfilter_psd_charge_cut, "evtfilter_psd_charge_cut/O");
-	tree.Branch("evtfilter_stk_charge_cut", &vars.evtfilter_stk_charge_cut, "evtfilter_stk_charge_cut/O");
-	tree.Branch("evtfilter_xtrl_cut", &vars.evtfilter_xtrl_cut, "evtfilter_xtrl_cut/O");
-	tree.Branch("evtfilter_psd_charge_measurement", &vars.evtfilter_psd_charge_measurement, "evtfilter_psd_charge_measurement/O");
-	tree.Branch("evtfilter_stk_charge_measurement", &vars.evtfilter_stk_charge_measurement, "evtfilter_stk_charge_measurement/O");
+	tree->Branch("unbiased_trigger", &vars.unbiased_trigger, "unbiased_trigger/O");
+	tree->Branch("mip1_trigger", &vars.mip1_trigger, "mip1_trigger/O");
+	tree->Branch("mip2_trigger", &vars.mip2_trigger, "mip2_trigger/O");
+	tree->Branch("HET_trigger", &vars.HET_trigger, "HET_trigger/O");
+	tree->Branch("LET_trigger", &vars.LET_trigger, "LET_trigger/O");
+	tree->Branch("MIP_trigger", &vars.MIP_trigger, "MIP_trigger/O");
+	tree->Branch("general_trigger", &vars.general_trigger, "general_trigger/O");
+	tree->Branch("second", &vars.second, "second/i");
+	tree->Branch("msecond", &vars.msecond, "msecond/i");
+	tree->Branch("STK_bestTrack_npoints", &vars.STK_bestTrack_npoints, "STK_bestTrack_npoints/i");
+	tree->Branch("STK_bestTrack_nholesX", &vars.STK_bestTrack_nholesX, "STK_bestTrack_nholesX/i");
+	tree->Branch("STK_bestTrack_nholesY", &vars.STK_bestTrack_nholesY, "STK_bestTrack_nholesY/i");
+	tree->Branch("STK_bestTrack_slopeX", &vars.STK_bestTrack_slopeX, "STK_bestTrack_slopeX/D");
+	tree->Branch("STK_bestTrack_slopeY", &vars.STK_bestTrack_slopeY, "STK_bestTrack_slopeY/D");
+	tree->Branch("STK_bestTrack_interceptX", &vars.STK_bestTrack_interceptX, "STK_bestTrack_interceptX/D");
+	tree->Branch("STK_bestTrack_interceptY", &vars.STK_bestTrack_interceptY, "STK_bestTrack_interceptY/D");
+	tree->Branch("STK_bestTrack_costheta", &vars.STK_bestTrack_costheta, "STK_bestTrack_costheta/D");
+	tree->Branch("STK_bestTrack_phi", &vars.STK_bestTrack_phi, "STK_bestTrack_phi/D");
+	tree->Branch("STK_bestTrack_extr_BGO_topX", &vars.STK_bestTrack_extr_BGO_topX, "STK_bestTrack_extr_BGO_topX/D");
+	tree->Branch("STK_bestTrack_extr_BGO_topY", &vars.STK_bestTrack_extr_BGO_topY, "STK_bestTrack_extr_BGO_topY/D");
+	tree->Branch("STK_bestTrack_STK_BGO_topX_distance", &vars.STK_bestTrack_STK_BGO_topX_distance, "STK_bestTrack_STK_BGO_topX_distance/D");
+	tree->Branch("STK_bestTrack_STK_BGO_topY_distance", &vars.STK_bestTrack_STK_BGO_topY_distance, "STK_bestTrack_STK_BGO_topY_distance/D");
+	tree->Branch("STK_bestTrack_angular_distance_STK_BGO", &vars.STK_bestTrack_angular_distance_STK_BGO, "STK_bestTrack_angular_distance_STK_BGO/D");
+	tree->Branch("STK_chargeX", &vars.STK_chargeX, "STK_chargeX/D");
+	tree->Branch("STK_chargeY", &vars.STK_chargeY, "STK_chargeY/D");
+	tree->Branch("STK_charge", &vars.STK_charge, "STK_charge/D");
+	tree->Branch("energy", &vars.energy, "energy/D");
+	tree->Branch("energy_corr", &vars.energy_corr, "energy_corr/D");
+	tree->Branch("BGOrec_slopeX", &vars.BGOrec_slopeX, "BGOrec_slopeX/D");
+	tree->Branch("BGOrec_slopeY", &vars.BGOrec_slopeY, "BGOrec_slopeY/D");
+	tree->Branch("BGOrec_interceptX", &vars.BGOrec_interceptX, "BGOrec_interceptX/D");
+	tree->Branch("BGOrec_interceptY", &vars.BGOrec_interceptY, "BGOrec_interceptY/D");
+	tree->Branch("sumRms", &vars.sumRms, "sumRms/D");
+	tree->Branch("fracLayer", &vars.fracLayer);
+	tree->Branch("fracLast", &vars.fracLast, "fracLast/D");
+	tree->Branch("fracLast_13", &vars.fracLast_13, "fracLast_13/D");
+	tree->Branch("lastBGOLayer", &vars.lastBGOLayer, "lastBGOLayer/i");
+	tree->Branch("nBGOentries", &vars.nBGOentries, "nBGOentries/i");
+	tree->Branch("PSD_chargeX", &vars.PSD_chargeX, "PSD_chargeX/D");
+	tree->Branch("PSD_chargeY", &vars.PSD_chargeY, "PSD_chargeY/D");
+	tree->Branch("PSD_charge", &vars.PSD_charge, "PSD_charge/D");
+	tree->Branch("xtr", &vars.xtr, "xtr/D");
+	tree->Branch("xtrl", &vars.xtrl, "xtrl/D");
+	tree->Branch("glat", &vars.glat, "glat/D");
+	tree->Branch("glon", &vars.glon, "glon/D");
+	tree->Branch("cut_nBarLayer13", &vars.cut_nBarLayer13, "cut_nBarLayer13/O");
+	tree->Branch("cut_maxRms", &vars.cut_maxRms, "cut_maxRms/O");
+	tree->Branch("cut_track_selection", &vars.cut_track_selection, "cut_track_selection/O");
+	tree->Branch("cut_psd_stk_match", &vars.cut_psd_stk_match, "cut_psd_stk_match/O");
+	tree->Branch("cut_psd_charge", &vars.cut_psd_charge, "cut_psd_charge/O");
+	tree->Branch("cut_stk_charge", &vars.cut_stk_charge, "cut_stk_charge/O");
+	tree->Branch("cut_xtrl", &vars.cut_xtrl, "cut_xtrl/O");
+	tree->Branch("nActiveCuts", &vars.nActiveCuts, "nActiveCuts/i");
+	tree->Branch("evtfilter_geometric", &vars.evtfilter_geometric, "evtfilter_geometric/O");
+	tree->Branch("evtfilter_BGO_fiducial", &vars.evtfilter_BGO_fiducial, "evtfilter_BGO_fiducial/O");
+	tree->Branch("evtfilter_all_cut", &vars.evtfilter_all_cut, "evtfilter_all_cut/O");
+	tree->Branch("evtfilter_all_cut_no_xtrl", &vars.evtfilter_all_cut_no_xtrl, "evtfilter_all_cut_no_xtrl/O");
+	tree->Branch("evtfilter_BGO_fiducial_maxElayer_cut", &vars.evtfilter_BGO_fiducial_maxElayer_cut, "evtfilter_BGO_fiducial_maxElayer_cut/O");
+	tree->Branch("evtfilter_BGO_fiducial_maxBarLayer_cut", &vars.evtfilter_BGO_fiducial_maxBarLayer_cut, "evtfilter_BGO_fiducial_maxBarLayer_cut/O");
+	tree->Branch("evtfilter_BGO_fiducial_BGOTrackContainment_cut", &vars.evtfilter_BGO_fiducial_BGOTrackContainment_cut, "evtfilter_BGO_fiducial_BGOTrackContainment_cut/O");
+	tree->Branch("evtfilter_nBarLayer13_cut", &vars.evtfilter_nBarLayer13_cut, "evtfilter_nBarLayer13_cut/O");
+	tree->Branch("evtfilter_maxRms_cut", &vars.evtfilter_maxRms_cut, "evtfilter_maxRms_cut/O");
+	tree->Branch("evtfilter_track_selection_cut", &vars.evtfilter_track_selection_cut, "evtfilter_track_selection_cut/O");
+	tree->Branch("evtfilter_psd_stk_match_cut", &vars.evtfilter_psd_stk_match_cut, "evtfilter_psd_stk_match_cut/O");
+	tree->Branch("evtfilter_psd_charge_cut", &vars.evtfilter_psd_charge_cut, "evtfilter_psd_charge_cut/O");
+	tree->Branch("evtfilter_stk_charge_cut", &vars.evtfilter_stk_charge_cut, "evtfilter_stk_charge_cut/O");
+	tree->Branch("evtfilter_xtrl_cut", &vars.evtfilter_xtrl_cut, "evtfilter_xtrl_cut/O");
+	tree->Branch("evtfilter_psd_charge_measurement", &vars.evtfilter_psd_charge_measurement, "evtfilter_psd_charge_measurement/O");
+	tree->Branch("evtfilter_stk_charge_measurement", &vars.evtfilter_stk_charge_measurement, "evtfilter_stk_charge_measurement/O");
 }
+
+template <typename linkedStruct> void linker(
+    std::shared_ptr<linkedStruct> myStruct, 
+    t_variables &vars)
+{
+	myStruct->SetBranchAddress("unbiased_trigger", &vars.unbiased_trigger);
+	myStruct->SetBranchAddress("mip1_trigger", &vars.mip1_trigger);
+	myStruct->SetBranchAddress("mip2_trigger", &vars.mip2_trigger);
+	myStruct->SetBranchAddress("HET_trigger", &vars.HET_trigger);
+	myStruct->SetBranchAddress("LET_trigger", &vars.LET_trigger);
+	myStruct->SetBranchAddress("MIP_trigger", &vars.MIP_trigger);
+	myStruct->SetBranchAddress("general_trigger", &vars.general_trigger);
+	myStruct->SetBranchAddress("second", &vars.second);
+	myStruct->SetBranchAddress("msecond", &vars.msecond);
+	myStruct->SetBranchAddress("STK_bestTrack_npoints", &vars.STK_bestTrack_npoints);
+	myStruct->SetBranchAddress("STK_bestTrack_nholesX", &vars.STK_bestTrack_nholesX);
+	myStruct->SetBranchAddress("STK_bestTrack_nholesY", &vars.STK_bestTrack_nholesY);
+	myStruct->SetBranchAddress("STK_bestTrack_slopeX", &vars.STK_bestTrack_slopeX);
+	myStruct->SetBranchAddress("STK_bestTrack_slopeY", &vars.STK_bestTrack_slopeY);
+	myStruct->SetBranchAddress("STK_bestTrack_interceptX", &vars.STK_bestTrack_interceptX);
+	myStruct->SetBranchAddress("STK_bestTrack_interceptY", &vars.STK_bestTrack_interceptY);
+	myStruct->SetBranchAddress("STK_bestTrack_costheta", &vars.STK_bestTrack_costheta);
+	myStruct->SetBranchAddress("STK_bestTrack_phi", &vars.STK_bestTrack_phi);
+	myStruct->SetBranchAddress("STK_bestTrack_extr_BGO_topX", &vars.STK_bestTrack_extr_BGO_topX);
+	myStruct->SetBranchAddress("STK_bestTrack_extr_BGO_topY", &vars.STK_bestTrack_extr_BGO_topY);
+	myStruct->SetBranchAddress("STK_bestTrack_STK_BGO_topX_distance", &vars.STK_bestTrack_STK_BGO_topX_distance);
+	myStruct->SetBranchAddress("STK_bestTrack_STK_BGO_topY_distance", &vars.STK_bestTrack_STK_BGO_topY_distance);
+	myStruct->SetBranchAddress("STK_bestTrack_angular_distance_STK_BGO", &vars.STK_bestTrack_angular_distance_STK_BGO);
+	myStruct->SetBranchAddress("STK_chargeX", &vars.STK_chargeX);
+	myStruct->SetBranchAddress("STK_chargeY", &vars.STK_chargeY);
+	myStruct->SetBranchAddress("STK_charge", &vars.STK_charge);
+	myStruct->SetBranchAddress("energy", &vars.energy);
+	myStruct->SetBranchAddress("energy_corr", &vars.energy_corr);
+	myStruct->SetBranchAddress("BGOrec_slopeX", &vars.BGOrec_slopeX);
+	myStruct->SetBranchAddress("BGOrec_slopeY", &vars.BGOrec_slopeY);
+	myStruct->SetBranchAddress("BGOrec_interceptX", &vars.BGOrec_interceptX);
+	myStruct->SetBranchAddress("BGOrec_interceptY", &vars.BGOrec_interceptY);
+	myStruct->SetBranchAddress("sumRms", &vars.sumRms);
+	myStruct->SetBranchAddress("fracLayer", &vars.fracLayer_ptr);
+	myStruct->SetBranchAddress("fracLast", &vars.fracLast);
+	myStruct->SetBranchAddress("fracLast_13", &vars.fracLast_13);
+	myStruct->SetBranchAddress("lastBGOLayer", &vars.lastBGOLayer);
+	myStruct->SetBranchAddress("nBGOentries", &vars.nBGOentries);
+	myStruct->SetBranchAddress("PSD_chargeX", &vars.PSD_chargeX);
+	myStruct->SetBranchAddress("PSD_chargeY", &vars.PSD_chargeY);
+	myStruct->SetBranchAddress("PSD_charge", &vars.PSD_charge);
+	myStruct->SetBranchAddress("xtr", &vars.xtr);
+	myStruct->SetBranchAddress("xtrl", &vars.xtrl);
+	myStruct->SetBranchAddress("glat", &vars.glat);
+	myStruct->SetBranchAddress("glon", &vars.glon);
+	myStruct->SetBranchAddress("cut_nBarLayer13", &vars.cut_nBarLayer13);
+	myStruct->SetBranchAddress("cut_maxRms", &vars.cut_maxRms);
+	myStruct->SetBranchAddress("cut_track_selection", &vars.cut_track_selection);
+	myStruct->SetBranchAddress("cut_psd_stk_match", &vars.cut_psd_stk_match);
+	myStruct->SetBranchAddress("cut_psd_charge", &vars.cut_psd_charge);
+	myStruct->SetBranchAddress("cut_stk_charge", &vars.cut_stk_charge);
+	myStruct->SetBranchAddress("cut_xtrl", &vars.cut_xtrl);
+	myStruct->SetBranchAddress("nActiveCuts", &vars.nActiveCuts);
+	myStruct->SetBranchAddress("evtfilter_geometric", &vars.evtfilter_geometric);
+	myStruct->SetBranchAddress("evtfilter_BGO_fiducial", &vars.evtfilter_BGO_fiducial);
+	myStruct->SetBranchAddress("evtfilter_all_cut", &vars.evtfilter_all_cut);
+	myStruct->SetBranchAddress("evtfilter_all_cut_no_xtrl", &vars.evtfilter_all_cut_no_xtrl);
+	myStruct->SetBranchAddress("evtfilter_BGO_fiducial_maxElayer_cut", &vars.evtfilter_BGO_fiducial_maxElayer_cut);
+	myStruct->SetBranchAddress("evtfilter_BGO_fiducial_maxBarLayer_cut", &vars.evtfilter_BGO_fiducial_maxBarLayer_cut);
+	myStruct->SetBranchAddress("evtfilter_BGO_fiducial_BGOTrackContainment_cut", &vars.evtfilter_BGO_fiducial_BGOTrackContainment_cut);
+	myStruct->SetBranchAddress("evtfilter_nBarLayer13_cut", &vars.evtfilter_nBarLayer13_cut);
+	myStruct->SetBranchAddress("evtfilter_maxRms_cut", &vars.evtfilter_maxRms_cut);
+	myStruct->SetBranchAddress("evtfilter_track_selection_cut", &vars.evtfilter_track_selection_cut);
+	myStruct->SetBranchAddress("evtfilter_psd_stk_match_cut", &vars.evtfilter_psd_stk_match_cut);
+	myStruct->SetBranchAddress("evtfilter_psd_charge_cut", &vars.evtfilter_psd_charge_cut);
+	myStruct->SetBranchAddress("evtfilter_stk_charge_cut", &vars.evtfilter_stk_charge_cut);
+	myStruct->SetBranchAddress("evtfilter_xtrl_cut", &vars.evtfilter_xtrl_cut);
+	myStruct->SetBranchAddress("evtfilter_psd_charge_measurement", &vars.evtfilter_psd_charge_measurement);
+	myStruct->SetBranchAddress("evtfilter_stk_charge_measurement", &vars.evtfilter_stk_charge_measurement);
+}
+
 
 inline void fill_STK_bestTrack_info(best_track event_best_track, t_variables &vars)
 {
@@ -358,12 +318,12 @@ void produceTuples(
 	int kStep = 10;
 
 	// Create TTrees
-	TTree DmpNtupTree_20_100("DmpEvtNtup", "DAMPE Event nTuple Tree");
-	TTree DmpNtupTree_100_250("DmpEvtNtup", "DAMPE Event nTuple Tree");
-	TTree DmpNtupTree_250_500("DmpEvtNtup", "DAMPE Event nTuple Tree");
-	TTree DmpNtupTree_500_1000("DmpEvtNtup", "DAMPE Event nTuple Tree");
-	TTree DmpNtupTree_1000_5000("DmpEvtNtup", "DAMPE Event nTuple Tree");
-	TTree DmpNtupTree_5000_10000("DmpEvtNtup", "DAMPE Event nTuple Tree");
+	std::shared_ptr<TTree> DmpNtupTree_20_100 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
+	std::shared_ptr<TTree> DmpNtupTree_100_250 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
+	std::shared_ptr<TTree> DmpNtupTree_250_500 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
+	std::shared_ptr<TTree> DmpNtupTree_500_1000 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
+	std::shared_ptr<TTree> DmpNtupTree_1000_5000 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
+	std::shared_ptr<TTree> DmpNtupTree_5000_10000 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
 
 	t_variables vars;
 
@@ -398,11 +358,11 @@ void produceTuples(
 			updateProcessStatus(evIdx, kStep, nevents);
 
 		// Get event total energy
-		double bgoTotalE = bgorec->GetTotalEnergy();
+		double bgoTotalE_raw = bgorec->GetTotalEnergy();
 		double bgoTotalE_corr = bgorec->GetElectronEcor();
 
 		// Don't accept events outside the selected energy window
-		if (bgoTotalE * _GeV < flux_cuts.min_event_energy || bgoTotalE * _GeV > flux_cuts.max_event_energy)
+		if (bgoTotalE_raw * _GeV < flux_cuts.min_event_energy || bgoTotalE_raw * _GeV > flux_cuts.max_event_energy)
 		{
 			++data_selection.events_out_range;
 			continue;
@@ -427,6 +387,7 @@ void produceTuples(
 		vars.HET_trigger = HET_tr;
 		vars.LET_trigger = LET_tr;
 		vars.MIP_trigger = MIP_tr;
+		vars.general_trigger = general_trigger;
 
 		// Check if the event has been triggered or not
 		if (general_trigger)
@@ -446,7 +407,7 @@ void produceTuples(
 
 		bgoVault.scanBGOHits(
 			bgohits,
-			bgoTotalE,
+			bgoTotalE_raw,
 			flux_cuts);
 
 		psdVault.scanPSDHits(
@@ -472,7 +433,7 @@ void produceTuples(
 				bgorec,
 				bgohits,
 				flux_cuts,
-				bgoTotalE,
+				bgoTotalE_raw,
 				bgoVault,
 				psdVault,
 				event_best_track,
@@ -491,13 +452,14 @@ void produceTuples(
 			fill_STK_bestTrack_info(event_best_track, vars);
 
 			// Filling BGO info
-			vars.energy = bgoTotalE;
+			vars.energy = bgoTotalE_raw;
 			vars.energy_corr = bgoTotalE_corr;
 			vars.BGOrec_slopeX = bgorec->GetSlopeXZ();
 			vars.BGOrec_slopeY = bgorec->GetSlopeYZ();
 			vars.BGOrec_interceptX = bgorec->GetInterceptXZ();
 			vars.BGOrec_interceptY = bgorec->GetInterceptYZ();
 			vars.sumRms = bgoVault.GetSumRMS();
+			vars.fracLayer = bgoVault.GetFracLayer();
 			vars.fracLast = bgoVault.GetLastFFracLayer();
 			vars.fracLast_13 = bgoVault.GetSingleFracLayer(13);
 			vars.lastBGOLayer = bgoVault.GetFracIdxLastLayer();
@@ -527,18 +489,18 @@ void produceTuples(
 			fill_attitude_info(attitude, vars);
 
 			// Fill tree
-			if (bgoTotalE >=20 && bgoTotalE * _GeV <=100)
-				DmpNtupTree_20_100.Fill();
-			if (bgoTotalE >100 && bgoTotalE * _GeV <=250)
-				DmpNtupTree_100_250.Fill();
-			if (bgoTotalE >250 && bgoTotalE * _GeV <=500)
-				DmpNtupTree_250_500.Fill();
-			if (bgoTotalE >500 && bgoTotalE * _GeV <=1000)
-				DmpNtupTree_500_1000.Fill();
-			if (bgoTotalE >1000 && bgoTotalE * _GeV <=5000)
-				DmpNtupTree_1000_5000.Fill();
-			if (bgoTotalE >5000 && bgoTotalE * _GeV <=10000)
-				DmpNtupTree_5000_10000.Fill();
+			if (bgoTotalE_raw >=20 && bgoTotalE_raw * _GeV <=100)
+				DmpNtupTree_20_100->Fill();
+			if (bgoTotalE_raw >100 && bgoTotalE_raw * _GeV <=250)
+				DmpNtupTree_100_250->Fill();
+			if (bgoTotalE_raw >250 && bgoTotalE_raw * _GeV <=500)
+				DmpNtupTree_250_500->Fill();
+			if (bgoTotalE_raw >500 && bgoTotalE_raw * _GeV <=1000)
+				DmpNtupTree_500_1000->Fill();
+			if (bgoTotalE_raw >1000 && bgoTotalE_raw * _GeV <=5000)
+				DmpNtupTree_1000_5000->Fill();
+			if (bgoTotalE_raw >5000 && bgoTotalE_raw * _GeV <=10000)
+				DmpNtupTree_5000_10000->Fill();
 		}
 	}
 	
@@ -555,7 +517,7 @@ void produceTuples(
         std::cerr << "\n\nError writing output TFile: " << outFilePath_20_100 << std::endl;
         exit(123);
     }
-	DmpNtupTree_20_100.Write();
+	DmpNtupTree_20_100->Write();
 	outFile_20_100.Close();
 
 	TFile outFile_100_250(outFilePath_100_250.c_str(), "NEW", "Analysis Output File");
@@ -564,7 +526,7 @@ void produceTuples(
         std::cerr << "\n\nError writing output TFile: " << outFilePath_100_250 << std::endl;
         exit(123);
     }
-	DmpNtupTree_100_250.Write();
+	DmpNtupTree_100_250->Write();
 	outFile_100_250.Close();
 
 	TFile outFile_250_500(outFilePath_250_500.c_str(), "NEW", "Analysis Output File");
@@ -573,7 +535,7 @@ void produceTuples(
         std::cerr << "\n\nError writing output TFile: " << outFilePath_250_500 << std::endl;
         exit(123);
     }
-	DmpNtupTree_250_500.Write();
+	DmpNtupTree_250_500->Write();
 	outFile_250_500.Close();
 
 	TFile outFile_500_1000(outFilePath_500_1000.c_str(), "NEW", "Analysis Output File");
@@ -582,7 +544,7 @@ void produceTuples(
         std::cerr << "\n\nError writing output TFile: " << outFilePath_500_1000 << std::endl;
         exit(123);
     }
-	DmpNtupTree_500_1000.Write();
+	DmpNtupTree_500_1000->Write();
 	outFile_500_1000.Close();
 
 	TFile outFile_1000_5000(outFilePath_1000_5000.c_str(), "NEW", "Analysis Output File");
@@ -591,7 +553,7 @@ void produceTuples(
         std::cerr << "\n\nError writing output TFile: " << outFilePath_1000_5000 << std::endl;
         exit(123);
     }
-	DmpNtupTree_1000_5000.Write();
+	DmpNtupTree_1000_5000->Write();
 	outFile_1000_5000.Close();
 
 	TFile outFile_5000_10000(outFilePath_5000_10000.c_str(), "NEW", "Analysis Output File");
@@ -600,7 +562,15 @@ void produceTuples(
         std::cerr << "\n\nError writing output TFile: " << outFilePath_5000_10000 << std::endl;
         exit(123);
     }
-	DmpNtupTree_5000_10000.Write();
+	DmpNtupTree_5000_10000->Write();
 	outFile_5000_10000.Close();
 	
 }
+
+template void linker(
+	std::shared_ptr<TTree> tree,
+	t_variables &vars);
+
+template void linker(
+	std::shared_ptr<TChain> chain,
+	t_variables &vars);

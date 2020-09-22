@@ -626,9 +626,7 @@ void buildAcceptance(
 
 		// evaluate the energy raio on each single layer of the BGO
 		evaluateEnergyRatio(
-			bgorec,
-			acceptance_cuts,
-			bgoTotalE_raw,
+			bgoVault.GetFracLayer(),
 			h_layer_max_energy_ratio,
 			h_layer_energy_ratio,
 			energy_w);

@@ -43,10 +43,18 @@ struct data_evt_time
 	short end_msecond;
 };
 
-extern std::vector<TH1D> evLoop(
+extern void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool verbose,
+	const bool skimmed,
+	const std::string wd);
+
+extern void skimmedDataLoop(
+	const std::string inputPath,
+	TFile &outFile,
+	const bool verbose,
+	const bool skimmed,
 	const std::string wd);
 
 extern bool filter_this_data_event(

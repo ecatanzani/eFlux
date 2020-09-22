@@ -23,7 +23,8 @@ extern std::shared_ptr<TChain> aggregateEventsTChain(
 
 extern std::shared_ptr<TChain> aggregateDataEventsTChain(
     const std::string listInputPath,
-    const bool verbose);
+    const bool verbose,
+    const bool skimmed);
 
 extern std::shared_ptr<TChain> aggregateTupleDataEventsTChain(
     const std::string listInputPath,
