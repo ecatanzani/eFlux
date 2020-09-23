@@ -30,103 +30,108 @@
 struct t_variables
 {
 	// Trigger
-	bool unbiased_trigger;
-	bool mip1_trigger;
-	bool mip2_trigger;
-	bool HET_trigger;
-	bool LET_trigger;
-	bool MIP_trigger;
-	bool general_trigger;
+	bool unbiased_trigger = false;
+	bool mip1_trigger = false;
+	bool mip2_trigger = false;
+	bool HET_trigger = false;
+	bool LET_trigger = false;
+	bool MIP_trigger = false;
+	bool general_trigger = false;
 
 	// Event time
-	unsigned int second;
-	unsigned int msecond;
+	unsigned int second = 0;
+	unsigned int msecond = 0;
 
 	// STK
-	unsigned int STK_bestTrack_npoints;
-	unsigned int STK_bestTrack_nholesX;
-	unsigned int STK_bestTrack_nholesY;
-	double STK_bestTrack_slopeX;
-	double STK_bestTrack_slopeY;
-	double STK_bestTrack_interceptX;
-	double STK_bestTrack_interceptY;
-	double STK_bestTrack_costheta;
-	double STK_bestTrack_phi;
-	double STK_bestTrack_extr_BGO_topX;
-	double STK_bestTrack_extr_BGO_topY;
-	double STK_bestTrack_STK_BGO_topX_distance;
-	double STK_bestTrack_STK_BGO_topY_distance;
-	double STK_bestTrack_angular_distance_STK_BGO;
-	double STK_chargeX;
-	double STK_chargeY;
-	double STK_charge;
+	unsigned int STK_bestTrack_npoints = 0;
+	unsigned int STK_bestTrack_nholesX = 0;
+	unsigned int STK_bestTrack_nholesY = 0;
+	double STK_bestTrack_slopeX = -1;
+	double STK_bestTrack_slopeY = -1;
+	double STK_bestTrack_interceptX = -1;
+	double STK_bestTrack_interceptY = -1;
+	double STK_bestTrack_costheta = -1;
+	double STK_bestTrack_phi = -1;
+	double STK_bestTrack_extr_BGO_topX = -1;
+	double STK_bestTrack_extr_BGO_topY = -1;
+	double STK_bestTrack_STK_BGO_topX_distance = -1;
+	double STK_bestTrack_STK_BGO_topY_distance = -1;
+	double STK_bestTrack_angular_distance_STK_BGO = -2;
+	double STK_chargeX = -1;
+	double STK_chargeY = -1;
+	double STK_charge = -1;
 
 	// BGO
 
-	double energy;
-	double energy_corr;
-	double BGOrec_slopeX;
-	double BGOrec_slopeY;
-	double BGOrec_interceptX;
-	double BGOrec_interceptY;
-	double sumRms;
+	double energy = -1;
+	double energy_corr = -1;
+	double BGOrec_slopeX = -1;
+	double BGOrec_slopeY = -1;
+	double BGOrec_interceptX = -1;
+	double BGOrec_interceptY = -1;
+	double sumRms = -1;
 	std::vector<double> fracLayer;
-	std::vector<double> *fracLayer_ptr;
-	double fracLast;
-	double fracLast_13;
-	unsigned int lastBGOLayer;
-	unsigned int nBGOentries;
+	std::vector<double> *fracLayer_ptr = nullptr;
+	double fracLast = -1;
+	double fracLast_13 = -1;
+	unsigned int lastBGOLayer = 0;
+	unsigned int nBGOentries = 0;
 
 	// PSD
-	double PSD_chargeX;
-	double PSD_chargeY;
-	double PSD_charge;
+	double PSD_chargeX = -1;
+	double PSD_chargeY = -1;
+	double PSD_charge = -1;
 
 	// Classifiers
-	double xtr;
-	double xtrl;
+	double xtr = -1;
+	double xtrl = -1;
 
 	// Attitude
-	double glat;
-	double glon;
-	double geo_lat;
-	double geo_lon;
-	double ra_zenith;
-	double dec_zenith;
-	double ra_scz;
-	double dec_scz;
-	double ra_scx;
-	double dec_scx;
-	double ra_scy;
-	double dec_scy;
-	double verticalRigidityCutoff;
+	double glat = -1;
+	double glon = -1;
+	double geo_lat = -1;
+	double geo_lon = -1;
+	double ra_zenith = -1;
+	double dec_zenith = -1;
+	double ra_scz = -1;
+	double dec_scz = -1;
+	double ra_scx = -1;
+	double dec_scx = -1;
+	double ra_scy = -1;
+	double dec_scy = -1;
+	double verticalRigidityCutoff = -1;
 
 	// Cuts
-	bool cut_nBarLayer13;
-	bool cut_maxRms;
-	bool cut_track_selection;
-	bool cut_psd_stk_match;
-	bool cut_psd_charge;
-	bool cut_stk_charge;
-	bool cut_xtrl;
-	unsigned int nActiveCuts;
+	bool cut_nBarLayer13 = false;
+	bool cut_maxRms = false;
+	bool cut_track_selection = false;
+	bool cut_psd_stk_match = false;
+	bool cut_psd_charge = false;
+	bool cut_stk_charge = false;
+	bool cut_xtrl = false;
+	unsigned int nActiveCuts = 0;
 
-	bool evtfilter_geometric;
-	bool evtfilter_BGO_fiducial;
-	bool evtfilter_all_cut;
-	bool evtfilter_all_cut_no_xtrl;
-	bool evtfilter_BGO_fiducial_maxElayer_cut;
-	bool evtfilter_BGO_fiducial_maxBarLayer_cut;
-	bool evtfilter_BGO_fiducial_BGOTrackContainment_cut;
-	bool evtfilter_nBarLayer13_cut;
-	bool evtfilter_maxRms_cut;
-	bool evtfilter_track_selection_cut;
-	bool evtfilter_psd_stk_match_cut;
-	bool evtfilter_psd_charge_cut;
-	bool evtfilter_stk_charge_cut;
-	bool evtfilter_xtrl_cut;
-	bool evtfilter_psd_charge_measurement;
-	bool evtfilter_stk_charge_measurement;
+	bool evtfilter_geometric = false;
+	bool evtfilter_BGO_fiducial = false;
+	bool evtfilter_all_cut = false;
+	bool evtfilter_all_cut_no_xtrl = false;
+	bool evtfilter_BGO_fiducial_maxElayer_cut = false;
+	bool evtfilter_BGO_fiducial_maxBarLayer_cut = false;
+	bool evtfilter_BGO_fiducial_BGOTrackContainment_cut = false;
+	bool evtfilter_nBarLayer13_cut = false;
+	bool evtfilter_maxRms_cut = false;
+	bool evtfilter_track_selection_cut = false;
+	bool evtfilter_psd_stk_match_cut = false;
+	bool evtfilter_psd_charge_cut = false;
+	bool evtfilter_stk_charge_cut = false;
+	bool evtfilter_xtrl_cut = false;
+	bool evtfilter_psd_charge_measurement = false;
+	bool evtfilter_stk_charge_measurement = false;
+
+	t_variables() :	fracLayer (DAMPE_bgo_nLayers, 0)
+					{
+						
+					}
 };
 
 extern void produceTuples(

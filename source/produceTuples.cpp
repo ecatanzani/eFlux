@@ -445,7 +445,7 @@ void produceTuples(
 				active_cuts))
 			++data_selection.selected_events;
 		setEvtFilter(vars, filter);
-
+		
 		if (filter.all_cut_no_xtrl)
 		{
 			// Filling STK best track info
