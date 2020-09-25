@@ -20,6 +20,9 @@ def createDATAlist(pars, opts):
     dataDirsOut = subprocess.run(getDataDirsCommand, shell=True, check=True, stdout=subprocess.PIPE)
     dataDirs = str.split(dataDirsOut.stdout.decode('utf-8').rstrip(), '\n')
 
+    if opts.verbose:
+        print('Collecting data from {} to {}'.format(pars['data_sYear'], pars['data_eYear']))
+
     # Get stage 1 dirs --> /FM/FlightData/2A/DayOfAcquisition/
     for dir_st1 in dataDirs:
         # Select interesting data dirs, that starts with the run year (2015, 2016, ...)
