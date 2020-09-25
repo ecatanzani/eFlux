@@ -1,5 +1,5 @@
 def parseConfigFile(opts):
-    dConfig = {'farmAddress': "", 'simu_XRDFS_path': "", 'data_XRDFS_path': "", 'geometry': "", 'simu_eMin': 0, 'simu_eMax': 0, 'data_eMin': 0, 'data_eMax': 0, 'particle': "", 'jSet': ""}
+    dConfig = {'farmAddress': "", 'simu_XRDFS_path': "", 'data_XRDFS_path': "", 'geometry': "", 'simu_eMin': 0, 'simu_eMax': 0, 'particle': "", 'data_sYear': 0, 'data_eYear': 0, 'jSet': ""}
     
     config_params = []
     custom_farm = False
@@ -34,12 +34,12 @@ def parseConfigFile(opts):
             dConfig['simu_eMin'] = float(config_params[idx+1])
         if word == "simu_eMax":
             dConfig['simu_eMax'] = float(config_params[idx+1])
-        if word == "data_eMin":
-            dConfig['data_eMin'] = float(config_params[idx+1])
-        if word == "data_eMax":
-            dConfig['data_eMax'] = float(config_params[idx+1])
         if word == "particle":
             dConfig['particle'] = config_params[idx+1]
+        if word == "data_sYear":
+            dConfig["data_sYear"] = int(config_params[idx+1])
+        if word == "data_eYear":
+            dConfig["data_eYear"] = int(config_params[idx+1])
         if word == "jSet":
             if not custom_set:
                 dConfig['jSet'] = config_params[idx+1]

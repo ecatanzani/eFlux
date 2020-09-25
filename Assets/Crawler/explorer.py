@@ -19,8 +19,6 @@ def main(args=None):
                         dest='output', help='output file list')
     parser.add_argument("-d", "--data", dest='data', default=False,
                         action='store_true', help='get DATA file list')
-    parser.add_argument("-c", "--collapse", dest='collapse', default=False,
-                        action='store_true', help='Collapse DATA time information')
     parser.add_argument("-m", "--mc", dest='mc', default=False,
                         action='store_true', help='get MC file list')
     parser.add_argument("-v", "--verbose", dest='verbose', default=False,
