@@ -6,7 +6,7 @@ data_XRDFS_path     /FM/FlightData/2A/
 geometry            6r0p10
 simu_eMin           1
 simu_eMax           10000
-data_eMin           1
-data_eMax           10000
 particle            e
+data_sYear          2016
+data_eYear          2020
 jSet                dataSets.json
