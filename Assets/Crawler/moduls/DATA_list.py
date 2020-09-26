@@ -68,8 +68,6 @@ def createDATAlist(pars, opts):
         data_list_path = opts.input
     else:
         data_list_path =  "dataFileList.txt"
-    with open("dataFileList.txt", "w") as outList:
-        for key in dataDict:
-            for data_file in dataDict[key]:
-                outPath = pars['farmAddress'] + data_file + "\n"
-                outList.write(outPath)
+    with open(data_list_path, "w") as outList:
+            for elm in dList:
+                outList.write(pars['farmAddress'] + elm + "\n")
