@@ -25,6 +25,7 @@ def createDATAlist(pars, opts):
 
     # Get stage 1 dirs --> /FM/FlightData/2A/DayOfAcquisition/
     for dir_st1 in dataDirs:
+
         # Select interesting data dirs, that starts with the run year (2015, 2016, ...)
         if "2A/20" in dir_st1:
             # Extract year
@@ -36,7 +37,7 @@ def createDATAlist(pars, opts):
 
             if year not in years:
                 years.append(year)
-                year_data_idx = len(counters)
+                year_data_idx = len(years)-1
                 counters.append(0)
 
             getDataDirsCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], dir_st1)
@@ -62,12 +63,12 @@ def createDATAlist(pars, opts):
     if opts.verbose:
         print('{} data files have been read...'.format(sum(counters)))
         for year_idx, year in enumerate(years):
-            print('{} data files found in {} folder'.format(counters[year_data_idx], year))
+            print('{} data files found in {} folder'.format(counters[year_idx], year))
 
     if opts.output:
-        data_list_path = opts.input
+        data_list_path = opts.output
     else:
         data_list_path =  "dataFileList.txt"
     with open(data_list_path, "w") as outList:
-            for elm in dList:
-                outList.write(pars['farmAddress'] + elm + "\n")
+        for elm in dList:
+            outList.write(pars['farmAddress'] + elm + "\n")
