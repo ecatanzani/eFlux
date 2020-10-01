@@ -11,6 +11,14 @@
 #include "RooDataSet.h"
 #include "RooDataHist.h"
 #include "RooHistPdf.h"
+#include "RooGaussian.h"
+#include "RooPlot.h"
+#include "RooAddPdf.h"
+#include "RooCBShape.h"
+#include "RooBifurGauss.h"
+#include "RooMinuit.h"
+#include "RooArgList.h"
+#include "RooMsgService.h"
 
 class RooFitter
 {
@@ -32,7 +40,6 @@ public:
 		const bool verbose,
 		const bool clamping);
 	~RooFitter(){};
-	void norm_templates();
 	bool GetVerboseStatus();
 	void Fit(const std::vector<std::shared_ptr<TH1D>> &in_data);
 
@@ -50,7 +57,9 @@ private:
 	void set_zero_roofit_verbosity();
 	void reset_roofit_verbosity();
 	// Fit facility
+	void normalize_templates();
 	void SetRooVars();
+	void SetRooTemplates();
 
 	// Data
 	std::vector<unsigned int> data_events;
@@ -71,6 +80,8 @@ private:
 	// RooFit variables
 	std::vector<std::shared_ptr<RooRealVar>> roo_data_var;
 	std::vector<std::vector<std::shared_ptr<RooRealVar>>> roo_comp_var;
+	std::vector<std::vector<std::shared_ptr<RooDataHist>>> roo_datahist_pdf;
+	std::vector<std::vector<std::shared_ptr<RooHistPdf>>> roo_pdf;
 
 	unsigned int _s_default = 2;
 	double _d_default = -1;

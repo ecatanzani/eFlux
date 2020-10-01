@@ -58,6 +58,8 @@ void RooFitter::init()
 	fix_to_initial_guess.resize(bins);
 	roo_data_var.resize(bins);
 	roo_comp_var.resize(bins);
+	roo_datahist_pdf.resize(bins);
+	roo_pdf.resize(bins);
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
 		data_events[idx] = _d_default;
@@ -69,6 +71,8 @@ void RooFitter::init()
 		initial_guess[idx] = std::vector<double>(_s_default, _d_default);
 		fix_to_initial_guess[idx] = std::vector<bool>(_s_default, _b_default);
 		roo_comp_var[idx] = std::vector<std::shared_ptr<RooRealVar>> (_s_default, std::make_shared<RooRealVar>());
+		roo_datahist_pdf[idx] = std::vector<std::shared_ptr<RooDataHist>> (_s_default, std::shared_ptr<RooDataHist>());
+		roo_pdf[idx] = std::vector<std::shared_ptr<RooHistPdf>> (_s_default, std::shared_ptr<RooHistPdf>());
 	}
 }
 
@@ -107,7 +111,7 @@ void RooFitter::init_guess(
 		}
 }
 
-void RooFitter::norm_templates()
+void RooFitter::normalize_templates()
 {
 	for (auto&& _norm_v : norm_template)
 		for (auto&& _elm : _norm_v)
@@ -161,12 +165,40 @@ void RooFitter::SetRooVars()
 	}
 }
 
+void RooFitter::SetRooTemplates()
+{
+	std::string roo_pdfdh_name, roo_pdfh_name;
+
+	for (unsigned int idx=0; idx<bins; ++idx)
+	{	
+		roo_pdfdh_name = "pdfdh_";
+		roo_pdfh_name = "pdfh_";
+		for(unsigned int comp=0; comp<_s_default; ++comp)
+		{
+			roo_pdfdh_name += std::to_string(comp);
+			roo_pdfh_name += std::to_string(comp);
+			roo_datahist_pdf[idx][comp] = std::make_shared<RooDataHist>(
+				roo_pdfdh_name.c_str(),
+				roo_pdfdh_name.c_str(),
+				RooArgList(*roo_data_var[idx]),
+				RooFit::Import(*norm_template[idx][comp]));
+			roo_pdf[idx][comp] = std::make_shared<RooHistPdf>(
+				roo_pdfh_name.c_str(),
+				roo_pdfh_name.c_str(),
+				RooArgSet(*roo_data_var[idx]),
+				*roo_datahist_pdf[idx][comp]);
+		}
+	}
+}
+
 void RooFitter::Fit(const std::vector<std::shared_ptr<TH1D>> &in_data)
 {
 	// Normalize templates
-	norm_templates();
+	normalize_templates();
 	// Set RooFit var
 	SetRooVars();
+	// Set RooFit templates
+	SetRooTemplates();
 }
 
 void RooFitter::set_verbose_status()
