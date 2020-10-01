@@ -56,26 +56,27 @@ void RooFitter::init()
 	res_err.resize(bins);
 	initial_guess.resize(bins);
 	fix_to_initial_guess.resize(bins);
-	roo_var.resize(bins);
-	for (auto it = begin(data_events); it != end(data_events); ++it)
+	roo_data_var.resize(bins);
+	roo_comp_var.resize(bins);
+	for (unsigned int idx=0; idx<bins; ++idx)
 	{
-		static auto idx = std::distance(begin(data_events), it);
-		data_events[idx] = -1;
-		data_xmin[idx] = -1;
-		data_xmax[idx] = -1;
-		norm_template[idx] = std::vector<std::shared_ptr<TH1D>>(2, std::shared_ptr<TH1D>(nullptr));
-		res[idx] = std::vector<double>(2, -1);
-		res_err[idx] = std::vector<double>(2, -1);
-		initial_guess[idx] = std::vector<double>(2, -1);
-		fix_to_initial_guess[idx] = std::vector<bool>(2, false);
+		data_events[idx] = _d_default;
+		data_xmin[idx] = _d_default;
+		data_xmax[idx] = _d_default;
+		norm_template[idx] = std::vector<std::shared_ptr<TH1D>>(_s_default, std::shared_ptr<TH1D>(nullptr));
+		res[idx] = std::vector<double>(_s_default, _d_default);
+		res_err[idx] = std::vector<double>(_s_default, _d_default);
+		initial_guess[idx] = std::vector<double>(_s_default, _d_default);
+		fix_to_initial_guess[idx] = std::vector<bool>(_s_default, _b_default);
+		roo_comp_var[idx] = std::vector<std::shared_ptr<RooRealVar>> (_s_default, std::make_shared<RooRealVar>());
 	}
 }
 
 void RooFitter::init_data(const std::vector<std::shared_ptr<TH1D>> &in_data)
 {
-	for (auto it = begin(in_data); it != end(in_data); ++it)
+	
+	for (unsigned int idx=0; idx<bins; ++idx)
 	{
-		static auto idx = std::distance(begin(in_data), it);
 		data_events[idx] = in_data[idx]->GetEntries();
 		data_xmin[idx] = in_data[idx]->GetXaxis()->GetXmin();
 		data_xmax[idx] = in_data[idx]->GetXaxis()->GetXmax();
@@ -86,12 +87,11 @@ void RooFitter::init_template(
 	const std::vector<std::shared_ptr<TH1D>> &in_electron_templates,
 	const std::vector<std::shared_ptr<TH1D>> &in_proton_templates)
 {
-	for (auto it = begin(in_electron_templates); it != end(in_electron_templates); ++it)
+	std::vector<std::string> _temp_name = {"TemplateFit_e", "TemplateFit_p"};
+	for (unsigned int idx=0; idx<bins; ++idx)
 	{
-		static auto idx = std::distance(begin(in_electron_templates), it);
-		static std::vector<std::string> _temp_name = {"TemplateFit_e", "TemplateFit_p"};
-		for (int comp = 0; comp < 2; ++comp)
-			norm_template[idx][comp] = std::shared_ptr<TH1D>(static_cast<TH1D *>(in_electron_templates[comp]->Clone(_temp_name[comp].c_str())));
+		norm_template[idx][0] = std::shared_ptr<TH1D>(static_cast<TH1D *>(in_electron_templates[0]->Clone(_temp_name[0].c_str())));
+		norm_template[idx][1] = std::shared_ptr<TH1D>(static_cast<TH1D *>(in_proton_templates[1]->Clone(_temp_name[1].c_str())));
 	}
 }
 
@@ -99,21 +99,19 @@ void RooFitter::init_guess(
 	const std::vector<std::vector<double>> &guess,
 	const std::vector<std::vector<bool>> &fix_guess)
 {
-	for (auto it = begin(initial_guess); it != end(initial_guess); ++it)
-	{
-		static auto idx = std::distance(begin(initial_guess), it);
-		(*it)[0] = guess[idx][0];
-		(*it)[1] = guess[idx][1];
-		fix_to_initial_guess[idx][0] = fix_guess[idx][0];
-		fix_to_initial_guess[idx][1] = fix_guess[idx][1];
-	}
+	for (unsigned int idx=0; idx<bins; ++idx)
+		for (unsigned int comp=0; comp<_s_default; ++comp)
+		{
+			initial_guess[idx][comp] = guess[idx][comp];
+			fix_to_initial_guess[idx][comp] = fix_guess[idx][comp];
+		}
 }
 
 void RooFitter::norm_templates()
 {
-	for (auto &&elm : norm_template)
-		for (auto it = begin(elm); it != end(elm); ++it)
-			(*it)->Scale(1. / elm[0]->Integral("width"));
+	for (auto&& _norm_v : norm_template)
+		for (auto&& _elm : _norm_v)
+			_elm->Scale(static_cast<double>(1) / _elm->Integral("width"));
 }
 
 bool RooFitter::GetVerboseStatus()
@@ -121,14 +119,45 @@ bool RooFitter::GetVerboseStatus()
 	return verbosity;
 }
 
-void RooFitter::SetRooVar()
-{
-	auto it = begin(roo_var);
-	for (auto &&var : roo_var)
+void RooFitter::SetRooVars()
+{	
+	double _initial_guess = 0;
+	double _low_limit = 0;
+	double _high_limit = 0;
+	std::string roo_real_var_name;
+
+	for (unsigned int idx=0; idx<bins; ++idx)
 	{
-		static auto idx = std::distance(begin(roo_var), it);
-		var = RooRealVar("x", "x", data_xmin[idx], data_xmax[idx]);
-		++it;
+		// Set X RooFit variable
+		roo_data_var[idx] = std::make_shared<RooRealVar>("x", "x", data_xmin[idx], data_xmax[idx]);
+		// Set component RooFit variables
+		for (unsigned int comp=0; comp<_s_default; ++comp)
+		{
+			_initial_guess = data_events[idx]/static_cast<double>(_s_default);
+			_low_limit = 0;
+			_high_limit = data_events[idx];
+			if (initial_guess[idx][comp]!=_d_default)
+			{
+				_initial_guess = initial_guess[idx][comp];
+				if (fix_to_initial_guess[idx][comp])
+					_low_limit = _high_limit = initial_guess[idx][comp];
+				else
+				{
+					if (!kClamping)
+					{
+						_low_limit = -7*sqrt(data_events[idx]);
+						_high_limit = data_events[idx] + 7*sqrt(data_events[idx]);
+					}	
+				}	
+			}
+			roo_real_var_name = "roo_comp_var_" + std::to_string(comp);
+			roo_comp_var[idx][comp] = std::make_shared<RooRealVar>(
+				roo_real_var_name.c_str(), 
+				roo_real_var_name.c_str(), 
+				_initial_guess,
+				_low_limit,
+				_high_limit);
+		}
 	}
 }
 
@@ -137,7 +166,7 @@ void RooFitter::Fit(const std::vector<std::shared_ptr<TH1D>> &in_data)
 	// Normalize templates
 	norm_templates();
 	// Set RooFit var
-	SetRooVar();
+	SetRooVars();
 }
 
 void RooFitter::set_verbose_status()

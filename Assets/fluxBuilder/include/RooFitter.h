@@ -50,7 +50,7 @@ private:
 	void set_zero_roofit_verbosity();
 	void reset_roofit_verbosity();
 	// Fit facility
-	void SetRooVar();
+	void SetRooVars();
 
 	// Data
 	std::vector<unsigned int> data_events;
@@ -69,7 +69,12 @@ private:
 	bool verbosity = false;
 	bool kClamping = false;
 	// RooFit variables
-	std::vector<RooRealVar> roo_var;
+	std::vector<std::shared_ptr<RooRealVar>> roo_data_var;
+	std::vector<std::vector<std::shared_ptr<RooRealVar>>> roo_comp_var;
+
+	unsigned int _s_default = 2;
+	double _d_default = -1;
+	bool _b_default = false;
 };
 
 #endif
