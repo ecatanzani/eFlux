@@ -2,9 +2,13 @@
 
 extractor::extractor(const deps_paths paths, const bool verbose)
 {
+	if (verbose)
+		std::cout << "\n**** Extracting deps...\n\n";
 	extract_electron_info(paths.electron_path, verbose);
 	extract_proton_info(paths.proton_path, verbose);
 	extract_data_info(paths.data_path, verbose);
+	if (verbose)
+		std::cout << "\n******************\n\n";
 }
 
 void extractor::extract_acceptance(std::shared_ptr<TH1D> &acc_ptr, TFile *input_file)
@@ -49,8 +53,8 @@ void extractor::extract_electron_info(const std::string path, const bool verbose
 		std::cerr << "\nError reading input electron MC file [" << path << "]\n\n";
 		exit(100);
 	}
-	else if (verbose)
-		std::cout << "\nReading input electron MC file [" << path << "]\n";
+	if (verbose)
+		std::cout << "Reading input electron MC file [" << path << "]" << std::endl;
 
 	// Read acceptance
 	extract_acceptance(electron_acceptance, input_file);
@@ -70,8 +74,8 @@ void extractor::extract_proton_info(const std::string path, const bool verbose)
 		std::cerr << "\nError reading input proton MC file [" << path << "]\n\n";
 		exit(100);
 	}
-	else if (verbose)
-		std::cout << "\nReading input proton MC file [" << path << "]\n";
+	if (verbose)
+		std::cout << "Reading input proton MC file [" << path << "]" << std::endl;
 
 	// Read acceptance
 	extract_acceptance(proton_acceptance, input_file);
@@ -91,8 +95,8 @@ void extractor::extract_data_info(const std::string path, const bool verbose)
 		std::cerr << "\nError reading input DATA file [" << path << "]\n\n";
 		exit(100);
 	}
-	else if (verbose)
-		std::cout << "\nReading input DATA file [" << path << "]\n";
+	if (verbose)
+		std::cout << "Reading input DATA file [" << path << "]" << std::endl;
 	// Read data electron counts
 	e_counts = std::shared_ptr<TH1D>(static_cast<TH1D *>(input_file->Get("h_all_cut_ce")));
 	e_counts->SetDirectory(0);
