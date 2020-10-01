@@ -6,6 +6,7 @@
 
 #include "TH1D.h"
 #include "TFile.h"
+#include "TDirectory.h"
 
 #include "main.h"
 
@@ -21,6 +22,7 @@ public:
 	std::vector<std::shared_ptr<TH1D>> GetData();
 	std::shared_ptr<TH1D> GetDataCounts();
 	const int GetBins();
+	void SaveResults();
 
 private:
 	void extract_electron_info(const std::string path, const bool verbose);

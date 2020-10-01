@@ -6,6 +6,9 @@
 #include <string>
 
 #include "TH1D.h"
+#include "TFile.h"
+#include "TDirectory.h"
+#include "TTree.h"
 
 #include "RooRealVar.h"
 #include "RooDataSet.h"
@@ -42,14 +45,13 @@ public:
 	~RooFitter(){};
 	bool GetVerboseStatus();
 	void Fit(const std::vector<std::shared_ptr<TH1D>> &in_data);
+	void SaveResults(const std::string out_path);
 
 private:
 	// Initialization
 	void init();
 	void init_data(const std::vector<std::shared_ptr<TH1D>> &in_data);
-	void init_template(
-		const std::vector<std::shared_ptr<TH1D>> &in_electron_templates,
-		const std::vector<std::shared_ptr<TH1D>> &in_proton_templates);
+	void init_template(const std::vector<std::vector<std::shared_ptr<TH1D>>> &in_templates);
 	void init_guess(
 		const std::vector<std::vector<double>> &guess,
 		const std::vector<std::vector<bool>> &fix_guess);

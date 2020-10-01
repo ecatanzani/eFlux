@@ -16,9 +16,10 @@ RooFitter::RooFitter(
 	bins = n_bins;
 	verbosity = verbose;
 	kClamping = clamping;
+	std::vector<std::vector<std::shared_ptr<TH1D>>> in_templates {in_electron_templates, in_proton_templates};
 	init();
 	init_data(in_data);
-	init_template(in_electron_templates, in_proton_templates);
+	init_template(in_templates);
 	set_verbose_status();
 }
 
@@ -40,9 +41,11 @@ RooFitter::RooFitter(
 	bins = n_bins;
 	verbosity = verbose;
 	kClamping = clamping;
+	std::vector<std::vector<std::shared_ptr<TH1D>>> in_templates {in_electron_templates, in_proton_templates};
 	init();
+	init_guess(guess, fix_guess);
 	init_data(in_data);
-	init_template(in_electron_templates, in_proton_templates);
+	init_template(in_templates);
 	set_verbose_status();
 }
 
@@ -81,6 +84,7 @@ void RooFitter::init()
 		roo_comp_var[idx] = std::vector<std::shared_ptr<RooRealVar>> (_s_default, std::make_shared<RooRealVar>());
 		roo_datahist_pdf[idx] = std::vector<std::shared_ptr<RooDataHist>> (_s_default, std::shared_ptr<RooDataHist>());
 		roo_pdf[idx] = std::vector<std::shared_ptr<RooHistPdf>> (_s_default, std::shared_ptr<RooHistPdf>());
+		roo_result[idx] = std::shared_ptr<TH1D>(nullptr);
 	}
 }
 
@@ -95,15 +99,17 @@ void RooFitter::init_data(const std::vector<std::shared_ptr<TH1D>> &in_data)
 	}
 }
 
-void RooFitter::init_template(
-	const std::vector<std::shared_ptr<TH1D>> &in_electron_templates,
-	const std::vector<std::shared_ptr<TH1D>> &in_proton_templates)
+void RooFitter::init_template(const std::vector<std::vector<std::shared_ptr<TH1D>>> &in_templates)
 {
-	std::vector<std::string> _temp_name = {"TemplateFit_e", "TemplateFit_p"};
+	std::vector<std::string> _temp_name;
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
-		norm_template[idx][0] = std::shared_ptr<TH1D>(static_cast<TH1D *>(in_electron_templates[0]->Clone(_temp_name[0].c_str())));
-		norm_template[idx][1] = std::shared_ptr<TH1D>(static_cast<TH1D *>(in_proton_templates[1]->Clone(_temp_name[1].c_str())));
+		_temp_name = {"TemplateFit_e_", "TemplateFit_p_"};
+		for (auto&& _elm : _temp_name)
+			_elm += std::to_string(idx);
+
+		for (unsigned int comp=0; comp<_s_default; ++comp)
+			norm_template[idx][comp] = std::shared_ptr<TH1D>(static_cast<TH1D *>(in_templates[comp][idx]->Clone(_temp_name[comp].c_str())));
 	}
 }
 
@@ -280,6 +286,9 @@ void RooFitter::GetFitResult()
 
 void RooFitter::Fit(const std::vector<std::shared_ptr<TH1D>> &in_data)
 {
+#ifdef _DEBUG 
+	SaveResults("debug_roofitter_init.root");
+#endif	
 	// Normalize templates
 	normalize_templates();
 	// Set RooFit var
@@ -297,9 +306,68 @@ void RooFitter::Fit(const std::vector<std::shared_ptr<TH1D>> &in_data)
 	GetFitResult();
 }
 
+void RooFitter::SaveResults(const std::string out_path)
+{
+	TFile outfile(out_path.c_str(), "RECREATE");
+	if (outfile.IsZombie())
+	{
+		std::cerr << "\n\nError writing output ROOT file: [" << out_path << "]\n\n";
+		exit(100);
+	}
+	
+	// Create electron template folder
+	auto e_template_folder = outfile.mkdir("electron_templates");
+	e_template_folder->cd();
+	for (auto& _elm : norm_template)
+		_elm[0]->Write();
+	
+	// Create proton template folder
+	auto p_template_folder = outfile.mkdir("proton_templates");
+	p_template_folder->cd();
+	for (auto& _elm : norm_template)
+		_elm[1]->Write();
+
+	// Create final histo dir
+	auto result_folder = outfile.mkdir("results");
+	result_folder->cd();
+	for (auto& _elm : roo_result)
+		if (_elm)
+			_elm->Write();
+	
+	outfile.cd();
+	
+	// Save component results into TTree
+	double _e_val, _e_err, _p_val, _p_err;
+	double _data, _data_min, _data_max;
+	
+	TTree component_tree("result_tree", "result_tree");
+	component_tree.Branch("e_component_val", &_e_val, "_e_val/D");
+	component_tree.Branch("e_component_err", &_e_err, "_e_err/D");
+	component_tree.Branch("p_component_val", &_p_val, "_p_val/D");
+	component_tree.Branch("p_component_err", &_p_err, "_p_err/D");
+	component_tree.Branch("data_xtrl_events", &_data, "_data/D");
+	component_tree.Branch("data_min", &_data_min, "_data_min/D");
+	component_tree.Branch("data_max", &_data_max, "_data_max/D");
+
+	for (unsigned int idx=0; idx<bins; ++idx)
+	{
+		_e_val = res[idx][0];
+		_p_val = res[idx][1];
+		_e_err = res_err[idx][0];
+		_p_err = res_err[idx][0];
+		_data = data_events[idx];
+		_data_min = data_xmin[idx];
+		_data_max = data_xmax[idx];
+		component_tree.Fill();
+	}
+	component_tree.Write();
+	
+	outfile.Close();
+}
+
 void RooFitter::set_verbose_status()
 {
-	if (verbosity)
+	if (!verbosity)
 		set_zero_roofit_verbosity();
 }
 

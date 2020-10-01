@@ -9,6 +9,9 @@ extractor::extractor(const deps_paths paths, const bool verbose)
 	extract_data_info(paths.data_path, verbose);
 	if (verbose)
 		std::cout << "\n******************\n\n";
+#ifdef _DEBUG 
+	SaveResults();
+#endif
 }
 
 void extractor::extract_acceptance(std::shared_ptr<TH1D> &acc_ptr, TFile *input_file)
@@ -104,6 +107,35 @@ void extractor::extract_data_info(const std::string path, const bool verbose)
 	extract_xtrl_info(data_xtrl, input_file);
 	// Close input file
 	input_file->Close();
+}
+
+void extractor::SaveResults()
+{
+	TFile *outfile = TFile::Open("extractor_debug.root", "RECREATE");
+
+	auto e_acceptance_dir = outfile->mkdir("e_acceptance");
+	e_acceptance_dir->cd();
+	electron_acceptance->Write();
+
+	auto p_acceptance_dir = outfile->mkdir("p_acceptance");
+	p_acceptance_dir->cd();
+	proton_acceptance->Write();
+	
+	auto e_xtrl_dir = outfile->mkdir("e_xtrl");
+	e_xtrl_dir->cd();
+	for (auto&& _elm : electron_mc_xtrl)
+		_elm->Write();
+
+	auto p_xtrl_dir = outfile->mkdir("p_xtrl");
+	p_xtrl_dir->cd();
+	for (auto&& _elm : proton_mc_xtrl)
+		_elm->Write();
+
+	auto e_counts_dir = outfile->mkdir("e_counts");
+	e_counts_dir->cd();
+	e_counts->Write();
+	
+	outfile->Close();
 }
 
 std::shared_ptr<TH1D> extractor::GetElectronAcceptance()

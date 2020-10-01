@@ -57,8 +57,10 @@ int main(int argc, char **argv)
 		deps.GetBins(),
 		true,
 		true);
-
+	// Perform fit
 	fitter.Fit(deps.GetData());
+	// Write results
+	fitter.SaveResults(output_path);
 
 	return 0;
 }
