@@ -60,6 +60,11 @@ private:
 	void normalize_templates();
 	void SetRooVars();
 	void SetRooTemplates();
+	void SetRooModel();
+	void SetRooData(const std::vector<std::shared_ptr<TH1D>> &in_data);
+	void PerformFit();
+	void SetResult(const std::vector<std::shared_ptr<TH1D>> &in_data);
+	void GetFitResult();
 
 	// Data
 	std::vector<unsigned int> data_events;
@@ -70,6 +75,7 @@ private:
 	// Result
 	std::vector<std::vector<double>> res;
 	std::vector<std::vector<double>> res_err;
+	std::vector<double> tot_err;
 	// Bins
 	unsigned int bins = 0;
 	// Options
@@ -82,9 +88,15 @@ private:
 	std::vector<std::vector<std::shared_ptr<RooRealVar>>> roo_comp_var;
 	std::vector<std::vector<std::shared_ptr<RooDataHist>>> roo_datahist_pdf;
 	std::vector<std::vector<std::shared_ptr<RooHistPdf>>> roo_pdf;
+	std::vector<std::shared_ptr<RooAddPdf>> roo_model;
+	std::vector<std::shared_ptr<RooDataHist>> roo_dataset;
+	// Result histos
+	std::vector<std::shared_ptr<TH1D>> roo_result;
+	std::vector<double> tot_res;
 
 	unsigned int _s_default = 2;
 	double _d_default = -1;
+	double _r_default = 0;
 	bool _b_default = false;
 };
 

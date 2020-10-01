@@ -54,12 +54,18 @@ void RooFitter::init()
 	norm_template.resize(bins);
 	res.resize(bins);
 	res_err.resize(bins);
+	tot_err.resize(bins);
+	tot_res.resize(bins);
 	initial_guess.resize(bins);
 	fix_to_initial_guess.resize(bins);
 	roo_data_var.resize(bins);
 	roo_comp_var.resize(bins);
 	roo_datahist_pdf.resize(bins);
 	roo_pdf.resize(bins);
+	roo_model.resize(bins);
+	roo_dataset.resize(bins);
+	roo_result.resize(bins);
+
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
 		data_events[idx] = _d_default;
@@ -68,6 +74,8 @@ void RooFitter::init()
 		norm_template[idx] = std::vector<std::shared_ptr<TH1D>>(_s_default, std::shared_ptr<TH1D>(nullptr));
 		res[idx] = std::vector<double>(_s_default, _d_default);
 		res_err[idx] = std::vector<double>(_s_default, _d_default);
+		tot_err[idx] = _r_default;
+		tot_res[idx] = _r_default;
 		initial_guess[idx] = std::vector<double>(_s_default, _d_default);
 		fix_to_initial_guess[idx] = std::vector<bool>(_s_default, _b_default);
 		roo_comp_var[idx] = std::vector<std::shared_ptr<RooRealVar>> (_s_default, std::make_shared<RooRealVar>());
@@ -133,7 +141,11 @@ void RooFitter::SetRooVars()
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
 		// Set X RooFit variable
-		roo_data_var[idx] = std::make_shared<RooRealVar>("x", "x", data_xmin[idx], data_xmax[idx]);
+		roo_data_var[idx] = std::make_shared<RooRealVar>(
+			"x", 
+			"x", 
+			data_xmin[idx], 
+			data_xmax[idx]);
 		// Set component RooFit variables
 		for (unsigned int comp=0; comp<_s_default; ++comp)
 		{
@@ -191,6 +203,81 @@ void RooFitter::SetRooTemplates()
 	}
 }
 
+void RooFitter::SetRooModel()
+{
+	for (unsigned int idx=0; idx<bins; ++idx)
+	{
+		RooArgList roo_list_pdf;
+    	RooArgList roo_list_comp_var;
+		for (unsigned int comp=0; comp<_s_default; ++comp)
+		{
+			roo_list_pdf.add(*roo_pdf[idx][comp]);
+			roo_list_comp_var.add(*roo_comp_var[idx][comp]);
+		}
+		roo_model[idx] = std::make_shared<RooAddPdf>(
+			"model",
+			"model",
+			roo_list_pdf,
+			roo_list_comp_var);
+	}
+}
+
+void RooFitter::SetRooData(const std::vector<std::shared_ptr<TH1D>> &in_data)
+{
+	for (unsigned int idx=0; idx<bins; ++idx)
+	{
+		roo_dataset[idx] = std::make_shared<RooDataHist>(
+			"sumhist",
+			"sumhsit",
+			*roo_data_var[idx],
+			RooFit::Import(*in_data[idx]));
+	}	
+}
+
+void RooFitter::PerformFit()
+{
+	for (unsigned int idx=0; idx<bins; ++idx)
+		roo_model[idx]->fitTo(
+			*roo_dataset[idx], 
+			RooFit::Extended(true),
+			RooFit::Save(true),
+			RooFit::SumW2Error(true),
+			RooFit::Verbose(verbosity),
+			RooFit::PrintLevel(verbosity?-1:3),
+			RooFit::Warnings(verbosity));
+}
+
+void RooFitter::SetResult(const std::vector<std::shared_ptr<TH1D>> &in_data)
+{
+	std::string res_name;
+	for (unsigned int idx=0; idx<bins; ++idx)
+	{
+		res_name = "TemplateFitResult_" + std::to_string(idx);
+		roo_result[idx] = std::shared_ptr<TH1D>(static_cast<TH1D*>(in_data[idx]->Clone(res_name.c_str())));
+		roo_result[idx]->Reset();
+	}
+}
+
+void RooFitter::GetFitResult()
+{
+	for (unsigned int idx=0; idx<bins; ++idx)
+	{
+		// Extract fit results and pars errors
+		for(unsigned int comp=0; comp<_s_default; ++comp)
+		{
+			res[idx][comp] = roo_comp_var[idx][comp]->getVal();
+			res_err[idx][comp] = roo_comp_var[idx][comp]->getError();
+			tot_res[idx] += res[idx][comp];
+			tot_err[idx] += pow(res_err[idx][comp], 2); //Fit using covariance matrix
+			// build final histos
+			roo_result[idx]->Add(
+				norm_template[idx][comp].get(),
+				res[idx][comp]/norm_template[idx][comp]->Integral());
+		}
+		tot_err[idx] = sqrt(tot_err[idx]);
+	}
+}
+
 void RooFitter::Fit(const std::vector<std::shared_ptr<TH1D>> &in_data)
 {
 	// Normalize templates
@@ -199,6 +286,15 @@ void RooFitter::Fit(const std::vector<std::shared_ptr<TH1D>> &in_data)
 	SetRooVars();
 	// Set RooFit templates
 	SetRooTemplates();
+	// Create the model
+	SetRooModel();
+	// Create the data-set
+	SetRooData(in_data);
+	// Fit
+	PerformFit();
+	// Get result
+	SetResult(in_data);
+	GetFitResult();
 }
 
 void RooFitter::set_verbose_status()
