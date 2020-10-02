@@ -55,10 +55,10 @@ int main(int argc, char **argv)
 		deps.GetElectronTemplates(),
 		deps.GetProtonTemplates(),
 		deps.GetBins(),
-		true,
-		true);
+		_RooFitVerbosity,
+		_RooFitClamping);
 	// Perform fit
-	fitter.Fit(deps.GetData());
+	fitter.Fit();
 	// Write results
 	fitter.SaveResults(output_path);
 

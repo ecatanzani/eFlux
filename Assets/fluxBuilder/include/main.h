@@ -6,6 +6,13 @@
 
 #include "anyoption.h"
 
+#ifdef _DEBUG 
+	#define _RooFitVerbosity true
+#else
+	#define _RooFitVerbosity false
+#endif
+
+#define _RooFitClamping true
 struct deps_paths
 {
 	std::string data_path;
