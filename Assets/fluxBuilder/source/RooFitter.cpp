@@ -54,6 +54,7 @@ void RooFitter::init()
 	data_events.resize(bins);
 	data_xmin.resize(bins);
 	data_xmax.resize(bins);
+	data.resize(bins);
 	norm_template.resize(bins);
 	res.resize(bins);
 	res_err.resize(bins);
@@ -65,15 +66,19 @@ void RooFitter::init()
 	roo_comp_var.resize(bins);
 	roo_datahist_pdf.resize(bins);
 	roo_pdf.resize(bins);
+	roo_list_pdf.resize(bins);
+	roo_list_comp_var.resize(bins);
 	roo_model.resize(bins);
 	roo_dataset.resize(bins);
 	roo_result.resize(bins);
+	roo_result_comp.resize(bins);
 
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
 		data_events[idx] = _d_default;
 		data_xmin[idx] = _d_default;
 		data_xmax[idx] = _d_default;
+		data[idx] = std::shared_ptr<TH1D>(nullptr);
 		norm_template[idx] = std::vector<std::shared_ptr<TH1D>>(_s_default, std::shared_ptr<TH1D>(nullptr));
 		res[idx] = std::vector<double>(_s_default, _d_default);
 		res_err[idx] = std::vector<double>(_s_default, _d_default);
@@ -84,7 +89,10 @@ void RooFitter::init()
 		roo_comp_var[idx] = std::vector<std::shared_ptr<RooRealVar>> (_s_default, std::make_shared<RooRealVar>());
 		roo_datahist_pdf[idx] = std::vector<std::shared_ptr<RooDataHist>> (_s_default, std::shared_ptr<RooDataHist>());
 		roo_pdf[idx] = std::vector<std::shared_ptr<RooHistPdf>> (_s_default, std::shared_ptr<RooHistPdf>());
+		roo_list_pdf[idx] = std::make_shared<RooArgList>();
+		roo_list_comp_var[idx] = std::make_shared<RooArgList>();
 		roo_result[idx] = std::shared_ptr<TH1D>(nullptr);
+		roo_result_comp[idx] = std::vector<std::shared_ptr<TH1D>> (_s_default, std::shared_ptr<TH1D>(nullptr));
 	}
 }
 
@@ -96,6 +104,7 @@ void RooFitter::init_data(const std::vector<std::shared_ptr<TH1D>> &in_data)
 		data_events[idx] = in_data[idx]->GetEntries();
 		data_xmin[idx] = in_data[idx]->GetXaxis()->GetXmin();
 		data_xmax[idx] = in_data[idx]->GetXaxis()->GetXmax();
+		data[idx] = in_data[idx];
 	}
 }
 
@@ -158,6 +167,7 @@ void RooFitter::SetRooVars()
 			_initial_guess = data_events[idx]/static_cast<double>(_s_default);
 			_low_limit = 0;
 			_high_limit = data_events[idx];
+
 			if (initial_guess[idx][comp]!=_d_default)
 			{
 				_initial_guess = initial_guess[idx][comp];
@@ -189,12 +199,10 @@ void RooFitter::SetRooTemplates()
 
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{	
-		roo_pdfdh_name = "pdfdh_";
-		roo_pdfh_name = "pdfh_";
 		for(unsigned int comp=0; comp<_s_default; ++comp)
 		{
-			roo_pdfdh_name += std::to_string(comp);
-			roo_pdfh_name += std::to_string(comp);
+			roo_pdfdh_name = "pdfdh_" + std::to_string(comp);
+			roo_pdfh_name = "pdfh_" + std::to_string(comp);
 			roo_datahist_pdf[idx][comp] = std::make_shared<RooDataHist>(
 				roo_pdfdh_name.c_str(),
 				roo_pdfdh_name.c_str(),
@@ -213,22 +221,20 @@ void RooFitter::SetRooModel()
 {
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
-		RooArgList roo_list_pdf;
-    	RooArgList roo_list_comp_var;
 		for (unsigned int comp=0; comp<_s_default; ++comp)
 		{
-			roo_list_pdf.add(*roo_pdf[idx][comp]);
-			roo_list_comp_var.add(*roo_comp_var[idx][comp]);
+			roo_list_pdf[idx]->add(*roo_pdf[idx][comp]);
+			roo_list_comp_var[idx]->add(*roo_comp_var[idx][comp]);
 		}
 		roo_model[idx] = std::make_shared<RooAddPdf>(
 			"model",
 			"model",
-			roo_list_pdf,
-			roo_list_comp_var);
+			*roo_list_pdf[idx],
+			*roo_list_comp_var[idx]);
 	}
 }
 
-void RooFitter::SetRooData(const std::vector<std::shared_ptr<TH1D>> &in_data)
+void RooFitter::SetRooData()
 {
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
@@ -236,8 +242,12 @@ void RooFitter::SetRooData(const std::vector<std::shared_ptr<TH1D>> &in_data)
 			"sumhist",
 			"sumhsit",
 			*roo_data_var[idx],
-			RooFit::Import(*in_data[idx]));
-	}	
+			RooFit::Import(*data[idx]));
+#ifdef _DEBUG 
+			std::cout << "\n\nRooDataHist [" << idx << "]:";
+			roo_dataset[idx]->Print("v");
+#endif	
+	}
 }
 
 void RooFitter::PerformFit()
@@ -253,14 +263,21 @@ void RooFitter::PerformFit()
 			RooFit::Warnings(verbosity));
 }
 
-void RooFitter::SetResult(const std::vector<std::shared_ptr<TH1D>> &in_data)
+void RooFitter::SetResult()
 {
-	std::string res_name;
+	std::vector<std::string> res_name;
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
-		res_name = "TemplateFitResult_" + std::to_string(idx);
-		roo_result[idx] = std::shared_ptr<TH1D>(static_cast<TH1D*>(in_data[idx]->Clone(res_name.c_str())));
-		roo_result[idx]->Reset();
+		res_name =  {"TemplateFitResult_", "TemplateFitResult_e_", "TemplateFitResult_p_"};
+		for (auto&& _elm : res_name)
+			_elm += std::to_string(idx);
+		roo_result[idx] = std::shared_ptr<TH1D>(static_cast<TH1D*>(data[idx]->Clone(res_name[0].c_str())));
+		for (unsigned int comp=0; comp<_s_default; ++comp)
+		{
+			roo_result_comp[idx][comp] = std::shared_ptr<TH1D>(static_cast<TH1D*>(data[idx]->Clone(res_name[comp+1].c_str())));
+			roo_result_comp[idx][comp]->Reset();
+			comp ? roo_result_comp[idx][comp]->SetLineColor(38) : roo_result_comp[idx][comp]->SetLineColor(46);
+		}
 	}
 }
 
@@ -279,18 +296,24 @@ void RooFitter::GetFitResult()
 			roo_result[idx]->Add(
 				norm_template[idx][comp].get(),
 				res[idx][comp]/norm_template[idx][comp]->Integral());
+			roo_result_comp[idx][comp]->Add(
+				norm_template[idx][comp].get(),
+				res[idx][comp]/norm_template[idx][comp]->Integral());
 		}
 		tot_err[idx] = sqrt(tot_err[idx]);
 	}
 }
 
-void RooFitter::Fit(const std::vector<std::shared_ptr<TH1D>> &in_data)
+void RooFitter::Fit()
 {
 #ifdef _DEBUG 
 	SaveResults("debug_roofitter_init.root");
 #endif	
 	// Normalize templates
 	normalize_templates();
+#ifdef _DEBUG 
+	SaveResults("debug_roofitter_normtemplates.root");
+#endif		
 	// Set RooFit var
 	SetRooVars();
 	// Set RooFit templates
@@ -298,11 +321,11 @@ void RooFitter::Fit(const std::vector<std::shared_ptr<TH1D>> &in_data)
 	// Create the model
 	SetRooModel();
 	// Create the data-set
-	SetRooData(in_data);
+	SetRooData();
 	// Fit
 	PerformFit();
 	// Get result
-	SetResult(in_data);
+	SetResult();
 	GetFitResult();
 }
 
@@ -315,17 +338,23 @@ void RooFitter::SaveResults(const std::string out_path)
 		exit(100);
 	}
 	
-	// Create electron template folder
+	// Create data folder
+	auto data_folder = outfile.mkdir("data");
+	data_folder->cd();
+	for (auto& _elm : data)
+		_elm->Write();
+
+	// Create templates folder
 	auto e_template_folder = outfile.mkdir("electron_templates");
-	e_template_folder->cd();
-	for (auto& _elm : norm_template)
-		_elm[0]->Write();
-	
-	// Create proton template folder
 	auto p_template_folder = outfile.mkdir("proton_templates");
-	p_template_folder->cd();
+	
 	for (auto& _elm : norm_template)
-		_elm[1]->Write();
+		for (unsigned int comp=0; comp<_s_default; ++comp)
+		{
+			!comp ? e_template_folder->cd() : p_template_folder->cd();
+			if (_elm[comp])
+				_elm[comp]->Write();
+		}
 
 	// Create final histo dir
 	auto result_folder = outfile.mkdir("results");
@@ -334,11 +363,24 @@ void RooFitter::SaveResults(const std::string out_path)
 		if (_elm)
 			_elm->Write();
 	
+	// Create final histo dir
+	auto e_result_folder = outfile.mkdir("electron_results");
+	auto p_result_folder = outfile.mkdir("proton_results");
+	for (auto& _elm : roo_result_comp)
+		for (unsigned int comp=0; comp<_s_default; ++comp)
+		{
+			!comp ? e_result_folder->cd() : p_result_folder->cd();
+			if (_elm[comp])
+				_elm[comp]->Write();	
+		}
+
 	outfile.cd();
 	
 	// Save component results into TTree
 	double _e_val, _e_err, _p_val, _p_err;
 	double _data, _data_min, _data_max;
+	double _init_guess_e, _init_guess_p;
+	bool _fix_guess_e, _fix_guess_p;
 	
 	TTree component_tree("result_tree", "result_tree");
 	component_tree.Branch("e_component_val", &_e_val, "_e_val/D");
@@ -348,6 +390,10 @@ void RooFitter::SaveResults(const std::string out_path)
 	component_tree.Branch("data_xtrl_events", &_data, "_data/D");
 	component_tree.Branch("data_min", &_data_min, "_data_min/D");
 	component_tree.Branch("data_max", &_data_max, "_data_max/D");
+	component_tree.Branch("init_guess_e", &_init_guess_e, "_init_guess_e/D");
+	component_tree.Branch("init_guess_p", &_init_guess_p, "_init_guess_p/D");
+	component_tree.Branch("fix_init_guess_e", &_fix_guess_e, "_fix_guess_e/O");
+	component_tree.Branch("fix_init_guess_p", &_fix_guess_p, "_fix_guess_p/O");
 
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
@@ -358,6 +404,10 @@ void RooFitter::SaveResults(const std::string out_path)
 		_data = data_events[idx];
 		_data_min = data_xmin[idx];
 		_data_max = data_xmax[idx];
+		_init_guess_e = initial_guess[idx][0];
+		_init_guess_p = initial_guess[idx][1];
+		_fix_guess_e = fix_to_initial_guess[idx][0];
+		_fix_guess_e = fix_to_initial_guess[idx][1];
 		component_tree.Fill();
 	}
 	component_tree.Write();

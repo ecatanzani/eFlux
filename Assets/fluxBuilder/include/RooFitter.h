@@ -44,7 +44,7 @@ public:
 		const bool clamping);
 	~RooFitter(){};
 	bool GetVerboseStatus();
-	void Fit(const std::vector<std::shared_ptr<TH1D>> &in_data);
+	void Fit();
 	void SaveResults(const std::string out_path);
 
 private:
@@ -63,15 +63,16 @@ private:
 	void SetRooVars();
 	void SetRooTemplates();
 	void SetRooModel();
-	void SetRooData(const std::vector<std::shared_ptr<TH1D>> &in_data);
+	void SetRooData();
 	void PerformFit();
-	void SetResult(const std::vector<std::shared_ptr<TH1D>> &in_data);
+	void SetResult();
 	void GetFitResult();
 
 	// Data
 	std::vector<unsigned int> data_events;
 	std::vector<double> data_xmin;
 	std::vector<double> data_xmax;
+	std::vector<std::shared_ptr<TH1D>> data;
 	// Templates
 	std::vector<std::vector<std::shared_ptr<TH1D>>> norm_template;
 	// Result
@@ -90,10 +91,13 @@ private:
 	std::vector<std::vector<std::shared_ptr<RooRealVar>>> roo_comp_var;
 	std::vector<std::vector<std::shared_ptr<RooDataHist>>> roo_datahist_pdf;
 	std::vector<std::vector<std::shared_ptr<RooHistPdf>>> roo_pdf;
+	std::vector<std::shared_ptr<RooArgList>> roo_list_pdf;
+	std::vector<std::shared_ptr<RooArgList>> roo_list_comp_var;
 	std::vector<std::shared_ptr<RooAddPdf>> roo_model;
 	std::vector<std::shared_ptr<RooDataHist>> roo_dataset;
 	// Result histos
 	std::vector<std::shared_ptr<TH1D>> roo_result;
+	std::vector<std::vector<std::shared_ptr<TH1D>>> roo_result_comp;
 	std::vector<double> tot_res;
 
 	unsigned int _s_default = 2;
