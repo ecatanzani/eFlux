@@ -9,6 +9,7 @@
 #include "TFile.h"
 #include "TDirectory.h"
 #include "TTree.h"
+#include "TCanvas.h"
 
 #include "RooRealVar.h"
 #include "RooDataSet.h"
@@ -45,7 +46,7 @@ public:
 	~RooFitter(){};
 	bool GetVerboseStatus();
 	void Fit();
-	void SaveResults(const std::string out_path);
+	void SaveResults(const std::string out_path, const bool release_flag=true);
 
 private:
 	// Initialization
@@ -67,6 +68,8 @@ private:
 	void PerformFit();
 	void SetResult();
 	void GetFitResult();
+	// Plot facility
+	void SuperimposeResults(TFile &outfile);
 
 	// Data
 	std::vector<unsigned int> data_events;
@@ -79,6 +82,7 @@ private:
 	std::vector<std::vector<double>> res;
 	std::vector<std::vector<double>> res_err;
 	std::vector<double> tot_err;
+	std::vector<double> tot_res;
 	// Bins
 	unsigned int bins = 0;
 	// Options
@@ -98,7 +102,6 @@ private:
 	// Result histos
 	std::vector<std::shared_ptr<TH1D>> roo_result;
 	std::vector<std::vector<std::shared_ptr<TH1D>>> roo_result_comp;
-	std::vector<double> tot_res;
 
 	unsigned int _s_default = 2;
 	double _d_default = -1;

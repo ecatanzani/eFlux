@@ -17,9 +17,20 @@ RooFitter::RooFitter(
 	verbosity = verbose;
 	kClamping = clamping;
 	std::vector<std::vector<std::shared_ptr<TH1D>>> in_templates {in_electron_templates, in_proton_templates};
+	
+	if (verbosity)
+		std::cout << "***** RooFitter Data Analysis Class *****";
+	if (verbosity)
+		std::cout << std::endl << std::endl << "Initializing class...";
 	init();
+	if (verbosity)
+		std::cout << std::endl << "Initializing data variables...";
 	init_data(in_data);
+	if (verbosity)
+		std::cout << std::endl << "Initializing templates...";
 	init_template(in_templates);
+	if (verbosity)
+		std::cout << std::endl << "Initializing RooFit verbosity...\n\n";
 	set_verbose_status();
 }
 
@@ -42,26 +53,44 @@ RooFitter::RooFitter(
 	verbosity = verbose;
 	kClamping = clamping;
 	std::vector<std::vector<std::shared_ptr<TH1D>>> in_templates {in_electron_templates, in_proton_templates};
+
+	if (verbosity)
+		std::cout << "***** RooFitter Data Analysis Class *****";
+	if (verbosity)
+		std::cout << std::endl << "Initializing class...";
 	init();
+	if (verbosity)
+		std::cout << std::endl << "Initializing starting guess...";
 	init_guess(guess, fix_guess);
+	if (verbosity)
+		std::cout << std::endl << "Initializing data variables...";
 	init_data(in_data);
+	if (verbosity)
+		std::cout << std::endl << "Initializing templates...";
 	init_template(in_templates);
+	if (verbosity)
+		std::cout << std::endl << "Initializing RooFit verbosity...\n\n";
 	set_verbose_status();
 }
 
 void RooFitter::init()
 {
+	// Data
 	data_events.resize(bins);
 	data_xmin.resize(bins);
 	data_xmax.resize(bins);
 	data.resize(bins);
+	// Templates
 	norm_template.resize(bins);
+	// Results
 	res.resize(bins);
 	res_err.resize(bins);
 	tot_err.resize(bins);
 	tot_res.resize(bins);
+	// Options
 	initial_guess.resize(bins);
 	fix_to_initial_guess.resize(bins);
+	// RooFit variables
 	roo_data_var.resize(bins);
 	roo_comp_var.resize(bins);
 	roo_datahist_pdf.resize(bins);
@@ -70,29 +99,39 @@ void RooFitter::init()
 	roo_list_comp_var.resize(bins);
 	roo_model.resize(bins);
 	roo_dataset.resize(bins);
+	// Result histos
 	roo_result.resize(bins);
 	roo_result_comp.resize(bins);
 
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
+		// Data
 		data_events[idx] = _d_default;
 		data_xmin[idx] = _d_default;
 		data_xmax[idx] = _d_default;
-		data[idx] = std::shared_ptr<TH1D>(nullptr);
-		norm_template[idx] = std::vector<std::shared_ptr<TH1D>>(_s_default, std::shared_ptr<TH1D>(nullptr));
+		data[idx] = std::make_shared<TH1D>();
+		// Templates
+		norm_template[idx] = std::vector<std::shared_ptr<TH1D>>(_s_default, std::make_shared<TH1D>());
+		// Results
 		res[idx] = std::vector<double>(_s_default, _d_default);
 		res_err[idx] = std::vector<double>(_s_default, _d_default);
 		tot_err[idx] = _r_default;
 		tot_res[idx] = _r_default;
+		// options
 		initial_guess[idx] = std::vector<double>(_s_default, _d_default);
 		fix_to_initial_guess[idx] = std::vector<bool>(_s_default, _b_default);
+		// RooFit variables
+		roo_data_var[idx] = std::make_shared<RooRealVar>();
 		roo_comp_var[idx] = std::vector<std::shared_ptr<RooRealVar>> (_s_default, std::make_shared<RooRealVar>());
-		roo_datahist_pdf[idx] = std::vector<std::shared_ptr<RooDataHist>> (_s_default, std::shared_ptr<RooDataHist>());
-		roo_pdf[idx] = std::vector<std::shared_ptr<RooHistPdf>> (_s_default, std::shared_ptr<RooHistPdf>());
+		roo_datahist_pdf[idx] = std::vector<std::shared_ptr<RooDataHist>> (_s_default, std::make_shared<RooDataHist>());
+		roo_pdf[idx] = std::vector<std::shared_ptr<RooHistPdf>> (_s_default, std::make_shared<RooHistPdf>());
 		roo_list_pdf[idx] = std::make_shared<RooArgList>();
 		roo_list_comp_var[idx] = std::make_shared<RooArgList>();
-		roo_result[idx] = std::shared_ptr<TH1D>(nullptr);
-		roo_result_comp[idx] = std::vector<std::shared_ptr<TH1D>> (_s_default, std::shared_ptr<TH1D>(nullptr));
+		roo_model[idx] = std::make_shared<RooAddPdf>();
+		roo_dataset[idx] = std::make_shared<RooDataHist>();
+		// Result histos
+		roo_result[idx] = std::make_shared<TH1D>();
+		roo_result_comp[idx] = std::vector<std::shared_ptr<TH1D>> (_s_default, std::make_shared<TH1D>());
 	}
 }
 
@@ -307,12 +346,12 @@ void RooFitter::GetFitResult()
 void RooFitter::Fit()
 {
 #ifdef _DEBUG 
-	SaveResults("debug_roofitter_init.root");
+	SaveResults("debug_roofitter_init.root", false);
 #endif	
 	// Normalize templates
 	normalize_templates();
 #ifdef _DEBUG 
-	SaveResults("debug_roofitter_normtemplates.root");
+	SaveResults("debug_roofitter_normtemplates.root", false);
 #endif		
 	// Set RooFit var
 	SetRooVars();
@@ -329,7 +368,7 @@ void RooFitter::Fit()
 	GetFitResult();
 }
 
-void RooFitter::SaveResults(const std::string out_path)
+void RooFitter::SaveResults(const std::string out_path, const bool release_flag)
 {
 	TFile outfile(out_path.c_str(), "RECREATE");
 	if (outfile.IsZombie())
@@ -342,7 +381,9 @@ void RooFitter::SaveResults(const std::string out_path)
 	auto data_folder = outfile.mkdir("data");
 	data_folder->cd();
 	for (auto& _elm : data)
-		_elm->Write();
+		if (_elm)
+			_elm->Write();
+		
 
 	// Create templates folder
 	auto e_template_folder = outfile.mkdir("electron_templates");
@@ -362,7 +403,7 @@ void RooFitter::SaveResults(const std::string out_path)
 	for (auto& _elm : roo_result)
 		if (_elm)
 			_elm->Write();
-	
+		
 	// Create final histo dir
 	auto e_result_folder = outfile.mkdir("electron_results");
 	auto p_result_folder = outfile.mkdir("proton_results");
@@ -371,7 +412,7 @@ void RooFitter::SaveResults(const std::string out_path)
 		{
 			!comp ? e_result_folder->cd() : p_result_folder->cd();
 			if (_elm[comp])
-				_elm[comp]->Write();	
+				_elm[comp]->Write();
 		}
 
 	outfile.cd();
@@ -411,8 +452,49 @@ void RooFitter::SaveResults(const std::string out_path)
 		component_tree.Fill();
 	}
 	component_tree.Write();
-	
+		
+	// Superimpose results
+	if (release_flag)
+		SuperimposeResults(outfile);
+
 	outfile.Close();
+}
+
+void RooFitter::SuperimposeResults(TFile &outfile)
+{
+	std::vector<std::unique_ptr<TCanvas>> canvas (bins);
+	auto roo_result_cp = roo_result;
+	auto roo_result_comp_cp = roo_result_comp;
+	auto data_cp = data;
+	std::string cvs_name; 
+	int _line_width = 3;
+	
+	for (unsigned int idx=0; idx<bins; ++idx)
+	{
+		// Setting tmp canvas
+		cvs_name = "TemplateFit_bin_" + std::to_string(idx);
+		canvas[idx] = std::make_unique<TCanvas>(cvs_name.c_str(), cvs_name.c_str());
+		canvas[idx]->cd();
+		// Setting roo_result_cp layout
+		canvas[idx]->SetLogy();
+		roo_result_cp[idx]->SetLineWidth(_line_width);
+		roo_result_cp[idx]->SetLineColor(6);
+		data_cp[idx]->SetLineWidth(_line_width);
+		// Draw
+		data_cp[idx]->Draw();
+		roo_result_cp[idx]->Draw("same");
+		for (auto& _elm : roo_result_comp_cp[idx])
+		{
+			// Setting component layout
+			_elm->SetLineWidth(_line_width);
+			// Draw
+			_elm->Draw("same");
+		}
+	}
+	auto canvas_dir = outfile.mkdir("superimpose_cvs");
+	canvas_dir->cd();
+	for(auto& _elm : canvas)
+		_elm->Write();
 }
 
 void RooFitter::set_verbose_status()
