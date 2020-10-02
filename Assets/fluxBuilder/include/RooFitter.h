@@ -46,7 +46,10 @@ public:
 	~RooFitter(){};
 	bool GetVerboseStatus();
 	void Fit();
-	void SaveResults(const std::string out_path, const bool release_flag=true);
+	void SaveResults(
+		const std::string out_path, 
+		const bool release_flag=true,
+		const bool model_ready=true);
 
 private:
 	// Initialization

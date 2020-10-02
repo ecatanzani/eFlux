@@ -137,7 +137,6 @@ void RooFitter::init()
 
 void RooFitter::init_data(const std::vector<std::shared_ptr<TH1D>> &in_data)
 {
-	
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
 		data_events[idx] = in_data[idx]->GetEntries();
@@ -346,12 +345,18 @@ void RooFitter::GetFitResult()
 void RooFitter::Fit()
 {
 #ifdef _DEBUG 
-	SaveResults("debug_roofitter_init.root", false);
+	SaveResults(
+		"debug_roofitter_init.root", 
+		false,
+		false);
 #endif	
 	// Normalize templates
 	normalize_templates();
 #ifdef _DEBUG 
-	SaveResults("debug_roofitter_normtemplates.root", false);
+	SaveResults(
+		"debug_roofitter_normtemplates.root", 
+		false,
+		false);
 #endif		
 	// Set RooFit var
 	SetRooVars();
@@ -361,6 +366,12 @@ void RooFitter::Fit()
 	SetRooModel();
 	// Create the data-set
 	SetRooData();
+#ifdef _DEBUG 
+	SaveResults(
+		"debug_roofitter_modelbeforefit.root", 
+		false,
+		true);
+#endif
 	// Fit
 	PerformFit();
 	// Get result
@@ -368,7 +379,10 @@ void RooFitter::Fit()
 	GetFitResult();
 }
 
-void RooFitter::SaveResults(const std::string out_path, const bool release_flag)
+void RooFitter::SaveResults(
+	const std::string out_path, 
+	const bool release_flag,
+	const bool model_ready)
 {
 	TFile outfile(out_path.c_str(), "RECREATE");
 	if (outfile.IsZombie())
@@ -397,23 +411,44 @@ void RooFitter::SaveResults(const std::string out_path, const bool release_flag)
 				_elm[comp]->Write();
 		}
 
-	// Create final histo dir
-	auto result_folder = outfile.mkdir("results");
-	result_folder->cd();
-	for (auto& _elm : roo_result)
-		if (_elm)
-			_elm->Write();
-		
-	// Create final histo dir
-	auto e_result_folder = outfile.mkdir("electron_results");
-	auto p_result_folder = outfile.mkdir("proton_results");
-	for (auto& _elm : roo_result_comp)
-		for (unsigned int comp=0; comp<_s_default; ++comp)
+	if (release_flag)
+	{
+		// Create final histo dir
+		auto result_folder = outfile.mkdir("results");
+		result_folder->cd();
+		for (auto& _elm : roo_result)
+			if (_elm)
+				_elm->Write();
+			
+		// Create final histo dir
+		auto e_result_folder = outfile.mkdir("electron_results");
+		auto p_result_folder = outfile.mkdir("proton_results");
+		for (auto& _elm : roo_result_comp)
+			for (unsigned int comp=0; comp<_s_default; ++comp)
+			{
+				!comp ? e_result_folder->cd() : p_result_folder->cd();
+				if (_elm[comp])
+					_elm[comp]->Write();
+			}
+	}
+	
+	if (model_ready)
+	{
+		// Create models dir
+		auto model_dir = outfile.mkdir("models");
+		std::vector<std::unique_ptr<RooPlot>> roo_plots (bins);
+		std::string plot_name;
+		model_dir->cd();
+		for (unsigned int idx=0; idx<bins; ++idx)
 		{
-			!comp ? e_result_folder->cd() : p_result_folder->cd();
-			if (_elm[comp])
-				_elm[comp]->Write();
+			plot_name = "TemplateFitModel_" + std::to_string(idx);
+			roo_plots[idx] = std::unique_ptr<RooPlot>(static_cast<RooPlot*>(roo_data_var[idx]->frame()));
+			roo_model[idx]->plotOn(roo_plots[idx].get());
+			roo_plots[idx]->SetName(plot_name.c_str());
+			roo_plots[idx]->SetTitle(plot_name.c_str());
+			roo_plots[idx]->Write();
 		}
+	}
 
 	outfile.cd();
 	
