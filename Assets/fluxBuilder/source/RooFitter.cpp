@@ -310,6 +310,7 @@ void RooFitter::SetResult()
 		for (auto&& _elm : res_name)
 			_elm += std::to_string(idx);
 		roo_result[idx] = std::shared_ptr<TH1D>(static_cast<TH1D*>(data[idx]->Clone(res_name[0].c_str())));
+		roo_result[idx]->Reset();
 		for (unsigned int comp=0; comp<_s_default; ++comp)
 		{
 			roo_result_comp[idx][comp] = std::shared_ptr<TH1D>(static_cast<TH1D*>(data[idx]->Clone(res_name[comp+1].c_str())));
@@ -517,13 +518,13 @@ void RooFitter::SuperimposeResults(TFile &outfile)
 		data_cp[idx]->SetLineWidth(_line_width);
 		// Draw
 		data_cp[idx]->Draw();
-		roo_result_cp[idx]->Draw("same");
+		roo_result_cp[idx]->Draw("histo same");
 		for (auto& _elm : roo_result_comp_cp[idx])
 		{
 			// Setting component layout
 			_elm->SetLineWidth(_line_width);
 			// Draw
-			_elm->Draw("same");
+			_elm->Draw("histo same");
 		}
 	}
 	auto canvas_dir = outfile.mkdir("superimpose_cvs");
