@@ -1,4 +1,5 @@
 #include "RooFitter.h"
+#include "TLegend.h"
 
 RooFitter::RooFitter(
 	const std::vector<std::shared_ptr<TH1D>> &in_data,
@@ -310,10 +311,12 @@ void RooFitter::SetResult()
 		for (auto&& _elm : res_name)
 			_elm += std::to_string(idx);
 		roo_result[idx] = std::shared_ptr<TH1D>(static_cast<TH1D*>(data[idx]->Clone(res_name[0].c_str())));
+		roo_result[idx]->SetTitle(res_name[0].c_str());
 		roo_result[idx]->Reset();
 		for (unsigned int comp=0; comp<_s_default; ++comp)
 		{
 			roo_result_comp[idx][comp] = std::shared_ptr<TH1D>(static_cast<TH1D*>(data[idx]->Clone(res_name[comp+1].c_str())));
+			roo_result_comp[idx][comp]->SetTitle(res_name[comp+1].c_str());
 			roo_result_comp[idx][comp]->Reset();
 			comp ? roo_result_comp[idx][comp]->SetLineColor(38) : roo_result_comp[idx][comp]->SetLineColor(46);
 		}
@@ -398,7 +401,6 @@ void RooFitter::SaveResults(
 	for (auto& _elm : data)
 		if (_elm)
 			_elm->Write();
-		
 
 	// Create templates folder
 	auto e_template_folder = outfile.mkdir("electron_templates");
@@ -499,6 +501,7 @@ void RooFitter::SaveResults(
 void RooFitter::SuperimposeResults(TFile &outfile)
 {
 	std::vector<std::unique_ptr<TCanvas>> canvas (bins);
+	std::vector<std::unique_ptr<TLegend>> _legend (bins);
 	auto roo_result_cp = roo_result;
 	auto roo_result_comp_cp = roo_result_comp;
 	auto data_cp = data;
@@ -509,6 +512,9 @@ void RooFitter::SuperimposeResults(TFile &outfile)
 	{
 		// Setting tmp canvas
 		cvs_name = "TemplateFit_bin_" + std::to_string(idx);
+		_legend[idx] = std::make_unique<TLegend>(.1,.7,.3,.9, cvs_name.c_str());
+		_legend[idx]->AddEntry(data_cp[idx].get(), data_cp[idx]->GetTitle(), "l");
+		_legend[idx]->AddEntry(roo_result_cp[idx].get(), roo_result_cp[idx]->GetTitle(), "l");
 		canvas[idx] = std::make_unique<TCanvas>(cvs_name.c_str(), cvs_name.c_str());
 		canvas[idx]->cd();
 		// Setting roo_result_cp layout
@@ -518,14 +524,17 @@ void RooFitter::SuperimposeResults(TFile &outfile)
 		data_cp[idx]->SetLineWidth(_line_width);
 		// Draw
 		data_cp[idx]->Draw();
+		data_cp[idx]->SetStats(0);	// Remove TStats
 		roo_result_cp[idx]->Draw("histo same");
 		for (auto& _elm : roo_result_comp_cp[idx])
 		{
 			// Setting component layout
 			_elm->SetLineWidth(_line_width);
+			_legend[idx]->AddEntry(_elm.get(), _elm->GetTitle(), "l");
 			// Draw
 			_elm->Draw("histo same");
 		}
+		_legend[idx]->Draw("same");
 	}
 	auto canvas_dir = outfile.mkdir("superimpose_cvs");
 	canvas_dir->cd();
