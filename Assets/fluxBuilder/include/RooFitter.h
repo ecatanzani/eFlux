@@ -73,6 +73,7 @@ private:
 	void GetFitResult();
 	// Plot facility
 	void SuperimposeResults(TFile &outfile);
+	void remove_zeros();
 
 	// Data
 	std::vector<unsigned int> data_events;
@@ -105,6 +106,7 @@ private:
 	// Result histos
 	std::vector<std::shared_ptr<TH1D>> roo_result;
 	std::vector<std::vector<std::shared_ptr<TH1D>>> roo_result_comp;
+	std::vector<double> roo_proton_sample;
 
 	unsigned int _s_default = 2;
 	double _d_default = -1;

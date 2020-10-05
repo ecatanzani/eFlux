@@ -103,6 +103,7 @@ void RooFitter::init()
 	// Result histos
 	roo_result.resize(bins);
 	roo_result_comp.resize(bins);
+	roo_proton_sample.resize(bins);
 
 	for (unsigned int idx=0; idx<bins; ++idx)
 	{
@@ -133,6 +134,7 @@ void RooFitter::init()
 		// Result histos
 		roo_result[idx] = std::make_shared<TH1D>();
 		roo_result_comp[idx] = std::vector<std::shared_ptr<TH1D>> (_s_default, std::make_shared<TH1D>());
+		roo_proton_sample[idx] = _d_default;
 	}
 }
 
@@ -341,9 +343,20 @@ void RooFitter::GetFitResult()
 			roo_result_comp[idx][comp]->Add(
 				norm_template[idx][comp].get(),
 				res[idx][comp]/norm_template[idx][comp]->Integral());
+			if (comp)
+				roo_proton_sample[idx] = roo_result_comp[idx][1]->Integral();
 		}
 		tot_err[idx] = sqrt(tot_err[idx]);
 	}
+}
+
+void RooFitter::remove_zeros()
+{
+	for (auto&& _elm : norm_template)
+		for (auto&& _ptr_i : _elm)
+			for (int bIdx=1; bIdx<=_ptr_i->GetXaxis()->GetNbins(); ++bIdx)
+				if (_ptr_i->GetBinContent(bIdx) < 1e-32)
+					_ptr_i->SetBinContent(bIdx, 1e-32);
 }
 
 void RooFitter::Fit()
@@ -354,6 +367,7 @@ void RooFitter::Fit()
 		false,
 		false);
 #endif	
+	remove_zeros();
 	// Normalize templates
 	normalize_templates();
 #ifdef _DEBUG 
