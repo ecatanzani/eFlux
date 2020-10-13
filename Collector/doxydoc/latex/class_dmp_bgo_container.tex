@@ -1,0 +1,319 @@
+\hypertarget{class_dmp_bgo_container}{}\doxysection{Dmp\+Bgo\+Container Class Reference}
+\label{class_dmp_bgo_container}\index{DmpBgoContainer@{DmpBgoContainer}}
+
+
+{\ttfamily \#include $<$Dmp\+Bgo\+Container.\+h$>$}
+
+
+
+Collaboration diagram for Dmp\+Bgo\+Container\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=228pt]{class_dmp_bgo_container__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_dmp_bgo_container_a12445d7452cf7087adb7ad02bfdf5a30}{Dmp\+Bgo\+Container}} ()
+\item 
+\mbox{\hyperlink{class_dmp_bgo_container_abbf97b8b553e8fa0607ccf6b3a9c37bc}{Dmp\+Bgo\+Container}} (int m\+\_\+size)
+\item 
+\mbox{\hyperlink{class_dmp_bgo_container_a41191e7e13109c2b02b09c8ffc6c6cad}{$\sim$\+Dmp\+Bgo\+Container}} ()
+\item 
+void \mbox{\hyperlink{class_dmp_bgo_container_a5733202bf1101902e15c989ebdbf85c0}{scan\+B\+G\+O\+Hits}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Hits $>$ bgohits, const double bgo\+TotalE, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} \&data\+\_\+cuts, const int n\+Layers=\mbox{\hyperlink{_d_a_m_p_e__geo__structure_8h_af065d0640d735c7ac401721653ac07fd}{D\+A\+M\+P\+E\+\_\+bgo\+\_\+n\+Layers}})
+\item 
+std\+::vector$<$ short $>$ \mbox{\hyperlink{class_dmp_bgo_container_a23d7d7b792c86701bf1e39784c6dd331}{Get\+Single\+Layer\+Bar\+Number}} (int n\+Layer)
+\item 
+std\+::vector$<$ std\+::vector$<$ short $>$ $>$ \mbox{\hyperlink{class_dmp_bgo_container_a3d2cb9f15c9c889914bb610333491921}{Get\+Layer\+Bar\+Number}} ()
+\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{class_dmp_bgo_container_ace5606804718764a17215e1f80f5a3ba}{Get\+Rms\+Layer}} ()
+\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{class_dmp_bgo_container_a4d04e2ccc2fd2b7c03c636f6338d54d9}{Get\+Frac\+Layer}} ()
+\item 
+const double \mbox{\hyperlink{class_dmp_bgo_container_a70402bb8f21493c5a94c8b8352345e44}{Get\+Single\+Frac\+Layer}} (const int l\+Idx)
+\item 
+const double \mbox{\hyperlink{class_dmp_bgo_container_a642e1edb35c779286a283729f4f42cbd}{Get\+Last\+Frac\+Layer}} ()
+\item 
+const double \mbox{\hyperlink{class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1}{Get\+Last\+F\+Frac\+Layer}} ()
+\item 
+std\+::vector$<$ int $>$ \mbox{\hyperlink{class_dmp_bgo_container_a35e602b2474a0bb273b04f340ea87272}{Get\+Idx\+Bar\+Max\+Layer}} ()
+\item 
+const int \mbox{\hyperlink{class_dmp_bgo_container_add3d864362b4f9a07c0ab16dc4db8e85}{Get\+Idx\+Last\+Layer}} ()
+\item 
+const int \mbox{\hyperlink{class_dmp_bgo_container_a6c55d68cc458c4047e2b024bcfba6d12}{Get\+Frac\+Idx\+Last\+Layer}} ()
+\item 
+const int \mbox{\hyperlink{class_dmp_bgo_container_a96a7998c66f1f4f36b8496d57fbfd5d6}{Get\+Idx\+Bar\+Max\+Single\+Layer}} (const int layed\+Idx)
+\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{class_dmp_bgo_container_a87b47db90247749a883284e0657c32df}{Get\+E\+Layer}} ()
+\item 
+const double \mbox{\hyperlink{class_dmp_bgo_container_af3386e90a3379444e5a792f11f80e99a}{Get\+E\+Single\+Layer}} (const int layed\+Idx)
+\item 
+std\+::vector$<$ int $>$ \mbox{\hyperlink{class_dmp_bgo_container_acb30c370f36a1c0fe993f2ed08673d93}{Geti\+Max\+Layer}} ()
+\item 
+const int \mbox{\hyperlink{class_dmp_bgo_container_a1c3df5b803eaa28b74c25ba9b1cd35d8}{Geti\+Max\+Single\+Layer}} (const int layed\+Idx)
+\item 
+const double \mbox{\hyperlink{class_dmp_bgo_container_aa4077abd503dcfc8c80f62ab06e56104}{Get\+Sum\+R\+MS}} ()
+\item 
+const int \mbox{\hyperlink{class_dmp_bgo_container_a333f1e1fa7e2e0fbafcb7ad851e24f19}{Get\+Nhits}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_dmp_bgo_container_a12445d7452cf7087adb7ad02bfdf5a30}\label{class_dmp_bgo_container_a12445d7452cf7087adb7ad02bfdf5a30}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!DmpBgoContainer@{DmpBgoContainer}}
+\index{DmpBgoContainer@{DmpBgoContainer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{DmpBgoContainer()}{DmpBgoContainer()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Dmp\+Bgo\+Container\+::\+Dmp\+Bgo\+Container (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_dmp_bgo_container_abbf97b8b553e8fa0607ccf6b3a9c37bc}\label{class_dmp_bgo_container_abbf97b8b553e8fa0607ccf6b3a9c37bc}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!DmpBgoContainer@{DmpBgoContainer}}
+\index{DmpBgoContainer@{DmpBgoContainer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{DmpBgoContainer()}{DmpBgoContainer()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Dmp\+Bgo\+Container\+::\+Dmp\+Bgo\+Container (\begin{DoxyParamCaption}\item[{int}]{m\+\_\+size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_dmp_bgo_container_a41191e7e13109c2b02b09c8ffc6c6cad}\label{class_dmp_bgo_container_a41191e7e13109c2b02b09c8ffc6c6cad}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!````~DmpBgoContainer@{$\sim$DmpBgoContainer}}
+\index{````~DmpBgoContainer@{$\sim$DmpBgoContainer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{$\sim$DmpBgoContainer()}{~DmpBgoContainer()}}
+{\footnotesize\ttfamily Dmp\+Bgo\+Container\+::$\sim$\+Dmp\+Bgo\+Container (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_dmp_bgo_container_a87b47db90247749a883284e0657c32df}\label{class_dmp_bgo_container_a87b47db90247749a883284e0657c32df}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetELayer@{GetELayer}}
+\index{GetELayer@{GetELayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetELayer()}{GetELayer()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Dmp\+Bgo\+Container\+::\+Get\+E\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_dmp_bgo_container_af3386e90a3379444e5a792f11f80e99a}\label{class_dmp_bgo_container_af3386e90a3379444e5a792f11f80e99a}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetESingleLayer@{GetESingleLayer}}
+\index{GetESingleLayer@{GetESingleLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetESingleLayer()}{GetESingleLayer()}}
+{\footnotesize\ttfamily const double Dmp\+Bgo\+Container\+::\+Get\+E\+Single\+Layer (\begin{DoxyParamCaption}\item[{const int}]{layed\+Idx }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_dmp_bgo_container_a6c55d68cc458c4047e2b024bcfba6d12}\label{class_dmp_bgo_container_a6c55d68cc458c4047e2b024bcfba6d12}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetFracIdxLastLayer@{GetFracIdxLastLayer}}
+\index{GetFracIdxLastLayer@{GetFracIdxLastLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetFracIdxLastLayer()}{GetFracIdxLastLayer()}}
+{\footnotesize\ttfamily const int Dmp\+Bgo\+Container\+::\+Get\+Frac\+Idx\+Last\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a6c55d68cc458c4047e2b024bcfba6d12_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a4d04e2ccc2fd2b7c03c636f6338d54d9}\label{class_dmp_bgo_container_a4d04e2ccc2fd2b7c03c636f6338d54d9}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetFracLayer@{GetFracLayer}}
+\index{GetFracLayer@{GetFracLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetFracLayer()}{GetFracLayer()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Dmp\+Bgo\+Container\+::\+Get\+Frac\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a4d04e2ccc2fd2b7c03c636f6338d54d9_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a35e602b2474a0bb273b04f340ea87272}\label{class_dmp_bgo_container_a35e602b2474a0bb273b04f340ea87272}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetIdxBarMaxLayer@{GetIdxBarMaxLayer}}
+\index{GetIdxBarMaxLayer@{GetIdxBarMaxLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetIdxBarMaxLayer()}{GetIdxBarMaxLayer()}}
+{\footnotesize\ttfamily std\+::vector$<$ int $>$ Dmp\+Bgo\+Container\+::\+Get\+Idx\+Bar\+Max\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a35e602b2474a0bb273b04f340ea87272_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a96a7998c66f1f4f36b8496d57fbfd5d6}\label{class_dmp_bgo_container_a96a7998c66f1f4f36b8496d57fbfd5d6}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetIdxBarMaxSingleLayer@{GetIdxBarMaxSingleLayer}}
+\index{GetIdxBarMaxSingleLayer@{GetIdxBarMaxSingleLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetIdxBarMaxSingleLayer()}{GetIdxBarMaxSingleLayer()}}
+{\footnotesize\ttfamily const int Dmp\+Bgo\+Container\+::\+Get\+Idx\+Bar\+Max\+Single\+Layer (\begin{DoxyParamCaption}\item[{const int}]{layed\+Idx }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_dmp_bgo_container_add3d864362b4f9a07c0ab16dc4db8e85}\label{class_dmp_bgo_container_add3d864362b4f9a07c0ab16dc4db8e85}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetIdxLastLayer@{GetIdxLastLayer}}
+\index{GetIdxLastLayer@{GetIdxLastLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetIdxLastLayer()}{GetIdxLastLayer()}}
+{\footnotesize\ttfamily const int Dmp\+Bgo\+Container\+::\+Get\+Idx\+Last\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_add3d864362b4f9a07c0ab16dc4db8e85_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_acb30c370f36a1c0fe993f2ed08673d93}\label{class_dmp_bgo_container_acb30c370f36a1c0fe993f2ed08673d93}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetiMaxLayer@{GetiMaxLayer}}
+\index{GetiMaxLayer@{GetiMaxLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetiMaxLayer()}{GetiMaxLayer()}}
+{\footnotesize\ttfamily std\+::vector$<$ int $>$ Dmp\+Bgo\+Container\+::\+Geti\+Max\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_acb30c370f36a1c0fe993f2ed08673d93_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a1c3df5b803eaa28b74c25ba9b1cd35d8}\label{class_dmp_bgo_container_a1c3df5b803eaa28b74c25ba9b1cd35d8}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetiMaxSingleLayer@{GetiMaxSingleLayer}}
+\index{GetiMaxSingleLayer@{GetiMaxSingleLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetiMaxSingleLayer()}{GetiMaxSingleLayer()}}
+{\footnotesize\ttfamily const int Dmp\+Bgo\+Container\+::\+Geti\+Max\+Single\+Layer (\begin{DoxyParamCaption}\item[{const int}]{layed\+Idx }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1}\label{class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetLastFFracLayer@{GetLastFFracLayer}}
+\index{GetLastFFracLayer@{GetLastFFracLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetLastFFracLayer()}{GetLastFFracLayer()}}
+{\footnotesize\ttfamily const double Dmp\+Bgo\+Container\+::\+Get\+Last\+F\+Frac\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a642e1edb35c779286a283729f4f42cbd}\label{class_dmp_bgo_container_a642e1edb35c779286a283729f4f42cbd}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetLastFracLayer@{GetLastFracLayer}}
+\index{GetLastFracLayer@{GetLastFracLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetLastFracLayer()}{GetLastFracLayer()}}
+{\footnotesize\ttfamily const double Dmp\+Bgo\+Container\+::\+Get\+Last\+Frac\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a642e1edb35c779286a283729f4f42cbd_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a3d2cb9f15c9c889914bb610333491921}\label{class_dmp_bgo_container_a3d2cb9f15c9c889914bb610333491921}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetLayerBarNumber@{GetLayerBarNumber}}
+\index{GetLayerBarNumber@{GetLayerBarNumber}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetLayerBarNumber()}{GetLayerBarNumber()}}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::vector$<$ short $>$ $>$ Dmp\+Bgo\+Container\+::\+Get\+Layer\+Bar\+Number (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a3d2cb9f15c9c889914bb610333491921_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a333f1e1fa7e2e0fbafcb7ad851e24f19}\label{class_dmp_bgo_container_a333f1e1fa7e2e0fbafcb7ad851e24f19}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetNhits@{GetNhits}}
+\index{GetNhits@{GetNhits}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetNhits()}{GetNhits()}}
+{\footnotesize\ttfamily const int Dmp\+Bgo\+Container\+::\+Get\+Nhits (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a333f1e1fa7e2e0fbafcb7ad851e24f19_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_ace5606804718764a17215e1f80f5a3ba}\label{class_dmp_bgo_container_ace5606804718764a17215e1f80f5a3ba}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetRmsLayer@{GetRmsLayer}}
+\index{GetRmsLayer@{GetRmsLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetRmsLayer()}{GetRmsLayer()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Dmp\+Bgo\+Container\+::\+Get\+Rms\+Layer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_ace5606804718764a17215e1f80f5a3ba_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a70402bb8f21493c5a94c8b8352345e44}\label{class_dmp_bgo_container_a70402bb8f21493c5a94c8b8352345e44}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetSingleFracLayer@{GetSingleFracLayer}}
+\index{GetSingleFracLayer@{GetSingleFracLayer}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetSingleFracLayer()}{GetSingleFracLayer()}}
+{\footnotesize\ttfamily const double Dmp\+Bgo\+Container\+::\+Get\+Single\+Frac\+Layer (\begin{DoxyParamCaption}\item[{const int}]{l\+Idx }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a70402bb8f21493c5a94c8b8352345e44_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a23d7d7b792c86701bf1e39784c6dd331}\label{class_dmp_bgo_container_a23d7d7b792c86701bf1e39784c6dd331}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetSingleLayerBarNumber@{GetSingleLayerBarNumber}}
+\index{GetSingleLayerBarNumber@{GetSingleLayerBarNumber}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetSingleLayerBarNumber()}{GetSingleLayerBarNumber()}}
+{\footnotesize\ttfamily std\+::vector$<$ short $>$ Dmp\+Bgo\+Container\+::\+Get\+Single\+Layer\+Bar\+Number (\begin{DoxyParamCaption}\item[{int}]{n\+Layer }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a23d7d7b792c86701bf1e39784c6dd331_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_aa4077abd503dcfc8c80f62ab06e56104}\label{class_dmp_bgo_container_aa4077abd503dcfc8c80f62ab06e56104}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!GetSumRMS@{GetSumRMS}}
+\index{GetSumRMS@{GetSumRMS}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{GetSumRMS()}{GetSumRMS()}}
+{\footnotesize\ttfamily const double Dmp\+Bgo\+Container\+::\+Get\+Sum\+R\+MS (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_aa4077abd503dcfc8c80f62ab06e56104_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_bgo_container_a5733202bf1101902e15c989ebdbf85c0}\label{class_dmp_bgo_container_a5733202bf1101902e15c989ebdbf85c0}} 
+\index{DmpBgoContainer@{DmpBgoContainer}!scanBGOHits@{scanBGOHits}}
+\index{scanBGOHits@{scanBGOHits}!DmpBgoContainer@{DmpBgoContainer}}
+\doxysubsubsection{\texorpdfstring{scanBGOHits()}{scanBGOHits()}}
+{\footnotesize\ttfamily void Dmp\+Bgo\+Container\+::scan\+B\+G\+O\+Hits (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Hits $>$}]{bgohits,  }\item[{const double}]{bgo\+TotalE,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} \&}]{data\+\_\+cuts,  }\item[{const int}]{n\+Layers = {\ttfamily \mbox{\hyperlink{_d_a_m_p_e__geo__structure_8h_af065d0640d735c7ac401721653ac07fd}{D\+A\+M\+P\+E\+\_\+bgo\+\_\+n\+Layers}}} }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_bgo_container_a5733202bf1101902e15c989ebdbf85c0_icgraph}
+\end{center}
+\end{figure}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{_dmp_bgo_container_8h}{Dmp\+Bgo\+Container.\+h}}\item 
+source/\mbox{\hyperlink{_dmp_bgo_container_8cpp}{Dmp\+Bgo\+Container.\+cpp}}\end{DoxyCompactItemize}

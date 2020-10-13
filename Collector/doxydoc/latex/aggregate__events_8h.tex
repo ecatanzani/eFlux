@@ -1,0 +1,89 @@
+\hypertarget{aggregate__events_8h}{}\doxysection{include/aggregate\+\_\+events.h File Reference}
+\label{aggregate__events_8h}\index{include/aggregate\_events.h@{include/aggregate\_events.h}}
+{\ttfamily \#include $<$memory$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$fstream$>$}\newline
+{\ttfamily \#include $<$sstream$>$}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Chain.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+I\+O\+Svc.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Core.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Filter\+Orbit.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Chain.\+h\char`\"{}}\newline
+Include dependency graph for aggregate\+\_\+events.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{aggregate__events_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{aggregate__events_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::shared\+\_\+ptr$<$ Dmp\+Chain $>$ \mbox{\hyperlink{aggregate__events_8h_a77925103c82d988c5acf4153d26764a0}{aggregate\+Events\+Dmp\+Chain}} (const std\+::string list\+Input\+Path, const bool verbose)
+\item 
+std\+::shared\+\_\+ptr$<$ T\+Chain $>$ \mbox{\hyperlink{aggregate__events_8h_a1ca1fc2183bcf2f033a040013cb5b8f2}{aggregate\+Events\+T\+Chain}} (const std\+::string list\+Input\+Path, const bool verbose)
+\item 
+std\+::shared\+\_\+ptr$<$ T\+Chain $>$ \mbox{\hyperlink{aggregate__events_8h_ae35b11954bef71f4f398794830cb83cd}{aggregate\+Data\+Events\+T\+Chain}} (const std\+::string list\+Input\+Path, const bool verbose, const bool skimmed)
+\item 
+std\+::shared\+\_\+ptr$<$ T\+Chain $>$ \mbox{\hyperlink{aggregate__events_8h_a1f2c3a1702bace577e13b2a9d2dd70bd}{aggregate\+Tuple\+Data\+Events\+T\+Chain}} (const std\+::string list\+Input\+Path, std\+::string \&year, std\+::string \&month, const bool verbose)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{aggregate__events_8h_ae35b11954bef71f4f398794830cb83cd}\label{aggregate__events_8h_ae35b11954bef71f4f398794830cb83cd}} 
+\index{aggregate\_events.h@{aggregate\_events.h}!aggregateDataEventsTChain@{aggregateDataEventsTChain}}
+\index{aggregateDataEventsTChain@{aggregateDataEventsTChain}!aggregate\_events.h@{aggregate\_events.h}}
+\doxysubsubsection{\texorpdfstring{aggregateDataEventsTChain()}{aggregateDataEventsTChain()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$T\+Chain$>$ aggregate\+Data\+Events\+T\+Chain (\begin{DoxyParamCaption}\item[{const std\+::string}]{list\+Input\+Path,  }\item[{const bool}]{verbose,  }\item[{const bool}]{skimmed }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{aggregate__events_8h_ae35b11954bef71f4f398794830cb83cd_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{aggregate__events_8h_a77925103c82d988c5acf4153d26764a0}\label{aggregate__events_8h_a77925103c82d988c5acf4153d26764a0}} 
+\index{aggregate\_events.h@{aggregate\_events.h}!aggregateEventsDmpChain@{aggregateEventsDmpChain}}
+\index{aggregateEventsDmpChain@{aggregateEventsDmpChain}!aggregate\_events.h@{aggregate\_events.h}}
+\doxysubsubsection{\texorpdfstring{aggregateEventsDmpChain()}{aggregateEventsDmpChain()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$Dmp\+Chain$>$ aggregate\+Events\+Dmp\+Chain (\begin{DoxyParamCaption}\item[{const std\+::string}]{list\+Input\+Path,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{aggregate__events_8h_a1ca1fc2183bcf2f033a040013cb5b8f2}\label{aggregate__events_8h_a1ca1fc2183bcf2f033a040013cb5b8f2}} 
+\index{aggregate\_events.h@{aggregate\_events.h}!aggregateEventsTChain@{aggregateEventsTChain}}
+\index{aggregateEventsTChain@{aggregateEventsTChain}!aggregate\_events.h@{aggregate\_events.h}}
+\doxysubsubsection{\texorpdfstring{aggregateEventsTChain()}{aggregateEventsTChain()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$T\+Chain$>$ aggregate\+Events\+T\+Chain (\begin{DoxyParamCaption}\item[{const std\+::string}]{list\+Input\+Path,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{aggregate__events_8h_a1ca1fc2183bcf2f033a040013cb5b8f2_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{aggregate__events_8h_a1f2c3a1702bace577e13b2a9d2dd70bd}\label{aggregate__events_8h_a1f2c3a1702bace577e13b2a9d2dd70bd}} 
+\index{aggregate\_events.h@{aggregate\_events.h}!aggregateTupleDataEventsTChain@{aggregateTupleDataEventsTChain}}
+\index{aggregateTupleDataEventsTChain@{aggregateTupleDataEventsTChain}!aggregate\_events.h@{aggregate\_events.h}}
+\doxysubsubsection{\texorpdfstring{aggregateTupleDataEventsTChain()}{aggregateTupleDataEventsTChain()}}
+{\footnotesize\ttfamily std\+::shared\+\_\+ptr$<$T\+Chain$>$ aggregate\+Tuple\+Data\+Events\+T\+Chain (\begin{DoxyParamCaption}\item[{const std\+::string}]{list\+Input\+Path,  }\item[{std\+::string \&}]{year,  }\item[{std\+::string \&}]{month,  }\item[{const bool}]{verbose }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{aggregate__events_8h_a1f2c3a1702bace577e13b2a9d2dd70bd_icgraph}
+\end{center}
+\end{figure}
