@@ -492,6 +492,13 @@ void buildAcceptance(
 
 	double _GeV = 0.001;
 	int kStep = 10;
+	double simuEnergy = 0;
+	double bgoTotalE_raw = 0;
+	double bgoTotalE_corr = 0;
+	double energy_w = 0;
+
+	if (verbose)
+		std::cout << "Analysing MC..." << std::endl;
 
 	for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
 	{
@@ -511,17 +518,18 @@ void buildAcceptance(
 			updateProcessStatus(evIdx, kStep, nevents);
 		
 		// Get event total energy
-		double bgoTotalE_raw = bgorec->GetTotalEnergy(); 	// Energy in MeV - not corrected
-		double simuEnergy = simu_primaries->pvpart_ekin; 	// Energy of simu primaries particle (MeV)
+		simuEnergy = simu_primaries->pvpart_ekin; 	// Energy of simu primaries particle (MeV)
+		bgoTotalE_raw = bgorec->GetTotalEnergy(); 	// Energy in MeV - not corrected
+		bgoTotalE_corr = bgorec->GetElectronEcor(); // Energy in MeV - corrected
+		
 
-		double energy_w;
 		if (simu_particle.is_electron)
 			energy_w = pow(simuEnergy * _GeV, -2);
 		else if (simu_particle.is_proton)
 			energy_w = pow(simuEnergy * _GeV, -1.7);
 
 		// Don't accept events outside the selected energy window
-		if (bgoTotalE_raw * _GeV < acceptance_cuts.min_event_energy || bgoTotalE_raw * _GeV > acceptance_cuts.max_event_energy)
+		if (bgoTotalE_corr * _GeV < acceptance_cuts.min_event_energy || bgoTotalE_corr * _GeV > acceptance_cuts.max_event_energy)
 		{
 			++mc_selection.generated_events_out_range;
 			continue;
@@ -849,7 +857,7 @@ void buildAcceptance(
 					sumRms_cosine_500_1000,
 					sumRms_cosine_1000_3000,
 					sumRms_cosine_3000_10000,
-					bgoTotalE_raw,
+					bgoTotalE_corr,
 					energy_w);
 			}
 
@@ -859,7 +867,7 @@ void buildAcceptance(
 				fill_XTRL_histo(
 					bgoVault.GetSumRMS(),
 					bgoVault.GetLastFFracLayer(),
-					bgorec->GetElectronEcor(),
+					bgoTotalE_corr,
 					bin_xtrl,
 					h_xtrl_energy_int,
 					h_xtrl,
@@ -884,14 +892,14 @@ void buildAcceptance(
 					e_discrimination_last_500_1000,
 					e_discrimination_last_1000_3000,
 					e_discrimination_last_3000_10000,
-					bgorec->GetElectronEcor());
+					bgoTotalE_corr);
 
 				// Compute proton background
 				if (ancillary_cuts.compute_proton_background)
 					compute_proton_background(
 						bgoVault.GetSumRMS(),
 						bgoVault.GetLastFFracLayer(),
-						bgorec->GetElectronEcor(),
+						bgoTotalE_corr,
 						acceptance_cuts,
 						h_background_under_xtrl_cut,
 						h_background_over_xtrl_cut,

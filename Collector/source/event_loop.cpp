@@ -370,6 +370,10 @@ void rawDataLoop(
 	
 	double _GeV = 0.001;
 	int kStep = 10;
+	int second = 0;
+	short msecond = 0;
+	double bgoTotalE_raw = 0;
+	double bgoTotalE_corr = 0;
 
 	if (verbose)
 		std::cout << "Analysing data..." << std::endl;
@@ -381,11 +385,10 @@ void rawDataLoop(
 
 		// Update event counter
 		++data_selection.event_counter;
-		
 
 		// Extract data time information
-		int second = evt_header->GetSecond();
-		short msecond = evt_header->GetMillisecond();
+		second = evt_header->GetSecond();
+		msecond = evt_header->GetMillisecond();
 		if (pFilter->IsInSAA(second))
 		{
 			continue;
@@ -399,10 +402,11 @@ void rawDataLoop(
 			updateProcessStatus(evIdx, kStep, nevents);
 
 		// Get event total energy
-		double bgoTotalE_raw = bgorec->GetTotalEnergy();
+		bgoTotalE_raw = bgorec->GetTotalEnergy();
+		bgoTotalE_corr = bgorec->GetElectronEcor();
 
 		// Don't accept events outside the selected energy window
-		if (bgoTotalE_raw * _GeV < flux_cuts.min_event_energy || bgoTotalE_raw * _GeV > flux_cuts.max_event_energy)
+		if (bgoTotalE_corr * _GeV < flux_cuts.min_event_energy || bgoTotalE_corr * _GeV > flux_cuts.max_event_energy)
 		{
 			++data_selection.events_out_range;
 			continue;
@@ -637,7 +641,7 @@ void rawDataLoop(
 					sumRms_cosine_500_1000,
 					sumRms_cosine_1000_3000,
 					sumRms_cosine_3000_10000,
-					bgoTotalE_raw);
+					bgoTotalE_corr);
 			}
 
 			if (filter.all_cut_no_xtrl)
@@ -646,7 +650,7 @@ void rawDataLoop(
 				fill_XTRL_histo(
 					bgoVault.GetSumRMS(),
 					bgoVault.GetLastFFracLayer(),
-					bgorec->GetElectronEcor(),
+					bgoTotalE_corr,
 					bin_xtrl,
 					h_xtrl_energy_int,
 					h_xtrl);
@@ -670,13 +674,13 @@ void rawDataLoop(
 					e_discrimination_last_500_1000,
 					e_discrimination_last_1000_3000,
 					e_discrimination_last_3000_10000,
-					bgorec->GetElectronEcor());
+					bgoTotalE_corr);
 					
 				// Compute proton background
 				compute_proton_background(
 					bgoVault.GetSumRMS(),
 					bgoVault.GetLastFFracLayer(),
-					bgorec->GetElectronEcor(),
+					bgoTotalE_corr,
 					flux_cuts,
 					h_background_under_xtrl_cut,
 					h_background_over_xtrl_cut);

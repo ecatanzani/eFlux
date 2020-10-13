@@ -24,13 +24,20 @@ extern const std::string uniqueOutFile(
     const std::string outputPath,
     AnyOption &opt);
 
+#if 0
 extern const std::string uniqueTupleOutFile(
     AnyOption &opt, 
     const int year, 
     const int month,
     const int emin,
     const int emax);
-    
+#else
+extern const std::string uniqueTupleOutFile(
+    AnyOption &opt, 
+    const std::string year, 
+    const std::string month);
+#endif
+
 extern bool chechFlags(
     AnyOption &opt,
     const std::string inputPath,

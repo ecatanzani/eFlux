@@ -1,0 +1,8 @@
+######### Power Law DataSets Config File #########
+
+SetName	 eMin	 eMax	 generationPawerLawIndex
+Set:	allProton-v6r0p10_1GeV_100GeV_FTFP_HP	1	100	-1
+Set:	allProton-v6r0p10_100GeV_1TeV_FTFP_HP	100	1000	-1
+Set:	allProton-v6r0p10_100GeV_1TeV_FTFP_HP-p2	100	1000	-1
+Set:	allProton-v6r0p10_1TeV_10TeV_FTFP	1000	10000	-1
+Set:	allProton-v6r0p10_1TeV_10TeV_FTFP-p2	1000	10000	-1

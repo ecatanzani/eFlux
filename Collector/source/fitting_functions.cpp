@@ -33,7 +33,7 @@ double logisticFunction_3(double *x, double *par)
 double logisticFunction_4(double *x, double *par)
 {
     double xx = log10(x[0]);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2)) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) + par[7]*TMath::Power(xx,4) + par[8]*TMath::Power(xx,6) + par[9]*TMath::Power(xx,10)));
+    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2) + par[8]*TMath::Power(xx,3) + par[9]*TMath::Power(xx,4)) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) + par[7]*TMath::Power(xx,4) ));
     return logistic;
 }
 

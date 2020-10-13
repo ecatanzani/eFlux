@@ -135,6 +135,5 @@ int main(int argc, char **argv)
 				inputPath,
 				wd);
 	}
-
 	return 0;
 }

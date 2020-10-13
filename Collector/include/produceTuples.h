@@ -26,6 +26,7 @@
 #include "DmpCore.h"
 
 #include <memory>
+#include <string>
 
 struct t_variables
 {
@@ -46,60 +47,60 @@ struct t_variables
 	unsigned int STK_bestTrack_npoints = 0;
 	unsigned int STK_bestTrack_nholesX = 0;
 	unsigned int STK_bestTrack_nholesY = 0;
-	double STK_bestTrack_slopeX = -1;
-	double STK_bestTrack_slopeY = -1;
-	double STK_bestTrack_interceptX = -1;
-	double STK_bestTrack_interceptY = -1;
-	double STK_bestTrack_costheta = -1;
-	double STK_bestTrack_phi = -1;
-	double STK_bestTrack_extr_BGO_topX = -1;
-	double STK_bestTrack_extr_BGO_topY = -1;
-	double STK_bestTrack_STK_BGO_topX_distance = -1;
-	double STK_bestTrack_STK_BGO_topY_distance = -1;
-	double STK_bestTrack_angular_distance_STK_BGO = -2;
-	double STK_chargeX = -1;
-	double STK_chargeY = -1;
-	double STK_charge = -1;
+	double STK_bestTrack_slopeX = -999;
+	double STK_bestTrack_slopeY = -999;
+	double STK_bestTrack_interceptX = -999;
+	double STK_bestTrack_interceptY = -999;
+	double STK_bestTrack_costheta = -999;
+	double STK_bestTrack_phi = -999;
+	double STK_bestTrack_extr_BGO_topX = -999;
+	double STK_bestTrack_extr_BGO_topY = -999;
+	double STK_bestTrack_STK_BGO_topX_distance = -999;
+	double STK_bestTrack_STK_BGO_topY_distance = -999;
+	double STK_bestTrack_angular_distance_STK_BGO = -999;
+	double STK_chargeX = -999;
+	double STK_chargeY = -999;
+	double STK_charge = -999;
 
 	// BGO
 
-	double energy = -1;
-	double energy_corr = -1;
-	double BGOrec_slopeX = -1;
-	double BGOrec_slopeY = -1;
-	double BGOrec_interceptX = -1;
-	double BGOrec_interceptY = -1;
-	double sumRms = -1;
+	double energy = -999;
+	double energy_corr = -999;
+	double BGOrec_slopeX = -999;
+	double BGOrec_slopeY = -999;
+	double BGOrec_interceptX = -999;
+	double BGOrec_interceptY = -999;
+	double sumRms = -999;
 	std::vector<double> fracLayer;
 	std::vector<double> *fracLayer_ptr = nullptr;
-	double fracLast = -1;
-	double fracLast_13 = -1;
+	double fracLast = -999;
+	double fracLast_13 = -999;
 	unsigned int lastBGOLayer = 0;
 	unsigned int nBGOentries = 0;
 
 	// PSD
-	double PSD_chargeX = -1;
-	double PSD_chargeY = -1;
-	double PSD_charge = -1;
+	double PSD_chargeX = -999;
+	double PSD_chargeY = -999;
+	double PSD_charge = -999;
 
 	// Classifiers
-	double xtr = -1;
-	double xtrl = -1;
+	double xtr = -999;
+	double xtrl = -999;
 
 	// Attitude
-	double glat = -1;
-	double glon = -1;
-	double geo_lat = -1;
-	double geo_lon = -1;
-	double ra_zenith = -1;
-	double dec_zenith = -1;
-	double ra_scz = -1;
-	double dec_scz = -1;
-	double ra_scx = -1;
-	double dec_scx = -1;
-	double ra_scy = -1;
-	double dec_scy = -1;
-	double verticalRigidityCutoff = -1;
+	double glat = -999;
+	double glon = -999;
+	double geo_lat = -999;
+	double geo_lon = -999;
+	double ra_zenith = -999;
+	double dec_zenith = -999;
+	double ra_scz = -999;
+	double dec_scz = -999;
+	double ra_scx = -999;
+	double dec_scx = -999;
+	double ra_scy = -999;
+	double dec_scy = -999;
+	double verticalRigidityCutoff = -999;
 
 	// Cuts
 	bool cut_nBarLayer13 = false;
@@ -128,7 +129,7 @@ struct t_variables
 	bool evtfilter_psd_charge_measurement = false;
 	bool evtfilter_stk_charge_measurement = false;
 
-	t_variables() :	fracLayer (DAMPE_bgo_nLayers, 0)
+	t_variables() :	fracLayer (DAMPE_bgo_nLayers, -999)
 					{
 						
 					}

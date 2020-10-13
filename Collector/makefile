@@ -25,8 +25,8 @@ BOOST_LIB=/cvmfs/dampe.cern.ch/centos7/lib
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
 
-ANYOPT_SRC = $(TOP)/deps/AnyOption/anyoption.cpp
-ANYOPT_INC = $(TOP)/deps/AnyOption
+ANYOPT_SRC = $(TOP)/../deps/AnyOption/anyoption.cpp
+ANYOPT_INC = $(TOP)/../deps/AnyOption
 
 DEBUG_DIR    = Debug/obj
 RELEASE_DIR  = Release/obj
@@ -57,6 +57,7 @@ ifneq ($(DIPS_INCLUDE),)
 	CC_FLAGS += -I$(DIPS_INCLUDE) -I$(ANYOPT_INC) -I$(DAMPE_INC) -I$(DAMPE_INC_CNAF)
 	LDFLAGS += -L$(BOOST_LIB) -lboost_system $(DIPS_LIBS) -lTreePlayer -L$(DAMPE_LIB) -L$(DAMPE_LIB_CNAF) -lDmpEvent -lDmpEventFilter -lDmpKernel -lDmpService
 endif
+
 ####################################################
 # Flags by OS
 ifeq ($(shell uname -s),Linux) # LINUX

@@ -140,29 +140,29 @@ void fill_sumRms_cosine_histo(
 	TH2D &sumRms_cosine_500_1000,
 	TH2D &sumRms_cosine_1000_3000,
 	TH2D &sumRms_cosine_3000_10000,
-	const double energy_raw,
+	const double energy,
 	const double energy_w)
 {	
 	double _GeV = 0.001;
-	auto energy_raw_gev = energy_raw * _GeV;
+	auto energy_gev = energy * _GeV;
 	
 	for (auto it=logEBins.begin(); it != logEBins.end() -1; ++it)
-		if (energy_raw_gev >= (*it) && energy_raw_gev < (*it+1))
+		if (energy_gev >= (*it) && energy_gev < (*it+1))
 		{
 			auto energy_idx = std::distance(logEBins.begin(), it);
 			sumRms_cosine[energy_idx]->Fill(costheta, sumRMS, energy_w);
 			break;
 		}
 	
-	if (energy_raw_gev >= 20 && energy_raw_gev < 100)
+	if (energy_gev >= 20 && energy_gev < 100)
 		sumRms_cosine_20_100.Fill(costheta, sumRMS, energy_w);
-	else if (energy_raw_gev >= 100 && energy_raw_gev < 250)
+	else if (energy_gev >= 100 && energy_gev < 250)
 		sumRms_cosine_100_250.Fill(costheta, sumRMS, energy_w);
-	else if (energy_raw_gev >= 250 && energy_raw_gev < 500)
+	else if (energy_gev >= 250 && energy_gev < 500)
 		sumRms_cosine_250_500.Fill(costheta, sumRMS, energy_w);
-	else if (energy_raw_gev >= 500 && energy_raw_gev < 1000)
+	else if (energy_gev >= 500 && energy_gev < 1000)
 		sumRms_cosine_500_1000.Fill(costheta, sumRMS, energy_w);
-	else if (energy_raw_gev >= 1000 && energy_raw_gev < 3000)
+	else if (energy_gev >= 1000 && energy_gev < 3000)
 		sumRms_cosine_1000_3000.Fill(costheta, sumRMS, energy_w);
 	else
 		sumRms_cosine_3000_10000.Fill(costheta, sumRMS, energy_w);

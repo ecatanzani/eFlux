@@ -12,7 +12,7 @@ inline void updateProcessStatus(const int evIdx, int &kStep, const int nevents)
 }
 
 inline void branchTree(
-	std::shared_ptr<TTree> tree, 
+	std::shared_ptr<TTree> tree,
 	t_variables &vars)
 {
 	tree->Branch("unbiased_trigger", &vars.unbiased_trigger, "unbiased_trigger/O");
@@ -86,9 +86,10 @@ inline void branchTree(
 	tree->Branch("evtfilter_stk_charge_measurement", &vars.evtfilter_stk_charge_measurement, "evtfilter_stk_charge_measurement/O");
 }
 
-template <typename linkedStruct> void linker(
-    std::shared_ptr<linkedStruct> myStruct, 
-    t_variables &vars)
+template <typename linkedStruct>
+void linker(
+	std::shared_ptr<linkedStruct> myStruct,
+	t_variables &vars)
 {
 	myStruct->SetBranchAddress("unbiased_trigger", &vars.unbiased_trigger);
 	myStruct->SetBranchAddress("mip1_trigger", &vars.mip1_trigger);
@@ -161,23 +162,79 @@ template <typename linkedStruct> void linker(
 	myStruct->SetBranchAddress("evtfilter_stk_charge_measurement", &vars.evtfilter_stk_charge_measurement);
 }
 
-
 inline void fill_STK_bestTrack_info(best_track event_best_track, t_variables &vars)
 {
-	vars.STK_bestTrack_npoints = event_best_track.n_points;
-	vars.STK_bestTrack_nholesX = event_best_track.n_holes[0];
-	vars.STK_bestTrack_nholesY = event_best_track.n_holes[1];
-	vars.STK_bestTrack_slopeX = event_best_track.track_slope[0];
-	vars.STK_bestTrack_slopeY = event_best_track.track_slope[1];
-	vars.STK_bestTrack_interceptX = event_best_track.track_intercept[0];
-	vars.STK_bestTrack_interceptY = event_best_track.track_intercept[1];
-	vars.STK_bestTrack_costheta = event_best_track.myBestTrack.getDirection().CosTheta();
-	vars.STK_bestTrack_phi = event_best_track.myBestTrack.getDirection().Phi();
-	vars.STK_bestTrack_extr_BGO_topX = event_best_track.extr_BGO_topX;
-	vars.STK_bestTrack_extr_BGO_topY = event_best_track.extr_BGO_topY;
-	vars.STK_bestTrack_STK_BGO_topX_distance = event_best_track.STK_BGO_topX_distance;
-	vars.STK_bestTrack_STK_BGO_topY_distance = event_best_track.STK_BGO_topY_distance;
-	vars.STK_bestTrack_angular_distance_STK_BGO = event_best_track.angular_distance_STK_BGO;
+	if (vars.evtfilter_track_selection_cut)
+	{
+		vars.STK_bestTrack_npoints = event_best_track.n_points;
+		vars.STK_bestTrack_nholesX = event_best_track.n_holes[0];
+		vars.STK_bestTrack_nholesY = event_best_track.n_holes[1];
+		vars.STK_bestTrack_slopeX = event_best_track.track_slope[0];
+		vars.STK_bestTrack_slopeY = event_best_track.track_slope[1];
+		vars.STK_bestTrack_interceptX = event_best_track.track_intercept[0];
+		vars.STK_bestTrack_interceptY = event_best_track.track_intercept[1];
+		vars.STK_bestTrack_costheta = event_best_track.myBestTrack.getDirection().CosTheta();
+		vars.STK_bestTrack_phi = event_best_track.myBestTrack.getDirection().Phi();
+		vars.STK_bestTrack_extr_BGO_topX = event_best_track.extr_BGO_topX;
+		vars.STK_bestTrack_extr_BGO_topY = event_best_track.extr_BGO_topY;
+		vars.STK_bestTrack_STK_BGO_topX_distance = event_best_track.STK_BGO_topX_distance;
+		vars.STK_bestTrack_STK_BGO_topY_distance = event_best_track.STK_BGO_topY_distance;
+		vars.STK_bestTrack_angular_distance_STK_BGO = event_best_track.angular_distance_STK_BGO;
+	}
+}
+
+inline void fill_BGO_info(
+	const double bgoTotalE_raw,
+	const double bgoTotalE_corr,
+	const std::shared_ptr<DmpEvtBgoRec> &bgorec,
+	DmpBgoContainer &bgoVault,
+	t_variables &vars)
+{
+	vars.energy = bgoTotalE_raw;
+	vars.energy_corr = bgoTotalE_corr;
+	vars.BGOrec_slopeX = bgorec->GetSlopeXZ();
+	vars.BGOrec_slopeY = bgorec->GetSlopeYZ();
+	vars.BGOrec_interceptX = bgorec->GetInterceptXZ();
+	vars.BGOrec_interceptY = bgorec->GetInterceptYZ();
+	vars.sumRms = bgoVault.GetSumRMS();
+	vars.fracLayer = bgoVault.GetFracLayer();
+	vars.fracLast = bgoVault.GetLastFFracLayer();
+	vars.fracLast_13 = bgoVault.GetSingleFracLayer(13);
+	vars.lastBGOLayer = bgoVault.GetFracIdxLastLayer();
+	vars.nBGOentries = bgoVault.GetNhits();
+}
+
+inline void fill_charge_info(
+	const psd_charge &extracted_psd_charge,
+	const stk_charge &extracted_stk_charge,
+	t_variables &vars)
+{
+	if (vars.evtfilter_stk_charge_measurement)
+		if (extracted_stk_charge.chargeX != -999 && extracted_stk_charge.chargeY != -999)
+		{
+			vars.STK_chargeX = extracted_stk_charge.chargeX;
+			vars.STK_chargeY = extracted_stk_charge.chargeY;
+			vars.STK_charge = 0.5 * (extracted_stk_charge.chargeX + extracted_stk_charge.chargeY);
+		}
+	
+	if (vars.evtfilter_psd_charge_measurement)
+		if (extracted_psd_charge.chargeX != -999 && extracted_psd_charge.chargeY != -999)
+		{
+			vars.PSD_chargeX = extracted_psd_charge.chargeX;
+			vars.PSD_chargeY = extracted_psd_charge.chargeY;
+			vars.PSD_charge = 0.5 * (extracted_psd_charge.chargeX + extracted_psd_charge.chargeY);
+		}
+}
+
+inline void fill_classifier_info(
+	DmpBgoContainer &bgoVault,
+	t_variables &vars)
+{
+	if (bgoVault.GetLastFFracLayer() != -1)
+	{
+		vars.xtr = 0.125e-6 * pow(bgoVault.GetSumRMS(), 4) * bgoVault.GetSingleFracLayer(13);
+		vars.xtrl = 0.125e-6 * pow(bgoVault.GetSumRMS(), 4) * bgoVault.GetLastFFracLayer();
+	}
 }
 
 inline void fill_attitude_info(const std::shared_ptr<DmpEvtAttitude> attitude, t_variables &vars)
@@ -209,7 +266,7 @@ inline void setActiveCuts(t_variables &vars, const data_active_cuts active_cuts)
 	vars.nActiveCuts = active_cuts.nActiveCuts;
 }
 
-inline void setEvtFilter(t_variables &vars, const event_filter filter)
+inline void fill_filter_info(t_variables &vars, const event_filter filter)
 {
 	vars.evtfilter_geometric = filter.geometric;
 	vars.evtfilter_BGO_fiducial = filter.BGO_fiducial;
@@ -229,19 +286,111 @@ inline void setEvtFilter(t_variables &vars, const event_filter filter)
 	vars.evtfilter_stk_charge_measurement = filter.stk_charge_measurement;
 }
 
+inline void reset_vars(t_variables &vars)
+{
+	vars.unbiased_trigger = false;
+	vars.mip1_trigger = false;
+	vars.mip2_trigger = false;
+	vars.HET_trigger = false;
+	vars.LET_trigger = false;
+	vars.MIP_trigger = false;
+	vars.general_trigger = false;
+
+	vars.second = 0;
+	vars.msecond = 0;
+
+	vars.STK_bestTrack_npoints = 0;
+	vars.STK_bestTrack_nholesX = 0;
+	vars.STK_bestTrack_nholesY = 0;
+	vars.STK_bestTrack_slopeX = -999;
+	vars.STK_bestTrack_slopeY = -999;
+	vars.STK_bestTrack_interceptX = -999;
+	vars.STK_bestTrack_interceptY = -999;
+	vars.STK_bestTrack_costheta = -999;
+	vars.STK_bestTrack_phi = -999;
+	vars.STK_bestTrack_extr_BGO_topX = -999;
+	vars.STK_bestTrack_extr_BGO_topY = -999;
+	vars.STK_bestTrack_STK_BGO_topX_distance = -999;
+	vars.STK_bestTrack_STK_BGO_topY_distance = -999;
+	vars.STK_bestTrack_angular_distance_STK_BGO = -999;
+	vars.STK_chargeX = -999;
+	vars.STK_chargeY = -999;
+	vars.STK_charge = -999;
+
+	vars.energy = -999;
+	vars.energy_corr = -999;
+	vars.BGOrec_slopeX = -999;
+	vars.BGOrec_slopeY = -999;
+	vars.BGOrec_interceptX = -999;
+	vars.BGOrec_interceptY = -999;
+	vars.sumRms = -999;
+	vars.fracLayer = std::vector<double> (DAMPE_bgo_nLayers, -999);
+	vars.fracLast = -999;
+	vars.fracLast_13 = -999;
+	vars.lastBGOLayer = 0;
+	vars.nBGOentries = 0;
+
+	vars.PSD_chargeX = -999;
+	vars.PSD_chargeY = -999;
+	vars.PSD_charge = -999;
+
+	vars.xtr = -999;
+	vars.xtrl = -999;
+
+	vars.glat = -999;
+	vars.glon = -999;
+	vars.geo_lat = -999;
+	vars.geo_lon = -999;
+	vars.ra_zenith = -999;
+	vars.dec_zenith = -999;
+	vars.ra_scz = -999;
+	vars.dec_scz = -999;
+	vars.ra_scx = -999;
+	vars.dec_scx = -999;
+	vars.ra_scy = -999;
+	vars.dec_scy = -999;
+	vars.verticalRigidityCutoff = -999;
+
+	vars.cut_nBarLayer13 = false;
+	vars.cut_maxRms = false;
+	vars.cut_track_selection = false;
+	vars.cut_psd_stk_match = false;
+	vars.cut_psd_charge = false;
+	vars.cut_stk_charge = false;
+	vars.cut_xtrl = false;
+	vars.nActiveCuts = 0;
+
+	vars.evtfilter_geometric = false;
+	vars.evtfilter_BGO_fiducial = false;
+	vars.evtfilter_all_cut = false;
+	vars.evtfilter_all_cut_no_xtrl = false;
+	vars.evtfilter_BGO_fiducial_maxElayer_cut = false;
+	vars.evtfilter_BGO_fiducial_maxBarLayer_cut = false;
+	vars.evtfilter_BGO_fiducial_BGOTrackContainment_cut = false;
+	vars.evtfilter_nBarLayer13_cut = false;
+	vars.evtfilter_maxRms_cut = false;
+	vars.evtfilter_track_selection_cut = false;
+	vars.evtfilter_psd_stk_match_cut = false;
+	vars.evtfilter_psd_charge_cut = false;
+	vars.evtfilter_stk_charge_cut = false;
+	vars.evtfilter_xtrl_cut = false;
+	vars.evtfilter_psd_charge_measurement = false;
+	vars.evtfilter_stk_charge_measurement = false;
+}
+
 void produceTuples(
 	AnyOption &opt,
 	const std::string inputPath,
 	const bool verbose,
 	const std::string wd)
-{	
-	int data_year;
-	int data_month;
+{
+	std::string data_year;
+	std::string data_month;
 
 	auto dmpch = aggregateTupleDataEventsTChain(
-		inputPath, 
-		data_year, 
-		data_month, 
+		inputPath,
+		data_year,
+		data_month,
 		verbose);
 
 	// Register Header container
@@ -314,30 +463,66 @@ void produceTuples(
 	if (verbose)
 		std::cout << "Total number of events: " << nevents << "\n\n";
 
-	double _GeV = 0.001;
-	int kStep = 10;
+	// Create TTree output path
+	auto out_file_path = uniqueTupleOutFile(opt, data_year, data_month);
+	// Create output TFile
+	TFile outFile(out_file_path.c_str(), "RECREATE", "Analysis Output File");
+	if (!outFile.IsOpen())
+	{
+		std::cerr << "\n\nError writing output TFile: " << out_file_path << std::endl;
+		exit(123);
+	}
+
+	// Create TTree
+	std::shared_ptr<TTree> DmpNtupTree = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
+
+	/*
+	auto outFilePath_20_100 = uniqueTupleOutFile(opt, data_year, data_month, 20, 100);
+	auto outFilePath_100_250 = uniqueTupleOutFile(opt, data_year, data_month, 100, 250);
+	auto outFilePath_250_500 = uniqueTupleOutFile(opt, data_year, data_month, 250, 500);
+	auto outFilePath_500_1000 = uniqueTupleOutFile(opt, data_year, data_month, 500, 1000);
+	auto outFilePath_1000_5000 = uniqueTupleOutFile(opt, data_year, data_month, 1000, 5000);
+	auto outFilePath_5000_10000 = uniqueTupleOutFile(opt, data_year, data_month, 5000, 10000);
+	*/
 
 	// Create TTrees
+	/*
 	std::shared_ptr<TTree> DmpNtupTree_20_100 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
 	std::shared_ptr<TTree> DmpNtupTree_100_250 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
 	std::shared_ptr<TTree> DmpNtupTree_250_500 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
 	std::shared_ptr<TTree> DmpNtupTree_500_1000 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
 	std::shared_ptr<TTree> DmpNtupTree_1000_5000 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
 	std::shared_ptr<TTree> DmpNtupTree_5000_10000 = std::make_shared<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
+	*/
 
 	t_variables vars;
 
 	setActiveCuts(vars, active_cuts);
 
+	branchTree(DmpNtupTree, vars);
+	/*
 	branchTree(DmpNtupTree_20_100, vars);
 	branchTree(DmpNtupTree_100_250, vars);
 	branchTree(DmpNtupTree_250_500, vars);
 	branchTree(DmpNtupTree_500_1000, vars);
 	branchTree(DmpNtupTree_1000_5000, vars);
 	branchTree(DmpNtupTree_5000_10000, vars);
+	*/
+	
+	double _GeV = 0.001;
+	int kStep = 10;
+	double bgoTotalE_raw = 0;
+	double bgoTotalE_corr = 0;
+
+	if (verbose)
+		std::cout << "Analysing data..." << std::endl;
 
 	for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
 	{
+		// Reset struct vars
+		if (evIdx)
+			reset_vars(vars);
+
 		// Get chain event
 		dmpch->GetEvent(evIdx);
 
@@ -358,11 +543,11 @@ void produceTuples(
 			updateProcessStatus(evIdx, kStep, nevents);
 
 		// Get event total energy
-		double bgoTotalE_raw = bgorec->GetTotalEnergy();
-		double bgoTotalE_corr = bgorec->GetElectronEcor();
+		bgoTotalE_raw = bgorec->GetTotalEnergy();
+		bgoTotalE_corr = bgorec->GetElectronEcor();
 
 		// Don't accept events outside the selected energy window
-		if (bgoTotalE_raw * _GeV < flux_cuts.min_event_energy || bgoTotalE_raw * _GeV > flux_cuts.max_event_energy)
+		if (bgoTotalE_corr * _GeV < flux_cuts.min_event_energy || bgoTotalE_corr * _GeV > flux_cuts.max_event_energy)
 		{
 			++data_selection.events_out_range;
 			continue;
@@ -444,127 +629,40 @@ void produceTuples(
 				stktracks,
 				active_cuts))
 			++data_selection.selected_events;
-		setEvtFilter(vars, filter);
-		
-		if (filter.all_cut_no_xtrl)
-		{
-			// Filling STK best track info
-			fill_STK_bestTrack_info(event_best_track, vars);
 
-			// Filling BGO info
-			vars.energy = bgoTotalE_raw;
-			vars.energy_corr = bgoTotalE_corr;
-			vars.BGOrec_slopeX = bgorec->GetSlopeXZ();
-			vars.BGOrec_slopeY = bgorec->GetSlopeYZ();
-			vars.BGOrec_interceptX = bgorec->GetInterceptXZ();
-			vars.BGOrec_interceptY = bgorec->GetInterceptYZ();
-			vars.sumRms = bgoVault.GetSumRMS();
-			vars.fracLayer = bgoVault.GetFracLayer();
-			vars.fracLast = bgoVault.GetLastFFracLayer();
-			vars.fracLast_13 = bgoVault.GetSingleFracLayer(13);
-			vars.lastBGOLayer = bgoVault.GetFracIdxLastLayer();
-			vars.nBGOentries = bgoVault.GetNhits();
+		// Filling filter info
+		fill_filter_info(vars, filter);
+		// Filling attitude info
+		fill_attitude_info(attitude, vars);
+		// Filling STK best track info
+		fill_STK_bestTrack_info(event_best_track, vars);
+		// Filling BGO info
+		fill_BGO_info(bgoTotalE_raw, bgoTotalE_corr, bgorec, bgoVault, vars);
+		// Filling charges info
+		fill_charge_info(extracted_psd_charge, extracted_stk_charge, vars);
+		// Filling classifiers info
+		fill_classifier_info(bgoVault, vars);
 
-			// Filling charges info
-			vars.STK_chargeX = extracted_stk_charge.chargeX;
-			vars.STK_chargeY = extracted_stk_charge.chargeY;
-			vars.STK_charge = 0.5 * (extracted_stk_charge.chargeX + extracted_stk_charge.chargeY);
-			vars.PSD_chargeX = extracted_psd_charge.chargeX;
-			vars.PSD_chargeY = extracted_psd_charge.chargeY;
-			vars.PSD_charge = 0.5 * (extracted_psd_charge.chargeX + extracted_psd_charge.chargeY);
-
-			// Filling classifiers info
-			if (bgoVault.GetLastFFracLayer() != -1)
-			{
-				vars.xtr = 0.125e-6 * pow(bgoVault.GetSumRMS(), 4) * bgoVault.GetSingleFracLayer(13);
-				vars.xtrl = 0.125e-6 * pow(bgoVault.GetSumRMS(), 4) * bgoVault.GetLastFFracLayer();
-			}
-			else
-			{
-				vars.xtr = -1;
-				vars.xtrl = -1;
-			}
-
-			// Filling attitude info
-			fill_attitude_info(attitude, vars);
-
-			// Fill tree
-			if (bgoTotalE_raw >=20 && bgoTotalE_raw * _GeV <=100)
-				DmpNtupTree_20_100->Fill();
-			if (bgoTotalE_raw >100 && bgoTotalE_raw * _GeV <=250)
-				DmpNtupTree_100_250->Fill();
-			if (bgoTotalE_raw >250 && bgoTotalE_raw * _GeV <=500)
-				DmpNtupTree_250_500->Fill();
-			if (bgoTotalE_raw >500 && bgoTotalE_raw * _GeV <=1000)
-				DmpNtupTree_500_1000->Fill();
-			if (bgoTotalE_raw >1000 && bgoTotalE_raw * _GeV <=5000)
-				DmpNtupTree_1000_5000->Fill();
-			if (bgoTotalE_raw >5000 && bgoTotalE_raw * _GeV <=10000)
-				DmpNtupTree_5000_10000->Fill();
-		}
+		// Fill tree
+		/*
+		if (bgoTotalE_raw >= 20 && bgoTotalE_raw * _GeV <= 100)
+			DmpNtupTree_20_100->Fill();
+		if (bgoTotalE_raw > 100 && bgoTotalE_raw * _GeV <= 250)
+			DmpNtupTree_100_250->Fill();
+		if (bgoTotalE_raw > 250 && bgoTotalE_raw * _GeV <= 500)
+			DmpNtupTree_250_500->Fill();
+		if (bgoTotalE_raw > 500 && bgoTotalE_raw * _GeV <= 1000)
+			DmpNtupTree_500_1000->Fill();
+		if (bgoTotalE_raw > 1000 && bgoTotalE_raw * _GeV <= 5000)
+			DmpNtupTree_1000_5000->Fill();
+		if (bgoTotalE_raw > 5000 && bgoTotalE_raw * _GeV <= 10000)
+			DmpNtupTree_5000_10000->Fill();
+		*/
+		DmpNtupTree->Fill();
 	}
-	
-	auto outFilePath_20_100 = uniqueTupleOutFile(opt, data_year, data_month, 20, 100);
-	auto outFilePath_100_250 = uniqueTupleOutFile(opt, data_year, data_month, 100, 250);
-	auto outFilePath_250_500 = uniqueTupleOutFile(opt, data_year, data_month, 250, 500);
-	auto outFilePath_500_1000 = uniqueTupleOutFile(opt, data_year, data_month, 500, 1000);
-	auto outFilePath_1000_5000 = uniqueTupleOutFile(opt, data_year, data_month, 1000, 5000);
-	auto outFilePath_5000_10000 = uniqueTupleOutFile(opt, data_year, data_month, 5000, 10000);
-	
-    TFile outFile_20_100(outFilePath_20_100.c_str(), "NEW", "Analysis Output File");
-    if (!outFile_20_100.IsOpen())
-    {
-        std::cerr << "\n\nError writing output TFile: " << outFilePath_20_100 << std::endl;
-        exit(123);
-    }
-	DmpNtupTree_20_100->Write();
-	outFile_20_100.Close();
 
-	TFile outFile_100_250(outFilePath_100_250.c_str(), "NEW", "Analysis Output File");
-    if (!outFile_100_250.IsOpen())
-    {
-        std::cerr << "\n\nError writing output TFile: " << outFilePath_100_250 << std::endl;
-        exit(123);
-    }
-	DmpNtupTree_100_250->Write();
-	outFile_100_250.Close();
-
-	TFile outFile_250_500(outFilePath_250_500.c_str(), "NEW", "Analysis Output File");
-    if (!outFile_250_500.IsOpen())
-    {
-        std::cerr << "\n\nError writing output TFile: " << outFilePath_250_500 << std::endl;
-        exit(123);
-    }
-	DmpNtupTree_250_500->Write();
-	outFile_250_500.Close();
-
-	TFile outFile_500_1000(outFilePath_500_1000.c_str(), "NEW", "Analysis Output File");
-    if (!outFile_500_1000.IsOpen())
-    {
-        std::cerr << "\n\nError writing output TFile: " << outFilePath_500_1000 << std::endl;
-        exit(123);
-    }
-	DmpNtupTree_500_1000->Write();
-	outFile_500_1000.Close();
-
-	TFile outFile_1000_5000(outFilePath_1000_5000.c_str(), "NEW", "Analysis Output File");
-    if (!outFile_1000_5000.IsOpen())
-    {
-        std::cerr << "\n\nError writing output TFile: " << outFilePath_1000_5000 << std::endl;
-        exit(123);
-    }
-	DmpNtupTree_1000_5000->Write();
-	outFile_1000_5000.Close();
-
-	TFile outFile_5000_10000(outFilePath_5000_10000.c_str(), "NEW", "Analysis Output File");
-    if (!outFile_5000_10000.IsOpen())
-    {
-        std::cerr << "\n\nError writing output TFile: " << outFilePath_5000_10000 << std::endl;
-        exit(123);
-    }
-	DmpNtupTree_5000_10000->Write();
-	outFile_5000_10000.Close();
-	
+	DmpNtupTree->Write();
+	outFile.Close();
 }
 
 template void linker(

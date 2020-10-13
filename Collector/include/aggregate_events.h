@@ -28,8 +28,8 @@ extern std::shared_ptr<TChain> aggregateDataEventsTChain(
 
 extern std::shared_ptr<TChain> aggregateTupleDataEventsTChain(
     const std::string listInputPath,
-    int &year,
-    int &month,
+    std::string &year,
+    std::string &month,
     const bool verbose);
     
 #endif

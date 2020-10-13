@@ -101,8 +101,8 @@ std::shared_ptr<TChain> aggregateDataEventsTChain(
 
 std::shared_ptr<TChain> aggregateTupleDataEventsTChain(
     const std::string listInputPath,
-    int &year,
-    int &month,
+    std::string &year,
+    std::string &month,
     const bool verbose)
 {
     // ****** Access data using ROOT TChain ******
@@ -132,10 +132,14 @@ std::shared_ptr<TChain> aggregateTupleDataEventsTChain(
         {   
             auto yIdx = tmp_str.find("/2A/") + 4;
             auto mIdx = yIdx + 4;
+            year = tmp_str.substr(yIdx, 4);
+            month = tmp_str.substr(mIdx, 2);
+            /*
             auto syear = tmp_str.substr(yIdx, 4);
             auto smonth = tmp_str.substr(mIdx, 2);
             year = stoi(syear, &sz);
             month = stoi(smonth, &sz);
+            */
             first_file = false;
         }
 

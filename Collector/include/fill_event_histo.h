@@ -51,7 +51,7 @@ extern void fill_sumRms_cosine_histo(
 	TH2D &sumRms_cosine_500_1000,
 	TH2D &sumRms_cosine_1000_3000,
 	TH2D &sumRms_cosine_3000_10000,
-	const double energy_raw,
+	const double energy,
 	const double energy_w = 1);
 
 #endif

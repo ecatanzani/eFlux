@@ -1,7 +1,0 @@
-######### Power Law DataSets Config File #########
-
-SetName	 eMin	 eMax	 generationPawerLawIndex
-Set:	allElectron-v6r0p0_100GeV_10TeV	100	10000	-1
-Set:	allElectron-v6r0p0_100GeV_10TeV-p2	100	10000	-1
-Set:	allElectron-v6r0p0_100GeV_10TeV-p3	100	10000	-1
-Set:	allElectron-v6r0p0_1GeV_100GeV	1	100	-1

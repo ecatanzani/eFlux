@@ -14,7 +14,7 @@ void eCore(
     AnyOption &opt,
     const std::string wd)
 {   
-    if (ntuple_flag)
+    if (ntuple_flag)  
         produceTuples(
             opt,
             inputPath,
