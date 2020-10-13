@@ -2,6 +2,7 @@
 \label{_b_g_o__energy__cuts_8h}\index{include/BGO\_energy\_cuts.h@{include/BGO\_energy\_cuts.h}}
 {\ttfamily \#include $<$memory$>$}\newline
 {\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
 {\ttfamily \#include \char`\"{}Dmp\+Evt\+Bgo\+Rec.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}T\+H1\+D.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}data\+\_\+cuts.\+h\char`\"{}}\newline
@@ -25,22 +26,22 @@ This graph shows which files directly or indirectly include this file\+:
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-void \mbox{\hyperlink{_b_g_o__energy__cuts_8h_a2fff55a5bf0f55824f5fdc692677561b}{evaluate\+Energy\+Ratio}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ bgorec, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} acceptance\+\_\+cuts, const double bgo\+TotalE, T\+H1D \&h\+\_\+layer\+\_\+max\+\_\+energy\+\_\+ratio, std\+::vector$<$ T\+H1D $>$ \&h\+\_\+layer\+\_\+energy\+\_\+ratio)
+void \mbox{\hyperlink{_b_g_o__energy__cuts_8h_ad2e6fc50f839538f35813c8dddb27021}{evaluate\+Energy\+Ratio}} (const std\+::vector$<$ double $>$ frac\+Layer, T\+H1D \&h\+\_\+layer\+\_\+max\+\_\+energy\+\_\+ratio, std\+::vector$<$ T\+H1D $>$ \&h\+\_\+layer\+\_\+energy\+\_\+ratio, const double energy\+\_\+w=1)
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{_b_g_o__energy__cuts_8h_a2fff55a5bf0f55824f5fdc692677561b}\label{_b_g_o__energy__cuts_8h_a2fff55a5bf0f55824f5fdc692677561b}} 
+\mbox{\Hypertarget{_b_g_o__energy__cuts_8h_ad2e6fc50f839538f35813c8dddb27021}\label{_b_g_o__energy__cuts_8h_ad2e6fc50f839538f35813c8dddb27021}} 
 \index{BGO\_energy\_cuts.h@{BGO\_energy\_cuts.h}!evaluateEnergyRatio@{evaluateEnergyRatio}}
 \index{evaluateEnergyRatio@{evaluateEnergyRatio}!BGO\_energy\_cuts.h@{BGO\_energy\_cuts.h}}
 \doxysubsubsection{\texorpdfstring{evaluateEnergyRatio()}{evaluateEnergyRatio()}}
-{\footnotesize\ttfamily void evaluate\+Energy\+Ratio (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$}]{bgorec,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}}}]{acceptance\+\_\+cuts,  }\item[{const double}]{bgo\+TotalE,  }\item[{T\+H1D \&}]{h\+\_\+layer\+\_\+max\+\_\+energy\+\_\+ratio,  }\item[{std\+::vector$<$ T\+H1D $>$ \&}]{h\+\_\+layer\+\_\+energy\+\_\+ratio }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void evaluate\+Energy\+Ratio (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$}]{frac\+Layer,  }\item[{T\+H1D \&}]{h\+\_\+layer\+\_\+max\+\_\+energy\+\_\+ratio,  }\item[{std\+::vector$<$ T\+H1D $>$ \&}]{h\+\_\+layer\+\_\+energy\+\_\+ratio,  }\item[{const double}]{energy\+\_\+w = {\ttfamily 1} }\end{DoxyParamCaption})}
 
 Here is the caller graph for this function\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{_b_g_o__energy__cuts_8h_a2fff55a5bf0f55824f5fdc692677561b_icgraph}
+\includegraphics[width=350pt]{_b_g_o__energy__cuts_8h_ad2e6fc50f839538f35813c8dddb27021_icgraph}
 \end{center}
 \end{figure}

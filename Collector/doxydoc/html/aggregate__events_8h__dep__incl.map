@@ -1,9 +1,0 @@
-<map id="include/aggregate_events.h" name="include/aggregate_events.h">
-<area shape="rect" id="node1" title=" " alt="" coords="294,5,475,32"/>
-<area shape="rect" id="node2" href="$aggregate__events_8cpp.html" title=" " alt="" coords="5,80,199,107"/>
-<area shape="rect" id="node3" href="$build__acceptance_8cpp.html" title=" " alt="" coords="223,80,413,107"/>
-<area shape="rect" id="node4" href="$event__loop_8cpp.html" title=" " alt="" coords="364,155,517,181"/>
-<area shape="rect" id="node5" href="$produce_tuples_8h.html" title=" " alt="" coords="509,80,671,107"/>
-<area shape="rect" id="node6" href="$_core_8cpp.html" title=" " alt="" coords="541,155,660,181"/>
-<area shape="rect" id="node7" href="$produce_tuples_8cpp.html" title=" " alt="" coords="684,155,859,181"/>
-</map>

@@ -84,44 +84,111 @@ $(function() {
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;TH1D.h&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;TClonesArray.h&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">// DAMPESW includes</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;DmpChain.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_dmp_bgo_container_8h.html">DmpBgoContainer.h</a>&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;DmpEvtHeader.h&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;DmpEvtSimuPrimaries.h&quot;</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoHits.h&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoRec.h&quot;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;DmpStkSiCluster.h&quot;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;DmpStkTrack.h&quot;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;DmpEvtPsdHits.h&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">extern</span> TH1D <a class="code" href="data__loop_8h.html#af112558a1e68ddf429a3a5a717371e94">evLoop</a>(</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">const</span> std::vector&lt;float&gt; &amp;logEBins,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    TFile &amp;outFile,</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="data__loop_8h.html#a4c8f36c25015830285ef0a3faff6dd24">readInputTree</a>(</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::vector&lt;float&gt; &amp;dataValues,</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    TTree &amp;dTree);</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_dmp_bgo_container_8h.html">DmpBgoContainer.h</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_dmp_psd_container_8h.html">DmpPsdContainer.h</a>&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">// DAMPESW includes</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;DmpChain.h&quot;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;DmpEvtHeader.h&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;DmpEvtSimuPrimaries.h&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoHits.h&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;DmpEvtBgoRec.h&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;DmpStkSiCluster.h&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;DmpStkTrack.h&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;DmpEvtPsdHits.h&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structdata__statistics.html">   28</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structdata__statistics.html">data_statistics</a></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;{</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structdata__statistics.html#a709723eb1cc3990c4b46108edbb01796">   30</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structdata__statistics.html#a709723eb1cc3990c4b46108edbb01796">event_counter</a> = 0;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="structdata__statistics.html#a8b4a9d94c220d8fd6f4c289af2f3b41b">   31</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structdata__statistics.html#a8b4a9d94c220d8fd6f4c289af2f3b41b">events_in_range</a> = 0;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structdata__statistics.html#a3d36f937f7645acbc6819d90d4df690c">   32</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structdata__statistics.html#a3d36f937f7645acbc6819d90d4df690c">events_out_range</a> = 0;</div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structdata__statistics.html#ad50400c5740a6d202eecedd60db14212">   33</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structdata__statistics.html#ad50400c5740a6d202eecedd60db14212">events_in_saa</a> = 0;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structdata__statistics.html#aba0ff71ff59741e7b124aac8bc90b319">   34</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structdata__statistics.html#aba0ff71ff59741e7b124aac8bc90b319">triggered_events</a> = 0;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structdata__statistics.html#aaa0496db89e294867d69fdd0b690b03f">   35</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structdata__statistics.html#aaa0496db89e294867d69fdd0b690b03f">selected_events</a> = 0;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;};</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;TTree&gt; <a class="code" href="data__loop_8h.html#a4dad2fa5c3f831b6073a04c9ab7314e5">getDataTree</a>(</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::vector&lt;float&gt; &amp;dataValues);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="data__loop_8h.html#a8e13cd50cd08af67ca77de2bf8b17cb9">branchTree</a>(</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    TTree &amp;myDataTree,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    std::vector&lt;float&gt; &amp;dataValues);</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="structdata__evt__time.html">   38</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structdata__evt__time.html">data_evt_time</a></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="structdata__evt__time.html#abc64ba7a2897a68ce7f80d24ab67d7c6">   40</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structdata__evt__time.html#abc64ba7a2897a68ce7f80d24ab67d7c6">start_second</a>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="structdata__evt__time.html#a2d56fba97902f7d6d43f326175e97a98">   41</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structdata__evt__time.html#a2d56fba97902f7d6d43f326175e97a98">end_second</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="structdata__evt__time.html#abfa3b6240b05e0e24c0fd537c9b4f3c9">   42</a></span>&#160;    <span class="keywordtype">short</span> <a class="code" href="structdata__evt__time.html#abfa3b6240b05e0e24c0fd537c9b4f3c9">start_msecond</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structdata__evt__time.html#ae0da152ddbca686bccfd167a63bb94dc">   43</a></span>&#160;    <span class="keywordtype">short</span> <a class="code" href="structdata__evt__time.html#ae0da152ddbca686bccfd167a63bb94dc">end_msecond</a>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d">rawDataLoop</a>(</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    TFile &amp;outFile,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> skimmed,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="data__loop_8h.html#a141fff4c99012252c09378c1b6daf6ad">skimmedDataLoop</a>(</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    TFile &amp;outFile,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> skimmed,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">const</span> std::string wd);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">bool</span> <a class="code" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118">filter_this_data_event</a>(</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <a class="code" href="structevent__filter.html">event_filter</a> &amp;filter,</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoRec&gt; &amp;bgorec,</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;DmpEvtBgoHits&gt; &amp;bgohits,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">const</span> <a class="code" href="structcuts__conf.html">cuts_conf</a> &amp;flux_cuts,</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> bgoTotalE,</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="class_dmp_bgo_container.html">DmpBgoContainer</a> &amp;bgoVault,</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="class_dmp_psd_container.html">DmpPsdContainer</a> &amp;psdVault,</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="structbest__track.html">best_track</a> &amp;event_best_track,</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <a class="code" href="structpsd__cluster__match.html">psd_cluster_match</a> &amp;clu_matching,</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <a class="code" href="structpsd__charge.html">psd_charge</a> &amp;extracted_psd_charge,</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <a class="code" href="structstk__charge.html">stk_charge</a> &amp;extracted_stk_charge,</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;TClonesArray&gt; &amp;stkclusters,</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">const</span> std::shared_ptr&lt;TClonesArray&gt; &amp;stktracks,</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">const</span> <a class="code" href="structdata__active__cuts.html">data_active_cuts</a> &amp;active_cuts);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="data__loop_8h.html#a4c8f36c25015830285ef0a3faff6dd24">readInputTree</a>(</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    std::vector&lt;float&gt; &amp;dataValues,</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    TTree &amp;dTree);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;TTree&gt; <a class="code" href="data__loop_8h.html#a4dad2fa5c3f831b6073a04c9ab7314e5">getDataTree</a>(</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">const</span> std::string inputPath,</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    std::vector&lt;float&gt; &amp;dataValues);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> <a class="code" href="data__loop_8h.html#a8e13cd50cd08af67ca77de2bf8b17cb9">branchTree</a>(</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    TTree &amp;myDataTree,</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    std::vector&lt;float&gt; &amp;dataValues);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="astructbest__track_html"><div class="ttname"><a href="structbest__track.html">best_track</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:83</div></div>
+<div class="ttc" id="astructdata__statistics_html_a3d36f937f7645acbc6819d90d4df690c"><div class="ttname"><a href="structdata__statistics.html#a3d36f937f7645acbc6819d90d4df690c">data_statistics::events_out_range</a></div><div class="ttdeci">unsigned int events_out_range</div><div class="ttdef"><b>Definition:</b> data_loop.h:32</div></div>
+<div class="ttc" id="astructdata__evt__time_html_a2d56fba97902f7d6d43f326175e97a98"><div class="ttname"><a href="structdata__evt__time.html#a2d56fba97902f7d6d43f326175e97a98">data_evt_time::end_second</a></div><div class="ttdeci">int end_second</div><div class="ttdef"><b>Definition:</b> data_loop.h:41</div></div>
+<div class="ttc" id="astructdata__active__cuts_html"><div class="ttname"><a href="structdata__active__cuts.html">data_active_cuts</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:51</div></div>
+<div class="ttc" id="astructdata__evt__time_html_abc64ba7a2897a68ce7f80d24ab67d7c6"><div class="ttname"><a href="structdata__evt__time.html#abc64ba7a2897a68ce7f80d24ab67d7c6">data_evt_time::start_second</a></div><div class="ttdeci">int start_second</div><div class="ttdef"><b>Definition:</b> data_loop.h:40</div></div>
+<div class="ttc" id="adata__loop_8h_html_a8121f5a3d2707ddb87ceccde2db37118"><div class="ttname"><a href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118">filter_this_data_event</a></div><div class="ttdeci">bool filter_this_data_event(event_filter &amp;filter, const std::shared_ptr&lt; DmpEvtBgoRec &gt; &amp;bgorec, const std::shared_ptr&lt; DmpEvtBgoHits &gt; &amp;bgohits, const cuts_conf &amp;flux_cuts, const double bgoTotalE, DmpBgoContainer &amp;bgoVault, DmpPsdContainer &amp;psdVault, best_track &amp;event_best_track, psd_cluster_match &amp;clu_matching, psd_charge &amp;extracted_psd_charge, stk_charge &amp;extracted_stk_charge, const std::shared_ptr&lt; TClonesArray &gt; &amp;stkclusters, const std::shared_ptr&lt; TClonesArray &gt; &amp;stktracks, const data_active_cuts &amp;active_cuts)</div><div class="ttdef"><b>Definition:</b> data_event_filter.cpp:4</div></div>
 <div class="ttc" id="a_dmp_bgo_container_8h_html"><div class="ttname"><a href="_dmp_bgo_container_8h.html">DmpBgoContainer.h</a></div></div>
+<div class="ttc" id="astructdata__statistics_html_a709723eb1cc3990c4b46108edbb01796"><div class="ttname"><a href="structdata__statistics.html#a709723eb1cc3990c4b46108edbb01796">data_statistics::event_counter</a></div><div class="ttdeci">unsigned int event_counter</div><div class="ttdef"><b>Definition:</b> data_loop.h:30</div></div>
 <div class="ttc" id="adata__loop_8h_html_a4c8f36c25015830285ef0a3faff6dd24"><div class="ttname"><a href="data__loop_8h.html#a4c8f36c25015830285ef0a3faff6dd24">readInputTree</a></div><div class="ttdeci">void readInputTree(const std::string inputPath, std::vector&lt; float &gt; &amp;dataValues, TTree &amp;dTree)</div></div>
+<div class="ttc" id="astructdata__evt__time_html_ae0da152ddbca686bccfd167a63bb94dc"><div class="ttname"><a href="structdata__evt__time.html#ae0da152ddbca686bccfd167a63bb94dc">data_evt_time::end_msecond</a></div><div class="ttdeci">short end_msecond</div><div class="ttdef"><b>Definition:</b> data_loop.h:43</div></div>
+<div class="ttc" id="astructpsd__charge_html"><div class="ttname"><a href="structpsd__charge.html">psd_charge</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:131</div></div>
+<div class="ttc" id="astructdata__evt__time_html_abfa3b6240b05e0e24c0fd537c9b4f3c9"><div class="ttname"><a href="structdata__evt__time.html#abfa3b6240b05e0e24c0fd537c9b4f3c9">data_evt_time::start_msecond</a></div><div class="ttdeci">short start_msecond</div><div class="ttdef"><b>Definition:</b> data_loop.h:42</div></div>
+<div class="ttc" id="a_dmp_psd_container_8h_html"><div class="ttname"><a href="_dmp_psd_container_8h.html">DmpPsdContainer.h</a></div></div>
+<div class="ttc" id="adata__loop_8h_html_a141fff4c99012252c09378c1b6daf6ad"><div class="ttname"><a href="data__loop_8h.html#a141fff4c99012252c09378c1b6daf6ad">skimmedDataLoop</a></div><div class="ttdeci">void skimmedDataLoop(const std::string inputPath, TFile &amp;outFile, const bool verbose, const bool skimmed, const std::string wd)</div><div class="ttdef"><b>Definition:</b> event_loop.cpp:1090</div></div>
+<div class="ttc" id="astructpsd__cluster__match_html"><div class="ttname"><a href="structpsd__cluster__match.html">psd_cluster_match</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:98</div></div>
+<div class="ttc" id="astructdata__statistics_html_aaa0496db89e294867d69fdd0b690b03f"><div class="ttname"><a href="structdata__statistics.html#aaa0496db89e294867d69fdd0b690b03f">data_statistics::selected_events</a></div><div class="ttdeci">unsigned int selected_events</div><div class="ttdef"><b>Definition:</b> data_loop.h:35</div></div>
 <div class="ttc" id="adata__loop_8h_html_a8e13cd50cd08af67ca77de2bf8b17cb9"><div class="ttname"><a href="data__loop_8h.html#a8e13cd50cd08af67ca77de2bf8b17cb9">branchTree</a></div><div class="ttdeci">void branchTree(TTree &amp;myDataTree, std::vector&lt; float &gt; &amp;dataValues)</div><div class="ttdef"><b>Definition:</b> import_tree.cpp:21</div></div>
+<div class="ttc" id="astructdata__evt__time_html"><div class="ttname"><a href="structdata__evt__time.html">data_evt_time</a></div><div class="ttdef"><b>Definition:</b> data_loop.h:38</div></div>
 <div class="ttc" id="adata__loop_8h_html_a4dad2fa5c3f831b6073a04c9ab7314e5"><div class="ttname"><a href="data__loop_8h.html#a4dad2fa5c3f831b6073a04c9ab7314e5">getDataTree</a></div><div class="ttdeci">std::shared_ptr&lt; TTree &gt; getDataTree(const std::string inputPath, std::vector&lt; float &gt; &amp;dataValues)</div><div class="ttdef"><b>Definition:</b> import_tree.cpp:3</div></div>
-<div class="ttc" id="adata__loop_8h_html_af112558a1e68ddf429a3a5a717371e94"><div class="ttname"><a href="data__loop_8h.html#af112558a1e68ddf429a3a5a717371e94">evLoop</a></div><div class="ttdeci">TH1D evLoop(const std::vector&lt; float &gt; &amp;logEBins, const std::string inputPath, TFile &amp;outFile, const bool verbose, const std::string wd)</div><div class="ttdef"><b>Definition:</b> event_loop.cpp:37</div></div>
+<div class="ttc" id="astructdata__statistics_html_aba0ff71ff59741e7b124aac8bc90b319"><div class="ttname"><a href="structdata__statistics.html#aba0ff71ff59741e7b124aac8bc90b319">data_statistics::triggered_events</a></div><div class="ttdeci">unsigned int triggered_events</div><div class="ttdef"><b>Definition:</b> data_loop.h:34</div></div>
+<div class="ttc" id="astructdata__statistics_html_a8b4a9d94c220d8fd6f4c289af2f3b41b"><div class="ttname"><a href="structdata__statistics.html#a8b4a9d94c220d8fd6f4c289af2f3b41b">data_statistics::events_in_range</a></div><div class="ttdeci">unsigned int events_in_range</div><div class="ttdef"><b>Definition:</b> data_loop.h:31</div></div>
+<div class="ttc" id="aclass_dmp_bgo_container_html"><div class="ttname"><a href="class_dmp_bgo_container.html">DmpBgoContainer</a></div><div class="ttdef"><b>Definition:</b> DmpBgoContainer.h:11</div></div>
+<div class="ttc" id="astructevent__filter_html"><div class="ttname"><a href="structevent__filter.html">event_filter</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:63</div></div>
+<div class="ttc" id="astructcuts__conf_html"><div class="ttname"><a href="structcuts__conf.html">cuts_conf</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:28</div></div>
+<div class="ttc" id="adata__loop_8h_html_aa62dde24c4b467367f3bf168dc6c039d"><div class="ttname"><a href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d">rawDataLoop</a></div><div class="ttdeci">void rawDataLoop(const std::string inputPath, TFile &amp;outFile, const bool verbose, const bool skimmed, const std::string wd)</div><div class="ttdef"><b>Definition:</b> event_loop.cpp:49</div></div>
+<div class="ttc" id="aclass_dmp_psd_container_html"><div class="ttname"><a href="class_dmp_psd_container.html">DmpPsdContainer</a></div><div class="ttdef"><b>Definition:</b> DmpPsdContainer.h:11</div></div>
+<div class="ttc" id="astructdata__statistics_html_ad50400c5740a6d202eecedd60db14212"><div class="ttname"><a href="structdata__statistics.html#ad50400c5740a6d202eecedd60db14212">data_statistics::events_in_saa</a></div><div class="ttdeci">unsigned int events_in_saa</div><div class="ttdef"><b>Definition:</b> data_loop.h:33</div></div>
+<div class="ttc" id="astructdata__statistics_html"><div class="ttname"><a href="structdata__statistics.html">data_statistics</a></div><div class="ttdef"><b>Definition:</b> data_loop.h:28</div></div>
+<div class="ttc" id="astructstk__charge_html"><div class="ttname"><a href="structstk__charge.html">stk_charge</a></div><div class="ttdef"><b>Definition:</b> data_cuts.h:126</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

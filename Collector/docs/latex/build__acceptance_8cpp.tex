@@ -9,8 +9,14 @@
 {\ttfamily \#include \char`\"{}B\+G\+O\+\_\+energy\+\_\+cuts.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}D\+A\+M\+P\+E\+\_\+geo\+\_\+structure.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}Dmp\+Bgo\+Container.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Dmp\+Psd\+Container.\+h\char`\"{}}\newline
 {\ttfamily \#include \char`\"{}read\+\_\+sets\+\_\+config\+\_\+file.\+h\char`\"{}}\newline
-{\ttfamily \#include \char`\"{}T\+Graph\+Asymm\+Errors.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}binning.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}charge.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}mc\+\_\+ancillary.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}fill\+\_\+event\+\_\+histo.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Graph\+Errors.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}T\+Efficiency.\+h\char`\"{}}\newline
 Include dependency graph for build\+\_\+acceptance.\+cpp\+:
 \nopagebreak
 \begin{figure}[H]
@@ -28,23 +34,25 @@ std\+::shared\+\_\+ptr$<$ T\+H1D $>$ \mbox{\hyperlink{build__acceptance_8cpp_a01
 \item 
 void \mbox{\hyperlink{build__acceptance_8cpp_a48dfbc1bef50d2a8bbbbbff4a6dad425}{update\+Process\+Status}} (const int ev\+Idx, int \&k\+Step, const int nevents)
 \item 
-void \mbox{\hyperlink{build__acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557}{build\+Acceptance}} (const std\+::string acc\+Input\+Path, const bool verbose, const std\+::vector$<$ float $>$ \&log\+E\+Bins, T\+File \&out\+File, const std\+::string wd)
+void \mbox{\hyperlink{build__acceptance_8cpp_ab65a812470fb73e7a7236bd80be8a7fb}{load\+\_\+particle\+\_\+struct}} (\mbox{\hyperlink{structp__type}{p\+\_\+type}} \&simu\+\_\+particle, const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Simu\+Primaries $>$ \&simu\+\_\+primaries)
+\item 
+void \mbox{\hyperlink{build__acceptance_8cpp_ad42e3e6ae6d1ff01f629843e1a9123ca}{build\+Acceptance}} (const std\+::string acc\+Input\+Path, const bool verbose, T\+File \&out\+File, const std\+::string wd)
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Function Documentation}
-\mbox{\Hypertarget{build__acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557}\label{build__acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557}} 
+\mbox{\Hypertarget{build__acceptance_8cpp_ad42e3e6ae6d1ff01f629843e1a9123ca}\label{build__acceptance_8cpp_ad42e3e6ae6d1ff01f629843e1a9123ca}} 
 \index{build\_acceptance.cpp@{build\_acceptance.cpp}!buildAcceptance@{buildAcceptance}}
 \index{buildAcceptance@{buildAcceptance}!build\_acceptance.cpp@{build\_acceptance.cpp}}
 \doxysubsubsection{\texorpdfstring{buildAcceptance()}{buildAcceptance()}}
-{\footnotesize\ttfamily void build\+Acceptance (\begin{DoxyParamCaption}\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const bool}]{verbose,  }\item[{const std\+::vector$<$ float $>$ \&}]{log\+E\+Bins,  }\item[{T\+File \&}]{out\+File,  }\item[{const std\+::string}]{wd }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily void build\+Acceptance (\begin{DoxyParamCaption}\item[{const std\+::string}]{acc\+Input\+Path,  }\item[{const bool}]{verbose,  }\item[{T\+File \&}]{out\+File,  }\item[{const std\+::string}]{wd }\end{DoxyParamCaption})}
 
 Here is the call graph for this function\+:
 \nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[height=550pt]{build__acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_cgraph}
+\includegraphics[height=550pt]{build__acceptance_8cpp_ad42e3e6ae6d1ff01f629843e1a9123ca_cgraph}
 \end{center}
 \end{figure}
 Here is the caller graph for this function\+:
@@ -52,7 +60,7 @@ Here is the caller graph for this function\+:
 \begin{figure}[H]
 \begin{center}
 \leavevmode
-\includegraphics[width=350pt]{build__acceptance_8cpp_a927f2b69720afb25b4ac3602f7f23557_icgraph}
+\includegraphics[width=350pt]{build__acceptance_8cpp_ad42e3e6ae6d1ff01f629843e1a9123ca_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{build__acceptance_8cpp_a01e2cec35edb98c9c63c586af57b5c8c}\label{build__acceptance_8cpp_a01e2cec35edb98c9c63c586af57b5c8c}} 
@@ -73,6 +81,20 @@ Here is the caller graph for this function\+:
 \begin{center}
 \leavevmode
 \includegraphics[width=350pt]{build__acceptance_8cpp_aa00f68506ced7afef10cbe9c32991dea_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{build__acceptance_8cpp_ab65a812470fb73e7a7236bd80be8a7fb}\label{build__acceptance_8cpp_ab65a812470fb73e7a7236bd80be8a7fb}} 
+\index{build\_acceptance.cpp@{build\_acceptance.cpp}!load\_particle\_struct@{load\_particle\_struct}}
+\index{load\_particle\_struct@{load\_particle\_struct}!build\_acceptance.cpp@{build\_acceptance.cpp}}
+\doxysubsubsection{\texorpdfstring{load\_particle\_struct()}{load\_particle\_struct()}}
+{\footnotesize\ttfamily void load\+\_\+particle\+\_\+struct (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structp__type}{p\+\_\+type}} \&}]{simu\+\_\+particle,  }\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Simu\+Primaries $>$ \&}]{simu\+\_\+primaries }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{build__acceptance_8cpp_ab65a812470fb73e7a7236bd80be8a7fb_icgraph}
 \end{center}
 \end{figure}
 \mbox{\Hypertarget{build__acceptance_8cpp_a48dfbc1bef50d2a8bbbbbff4a6dad425}\label{build__acceptance_8cpp_a48dfbc1bef50d2a8bbbbbff4a6dad425}} 

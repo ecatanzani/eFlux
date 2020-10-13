@@ -1,9 +1,0 @@
-<map id="include/energy_cuts.h" name="include/energy_cuts.h">
-<area shape="rect" id="node1" title=" " alt="" coords="226,5,377,31"/>
-<area shape="rect" id="node2" href="$load__energy__cuts_8cpp.html" title=" " alt="" coords="156,79,294,117"/>
-<area shape="rect" id="node3" href="$binning_8h.html" title=" " alt="" coords="318,85,439,111"/>
-<area shape="rect" id="node4" href="$acceptance__core_8cpp.html" title=" " alt="" coords="5,165,197,191"/>
-<area shape="rect" id="node5" href="$binning_8cpp.html" title=" " alt="" coords="221,165,355,191"/>
-<area shape="rect" id="node6" href="$compute__graph_8cpp.html" title=" " alt="" coords="379,165,562,191"/>
-<area shape="rect" id="node7" href="$_core_8cpp.html" title=" " alt="" coords="586,165,705,191"/>
-</map>
