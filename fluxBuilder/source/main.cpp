@@ -48,7 +48,6 @@ int main(int argc, char **argv)
 
 	// Reading deps files
 	extractor deps(paths, verbose);
-
 	// Call RooFitter class
 	RooFitter fitter(
 		deps.GetData(),
