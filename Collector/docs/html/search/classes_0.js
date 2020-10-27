@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['best_5ftrack_349',['best_track',['../structbest__track.html',1,'']]]
+  ['active_5fcuts_349',['active_cuts',['../structactive__cuts.html',1,'']]]
 ];

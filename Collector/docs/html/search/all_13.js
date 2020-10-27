@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['x_342',['X',['../structgr__point.html#a18886cced37ef2b3ba4773139f774b49',1,'gr_point']]],
-  ['xtr_343',['xtr',['../structt__variables.html#aabea1e0225591b00f31f00247cdc16a5',1,'t_variables']]],
-  ['xtrl_344',['xtrl',['../structcuts__conf.html#aa5843683ebef1a8a2671134df24dc6d0',1,'cuts_conf::xtrl()'],['../structdata__active__cuts.html#a00cf7024e83d420d6d65fc0895f17b3b',1,'data_active_cuts::xtrl()'],['../structt__variables.html#a1091485716bdf79d2da22a7e50031823',1,'t_variables::xtrl()']]],
-  ['xtrl_5fcut_345',['xtrl_cut',['../structevent__filter.html#a9e2ae3416c374f6a83e1805e9fabeb63',1,'event_filter::xtrl_cut()'],['../data__cuts_8cpp.html#a0d8a5d43c40129bfa8a6b2f400703c27',1,'xtrl_cut(const double sumRms, const double lastFracLayer, const cuts_conf data_cuts):&#160;data_cuts.cpp'],['../data__cuts_8h.html#a0d8a5d43c40129bfa8a6b2f400703c27',1,'xtrl_cut(const double sumRms, const double lastFracLayer, const cuts_conf data_cuts):&#160;data_cuts.cpp']]]
+  ['write_329',['Write',['../classhistos.html#a13f656cf01436160a3057a9cc054b33e',1,'histos::Write()'],['../classntuple.html#ac1e0c5c96efec33d2163ad4857a10f3c',1,'ntuple::Write()']]],
+  ['writemc_330',['WriteMC',['../classmc__histos.html#a435f73ed2fe79851ed2a26368d8f4307',1,'mc_histos']]]
 ];

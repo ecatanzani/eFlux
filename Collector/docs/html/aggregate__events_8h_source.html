@@ -78,38 +78,68 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;DmpChain.h&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;DmpIOSvc.h&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;DmpCore.h&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;DmpFilterOrbit.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;TChain.h&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;DmpChain&gt; <a class="code" href="aggregate__events_8h.html#a77925103c82d988c5acf4153d26764a0">aggregateEventsDmpChain</a>(</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">const</span> std::string listInputPath,</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;TChain&gt; <a class="code" href="aggregate__events_8h.html#a1ca1fc2183bcf2f033a040013cb5b8f2">aggregateEventsTChain</a>(</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">const</span> std::string listInputPath,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;TChain&gt; <a class="code" href="aggregate__events_8h.html#ae35b11954bef71f4f398794830cb83cd">aggregateDataEventsTChain</a>(</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">const</span> std::string listInputPath,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> skimmed);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;TChain&gt; <a class="code" href="aggregate__events_8h.html#a1f2c3a1702bace577e13b2a9d2dd70bd">aggregateTupleDataEventsTChain</a>(</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">const</span> std::string listInputPath,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    std::string &amp;year,</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    std::string &amp;month,</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;DmpIOSvc.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;DmpCore.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;DmpFilterOrbit.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;TChain.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classevent__collector.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="classevent__collector.html">event_collector</a></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classevent__collector.html#a508a6e205af04185097980c8ef72cc80">   18</a></span>&#160;    <a class="code" href="classevent__collector.html#a508a6e205af04185097980c8ef72cc80">event_collector</a>(</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keyword">const</span> std::string listInputPath,</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose = <span class="keyword">true</span>,</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">bool</span> mc = <span class="keyword">false</span>)</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        input_list = listInputPath;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        verbosity = verbose;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        simu_evt = mc;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        use_chain();</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    }</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classevent__collector.html#a24d3853e117634ac2904b9455f804a1f">   28</a></span>&#160;    <a class="code" href="classevent__collector.html#a24d3853e117634ac2904b9455f804a1f">~event_collector</a>(){};</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    std::shared_ptr&lt;TChain&gt; <a class="code" href="classevent__collector.html#aaa83591bde4fe9162e808f35ec943c6d">GetChain</a>();</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classevent__collector.html#a2af937b989aed4b5384347a9952ef7ca">GetChainStatus</a>();</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::string parse_input_file();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">void</span> use_chain();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::string input_list;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    std::string tree_name = <span class="stringliteral">&quot;CollectionTree&quot;</span>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    std::string data_year;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::string data_month;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">bool</span> verbosity;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">bool</span> simu_evt;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">bool</span> _f_file = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::shared_ptr&lt;TChain&gt; evt_chain;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;};</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;TChain&gt; <a class="code" href="aggregate__events_8h.html#a1ca1fc2183bcf2f033a040013cb5b8f2">aggregateEventsTChain</a>(</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">const</span> std::string listInputPath,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;TChain&gt; <a class="code" href="aggregate__events_8h.html#ae35b11954bef71f4f398794830cb83cd">aggregateDataEventsTChain</a>(</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">const</span> std::string listInputPath,</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> skimmed);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">extern</span> std::shared_ptr&lt;TChain&gt; <a class="code" href="aggregate__events_8h.html#a1f2c3a1702bace577e13b2a9d2dd70bd">aggregateTupleDataEventsTChain</a>(</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">const</span> std::string listInputPath,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    std::string &amp;year,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    std::string &amp;month,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">bool</span> verbose);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aaggregate__events_8h_html_a1f2c3a1702bace577e13b2a9d2dd70bd"><div class="ttname"><a href="aggregate__events_8h.html#a1f2c3a1702bace577e13b2a9d2dd70bd">aggregateTupleDataEventsTChain</a></div><div class="ttdeci">std::shared_ptr&lt; TChain &gt; aggregateTupleDataEventsTChain(const std::string listInputPath, std::string &amp;year, std::string &amp;month, const bool verbose)</div><div class="ttdef"><b>Definition:</b> aggregate_events.cpp:102</div></div>
-<div class="ttc" id="aaggregate__events_8h_html_ae35b11954bef71f4f398794830cb83cd"><div class="ttname"><a href="aggregate__events_8h.html#ae35b11954bef71f4f398794830cb83cd">aggregateDataEventsTChain</a></div><div class="ttdeci">std::shared_ptr&lt; TChain &gt; aggregateDataEventsTChain(const std::string listInputPath, const bool verbose, const bool skimmed)</div><div class="ttdef"><b>Definition:</b> aggregate_events.cpp:51</div></div>
-<div class="ttc" id="aaggregate__events_8h_html_a1ca1fc2183bcf2f033a040013cb5b8f2"><div class="ttname"><a href="aggregate__events_8h.html#a1ca1fc2183bcf2f033a040013cb5b8f2">aggregateEventsTChain</a></div><div class="ttdeci">std::shared_ptr&lt; TChain &gt; aggregateEventsTChain(const std::string listInputPath, const bool verbose)</div><div class="ttdef"><b>Definition:</b> aggregate_events.cpp:21</div></div>
-<div class="ttc" id="aaggregate__events_8h_html_a77925103c82d988c5acf4153d26764a0"><div class="ttname"><a href="aggregate__events_8h.html#a77925103c82d988c5acf4153d26764a0">aggregateEventsDmpChain</a></div><div class="ttdeci">std::shared_ptr&lt; DmpChain &gt; aggregateEventsDmpChain(const std::string listInputPath, const bool verbose)</div><div class="ttdef"><b>Definition:</b> aggregate_events.cpp:3</div></div>
+<div class="ttc" id="aaggregate__events_8h_html_a1f2c3a1702bace577e13b2a9d2dd70bd"><div class="ttname"><a href="aggregate__events_8h.html#a1f2c3a1702bace577e13b2a9d2dd70bd">aggregateTupleDataEventsTChain</a></div><div class="ttdeci">std::shared_ptr&lt; TChain &gt; aggregateTupleDataEventsTChain(const std::string listInputPath, std::string &amp;year, std::string &amp;month, const bool verbose)</div></div>
+<div class="ttc" id="aaggregate__events_8h_html_ae35b11954bef71f4f398794830cb83cd"><div class="ttname"><a href="aggregate__events_8h.html#ae35b11954bef71f4f398794830cb83cd">aggregateDataEventsTChain</a></div><div class="ttdeci">std::shared_ptr&lt; TChain &gt; aggregateDataEventsTChain(const std::string listInputPath, const bool verbose, const bool skimmed)</div></div>
+<div class="ttc" id="aclassevent__collector_html"><div class="ttname"><a href="classevent__collector.html">event_collector</a></div><div class="ttdef"><b>Definition:</b> aggregate_events.h:15</div></div>
+<div class="ttc" id="aclassevent__collector_html_a2af937b989aed4b5384347a9952ef7ca"><div class="ttname"><a href="classevent__collector.html#a2af937b989aed4b5384347a9952ef7ca">event_collector::GetChainStatus</a></div><div class="ttdeci">bool GetChainStatus()</div><div class="ttdef"><b>Definition:</b> aggregate_events.cpp:49</div></div>
+<div class="ttc" id="aclassevent__collector_html_aaa83591bde4fe9162e808f35ec943c6d"><div class="ttname"><a href="classevent__collector.html#aaa83591bde4fe9162e808f35ec943c6d">event_collector::GetChain</a></div><div class="ttdeci">std::shared_ptr&lt; TChain &gt; GetChain()</div><div class="ttdef"><b>Definition:</b> aggregate_events.cpp:41</div></div>
+<div class="ttc" id="aclassevent__collector_html_a508a6e205af04185097980c8ef72cc80"><div class="ttname"><a href="classevent__collector.html#a508a6e205af04185097980c8ef72cc80">event_collector::event_collector</a></div><div class="ttdeci">event_collector(const std::string listInputPath, const bool verbose=true, const bool mc=false)</div><div class="ttdef"><b>Definition:</b> aggregate_events.h:18</div></div>
+<div class="ttc" id="aclassevent__collector_html_a24d3853e117634ac2904b9455f804a1f"><div class="ttname"><a href="classevent__collector.html#a24d3853e117634ac2904b9455f804a1f">event_collector::~event_collector</a></div><div class="ttdeci">~event_collector()</div><div class="ttdef"><b>Definition:</b> aggregate_events.h:28</div></div>
+<div class="ttc" id="aaggregate__events_8h_html_a1ca1fc2183bcf2f033a040013cb5b8f2"><div class="ttname"><a href="aggregate__events_8h.html#a1ca1fc2183bcf2f033a040013cb5b8f2">aggregateEventsTChain</a></div><div class="ttdeci">std::shared_ptr&lt; TChain &gt; aggregateEventsTChain(const std::string listInputPath, const bool verbose)</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

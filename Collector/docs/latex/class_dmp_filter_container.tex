@@ -1,0 +1,415 @@
+\hypertarget{class_dmp_filter_container}{}\doxysection{Dmp\+Filter\+Container Class Reference}
+\label{class_dmp_filter_container}\index{DmpFilterContainer@{DmpFilterContainer}}
+
+
+{\ttfamily \#include $<$Dmp\+Filter\+Container.\+h$>$}
+
+
+
+Collaboration diagram for Dmp\+Filter\+Container\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=205pt]{class_dmp_filter_container__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_dmp_filter_container_a21bf945fb36ea07cba09ecf18028f684}{Dmp\+Filter\+Container}} ()
+\item 
+\mbox{\hyperlink{class_dmp_filter_container_a16b654aecd9a0f91b6b14f1837e587c1}{$\sim$\+Dmp\+Filter\+Container}} ()
+\item 
+void \mbox{\hyperlink{class_dmp_filter_container_af541a2589c2c0b5e662b8a66c03cce41}{pipeline}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ \&bgorec, const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Hits $>$ \&bgohits, const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} \&cuts, const double bgo\+TotalE, const double bgo\+Total\+E\+\_\+corr, \mbox{\hyperlink{class_dmp_bgo_container}{Dmp\+Bgo\+Container}} \&bgo\+Vault, \mbox{\hyperlink{class_dmp_psd_container}{Dmp\+Psd\+Container}} \&psd\+Vault, const std\+::shared\+\_\+ptr$<$ T\+Clones\+Array $>$ \&stkclusters, const std\+::shared\+\_\+ptr$<$ T\+Clones\+Array $>$ \&stktracks, const \mbox{\hyperlink{structactive__cuts}{active\+\_\+cuts}} \&acuts)
+\item 
+void \mbox{\hyperlink{class_dmp_filter_container_acdcb243f9568426bbeefa2bc13510748}{Reset}} ()
+\item 
+void \mbox{\hyperlink{class_dmp_filter_container_a5360332141723c1328a3893b4790bcee}{Check\+Geometry}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Simu\+Primaries $>$ simu\+\_\+primaries=std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Simu\+Primaries $>$(nullptr), const std\+::vector$<$ double $>$ bgo\+Rec\+\_\+slope=std\+::vector$<$ double $>$(2, -\/999), const std\+::vector$<$ double $>$ bgo\+Rec\+\_\+intercept=std\+::vector$<$ double $>$(2, -\/999))
+\item 
+const bool \mbox{\hyperlink{class_dmp_filter_container_ad720b839a338983ccd08c1beb62adfd7}{Check\+Incoming\+Event}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Header $>$ evt\+\_\+header, const std\+::vector$<$ double $>$ bgo\+Rec\+\_\+slope, const std\+::vector$<$ double $>$ bgo\+Rec\+\_\+intercept, const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Simu\+Primaries $>$ simu\+\_\+primaries=std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Simu\+Primaries $>$(nullptr))
+\item 
+void \mbox{\hyperlink{class_dmp_filter_container_adbbc104722775687d456f6ccdb3830d3}{Energy\+Check}} (const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} \&cuts, const bool bgo\+Total\+E\+\_\+corr, const bool min\+\_\+energy, const bool max\+\_\+energy)
+\item 
+void \mbox{\hyperlink{class_dmp_filter_container_abd98eabf46671c765f2a171c4b1fec95}{Update\+Evt\+Counter}} ()
+\item 
+const \mbox{\hyperlink{structfilter__output}{filter\+\_\+output}} \mbox{\hyperlink{class_dmp_filter_container_a33579f9aa1618b0680037dd17d7e8512}{Get\+Filter\+Output}} ()
+\item 
+const \mbox{\hyperlink{structpsd__charge}{psd\+\_\+charge}} \mbox{\hyperlink{class_dmp_filter_container_a3d615914875ce17b5c0bb7ce9518046b}{Get\+P\+S\+D\+Charge}} ()
+\item 
+const \mbox{\hyperlink{structstk__charge}{stk\+\_\+charge}} \mbox{\hyperlink{class_dmp_filter_container_abc2065c776b92ab01bf66050ff5bdf68}{Get\+S\+T\+K\+Charge}} ()
+\item 
+const \mbox{\hyperlink{structbest__track}{best\+\_\+track}} \mbox{\hyperlink{class_dmp_filter_container_a932ccd94b55f80c501161cfc2e9eaac6}{Get\+Best\+Track}} ()
+\item 
+Dmp\+Stk\+Track \mbox{\hyperlink{class_dmp_filter_container_ab7f32ae405047caaac7e42c5815314b8}{Get\+Best\+Track\+Obj}} ()
+\item 
+const \mbox{\hyperlink{structbgo__classifiers}{bgo\+\_\+classifiers}} \mbox{\hyperlink{class_dmp_filter_container_a6e45e1f1d0ae1ec1abefcca4aff673ee}{Get\+Classifiers}} ()
+\item 
+const \mbox{\hyperlink{structdata__evt__time}{data\+\_\+evt\+\_\+time}} \mbox{\hyperlink{class_dmp_filter_container_abc1cbfab4ce16098f4938cf6d8528ba8}{Get\+Data\+Time}} ()
+\item 
+const \mbox{\hyperlink{structtrigger__info}{trigger\+\_\+info}} \mbox{\hyperlink{class_dmp_filter_container_a93396f36bb32d85919a32c54a6027ced}{Get\+Trigger}} ()
+\item 
+const unsigned int \mbox{\hyperlink{class_dmp_filter_container_aabe6f78c0be79483d34d7b29c896dcd8}{Get\+Stat\+Evt\+Counter}} ()
+\item 
+const unsigned int \mbox{\hyperlink{class_dmp_filter_container_af116d8ab9ead50be53f84b69b760a76e}{Get\+Stat\+Evt\+In\+Range}} ()
+\item 
+const unsigned int \mbox{\hyperlink{class_dmp_filter_container_abdbaaf04d4971f7414da65f1799fb543}{Get\+Stat\+Evt\+Out\+Range}} ()
+\item 
+const unsigned int \mbox{\hyperlink{class_dmp_filter_container_addc8a1fdf0dc46e2a2708bb0710d8753}{Get\+Stati\+Evt\+Trigger}} ()
+\item 
+const unsigned int \mbox{\hyperlink{class_dmp_filter_container_a976ca77d5ecdedd94386595f98725d81}{Get\+Stat\+Evt\+Selection}} ()
+\item 
+const unsigned int \mbox{\hyperlink{class_dmp_filter_container_a69f694e7a5c2aae177519cbc19c45c8c}{Get\+Stat\+Evt\+S\+AA}} ()
+\item 
+void \mbox{\hyperlink{class_dmp_filter_container_a290a9a1a3f2dc7e3a531cb1b64d7cac4}{Update\+Evt\+Time}} (const std\+::shared\+\_\+ptr$<$ T\+Chain $>$ dmpch, const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Header $>$ evt\+\_\+header)
+\item 
+void \mbox{\hyperlink{class_dmp_filter_container_a8df13198814367d20fd6fa110b767c47}{Print\+Data\+Info}} (const std\+::shared\+\_\+ptr$<$ T\+Chain $>$ dmpch, const bool mc=false)
+\item 
+void \mbox{\hyperlink{class_dmp_filter_container_a12e0be935a030dd6eb4f1cdacddd6fa1}{S\+A\+A\+Check}} (const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Header $>$ evt\+\_\+header, const std\+::shared\+\_\+ptr$<$ Dmp\+Filter\+Orbit $>$ p\+Filter)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_dmp_filter_container_a21bf945fb36ea07cba09ecf18028f684}\label{class_dmp_filter_container_a21bf945fb36ea07cba09ecf18028f684}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!DmpFilterContainer@{DmpFilterContainer}}
+\index{DmpFilterContainer@{DmpFilterContainer}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{DmpFilterContainer()}{DmpFilterContainer()}}
+{\footnotesize\ttfamily Dmp\+Filter\+Container\+::\+Dmp\+Filter\+Container (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_dmp_filter_container_a16b654aecd9a0f91b6b14f1837e587c1}\label{class_dmp_filter_container_a16b654aecd9a0f91b6b14f1837e587c1}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!````~DmpFilterContainer@{$\sim$DmpFilterContainer}}
+\index{````~DmpFilterContainer@{$\sim$DmpFilterContainer}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{$\sim$DmpFilterContainer()}{~DmpFilterContainer()}}
+{\footnotesize\ttfamily Dmp\+Filter\+Container\+::$\sim$\+Dmp\+Filter\+Container (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_dmp_filter_container_a5360332141723c1328a3893b4790bcee}\label{class_dmp_filter_container_a5360332141723c1328a3893b4790bcee}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!CheckGeometry@{CheckGeometry}}
+\index{CheckGeometry@{CheckGeometry}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{CheckGeometry()}{CheckGeometry()}}
+{\footnotesize\ttfamily void Dmp\+Filter\+Container\+::\+Check\+Geometry (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Simu\+Primaries $>$}]{simu\+\_\+primaries = {\ttfamily std\+:\+:shared\+\_\+ptr$<$DmpEvtSimuPrimaries$>$(nullptr)},  }\item[{const std\+::vector$<$ double $>$}]{bgo\+Rec\+\_\+slope = {\ttfamily std\+:\+:vector$<$double$>$~(2,~-\/999)},  }\item[{const std\+::vector$<$ double $>$}]{bgo\+Rec\+\_\+intercept = {\ttfamily std\+:\+:vector$<$double$>$~(2,~-\/999)} }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a5360332141723c1328a3893b4790bcee_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_ad720b839a338983ccd08c1beb62adfd7}\label{class_dmp_filter_container_ad720b839a338983ccd08c1beb62adfd7}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!CheckIncomingEvent@{CheckIncomingEvent}}
+\index{CheckIncomingEvent@{CheckIncomingEvent}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{CheckIncomingEvent()}{CheckIncomingEvent()}}
+{\footnotesize\ttfamily const bool Dmp\+Filter\+Container\+::\+Check\+Incoming\+Event (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Header $>$}]{evt\+\_\+header,  }\item[{const std\+::vector$<$ double $>$}]{bgo\+Rec\+\_\+slope,  }\item[{const std\+::vector$<$ double $>$}]{bgo\+Rec\+\_\+intercept,  }\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Simu\+Primaries $>$}]{simu\+\_\+primaries = {\ttfamily std\+:\+:shared\+\_\+ptr$<$DmpEvtSimuPrimaries$>$(nullptr)} }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_ad720b839a338983ccd08c1beb62adfd7_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_adbbc104722775687d456f6ccdb3830d3}\label{class_dmp_filter_container_adbbc104722775687d456f6ccdb3830d3}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!EnergyCheck@{EnergyCheck}}
+\index{EnergyCheck@{EnergyCheck}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{EnergyCheck()}{EnergyCheck()}}
+{\footnotesize\ttfamily void Dmp\+Filter\+Container\+::\+Energy\+Check (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} \&}]{cuts,  }\item[{const bool}]{bgo\+Total\+E\+\_\+corr,  }\item[{const bool}]{min\+\_\+energy,  }\item[{const bool}]{max\+\_\+energy }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_adbbc104722775687d456f6ccdb3830d3_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a932ccd94b55f80c501161cfc2e9eaac6}\label{class_dmp_filter_container_a932ccd94b55f80c501161cfc2e9eaac6}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetBestTrack@{GetBestTrack}}
+\index{GetBestTrack@{GetBestTrack}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetBestTrack()}{GetBestTrack()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{structbest__track}{best\+\_\+track}} Dmp\+Filter\+Container\+::\+Get\+Best\+Track (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a932ccd94b55f80c501161cfc2e9eaac6_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_ab7f32ae405047caaac7e42c5815314b8}\label{class_dmp_filter_container_ab7f32ae405047caaac7e42c5815314b8}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetBestTrackObj@{GetBestTrackObj}}
+\index{GetBestTrackObj@{GetBestTrackObj}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetBestTrackObj()}{GetBestTrackObj()}}
+{\footnotesize\ttfamily Dmp\+Stk\+Track Dmp\+Filter\+Container\+::\+Get\+Best\+Track\+Obj (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_ab7f32ae405047caaac7e42c5815314b8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a6e45e1f1d0ae1ec1abefcca4aff673ee}\label{class_dmp_filter_container_a6e45e1f1d0ae1ec1abefcca4aff673ee}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetClassifiers@{GetClassifiers}}
+\index{GetClassifiers@{GetClassifiers}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetClassifiers()}{GetClassifiers()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{structbgo__classifiers}{bgo\+\_\+classifiers}} Dmp\+Filter\+Container\+::\+Get\+Classifiers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a6e45e1f1d0ae1ec1abefcca4aff673ee_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_abc1cbfab4ce16098f4938cf6d8528ba8}\label{class_dmp_filter_container_abc1cbfab4ce16098f4938cf6d8528ba8}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetDataTime@{GetDataTime}}
+\index{GetDataTime@{GetDataTime}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetDataTime()}{GetDataTime()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{structdata__evt__time}{data\+\_\+evt\+\_\+time}} Dmp\+Filter\+Container\+::\+Get\+Data\+Time (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_dmp_filter_container_a33579f9aa1618b0680037dd17d7e8512}\label{class_dmp_filter_container_a33579f9aa1618b0680037dd17d7e8512}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetFilterOutput@{GetFilterOutput}}
+\index{GetFilterOutput@{GetFilterOutput}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetFilterOutput()}{GetFilterOutput()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{structfilter__output}{filter\+\_\+output}} Dmp\+Filter\+Container\+::\+Get\+Filter\+Output (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a33579f9aa1618b0680037dd17d7e8512_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a3d615914875ce17b5c0bb7ce9518046b}\label{class_dmp_filter_container_a3d615914875ce17b5c0bb7ce9518046b}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetPSDCharge@{GetPSDCharge}}
+\index{GetPSDCharge@{GetPSDCharge}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetPSDCharge()}{GetPSDCharge()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{structpsd__charge}{psd\+\_\+charge}} Dmp\+Filter\+Container\+::\+Get\+P\+S\+D\+Charge (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a3d615914875ce17b5c0bb7ce9518046b_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_aabe6f78c0be79483d34d7b29c896dcd8}\label{class_dmp_filter_container_aabe6f78c0be79483d34d7b29c896dcd8}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetStatEvtCounter@{GetStatEvtCounter}}
+\index{GetStatEvtCounter@{GetStatEvtCounter}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetStatEvtCounter()}{GetStatEvtCounter()}}
+{\footnotesize\ttfamily const unsigned int Dmp\+Filter\+Container\+::\+Get\+Stat\+Evt\+Counter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_aabe6f78c0be79483d34d7b29c896dcd8_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_af116d8ab9ead50be53f84b69b760a76e}\label{class_dmp_filter_container_af116d8ab9ead50be53f84b69b760a76e}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetStatEvtInRange@{GetStatEvtInRange}}
+\index{GetStatEvtInRange@{GetStatEvtInRange}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetStatEvtInRange()}{GetStatEvtInRange()}}
+{\footnotesize\ttfamily const unsigned int Dmp\+Filter\+Container\+::\+Get\+Stat\+Evt\+In\+Range (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_af116d8ab9ead50be53f84b69b760a76e_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_abdbaaf04d4971f7414da65f1799fb543}\label{class_dmp_filter_container_abdbaaf04d4971f7414da65f1799fb543}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetStatEvtOutRange@{GetStatEvtOutRange}}
+\index{GetStatEvtOutRange@{GetStatEvtOutRange}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetStatEvtOutRange()}{GetStatEvtOutRange()}}
+{\footnotesize\ttfamily const unsigned int Dmp\+Filter\+Container\+::\+Get\+Stat\+Evt\+Out\+Range (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_abdbaaf04d4971f7414da65f1799fb543_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a69f694e7a5c2aae177519cbc19c45c8c}\label{class_dmp_filter_container_a69f694e7a5c2aae177519cbc19c45c8c}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetStatEvtSAA@{GetStatEvtSAA}}
+\index{GetStatEvtSAA@{GetStatEvtSAA}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetStatEvtSAA()}{GetStatEvtSAA()}}
+{\footnotesize\ttfamily const unsigned int Dmp\+Filter\+Container\+::\+Get\+Stat\+Evt\+S\+AA (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a69f694e7a5c2aae177519cbc19c45c8c_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a976ca77d5ecdedd94386595f98725d81}\label{class_dmp_filter_container_a976ca77d5ecdedd94386595f98725d81}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetStatEvtSelection@{GetStatEvtSelection}}
+\index{GetStatEvtSelection@{GetStatEvtSelection}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetStatEvtSelection()}{GetStatEvtSelection()}}
+{\footnotesize\ttfamily const unsigned int Dmp\+Filter\+Container\+::\+Get\+Stat\+Evt\+Selection (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a976ca77d5ecdedd94386595f98725d81_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_addc8a1fdf0dc46e2a2708bb0710d8753}\label{class_dmp_filter_container_addc8a1fdf0dc46e2a2708bb0710d8753}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetStatiEvtTrigger@{GetStatiEvtTrigger}}
+\index{GetStatiEvtTrigger@{GetStatiEvtTrigger}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetStatiEvtTrigger()}{GetStatiEvtTrigger()}}
+{\footnotesize\ttfamily const unsigned int Dmp\+Filter\+Container\+::\+Get\+Stati\+Evt\+Trigger (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_addc8a1fdf0dc46e2a2708bb0710d8753_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_abc2065c776b92ab01bf66050ff5bdf68}\label{class_dmp_filter_container_abc2065c776b92ab01bf66050ff5bdf68}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetSTKCharge@{GetSTKCharge}}
+\index{GetSTKCharge@{GetSTKCharge}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetSTKCharge()}{GetSTKCharge()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{structstk__charge}{stk\+\_\+charge}} Dmp\+Filter\+Container\+::\+Get\+S\+T\+K\+Charge (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_abc2065c776b92ab01bf66050ff5bdf68_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a93396f36bb32d85919a32c54a6027ced}\label{class_dmp_filter_container_a93396f36bb32d85919a32c54a6027ced}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!GetTrigger@{GetTrigger}}
+\index{GetTrigger@{GetTrigger}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{GetTrigger()}{GetTrigger()}}
+{\footnotesize\ttfamily const \mbox{\hyperlink{structtrigger__info}{trigger\+\_\+info}} Dmp\+Filter\+Container\+::\+Get\+Trigger (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a93396f36bb32d85919a32c54a6027ced_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_af541a2589c2c0b5e662b8a66c03cce41}\label{class_dmp_filter_container_af541a2589c2c0b5e662b8a66c03cce41}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!pipeline@{pipeline}}
+\index{pipeline@{pipeline}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{pipeline()}{pipeline()}}
+{\footnotesize\ttfamily void Dmp\+Filter\+Container\+::pipeline (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Rec $>$ \&}]{bgorec,  }\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Bgo\+Hits $>$ \&}]{bgohits,  }\item[{const \mbox{\hyperlink{structcuts__conf}{cuts\+\_\+conf}} \&}]{cuts,  }\item[{const double}]{bgo\+TotalE,  }\item[{const double}]{bgo\+Total\+E\+\_\+corr,  }\item[{\mbox{\hyperlink{class_dmp_bgo_container}{Dmp\+Bgo\+Container}} \&}]{bgo\+Vault,  }\item[{\mbox{\hyperlink{class_dmp_psd_container}{Dmp\+Psd\+Container}} \&}]{psd\+Vault,  }\item[{const std\+::shared\+\_\+ptr$<$ T\+Clones\+Array $>$ \&}]{stkclusters,  }\item[{const std\+::shared\+\_\+ptr$<$ T\+Clones\+Array $>$ \&}]{stktracks,  }\item[{const \mbox{\hyperlink{structactive__cuts}{active\+\_\+cuts}} \&}]{acuts }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{class_dmp_filter_container_af541a2589c2c0b5e662b8a66c03cce41_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_af541a2589c2c0b5e662b8a66c03cce41_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a8df13198814367d20fd6fa110b767c47}\label{class_dmp_filter_container_a8df13198814367d20fd6fa110b767c47}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!PrintDataInfo@{PrintDataInfo}}
+\index{PrintDataInfo@{PrintDataInfo}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{PrintDataInfo()}{PrintDataInfo()}}
+{\footnotesize\ttfamily void Dmp\+Filter\+Container\+::\+Print\+Data\+Info (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ T\+Chain $>$}]{dmpch,  }\item[{const bool}]{mc = {\ttfamily false} }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a8df13198814367d20fd6fa110b767c47_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_acdcb243f9568426bbeefa2bc13510748}\label{class_dmp_filter_container_acdcb243f9568426bbeefa2bc13510748}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!Reset@{Reset}}
+\index{Reset@{Reset}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{Reset()}{Reset()}}
+{\footnotesize\ttfamily void Dmp\+Filter\+Container\+::\+Reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_acdcb243f9568426bbeefa2bc13510748_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a12e0be935a030dd6eb4f1cdacddd6fa1}\label{class_dmp_filter_container_a12e0be935a030dd6eb4f1cdacddd6fa1}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!SAACheck@{SAACheck}}
+\index{SAACheck@{SAACheck}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{SAACheck()}{SAACheck()}}
+{\footnotesize\ttfamily void Dmp\+Filter\+Container\+::\+S\+A\+A\+Check (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Header $>$}]{evt\+\_\+header,  }\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Filter\+Orbit $>$}]{p\+Filter }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a12e0be935a030dd6eb4f1cdacddd6fa1_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_abd98eabf46671c765f2a171c4b1fec95}\label{class_dmp_filter_container_abd98eabf46671c765f2a171c4b1fec95}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!UpdateEvtCounter@{UpdateEvtCounter}}
+\index{UpdateEvtCounter@{UpdateEvtCounter}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{UpdateEvtCounter()}{UpdateEvtCounter()}}
+{\footnotesize\ttfamily void Dmp\+Filter\+Container\+::\+Update\+Evt\+Counter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_abd98eabf46671c765f2a171c4b1fec95_icgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{class_dmp_filter_container_a290a9a1a3f2dc7e3a531cb1b64d7cac4}\label{class_dmp_filter_container_a290a9a1a3f2dc7e3a531cb1b64d7cac4}} 
+\index{DmpFilterContainer@{DmpFilterContainer}!UpdateEvtTime@{UpdateEvtTime}}
+\index{UpdateEvtTime@{UpdateEvtTime}!DmpFilterContainer@{DmpFilterContainer}}
+\doxysubsubsection{\texorpdfstring{UpdateEvtTime()}{UpdateEvtTime()}}
+{\footnotesize\ttfamily void Dmp\+Filter\+Container\+::\+Update\+Evt\+Time (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ T\+Chain $>$}]{dmpch,  }\item[{const std\+::shared\+\_\+ptr$<$ Dmp\+Evt\+Header $>$}]{evt\+\_\+header }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{class_dmp_filter_container_a290a9a1a3f2dc7e3a531cb1b64d7cac4_icgraph}
+\end{center}
+\end{figure}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/\mbox{\hyperlink{_dmp_filter_container_8h}{Dmp\+Filter\+Container.\+h}}\item 
+source/\mbox{\hyperlink{_dmp_filter_container_8cpp}{Dmp\+Filter\+Container.\+cpp}}\end{DoxyCompactItemize}

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['wtsydp_539',['wtsydp',['../wtsydp_8cpp.html#a0adb448f323cb9b6eeed125b8a8815fc',1,'wtsydp(const float minene, const float maxene, const float index):&#160;wtsydp.cpp'],['../wtsydp_8h.html#a0adb448f323cb9b6eeed125b8a8815fc',1,'wtsydp(const float minene, const float maxene, const float index):&#160;wtsydp.cpp']]]
+  ['write_529',['Write',['../classhistos.html#a13f656cf01436160a3057a9cc054b33e',1,'histos::Write()'],['../classntuple.html#ac1e0c5c96efec33d2163ad4857a10f3c',1,'ntuple::Write()']]],
+  ['writemc_530',['WriteMC',['../classmc__histos.html#a435f73ed2fe79851ed2a26368d8f4307',1,'mc_histos']]]
 ];

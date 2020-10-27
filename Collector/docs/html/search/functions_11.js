@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['xtrl_5fcut_540',['xtrl_cut',['../data__cuts_8cpp.html#a0d8a5d43c40129bfa8a6b2f400703c27',1,'xtrl_cut(const double sumRms, const double lastFracLayer, const cuts_conf data_cuts):&#160;data_cuts.cpp'],['../data__cuts_8h.html#a0d8a5d43c40129bfa8a6b2f400703c27',1,'xtrl_cut(const double sumRms, const double lastFracLayer, const cuts_conf data_cuts):&#160;data_cuts.cpp']]]
+  ['xtrx_5fcomputation_531',['xtrX_computation',['../xtr_x__computation_8cpp.html#aaf8f32af026e01ecdd83ac9bb0c5e50e',1,'xtrX_computation(const double sumRms, const double lastFracLayer):&#160;xtrX_computation.cpp'],['../xtr_x__computation_8h.html#aaf8f32af026e01ecdd83ac9bb0c5e50e',1,'xtrX_computation(const double sumRms, const double lastFracLayer):&#160;xtrX_computation.cpp']]]
 ];

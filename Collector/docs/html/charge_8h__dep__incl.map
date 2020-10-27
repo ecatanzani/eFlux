@@ -1,9 +1,0 @@
-<map id="include/charge.h" name="include/charge.h">
-<area shape="rect" id="node1" title=" " alt="" coords="277,5,394,32"/>
-<area shape="rect" id="node2" href="$build__acceptance_8cpp.html" title=" " alt="" coords="5,80,196,107"/>
-<area shape="rect" id="node3" href="$charge_8cpp.html" title=" " alt="" coords="220,80,349,107"/>
-<area shape="rect" id="node4" href="$event__loop_8cpp.html" title=" " alt="" coords="300,155,453,181"/>
-<area shape="rect" id="node5" href="$produce_tuples_8h.html" title=" " alt="" coords="445,80,607,107"/>
-<area shape="rect" id="node6" href="$_core_8cpp.html" title=" " alt="" coords="477,155,596,181"/>
-<area shape="rect" id="node7" href="$produce_tuples_8cpp.html" title=" " alt="" coords="620,155,795,181"/>
-</map>

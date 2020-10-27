@@ -70,7 +70,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="data__cuts_8h_source.html">data_cuts.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="_dmp_filter_container_8h_source.html">DmpFilterContainer.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for best_track:</div>
 <div class="dyncontent">
@@ -90,13 +90,13 @@ Collaboration diagram for best_track:</div>
 Public Attributes</h2></td></tr>
 <tr class="memitem:af76bf57fd0b69c9ebe6f0bee2041f381"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#af76bf57fd0b69c9ebe6f0bee2041f381">n_points</a> = 0</td></tr>
 <tr class="separator:af76bf57fd0b69c9ebe6f0bee2041f381"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a848112ffa521e633dd94469cddfcabc9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#a848112ffa521e633dd94469cddfcabc9">n_holes</a> = {0, 0}</td></tr>
+<tr class="memitem:a848112ffa521e633dd94469cddfcabc9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#a848112ffa521e633dd94469cddfcabc9">n_holes</a> {0, 0}</td></tr>
 <tr class="separator:a848112ffa521e633dd94469cddfcabc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0818131338b3b8ca4988f2f799e19332"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#a0818131338b3b8ca4988f2f799e19332">track_slope</a> = {-999, -999}</td></tr>
+<tr class="memitem:a0818131338b3b8ca4988f2f799e19332"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#a0818131338b3b8ca4988f2f799e19332">track_slope</a> {-999, -999}</td></tr>
 <tr class="separator:a0818131338b3b8ca4988f2f799e19332"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfd4ab665794921a17ca7ae22e42f95c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#acfd4ab665794921a17ca7ae22e42f95c">track_intercept</a> = {-999, -999}</td></tr>
+<tr class="memitem:acfd4ab665794921a17ca7ae22e42f95c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#acfd4ab665794921a17ca7ae22e42f95c">track_intercept</a> {-999, -999}</td></tr>
 <tr class="separator:acfd4ab665794921a17ca7ae22e42f95c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93d1859aa7652ccaa3bbf734f86c6221"><td class="memItemLeft" align="right" valign="top">TVector3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#a93d1859aa7652ccaa3bbf734f86c6221">track_direction</a></td></tr>
+<tr class="memitem:a93d1859aa7652ccaa3bbf734f86c6221"><td class="memItemLeft" align="right" valign="top">TVector3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#a93d1859aa7652ccaa3bbf734f86c6221">track_direction</a> {-999, -999, -999}</td></tr>
 <tr class="separator:a93d1859aa7652ccaa3bbf734f86c6221"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad86626f4baf90bc4c18b7536472103a3"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbest__track.html#ad86626f4baf90bc4c18b7536472103a3">extr_BGO_topX</a> = -999</td></tr>
 <tr class="separator:ad86626f4baf90bc4c18b7536472103a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,7 +175,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;unsigned int&gt; best_track::n_holes = {0, 0}</td>
+          <td class="memname">std::vector&lt;unsigned int&gt; best_track::n_holes {0, 0}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -231,7 +231,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">TVector3 best_track::track_direction</td>
+          <td class="memname">TVector3 best_track::track_direction {-999, -999, -999}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -245,7 +245,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;double&gt; best_track::track_intercept = {-999, -999}</td>
+          <td class="memname">std::vector&lt;double&gt; best_track::track_intercept {-999, -999}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -259,7 +259,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;double&gt; best_track::track_slope = {-999, -999}</td>
+          <td class="memname">std::vector&lt;double&gt; best_track::track_slope {-999, -999}</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -267,7 +267,7 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/<a class="el" href="data__cuts_8h_source.html">data_cuts.h</a></li>
+<li>include/<a class="el" href="_dmp_filter_container_8h_source.html">DmpFilterContainer.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

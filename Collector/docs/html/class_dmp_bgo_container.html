@@ -88,30 +88,26 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abbf97b8b553e8fa0607ccf6b3a9c37bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41191e7e13109c2b02b09c8ffc6c6cad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a41191e7e13109c2b02b09c8ffc6c6cad">~DmpBgoContainer</a> ()</td></tr>
 <tr class="separator:a41191e7e13109c2b02b09c8ffc6c6cad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5733202bf1101902e15c989ebdbf85c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a5733202bf1101902e15c989ebdbf85c0">scanBGOHits</a> (const std::shared_ptr&lt; DmpEvtBgoHits &gt; bgohits, const double bgoTotalE, const <a class="el" href="structcuts__conf.html">cuts_conf</a> &amp;data_cuts, const int nLayers=<a class="el" href="_d_a_m_p_e__geo__structure_8h.html#af065d0640d735c7ac401721653ac07fd">DAMPE_bgo_nLayers</a>)</td></tr>
-<tr class="separator:a5733202bf1101902e15c989ebdbf85c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad66b846250d956d9afb302baa0fe44b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#aad66b846250d956d9afb302baa0fe44b">scanBGOHits</a> (const std::shared_ptr&lt; DmpEvtBgoHits &gt; bgohits, const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec, const double bgoTotalE, const double layerMinEnergy, const int nLayers=<a class="el" href="_d_a_m_p_e__geo__structure_8h.html#af065d0640d735c7ac401721653ac07fd">DAMPE_bgo_nLayers</a>)</td></tr>
+<tr class="separator:aad66b846250d956d9afb302baa0fe44b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23d7d7b792c86701bf1e39784c6dd331"><td class="memItemLeft" align="right" valign="top">std::vector&lt; short &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a23d7d7b792c86701bf1e39784c6dd331">GetSingleLayerBarNumber</a> (int nLayer)</td></tr>
 <tr class="separator:a23d7d7b792c86701bf1e39784c6dd331"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d2cb9f15c9c889914bb610333491921"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; short &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a3d2cb9f15c9c889914bb610333491921">GetLayerBarNumber</a> ()</td></tr>
 <tr class="separator:a3d2cb9f15c9c889914bb610333491921"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35e602b2474a0bb273b04f340ea87272"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a35e602b2474a0bb273b04f340ea87272">GetIdxBarMaxLayer</a> ()</td></tr>
+<tr class="separator:a35e602b2474a0bb273b04f340ea87272"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96a7998c66f1f4f36b8496d57fbfd5d6"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a96a7998c66f1f4f36b8496d57fbfd5d6">GetIdxBarMaxSingleLayer</a> (const int layedIdx)</td></tr>
+<tr class="separator:a96a7998c66f1f4f36b8496d57fbfd5d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace5606804718764a17215e1f80f5a3ba"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#ace5606804718764a17215e1f80f5a3ba">GetRmsLayer</a> ()</td></tr>
 <tr class="separator:ace5606804718764a17215e1f80f5a3ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4077abd503dcfc8c80f62ab06e56104"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#aa4077abd503dcfc8c80f62ab06e56104">GetSumRMS</a> ()</td></tr>
+<tr class="separator:aa4077abd503dcfc8c80f62ab06e56104"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d04e2ccc2fd2b7c03c636f6338d54d9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a4d04e2ccc2fd2b7c03c636f6338d54d9">GetFracLayer</a> ()</td></tr>
 <tr class="separator:a4d04e2ccc2fd2b7c03c636f6338d54d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70402bb8f21493c5a94c8b8352345e44"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a70402bb8f21493c5a94c8b8352345e44">GetSingleFracLayer</a> (const int lIdx)</td></tr>
 <tr class="separator:a70402bb8f21493c5a94c8b8352345e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a642e1edb35c779286a283729f4f42cbd"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a642e1edb35c779286a283729f4f42cbd">GetLastFracLayer</a> ()</td></tr>
-<tr class="separator:a642e1edb35c779286a283729f4f42cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4818879a1c43f4f3538a9e25015adad1"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a4818879a1c43f4f3538a9e25015adad1">GetLastFFracLayer</a> ()</td></tr>
-<tr class="separator:a4818879a1c43f4f3538a9e25015adad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35e602b2474a0bb273b04f340ea87272"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a35e602b2474a0bb273b04f340ea87272">GetIdxBarMaxLayer</a> ()</td></tr>
-<tr class="separator:a35e602b2474a0bb273b04f340ea87272"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add3d864362b4f9a07c0ab16dc4db8e85"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#add3d864362b4f9a07c0ab16dc4db8e85">GetIdxLastLayer</a> ()</td></tr>
-<tr class="separator:add3d864362b4f9a07c0ab16dc4db8e85"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c55d68cc458c4047e2b024bcfba6d12"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a6c55d68cc458c4047e2b024bcfba6d12">GetFracIdxLastLayer</a> ()</td></tr>
-<tr class="separator:a6c55d68cc458c4047e2b024bcfba6d12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96a7998c66f1f4f36b8496d57fbfd5d6"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a96a7998c66f1f4f36b8496d57fbfd5d6">GetIdxBarMaxSingleLayer</a> (const int layedIdx)</td></tr>
-<tr class="separator:a96a7998c66f1f4f36b8496d57fbfd5d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0226f35097ec01f630fff51d7bc09ba1"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a0226f35097ec01f630fff51d7bc09ba1">GetLastEnergyLayer</a> ()</td></tr>
+<tr class="separator:a0226f35097ec01f630fff51d7bc09ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87b47db90247749a883284e0657c32df"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a87b47db90247749a883284e0657c32df">GetELayer</a> ()</td></tr>
 <tr class="separator:a87b47db90247749a883284e0657c32df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3386e90a3379444e5a792f11f80e99a"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#af3386e90a3379444e5a792f11f80e99a">GetESingleLayer</a> (const int layedIdx)</td></tr>
@@ -120,8 +116,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acb30c370f36a1c0fe993f2ed08673d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c3df5b803eaa28b74c25ba9b1cd35d8"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a1c3df5b803eaa28b74c25ba9b1cd35d8">GetiMaxSingleLayer</a> (const int layedIdx)</td></tr>
 <tr class="separator:a1c3df5b803eaa28b74c25ba9b1cd35d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4077abd503dcfc8c80f62ab06e56104"><td class="memItemLeft" align="right" valign="top">const double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#aa4077abd503dcfc8c80f62ab06e56104">GetSumRMS</a> ()</td></tr>
-<tr class="separator:aa4077abd503dcfc8c80f62ab06e56104"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb7c43877c1a313bf142758fffba4afe"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#afb7c43877c1a313bf142758fffba4afe">GetLayerEnergies</a> ()</td></tr>
+<tr class="separator:afb7c43877c1a313bf142758fffba4afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a216842667b93dda09b32b6cc11ea12e8"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a216842667b93dda09b32b6cc11ea12e8">GetBGOslope</a> ()</td></tr>
+<tr class="separator:a216842667b93dda09b32b6cc11ea12e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c7dd062f9e952114398c431f86836d3"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a4c7dd062f9e952114398c431f86836d3">GetBGOintercept</a> ()</td></tr>
+<tr class="separator:a4c7dd062f9e952114398c431f86836d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1358171943867974cacea98e84acf54"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#ac1358171943867974cacea98e84acf54">FastBGOslope</a> (const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec)</td></tr>
+<tr class="separator:ac1358171943867974cacea98e84acf54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c1e93e86c2c978fdd8c5363461ac1ef"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a6c1e93e86c2c978fdd8c5363461ac1ef">FastBGOintercept</a> (const std::shared_ptr&lt; DmpEvtBgoRec &gt; bgorec)</td></tr>
+<tr class="separator:a6c1e93e86c2c978fdd8c5363461ac1ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a333f1e1fa7e2e0fbafcb7ad851e24f19"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_dmp_bgo_container.html#a333f1e1fa7e2e0fbafcb7ad851e24f19">GetNhits</a> ()</td></tr>
 <tr class="separator:a333f1e1fa7e2e0fbafcb7ad851e24f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -203,6 +207,134 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6c1e93e86c2c978fdd8c5363461ac1ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c1e93e86c2c978fdd8c5363461ac1ef">&#9670;&nbsp;</a></span>FastBGOintercept()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; double &gt; DmpBgoContainer::FastBGOintercept </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; DmpEvtBgoRec &gt;&#160;</td>
+          <td class="paramname"><em>bgorec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dmp_bgo_container_a6c1e93e86c2c978fdd8c5363461ac1ef_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a6c1e93e86c2c978fdd8c5363461ac1ef_icgraph" alt=""/></div>
+<map name="class_dmp_bgo_container_a6c1e93e86c2c978fdd8c5363461ac1ef_icgraph" id="class_dmp_bgo_container_a6c1e93e86c2c978fdd8c5363461ac1ef_icgraph">
+<area shape="rect" title=" " alt="" coords="373,56,616,83"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="ac1358171943867974cacea98e84acf54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1358171943867974cacea98e84acf54">&#9670;&nbsp;</a></span>FastBGOslope()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; double &gt; DmpBgoContainer::FastBGOslope </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; DmpEvtBgoRec &gt;&#160;</td>
+          <td class="paramname"><em>bgorec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dmp_bgo_container_ac1358171943867974cacea98e84acf54_icgraph.png" border="0" usemap="#class_dmp_bgo_container_ac1358171943867974cacea98e84acf54_icgraph" alt=""/></div>
+<map name="class_dmp_bgo_container_ac1358171943867974cacea98e84acf54_icgraph" id="class_dmp_bgo_container_ac1358171943867974cacea98e84acf54_icgraph">
+<area shape="rect" title=" " alt="" coords="373,56,596,83"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a4c7dd062f9e952114398c431f86836d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c7dd062f9e952114398c431f86836d3">&#9670;&nbsp;</a></span>GetBGOintercept()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; double &gt; DmpBgoContainer::GetBGOintercept </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dmp_bgo_container_a4c7dd062f9e952114398c431f86836d3_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a4c7dd062f9e952114398c431f86836d3_icgraph" alt=""/></div>
+<map name="class_dmp_bgo_container_a4c7dd062f9e952114398c431f86836d3_icgraph" id="class_dmp_bgo_container_a4c7dd062f9e952114398c431f86836d3_icgraph">
+<area shape="rect" title=" " alt="" coords="556,60,793,87"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,6,310,32"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,24,508,65"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,107,325,134"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,56,315,83"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,6,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,58"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a216842667b93dda09b32b6cc11ea12e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a216842667b93dda09b32b6cc11ea12e8">&#9670;&nbsp;</a></span>GetBGOslope()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; double &gt; DmpBgoContainer::GetBGOslope </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dmp_bgo_container_a216842667b93dda09b32b6cc11ea12e8_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a216842667b93dda09b32b6cc11ea12e8_icgraph" alt=""/></div>
+<map name="class_dmp_bgo_container_a216842667b93dda09b32b6cc11ea12e8_icgraph" id="class_dmp_bgo_container_a216842667b93dda09b32b6cc11ea12e8_icgraph">
+<area shape="rect" title=" " alt="" coords="556,62,775,89"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,7,310,34"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,25,508,67"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,109,325,135"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,58,315,85"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,7,175,34"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,33,56,59"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,58,179,85"/>
+</map>
+</div>
+
+</div>
+</div>
 <a id="a87b47db90247749a883284e0657c32df"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a87b47db90247749a883284e0657c32df">&#9670;&nbsp;</a></span>GetELayer()</h2>
 
@@ -238,42 +370,6 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a6c55d68cc458c4047e2b024bcfba6d12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c55d68cc458c4047e2b024bcfba6d12">&#9670;&nbsp;</a></span>GetFracIdxLastLayer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int DmpBgoContainer::GetFracIdxLastLayer </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_dmp_bgo_container_a6c55d68cc458c4047e2b024bcfba6d12_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a6c55d68cc458c4047e2b024bcfba6d12_icgraph" alt=""/></div>
-<map name="class_dmp_bgo_container_a6c55d68cc458c4047e2b024bcfba6d12_icgraph" id="class_dmp_bgo_container_a6c55d68cc458c4047e2b024bcfba6d12_icgraph">
-<area shape="rect" title=" " alt="" coords="885,70,1069,111"/>
-<area shape="rect" href="produce_tuples_8cpp.html#a44190a48da767d2c90626e30eafaa058" title=" " alt="" coords="484,5,583,32"/>
-<area shape="rect" href="class_dmp_bgo_container.html#a4818879a1c43f4f3538a9e25015adad1" title=" " alt="" coords="655,99,837,141"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,69,406,96"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,145,203,172"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,171,56,197"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,208,412,235"/>
-<area shape="rect" href="produce_tuples_8cpp.html#ab88288769d8ae55d995296680fb3c174" title=" " alt="" coords="472,56,595,83"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,107,607,133"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,145,402,172"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,259,603,285"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,196,245,223"/>
-</map>
-</div>
-
-</div>
-</div>
 <a id="a4d04e2ccc2fd2b7c03c636f6338d54d9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4d04e2ccc2fd2b7c03c636f6338d54d9">&#9670;&nbsp;</a></span>GetFracLayer()</h2>
 
@@ -293,14 +389,13 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_a4d04e2ccc2fd2b7c03c636f6338d54d9_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a4d04e2ccc2fd2b7c03c636f6338d54d9_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_a4d04e2ccc2fd2b7c03c636f6338d54d9_icgraph" id="class_dmp_bgo_container_a4d04e2ccc2fd2b7c03c636f6338d54d9_icgraph">
-<area shape="rect" title=" " alt="" coords="615,49,799,90"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="448,5,567,32"/>
-<area shape="rect" href="produce_tuples_8cpp.html#a44190a48da767d2c90626e30eafaa058" title=" " alt="" coords="458,56,557,83"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="297,107,396,133"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,5,245,32"/>
+<area shape="rect" title=" " alt="" coords="373,49,557,90"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
 <area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="293,56,400,83"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,56,203,83"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
 </map>
 </div>
 
@@ -325,15 +420,14 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_a35e602b2474a0bb273b04f340ea87272_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a35e602b2474a0bb273b04f340ea87272_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_a35e602b2474a0bb273b04f340ea87272_icgraph" id="class_dmp_bgo_container_a35e602b2474a0bb273b04f340ea87272_icgraph">
-<area shape="rect" title=" " alt="" coords="655,74,851,115"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,56,607,83"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,107,603,133"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,5,406,32"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,56,402,83"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,56,203,83"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,81,56,108"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,107,412,133"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,107,245,133"/>
+<area shape="rect" title=" " alt="" coords="556,49,752,90"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,49,508,90"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
 </map>
 </div>
 
@@ -357,32 +451,6 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="add3d864362b4f9a07c0ab16dc4db8e85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add3d864362b4f9a07c0ab16dc4db8e85">&#9670;&nbsp;</a></span>GetIdxLastLayer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int DmpBgoContainer::GetIdxLastLayer </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_dmp_bgo_container_add3d864362b4f9a07c0ab16dc4db8e85_icgraph.png" border="0" usemap="#class_dmp_bgo_container_add3d864362b4f9a07c0ab16dc4db8e85_icgraph" alt=""/></div>
-<map name="class_dmp_bgo_container_add3d864362b4f9a07c0ab16dc4db8e85_icgraph" id="class_dmp_bgo_container_add3d864362b4f9a07c0ab16dc4db8e85_icgraph">
-<area shape="rect" title=" " alt="" coords="236,5,437,47"/>
-<area shape="rect" href="class_dmp_bgo_container.html#a642e1edb35c779286a283729f4f42cbd" title=" " alt="" coords="5,5,188,47"/>
-</map>
-</div>
-
-</div>
-</div>
 <a id="acb30c370f36a1c0fe993f2ed08673d93"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acb30c370f36a1c0fe993f2ed08673d93">&#9670;&nbsp;</a></span>GetiMaxLayer()</h2>
 
@@ -402,15 +470,14 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_acb30c370f36a1c0fe993f2ed08673d93_icgraph.png" border="0" usemap="#class_dmp_bgo_container_acb30c370f36a1c0fe993f2ed08673d93_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_acb30c370f36a1c0fe993f2ed08673d93_icgraph" id="class_dmp_bgo_container_acb30c370f36a1c0fe993f2ed08673d93_icgraph">
-<area shape="rect" title=" " alt="" coords="655,74,841,115"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,56,607,83"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,107,603,133"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,5,406,32"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,56,402,83"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,56,203,83"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,81,56,108"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,107,412,133"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,107,245,133"/>
+<area shape="rect" title=" " alt="" coords="556,49,743,90"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,49,508,90"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
 </map>
 </div>
 
@@ -434,73 +501,33 @@ Here is the caller graph for this function:</div>
 
 </div>
 </div>
-<a id="a4818879a1c43f4f3538a9e25015adad1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4818879a1c43f4f3538a9e25015adad1">&#9670;&nbsp;</a></span>GetLastFFracLayer()</h2>
+<a id="a0226f35097ec01f630fff51d7bc09ba1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0226f35097ec01f630fff51d7bc09ba1">&#9670;&nbsp;</a></span>GetLastEnergyLayer()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const double DmpBgoContainer::GetLastFFracLayer </td>
+          <td class="memname">const int DmpBgoContainer::GetLastEnergyLayer </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_cgraph.png" border="0" usemap="#class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_cgraph" alt=""/></div>
-<map name="class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_cgraph" id="class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_cgraph">
-<area shape="rect" title=" " alt="" coords="5,39,188,80"/>
-<area shape="rect" href="class_dmp_bgo_container.html#a6c55d68cc458c4047e2b024bcfba6d12" title=" " alt="" coords="241,5,425,47"/>
-<area shape="rect" href="class_dmp_bgo_container.html#a70402bb8f21493c5a94c8b8352345e44" title=" " alt="" coords="236,71,431,112"/>
-</map>
-</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_icgraph" alt=""/></div>
-<map name="class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_icgraph" id="class_dmp_bgo_container_a4818879a1c43f4f3538a9e25015adad1_icgraph">
-<area shape="rect" title=" " alt="" coords="655,98,837,139"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,29,412,56"/>
-<area shape="rect" href="produce_tuples_8cpp.html#a44190a48da767d2c90626e30eafaa058" title=" " alt="" coords="484,80,583,106"/>
-<area shape="rect" href="produce_tuples_8cpp.html#ab88288769d8ae55d995296680fb3c174" title=" " alt="" coords="472,130,595,157"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,181,607,208"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,181,402,208"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,29,603,56"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,54,245,81"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,105,56,132"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,130,406,157"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,130,203,157"/>
-</map>
-</div>
-
-</div>
-</div>
-<a id="a642e1edb35c779286a283729f4f42cbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a642e1edb35c779286a283729f4f42cbd">&#9670;&nbsp;</a></span>GetLastFracLayer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const double DmpBgoContainer::GetLastFracLayer </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="class_dmp_bgo_container_a642e1edb35c779286a283729f4f42cbd_cgraph.png" border="0" usemap="#class_dmp_bgo_container_a642e1edb35c779286a283729f4f42cbd_cgraph" alt=""/></div>
-<map name="class_dmp_bgo_container_a642e1edb35c779286a283729f4f42cbd_cgraph" id="class_dmp_bgo_container_a642e1edb35c779286a283729f4f42cbd_cgraph">
-<area shape="rect" title=" " alt="" coords="5,39,188,80"/>
-<area shape="rect" href="class_dmp_bgo_container.html#add3d864362b4f9a07c0ab16dc4db8e85" title=" " alt="" coords="236,5,437,47"/>
-<area shape="rect" href="class_dmp_bgo_container.html#a70402bb8f21493c5a94c8b8352345e44" title=" " alt="" coords="239,71,434,112"/>
+<div class="center"><img src="class_dmp_bgo_container_a0226f35097ec01f630fff51d7bc09ba1_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a0226f35097ec01f630fff51d7bc09ba1_icgraph" alt=""/></div>
+<map name="class_dmp_bgo_container_a0226f35097ec01f630fff51d7bc09ba1_icgraph" id="class_dmp_bgo_container_a0226f35097ec01f630fff51d7bc09ba1_icgraph">
+<area shape="rect" title=" " alt="" coords="556,55,739,97"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,8,310,35"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,26,508,67"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,109,325,136"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,59,315,85"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,8,175,35"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,33,56,60"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,59,179,85"/>
 </map>
 </div>
 
@@ -525,15 +552,46 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_a3d2cb9f15c9c889914bb610333491921_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a3d2cb9f15c9c889914bb610333491921_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_a3d2cb9f15c9c889914bb610333491921_icgraph" id="class_dmp_bgo_container_a3d2cb9f15c9c889914bb610333491921_icgraph">
-<area shape="rect" title=" " alt="" coords="655,74,845,115"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,56,607,83"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,107,603,133"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,5,406,32"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,56,402,83"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,56,203,83"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,81,56,108"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,107,412,133"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,107,245,133"/>
+<area shape="rect" title=" " alt="" coords="556,49,747,90"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,49,508,90"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="afb7c43877c1a313bf142758fffba4afe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb7c43877c1a313bf142758fffba4afe">&#9670;&nbsp;</a></span>GetLayerEnergies()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; double &gt; DmpBgoContainer::GetLayerEnergies </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_dmp_bgo_container_afb7c43877c1a313bf142758fffba4afe_icgraph.png" border="0" usemap="#class_dmp_bgo_container_afb7c43877c1a313bf142758fffba4afe_icgraph" alt=""/></div>
+<map name="class_dmp_bgo_container_afb7c43877c1a313bf142758fffba4afe_icgraph" id="class_dmp_bgo_container_afb7c43877c1a313bf142758fffba4afe_icgraph">
+<area shape="rect" title=" " alt="" coords="556,49,747,90"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,49,508,90"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
 </map>
 </div>
 
@@ -558,10 +616,9 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_a333f1e1fa7e2e0fbafcb7ad851e24f19_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a333f1e1fa7e2e0fbafcb7ad851e24f19_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_a333f1e1fa7e2e0fbafcb7ad851e24f19_icgraph" id="class_dmp_bgo_container_a333f1e1fa7e2e0fbafcb7ad851e24f19_icgraph">
-<area shape="rect" title=" " alt="" coords="511,5,700,32"/>
-<area shape="rect" href="produce_tuples_8cpp.html#a44190a48da767d2c90626e30eafaa058" title=" " alt="" coords="364,5,463,32"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="209,5,316,32"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="104,5,161,32"/>
+<area shape="rect" title=" " alt="" coords="353,5,543,32"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="227,5,305,32"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,5,179,32"/>
 <area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,5,56,32"/>
 </map>
 </div>
@@ -587,15 +644,14 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_ace5606804718764a17215e1f80f5a3ba_icgraph.png" border="0" usemap="#class_dmp_bgo_container_ace5606804718764a17215e1f80f5a3ba_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_ace5606804718764a17215e1f80f5a3ba_icgraph" id="class_dmp_bgo_container_ace5606804718764a17215e1f80f5a3ba_icgraph">
-<area shape="rect" title=" " alt="" coords="655,81,873,108"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,56,607,83"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,107,603,133"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,5,406,32"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,56,402,83"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,56,203,83"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,81,56,108"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,107,412,133"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,107,245,133"/>
+<area shape="rect" title=" " alt="" coords="556,56,775,83"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,49,508,90"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
 </map>
 </div>
 
@@ -621,19 +677,14 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_a70402bb8f21493c5a94c8b8352345e44_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a70402bb8f21493c5a94c8b8352345e44_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_a70402bb8f21493c5a94c8b8352345e44_icgraph" id="class_dmp_bgo_container_a70402bb8f21493c5a94c8b8352345e44_icgraph">
-<area shape="rect" title=" " alt="" coords="885,199,1080,240"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,68,412,94"/>
-<area shape="rect" href="produce_tuples_8cpp.html#a44190a48da767d2c90626e30eafaa058" title=" " alt="" coords="484,257,583,284"/>
-<area shape="rect" href="produce_tuples_8cpp.html#ab88288769d8ae55d995296680fb3c174" title=" " alt="" coords="472,308,595,334"/>
-<area shape="rect" href="class_dmp_bgo_container.html#a4818879a1c43f4f3538a9e25015adad1" title=" " alt="" coords="655,170,837,211"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,156,402,182"/>
-<area shape="rect" href="class_dmp_bgo_container.html#a642e1edb35c779286a283729f4f42cbd" title=" " alt="" coords="655,338,837,379"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,93,245,120"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,130,56,157"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,232,406,258"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,156,203,182"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,206,607,233"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,54,603,81"/>
+<area shape="rect" title=" " alt="" coords="556,55,751,96"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,8,310,34"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,26,508,67"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,109,325,136"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,58,315,85"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,8,175,34"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,33,56,60"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,58,179,85"/>
 </map>
 </div>
 
@@ -659,15 +710,14 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_a23d7d7b792c86701bf1e39784c6dd331_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a23d7d7b792c86701bf1e39784c6dd331_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_a23d7d7b792c86701bf1e39784c6dd331_icgraph" id="class_dmp_bgo_container_a23d7d7b792c86701bf1e39784c6dd331_icgraph">
-<area shape="rect" title=" " alt="" coords="655,74,849,115"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,56,607,83"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,107,603,133"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,5,406,32"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,56,402,83"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,56,203,83"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,81,56,108"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,107,412,133"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,107,245,133"/>
+<area shape="rect" title=" " alt="" coords="556,49,751,90"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,49,508,90"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
 </map>
 </div>
 
@@ -692,24 +742,21 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_dmp_bgo_container_aa4077abd503dcfc8c80f62ab06e56104_icgraph.png" border="0" usemap="#class_dmp_bgo_container_aa4077abd503dcfc8c80f62ab06e56104_icgraph" alt=""/></div>
 <map name="class_dmp_bgo_container_aa4077abd503dcfc8c80f62ab06e56104_icgraph" id="class_dmp_bgo_container_aa4077abd503dcfc8c80f62ab06e56104_icgraph">
-<area shape="rect" title=" " alt="" coords="655,104,869,130"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,28,412,54"/>
-<area shape="rect" href="produce_tuples_8cpp.html#a44190a48da767d2c90626e30eafaa058" title=" " alt="" coords="484,78,583,105"/>
-<area shape="rect" href="produce_tuples_8cpp.html#ab88288769d8ae55d995296680fb3c174" title=" " alt="" coords="472,129,595,156"/>
-<area shape="rect" href="data__loop_8h.html#a8121f5a3d2707ddb87ceccde2db37118" title=" " alt="" coords="460,180,607,206"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,180,402,206"/>
-<area shape="rect" href="acceptance_8h.html#a0a3c0e6a5781d11e738f1e873ec505fa" title=" " alt="" coords="464,28,603,54"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,53,245,80"/>
-<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,104,56,130"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,129,406,156"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,129,203,156"/>
+<area shape="rect" title=" " alt="" coords="556,62,771,89"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,7,310,34"/>
+<area shape="rect" href="class_dmp_filter_container.html#af541a2589c2c0b5e662b8a66c03cce41" title=" " alt="" coords="373,25,508,67"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,109,325,135"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,58,315,85"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,7,175,34"/>
+<area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,33,56,59"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,58,179,85"/>
 </map>
 </div>
 
 </div>
 </div>
-<a id="a5733202bf1101902e15c989ebdbf85c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5733202bf1101902e15c989ebdbf85c0">&#9670;&nbsp;</a></span>scanBGOHits()</h2>
+<a id="aad66b846250d956d9afb302baa0fe44b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad66b846250d956d9afb302baa0fe44b">&#9670;&nbsp;</a></span>scanBGOHits()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -723,14 +770,20 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::shared_ptr&lt; DmpEvtBgoRec &gt;&#160;</td>
+          <td class="paramname"><em>bgorec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const double&#160;</td>
           <td class="paramname"><em>bgoTotalE</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structcuts__conf.html">cuts_conf</a> &amp;&#160;</td>
-          <td class="paramname"><em>data_cuts</em>, </td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>layerMinEnergy</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -748,15 +801,15 @@ Here is the caller graph for this function:</div>
 <div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="class_dmp_bgo_container_a5733202bf1101902e15c989ebdbf85c0_icgraph.png" border="0" usemap="#class_dmp_bgo_container_a5733202bf1101902e15c989ebdbf85c0_icgraph" alt=""/></div>
-<map name="class_dmp_bgo_container_a5733202bf1101902e15c989ebdbf85c0_icgraph" id="class_dmp_bgo_container_a5733202bf1101902e15c989ebdbf85c0_icgraph">
-<area shape="rect" title=" " alt="" coords="460,56,679,83"/>
-<area shape="rect" href="acceptance_8h.html#ad42e3e6ae6d1ff01f629843e1a9123ca" title=" " alt="" coords="293,5,412,32"/>
-<area shape="rect" href="produce_tuples_8h.html#abc8e95306577fae16dd26030077d4ce6" title=" " alt="" coords="299,56,406,83"/>
-<area shape="rect" href="data__loop_8h.html#aa62dde24c4b467367f3bf168dc6c039d" title=" " alt="" coords="303,107,402,133"/>
-<area shape="rect" href="acceptance_8h.html#adba80ab82e5b547881331e2a24a32c9a" title=" " alt="" coords="104,5,245,32"/>
+<div class="center"><img src="class_dmp_bgo_container_aad66b846250d956d9afb302baa0fe44b_icgraph.png" border="0" usemap="#class_dmp_bgo_container_aad66b846250d956d9afb302baa0fe44b_icgraph" alt=""/></div>
+<map name="class_dmp_bgo_container_aad66b846250d956d9afb302baa0fe44b_icgraph" id="class_dmp_bgo_container_aad66b846250d956d9afb302baa0fe44b_icgraph">
+<area shape="rect" title=" " alt="" coords="373,56,592,83"/>
+<area shape="rect" href="mc_8h.html#a67039a2486f5727cbf98a3926ba957bb" title=" " alt="" coords="242,5,310,32"/>
+<area shape="rect" href="data_8h.html#a81228828c8d80a832bb222e837e01bad" title=" " alt="" coords="227,56,325,83"/>
+<area shape="rect" href="data_8h.html#a22761fc5c9cf0e563978848d0235716c" title=" " alt="" coords="237,107,315,133"/>
+<area shape="rect" href="mc_8h.html#a29fe66fa6598948a048a8e274437808e" title=" " alt="" coords="107,5,175,32"/>
 <area shape="rect" href="main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627" title=" " alt="" coords="5,31,56,57"/>
-<area shape="rect" href="my_header_8h.html#aa98127b2772dfabea0035b44aafbd071" title=" " alt="" coords="146,56,203,83"/>
+<area shape="rect" href="data_8h.html#a563b0aa825c83108d143626b92d988c0" title=" " alt="" coords="104,56,179,83"/>
 </map>
 </div>
 
