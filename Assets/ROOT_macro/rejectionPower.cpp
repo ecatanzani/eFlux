@@ -80,6 +80,44 @@ void rejectionPower(const char* electronMC, const char* protonMC, const char* ou
   	power_c.SetFrameBorderSize(2);
     rpower->Draw();
     power_c.Write();
+
+    TCanvas ele_eff("ele_eff", "ele_eff",11,49,700,502);
+	gStyle->SetOptFit(1);
+  	ele_eff.Range(-1.008394,-80,3.707364,453.3333);
+  	ele_eff.SetFillColor(0);
+  	ele_eff.SetBorderMode(0);
+  	ele_eff.SetBorderSize(2);
+  	ele_eff.SetLogx();
+	ele_eff.SetLeftMargin(0.15);
+  	ele_eff.SetRightMargin(0.15);
+  	ele_eff.SetBottomMargin(0.15);
+  	ele_eff.SetFrameLineWidth(2);
+  	ele_eff.SetFrameBorderMode(0);
+  	ele_eff.SetFrameBorderSize(2);
+  	ele_eff.SetFrameLineWidth(2);
+  	ele_eff.SetFrameBorderMode(0);
+  	ele_eff.SetFrameBorderSize(2);
+    electron_eff->Draw();
+    ele_eff.Write();
+
+    TCanvas proton_eff_c("proton_eff_c", "proton_eff_c",11,49,700,502);
+	gStyle->SetOptFit(1);
+  	proton_eff_c.Range(-1.008394,-80,3.707364,453.3333);
+  	proton_eff_c.SetFillColor(0);
+  	proton_eff_c.SetBorderMode(0);
+  	proton_eff_c.SetBorderSize(2);
+  	proton_eff_c.SetLogx();
+	proton_eff_c.SetLeftMargin(0.15);
+  	proton_eff_c.SetRightMargin(0.15);
+  	proton_eff_c.SetBottomMargin(0.15);
+  	proton_eff_c.SetFrameLineWidth(2);
+  	proton_eff_c.SetFrameBorderMode(0);
+  	proton_eff_c.SetFrameBorderSize(2);
+  	proton_eff_c.SetFrameLineWidth(2);
+  	proton_eff_c.SetFrameBorderMode(0);
+  	proton_eff_c.SetFrameBorderSize(2);
+    proton_eff->Draw();
+    proton_eff_c.Write();
     
     out_file.Close();
 }
