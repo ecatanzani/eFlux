@@ -4,8 +4,9 @@
 
 void DmpBgoContainer::scanBGOHits(
 	const std::shared_ptr<DmpEvtBgoHits> bgohits,
+	const std::shared_ptr<DmpEvtBgoRec> bgorec,
 	const double bgoTotalE,
-	const cuts_conf &data_cuts,
+	const double layerMinEnergy,
 	const int nLayers)
 {
 	// Get the number of BGO hits
@@ -46,7 +47,7 @@ void DmpBgoContainer::scanBGOHits(
 		fracLayer[lay] = 0;
 		eLayer[lay] = 0;
 
-		if (maxE > data_cuts.layer_min_energy)
+		if (maxE > layerMinEnergy)
 		{
 			// Find the bar index regarding the maximum energy release in a certain layer
 			auto iBarMax = ((bgohits->fGlobalBarID)[imax] >> 6) & 0x1f;
@@ -92,6 +93,26 @@ void DmpBgoContainer::scanBGOHits(
 		}
 		sumRms += rmsLayer[lay];
 	}
+
+	if (slope[0] == -999 && slope[1] == -999)
+	{
+		slope[0] = bgorec->GetSlopeXZ();
+		slope[1] = bgorec->GetSlopeYZ();
+	}
+	if (intercept[0] == -999 && intercept[1] == -999)
+	{
+		intercept[0] = bgorec->GetInterceptXZ();
+		intercept[1] = bgorec->GetInterceptYZ();
+	}
+
+	// Find last energy layer
+	if (lastLayer == -999)
+		for (auto it = fracLayer.rbegin(); it != fracLayer.rend(); ++it)
+			if (*it)
+			{
+				lastLayer = fracLayer.size() - 1 - std::distance(fracLayer.rbegin(), it);
+				break;
+			}
 }
 
 std::vector<short> DmpBgoContainer::GetSingleLayerBarNumber(int nLayer)
@@ -121,56 +142,21 @@ std::vector<double> DmpBgoContainer::GetFracLayer()
 
 const double DmpBgoContainer::GetSingleFracLayer(const int lIdx)
 {
-	
-	if (lIdx>= 0 && lIdx <= fracLayer.size()-1)
+
+	if (lIdx >= 0 && (unsigned int)lIdx <= fracLayer.size() - 1)
 		return fracLayer[lIdx];
 	else
 		return -1;
 }
 
-const double DmpBgoContainer::GetLastFracLayer()
+const int DmpBgoContainer::GetLastEnergyLayer()
 {
-	auto idxLastLayer = static_cast<int>(GetIdxLastLayer());
-	if (idxLastLayer != -1)
-		return GetSingleFracLayer(idxLastLayer);
-	else return -1;
-}
-
-const double DmpBgoContainer::GetLastFFracLayer()
-{
-	auto idxLastLayer = static_cast<int>(GetFracIdxLastLayer());
-	if (idxLastLayer != -1)
-		return GetSingleFracLayer(idxLastLayer);
-	else return -1;
+	return lastLayer;
 }
 
 std::vector<int> DmpBgoContainer::GetIdxBarMaxLayer()
 {
 	return idxBarMaxLayer;
-}
-
-const int DmpBgoContainer::GetIdxLastLayer()
-{
-	if (!lastLayer)
-	{
-		lastLayer = -1;
-		for (int iLay = 13; iLay >= 0 && lastLayer == -1; --iLay)
-			if (layerBarNumber[iLay].size() > 0)
-				lastLayer = iLay;
-	}
-    return lastLayer;
-}
-
-const int DmpBgoContainer::GetFracIdxLastLayer()
-{
-	if (!lastLayer)
-	{
-		lastLayer = -1;
-		for (auto it = fracLayer.rbegin(); it != fracLayer.rend() && lastLayer == -1; ++it)
-			if (*it)
-				lastLayer = fracLayer.size() -1 - std::distance(fracLayer.rbegin(), it);
-	}
-	return lastLayer;
 }
 
 const int DmpBgoContainer::GetIdxBarMaxSingleLayer(const int layedIdx)
@@ -201,4 +187,33 @@ const int DmpBgoContainer::GetiMaxSingleLayer(const int layedIdx)
 const int DmpBgoContainer::GetNhits()
 {
 	return nBgoHits;
+}
+
+const std::vector<double> DmpBgoContainer::GetLayerEnergies()
+{
+	return eLayer;
+}
+
+const std::vector<double> DmpBgoContainer::GetBGOslope()
+{
+	return slope;
+}
+
+const std::vector<double> DmpBgoContainer::GetBGOintercept()
+{
+	return intercept;
+}
+
+const std::vector<double> DmpBgoContainer::FastBGOslope(const std::shared_ptr<DmpEvtBgoRec> bgorec)
+{
+	slope[0] = bgorec->GetSlopeXZ();
+	slope[1] = bgorec->GetSlopeYZ();
+	return slope;
+}
+
+const std::vector<double> DmpBgoContainer::FastBGOintercept(const std::shared_ptr<DmpEvtBgoRec> bgorec)
+{
+	intercept[0] = bgorec->GetInterceptXZ();
+	intercept[1] = bgorec->GetInterceptYZ();
+	return intercept;
 }

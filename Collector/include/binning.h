@@ -14,8 +14,8 @@ extern std::vector<float> createLogBinning(
 	const size_t n_bins);
 
 extern std::vector<float> createLinearBinning(
-    float a, 
-    float b, 
-    std::size_t N);
+	float a, 
+	float b, 
+	std::size_t N);
 
 #endif

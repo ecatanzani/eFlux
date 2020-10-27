@@ -1,5 +1,6 @@
-#include "myHeader.h"
-#include "acceptance.h"
+#include "main.h"
+#include "mc.h"
+#include "data.h"
 
 int main(int argc, char **argv)
 {
@@ -16,17 +17,15 @@ int main(int argc, char **argv)
 	opt.addUsage(" -d  --outputDir		<path_to_output_TFile_dir>				Output ROOT TFile directory");
 	opt.addUsage(" -v  --verbose												Verbose output");
 	opt.addUsage(" -p  --pedantic												Pedantic output");
-	
+
 	opt.addUsage("");
 	opt.addUsage("Tasks: ");
 	opt.addUsage("");
-	
-	opt.addUsage(" -a  --acceptance												Acceptance calculation");
+
+	opt.addUsage(" -m  --mc														MC event loop");
 	opt.addUsage(" -r  --raw_data												Raw data event loop");
-	opt.addUsage(" -s  --skimmed												Skimmed data event loop");
 	opt.addUsage(" -n  --ntuple													nTuple production facility");
-	opt.addUsage(" -c  --collect		<mc/data>								DATA/MC reconstruction facility");
-	
+
 	opt.addUsage("");
 
 	opt.setFlag("help", 'h');
@@ -36,11 +35,9 @@ int main(int argc, char **argv)
 	opt.setOption("outputDir", 'd');
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("pedantic", 'p');
-	opt.setFlag("acceptance", 'a');
+	opt.setFlag("mc", 'm');
 	opt.setFlag("raw_data", 'r');
-	opt.setFlag("skimmed", 's');
 	opt.setFlag("ntuple", 'n');
-	opt.setOption("collect", 'c');
 
 	opt.processCommandArgs(argc, argv);
 
@@ -52,13 +49,9 @@ int main(int argc, char **argv)
 	bool pedantic = false;
 
 	// Tasks
-	bool acceptance_flag = false;
+	bool mc_flag = false;
 	bool rawdata_flag = false;
-	bool skimmed_flag = false;
 	bool ntuple_flag = false;
-	bool collect_flag = false;
-	bool collect_data = false;
-	bool collect_mc = false;
 
 	if (!opt.hasOptions())
 		opt.printUsage();
@@ -77,63 +70,31 @@ int main(int argc, char **argv)
 	if (opt.getFlag("pedantic") || opt.getFlag('p'))
 		pedantic = opt.getFlag('p');
 
-	if (opt.getFlag("acceptance") || opt.getFlag('a'))
-		acceptance_flag = true;
+	if (opt.getFlag("mc") || opt.getFlag('m'))
+		mc_flag = true;
 	if (opt.getFlag("raw_data") || opt.getFlag('r'))
 		rawdata_flag = true;
-	if (opt.getFlag("skimmed") || opt.getFlag('s'))
-		skimmed_flag = true;
 	if (opt.getFlag("ntuple") || opt.getFlag('n'))
 		ntuple_flag = true;
-	if (opt.getValue("collect") || opt.getValue('c'))
-	{
-		if (!strcmp(opt.getValue('r'), "mc"))
-			collect_mc = true;
-		else if (!strcmp(opt.getValue('r'), "data"))
-			collect_data = true;
-		else
-		{
-			std::cerr << "\n\nWrong --resume config...";
-			opt.printUsage();
-			exit(100);
-		}
-	}
 
-	if (acceptance_flag)
-		computeAcceptance(
+	if (mc_flag)
+		mcCore(
 			inputPath,
 			verbose,
 			pedantic,
 			outputPath,
 			opt,
 			wd);
-	else if(rawdata_flag || skimmed_flag || ntuple_flag)
-		eCore(
+	else if (rawdata_flag || ntuple_flag)
+		dataCore(
 			inputPath,
 			outputPath,
 			verbose,
 			pedantic,
 			rawdata_flag,
-			skimmed_flag,
 			ntuple_flag,
 			opt,
 			wd);
-	else if (collect_flag)
-	{
-		if (collect_mc)
-			generateFinalGraph(
-				verbose,
-				pedantic,
-				outputPath,
-				inputPath,
-				wd);
-		if (collect_data)
-			generateDataFinalGraph(
-				verbose,
-				pedantic,
-				outputPath,
-				inputPath,
-				wd);
-	}
+
 	return 0;
 }

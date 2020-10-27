@@ -15,8 +15,8 @@
 #include "anyoption.h"
 
 extern std::vector<float> load_flux_struct(
-    cuts_conf &flux_cuts,
-    data_active_cuts &active_cuts,
-    const std::string wd);
+	cuts_conf &flux_cuts,
+	data_active_cuts &active_cuts,
+	const std::string wd);
 
 #endif

@@ -1,16 +1,16 @@
 #include "DmpPsdContainer.h"
 
 void DmpPsdContainer::scanPSDHits(
-    const std::shared_ptr<DmpEvtPsdHits> psdhits,
-    const cuts_conf &data_cuts,
-    const int nLayers)
+	const std::shared_ptr<DmpEvtPsdHits> psdhits,
+	const double PSD_bar_min_energy_release,
+	const int nLayers)
 {
-    // Find max index and energy release for PSD hits
+	// Find max index and energy release for PSD hits
 	std::vector<int> iMaxBarPsd(2, -1);
 	std::vector<double> eMaxBarPsd(2, 0);
 	bool first_hit = true;
 
-    // Loop on PSD hits
+	// Loop on PSD hits
 	int nPSD_tot_entries = psdhits->GetHittedBarNumber();
 	hitZ.resize(nPSD_tot_entries);
 	globalBarID = static_cast<std::vector<short>>(psdhits->fGlobalBarID);
@@ -43,14 +43,14 @@ void DmpPsdContainer::scanPSDHits(
 		}
 	}
 
-    /*
-        cluster finding : starting from maxE, seed + the highest E neigboring bar
-        coordinate: weighted average of two highest neigboring bars
-    */
+	/*
+		cluster finding : starting from maxE, seed + the highest E neigboring bar
+		coordinate: weighted average of two highest neigboring bars
+	*/
 
 	for (int nLayer = 0; nLayer < nLayers; ++nLayer)
 	{
-		while (eMaxBarPsd[nLayer] > data_cuts.PSD_bar_min_energy_release)
+		while (eMaxBarPsd[nLayer] > PSD_bar_min_energy_release)
 		{
 			int psdhits_maxIdx = layerBarIndexPsd[nLayer][iMaxBarPsd[nLayer]];
 			int psdbar_maxIdx = layerBarNumberPsd[nLayer][iMaxBarPsd[nLayer]];
@@ -70,15 +70,15 @@ void DmpPsdContainer::scanPSDHits(
 			if ((iMaxBarPsd[nLayer] - 1) > 0) // Check the previous bar
 				if ((layerBarUsedPsd[nLayer][iMaxBarPsd[nLayer] - 1] == 0) && (psdbar_maxIdx == layerBarNumberPsd[nLayer][iMaxBarPsd[nLayer] - 1] + 1))
 					energy_leftMaxBar = layerBarEnergyPsd[nLayer][iMaxBarPsd[nLayer] - 1];
-			if ((iMaxBarPsd[nLayer] + 1) < layerBarEnergyPsd[nLayer].size()) // Check the next bar
+			if ((unsigned int)(iMaxBarPsd[nLayer] + 1) < layerBarEnergyPsd[nLayer].size()) // Check the next bar
 				if ((layerBarUsedPsd[nLayer][iMaxBarPsd[nLayer] + 1] == 0) && (psdbar_maxIdx == layerBarNumberPsd[nLayer][iMaxBarPsd[nLayer] + 1] - 1))
 					energy_rightMaxBar = layerBarEnergyPsd[nLayer][iMaxBarPsd[nLayer] + 1];
 
 			/* 
-                FINAL CLUSTER BUILING:
-                Now we have the central bar with the highest energy release, the left and the right one. 
-                One cluster is composed by 2 bars. We have to choose, between the 2 lateral bars, that one with the highest energy release
-            */
+				FINAL CLUSTER BUILING:
+				Now we have the central bar with the highest energy release, the left and the right one. 
+				One cluster is composed by 2 bars. We have to choose, between the 2 lateral bars, that one with the highest energy release
+			*/
 
 			if (energy_leftMaxBar > energy_rightMaxBar)
 			{
@@ -127,7 +127,7 @@ void DmpPsdContainer::scanPSDHits(
 		}
 	}
 
-    // Get the number of clusters on both X and Y
+	// Get the number of clusters on both X and Y
 	nPsdClusters = psdCluster_idxBeg[0].size() + psdCluster_idxBeg[1].size();
 	nPsdClustersX = psdCluster_idxBeg[0].size();
 	nPsdClustersY = psdCluster_idxBeg[1].size();
@@ -135,12 +135,12 @@ void DmpPsdContainer::scanPSDHits(
 
 std::vector<std::vector<short>> DmpPsdContainer::getPsdClusterIdxBegin()
 {
-    return psdCluster_idxBeg;
+	return psdCluster_idxBeg;
 }
 
 std::vector<std::vector<double>> DmpPsdContainer::getPsdClusterZ()
 {
-    return psdCluster_Z;
+	return psdCluster_Z;
 }
 
 std::vector<std::vector<double>> DmpPsdContainer::getPsdClusterMaxE()
@@ -155,7 +155,7 @@ std::vector<std::vector<short>> DmpPsdContainer::getPsdClusterIdxMaxE()
 
 std::vector<std::vector<double>> DmpPsdContainer::getPsdClusterMaxECoo()
 {
-    return psdCluster_maxEcoordinate;
+	return psdCluster_maxEcoordinate;
 }
 
 std::vector<double> DmpPsdContainer::getHitZ()
@@ -170,15 +170,15 @@ std::vector<short> DmpPsdContainer::getGlobalBarID()
 
 const unsigned int DmpPsdContainer::getPsdNclusters()
 {
-    return nPsdClusters;
+	return nPsdClusters;
 }
 
 const unsigned int DmpPsdContainer::getPsdNclustersX()
 {
-    return nPsdClustersX;
+	return nPsdClustersX;
 }
 
 const unsigned int DmpPsdContainer::getPsdNclustersY()
 {
-    return nPsdClustersY;
+	return nPsdClustersY;
 }
