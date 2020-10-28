@@ -3,6 +3,7 @@
 #include "energy.h"
 #include "config.h"
 #include "particle.h"
+#include "mc_tuple.h"
 #include "mc_histos.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
@@ -23,14 +24,15 @@
 
 void mcLoop(
 	const std::string inputPath,
-	const bool _VERBOSE,
 	TFile &outFile,
+	const bool _VERBOSE,
+	const bool ntuple_flag,
 	const std::string wd)
 {
 	bool _MC = true;
 	bool _DATA = false;
 	double _GeV = 0.001;
-	
+
 	std::shared_ptr<TChain> dmpch;
 	event_collector collector(
 		inputPath,
@@ -40,7 +42,7 @@ void mcLoop(
 		dmpch = collector.GetChain();
 	else
 	{
-		std::cerr << "\n\nCorrupted TChain object...";
+		std::cerr << "\n\nERROR: Corrupted TChain object...";
 		exit(100);
 	}
 
@@ -89,11 +91,17 @@ void mcLoop(
 	// Compute energy binning
 	auto logEBins = mc_config.GetEnergyBinning();
 	// Create MC histos objects
-	mc_histos h_mc(logEBins);
+	std::unique_ptr<mc_histos> h_mc;
+	// Create MC tuple objects
+	std::unique_ptr<mc_tuple> simu_tuple;
 	// Load energy class
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
+	if (ntuple_flag)
+		simu_tuple = std::make_unique<mc_tuple>(mc_config.GetActiveCuts());
+	else
+		h_mc = std::make_unique<mc_histos>(logEBins);
 
 	auto nevents = dmpch->GetEntries();
 	int kStep = 10;
@@ -118,9 +126,11 @@ void mcLoop(
 		// Update event counter
 		filter.UpdateEvtCounter();
 		// Status printout
-		if (_VERBOSE) UpdateProcessStatus(evIdx, kStep, nevents);
+		if (_VERBOSE)
+			UpdateProcessStatus(evIdx, kStep, nevents);
 		// Reset energy class
-		if (evIdx) evt_energy.Reset();
+		if (evIdx)
+			evt_energy.Reset();
 		// Load energy class
 		evt_energy.SetEnergies(
 			simu_primaries->pvpart_ekin,
@@ -140,7 +150,7 @@ void mcLoop(
 		// Check BGO geometry before trigger
 		filter.CheckGeometry(simu_primaries);
 		// Check current event (Trigger and BGO reco)
-		auto _good_evt = 
+		auto _good_evt =
 			filter.CheckIncomingEvent(
 				evt_header,
 				bgoVault.FastBGOslope(bgorec),
@@ -173,24 +183,43 @@ void mcLoop(
 				stktracks,
 				mc_config.GetActiveCuts());
 		}
-		// Fill histos
-		h_mc.FillMC(
-			filter.GetFilterOutput(),
-			bgoVault.GetFracLayer(),
-			bgoVault.GetBGOslope(),
-			bgoVault.GetBGOintercept(),
-			simu_primaries,
-			filter.GetPSDCharge(),
-			filter.GetSTKCharge(),
-			bgoVault.GetSumRMS(),
-			filter.GetBestTrackObj().getDirection().CosTheta(),
-			filter.GetClassifiers(),
-			bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-			bgoVault.GetSingleFracLayer(13),
-			evt_energy.GetSimuEnergy(),
-			evt_energy.GetRawEnergy(),
-			evt_energy.GetCorrEnergy(),
-			evt_energy.GetWeight());
+
+		if (ntuple_flag)
+			simu_tuple->Fill(
+				filter.GetFilterOutput(),
+				filter.GetBestTrack(),
+				evt_energy.GetRawEnergy(),
+				evt_energy.GetCorrEnergy(),
+				bgoVault.GetBGOslope(),
+				bgoVault.GetBGOintercept(),
+				bgoVault.GetSumRMS(),
+				bgoVault.GetFracLayer(),
+				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
+				bgoVault.GetSingleFracLayer(13),
+				bgoVault.GetLastEnergyLayer(),
+				bgoVault.GetNhits(),
+				filter.GetPSDCharge(),
+				filter.GetSTKCharge(),
+				filter.GetClassifiers(),
+				filter.GetTrigger());
+		else
+			h_mc->FillMC(
+				filter.GetFilterOutput(),
+				bgoVault.GetFracLayer(),
+				bgoVault.GetBGOslope(),
+				bgoVault.GetBGOintercept(),
+				simu_primaries,
+				filter.GetPSDCharge(),
+				filter.GetSTKCharge(),
+				bgoVault.GetSumRMS(),
+				filter.GetBestTrackObj().getDirection().CosTheta(),
+				filter.GetClassifiers(),
+				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
+				bgoVault.GetSingleFracLayer(13),
+				evt_energy.GetSimuEnergy(),
+				evt_energy.GetRawEnergy(),
+				evt_energy.GetCorrEnergy(),
+				evt_energy.GetWeight());
 	}
 
 	if (_VERBOSE)
@@ -206,6 +235,8 @@ void mcLoop(
 		std::cout << "\n\n ***********************\n\n";
 	}
 
-	// Write histos
-	h_mc.WriteMC(outFile);
+	if (ntuple_flag)
+		simu_tuple->Write(outFile);
+	else
+		h_mc->WriteMC(outFile);
 }

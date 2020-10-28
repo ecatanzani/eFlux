@@ -9,16 +9,18 @@
 
 extern void mcCore(
 	const std::string inputPath,
+	const std::string outputPath,
 	const bool _VERBOSE,
 	const bool pedantic,
-	const std::string outputPath,
+	const bool ntuple_flag,
 	AnyOption &opt,
 	const std::string wd);
 
 extern void mcLoop(
 	const std::string inputPath,
-	const bool verbose,
 	TFile &outFile,
+	const bool verbose,
+	const bool ntuple_flag,
 	const std::string wd);
 
 #endif

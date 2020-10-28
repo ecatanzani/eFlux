@@ -12,7 +12,6 @@ extern void dataCore(
 	const std::string outputPath,
 	const bool verbose,
 	const bool pedantic,
-	const bool rawdata_flag,
 	const bool ntuple_flag,
 	AnyOption &opt,
 	const std::string wd);
@@ -21,12 +20,7 @@ extern void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
-	const std::string wd);
-
-extern void tupleLoop(
-	const std::string inputPath,
-	TFile &outFile,
-	const bool _VERBOSE,
+	const bool ntuple_flag,
 	const std::string wd);
 
 #endif

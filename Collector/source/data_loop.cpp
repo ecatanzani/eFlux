@@ -3,6 +3,7 @@
 #include "config.h"
 #include "histos.h"
 #include "energy.h"
+#include "data_tuple.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
 #include "aggregate_events.h"
@@ -17,6 +18,7 @@
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtBgoHits.h"
 #include "DmpFilterOrbit.h"
+#include "DmpEvtAttitude.h"
 #include "DmpStkSiCluster.h"
 #include "DmpEvtSimuPrimaries.h"
 
@@ -27,6 +29,7 @@ void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
+	const bool ntuple_flag,
 	const std::string wd)
 {
 	bool _MC = false;
@@ -41,7 +44,7 @@ void rawDataLoop(
 		dmpch = collector.GetChain();
 	else
 	{
-		std::cerr << "\n\nCorrupted TChain object...";
+		std::cerr << "\n\nERROR: Corrupted TChain object...";
 		exit(100);
 	}
 
@@ -49,11 +52,11 @@ void rawDataLoop(
 	std::shared_ptr<DmpEvtHeader> evt_header = std::make_shared<DmpEvtHeader>();
 	dmpch->SetBranchAddress("EventHeader", &evt_header);
 
-	// Register BGO constainer
+	// Register BGO container
 	std::shared_ptr<DmpEvtBgoHits> bgohits = std::make_shared<DmpEvtBgoHits>();
 	dmpch->SetBranchAddress("DmpEvtBgoHits", &bgohits);
 
-	// Register BGO REC constainer
+	// Register BGO REC container
 	std::shared_ptr<DmpEvtBgoRec> bgorec = std::make_shared<DmpEvtBgoRec>();
 	dmpch->SetBranchAddress("DmpEvtBgoRec", &bgorec);
 
@@ -79,6 +82,10 @@ void rawDataLoop(
 	std::shared_ptr<DmpEvtPsdHits> psdhits = std::make_shared<DmpEvtPsdHits>();
 	dmpch->SetBranchAddress("DmpPsdHits", &psdhits);
 
+	// Register attitude container
+	std::shared_ptr<DmpEvtAttitude> attitude = std::make_shared<DmpEvtAttitude>();
+	dmpch->SetBranchAddress("EvtAttitudeContainer", &attitude);
+
 	// Orbit filter
 	// Set gIOSvc
 	gIOSvc->Set("OutData/NoOutput", "True");
@@ -93,11 +100,17 @@ void rawDataLoop(
 	// Compute energy binning
 	auto logEBins = data_config.GetEnergyBinning();
 	// Create data histos objects
-	histos h_data(logEBins);
+	std::unique_ptr<histos> h_data;
+	// Create DATA tuple objects
+	std::unique_ptr<data_tuple> tuple;
 	// Load energy class
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
+	if (ntuple_flag)
+		tuple = std::make_unique<data_tuple>(data_config.GetActiveCuts());
+	else
+		h_data = std::make_unique<histos>(logEBins);
 
 	auto nevents = dmpch->GetEntries();
 	int kStep = 10;
@@ -145,10 +158,10 @@ void rawDataLoop(
 				bgoVault.FastBGOslope(bgorec),
 				bgoVault.FastBGOintercept(bgorec));
 		if (_good_evt)
-		{	
+		{
 			// Check BGO geometry after trigger
 			filter.CheckGeometry(
-				std::shared_ptr<DmpEvtSimuPrimaries> (nullptr),
+				std::shared_ptr<DmpEvtSimuPrimaries>(nullptr),
 				bgoVault.FastBGOslope(bgorec),
 				bgoVault.FastBGOintercept(bgorec));
 			// Load BGO class
@@ -174,20 +187,39 @@ void rawDataLoop(
 				stktracks,
 				data_config.GetActiveCuts());
 		}
-		// Fill histos
-		h_data.Fill(
-			filter.GetFilterOutput(),
-			bgoVault.GetFracLayer(),
-			bgoVault.GetBGOslope(),
-			bgoVault.GetBGOintercept(),
-			filter.GetPSDCharge(),
-			filter.GetSTKCharge(),
-			bgoVault.GetSumRMS(),
-			filter.GetBestTrackObj().getDirection().CosTheta(),
-			filter.GetClassifiers(),
-			bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-			bgoVault.GetSingleFracLayer(13),
-			evt_energy.GetCorrEnergy());
+		if (ntuple_flag)
+			tuple->Fill(
+				filter.GetFilterOutput(),
+				attitude,
+				filter.GetBestTrack(),
+				evt_energy.GetRawEnergy(),
+				evt_energy.GetCorrEnergy(),
+				bgoVault.GetBGOslope(),
+				bgoVault.GetBGOintercept(),
+				bgoVault.GetSumRMS(),
+				bgoVault.GetFracLayer(),
+				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
+				bgoVault.GetSingleFracLayer(13),
+				bgoVault.GetLastEnergyLayer(),
+				bgoVault.GetNhits(),
+				filter.GetPSDCharge(),
+				filter.GetSTKCharge(),
+				filter.GetClassifiers(),
+				filter.GetTrigger());
+		else
+			h_data->Fill(
+				filter.GetFilterOutput(),
+				bgoVault.GetFracLayer(),
+				bgoVault.GetBGOslope(),
+				bgoVault.GetBGOintercept(),
+				filter.GetPSDCharge(),
+				filter.GetSTKCharge(),
+				bgoVault.GetSumRMS(),
+				filter.GetBestTrackObj().getDirection().CosTheta(),
+				filter.GetClassifiers(),
+				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
+				bgoVault.GetSingleFracLayer(13),
+				evt_energy.GetCorrEnergy());
 	}
 
 	if (_VERBOSE)
@@ -203,6 +235,8 @@ void rawDataLoop(
 		std::cout << "\n\n ***********************\n\n";
 	}
 
-	// Write histos
-	h_data.Write(outFile);
+	if (ntuple_flag)
+		tuple->Write(outFile);
+	else
+		h_data->Write(outFile);
 }

@@ -80,21 +80,23 @@ int main(int argc, char **argv)
 	if (mc_flag)
 		mcCore(
 			inputPath,
+			outputPath,
 			verbose,
 			pedantic,
-			outputPath,
+			ntuple_flag,
 			opt,
 			wd);
-	else if (rawdata_flag || ntuple_flag)
+	else if (rawdata_flag)
 		dataCore(
 			inputPath,
 			outputPath,
 			verbose,
 			pedantic,
-			rawdata_flag,
 			ntuple_flag,
 			opt,
 			wd);
-
+	else
+		std::cerr << "\n\nERROR: Wrong Task selected \n\n";
+	
 	return 0;
 }

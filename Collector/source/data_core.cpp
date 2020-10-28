@@ -7,7 +7,6 @@ void dataCore(
 	const std::string outputPath,
 	const bool verbose,
 	const bool pedantic,
-	const bool rawdata_flag,
 	const bool ntuple_flag,
 	AnyOption &opt,
 	const std::string wd)
@@ -23,21 +22,12 @@ void dataCore(
 		exit(100);
 	}
 
-	// Ntuple facility
-	if (ntuple_flag)
-		tupleLoop(
-			inputPath,
-			outFile,
-			verbose,
-			wd);
-
-	// Raw data loop
-	if (rawdata_flag)
-		rawDataLoop(
-			inputPath,
-			outFile,
-			verbose,
-			wd);
+	rawDataLoop(
+		inputPath,
+		outFile,
+		verbose,
+		ntuple_flag,
+		wd);
 
 	// Close output file ...
 	outFile.Close();
