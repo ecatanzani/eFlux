@@ -49,21 +49,3 @@ def createMClist(pars, opts):
 			for file in setList:
 				outPath = pars['farmAddress'] + file + "\n"
 				outList.write(outPath)
-
-	currentWD = os.getcwd()
-	assets_index = currentWD.find('/Assets')
-	powerLowConfigPath = currentWD[0:assets_index] + \
-		"/config/powerlowMCsets.txt"
-	if opts.verbose:
-		print('Writing output MC power law config file: {}'.format(
-			powerLowConfigPath))
-	with open(powerLowConfigPath, "w") as pLawConfig:
-		pLawConfig.write(
-			"######### Power Law DataSets Config File #########\n\n")
-		pLawConfig.write("SetName\t eMin\t eMax\t generationPawerLawIndex\n")
-		for _set in setPowerLowConfig:
-			tmpString = "Set:"
-			for elm in _set:
-				tmpString += "\t" + str(elm)
-			tmpString += "\n"
-			pLawConfig.write(tmpString)
