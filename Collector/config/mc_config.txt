@@ -8,7 +8,7 @@ n_energy_bins               50      Number of energy bins
 
 **** CUT VARIABLE ****       **** VALUE ****      **** UNIT ****
 
-min_event_energy                    18.197006           GeV
+min_event_energy                    13.803839           GeV
 max_event_energy                    18196.901           GeV
 energy_lRatio                       0.35
 shower_axis_delta                   280                 mm
