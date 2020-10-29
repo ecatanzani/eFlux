@@ -107,6 +107,9 @@ void rawDataLoop(
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
+	// Load output file
+	outFile.cd();
+	
 	if (ntuple_flag)
 		tuple = std::make_unique<data_tuple>(data_config.GetActiveCuts());
 	else

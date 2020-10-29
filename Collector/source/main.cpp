@@ -54,9 +54,15 @@ int main(int argc, char **argv)
 	bool ntuple_flag = false;
 
 	if (!opt.hasOptions())
+	{
 		opt.printUsage();
+		return 0;
+	}
 	if (opt.getFlag("help") || opt.getFlag('h'))
+	{
 		opt.printUsage();
+		return 0;
+	}
 	if (opt.getValue("input") || opt.getValue('i'))
 		inputPath = opt.getValue('i');
 	if (opt.getValue("workdir") || opt.getValue('w'))

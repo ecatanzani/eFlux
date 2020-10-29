@@ -98,6 +98,9 @@ void mcLoop(
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
+	// Load output file
+	outFile.cd();
+	
 	if (ntuple_flag)
 		simu_tuple = std::make_unique<mc_tuple>(mc_config.GetActiveCuts());
 	else
