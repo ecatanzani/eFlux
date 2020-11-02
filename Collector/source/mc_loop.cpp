@@ -7,6 +7,7 @@
 #include "mc_histos.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
+#include "DmpNudContainer.h"
 #include "aggregate_events.h"
 #include "DmpFilterContainer.h"
 #include "DAMPE_geo_structure.h"
@@ -14,6 +15,7 @@
 #include "TClonesArray.h"
 
 #include "DmpStkTrack.h"
+#include "DmpEvtNudRaw.h"
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtBgoHits.h"
 #include "DmpStkSiCluster.h"
@@ -84,6 +86,10 @@ void mcLoop(
 	std::shared_ptr<DmpEvtPsdHits> psdhits = std::make_shared<DmpEvtPsdHits>();
 	dmpch->SetBranchAddress("DmpPsdHits", &psdhits);
 
+	// Register NUD container
+	std::shared_ptr<DmpEvtNudRaw> nudraw = std::make_shared<DmpEvtNudRaw>();
+	dmpch->SetBranchAddress("DmpEvtNudRaw", &nudraw);
+
 	// Load particle ID class
 	mc_particle simu_particle;
 	// Load config class
@@ -121,9 +127,12 @@ void mcLoop(
 		dmpch->GetEvent(evIdx);
 		// Reset filter event flags
 		filter.Reset();
-		// Build BGO and PSD vault objects
+		// Reset tuple
+		simu_tuple->Reset();
+		// Build BGO, PSD and NUD vault objects
 		DmpBgoContainer bgoVault;
 		DmpPsdContainer psdVault;
+		DmpNudContainer nudVault;
 		// Load particle ID
 		simu_particle.Load(simu_primaries->pvpart_pdg);
 		// Update event counter
@@ -173,6 +182,8 @@ void mcLoop(
 			psdVault.scanPSDHits(
 				psdhits,
 				mc_config.GetPSDBarMinEnergy());
+			// Load NUD class
+			nudVault.scanNudHits(nudraw);
 			// Filter event
 			filter.pipeline(
 				bgorec,
@@ -210,7 +221,11 @@ void mcLoop(
 				filter.GetPSDCharge(),
 				filter.GetSTKCharge(),
 				filter.GetClassifiers(),
-				filter.GetTrigger());
+				filter.GetTrigger(),
+				nudVault.GetADC(),
+				nudVault.GetTotalADC(),
+				nudVault.GetMaxADC(),
+				nudVault.GetMaxChannelID());
 		else
 			h_mc->FillMC(
 				filter.GetFilterOutput(),

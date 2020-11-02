@@ -6,6 +6,7 @@
 #include "data_tuple.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
+#include "DmpNudContainer.h"
 #include "aggregate_events.h"
 #include "DmpFilterContainer.h"
 
@@ -82,6 +83,10 @@ void rawDataLoop(
 	std::shared_ptr<DmpEvtPsdHits> psdhits = std::make_shared<DmpEvtPsdHits>();
 	dmpch->SetBranchAddress("DmpPsdHits", &psdhits);
 
+	// Register NUD container
+	std::shared_ptr<DmpEvtNudRaw> nudraw = std::make_shared<DmpEvtNudRaw>();
+	dmpch->SetBranchAddress("DmpEvtNudRaw", &nudraw);
+
 	// Register attitude container
 	std::shared_ptr<DmpEvtAttitude> attitude = std::make_shared<DmpEvtAttitude>();
 	dmpch->SetBranchAddress("EvtAttitudeContainer", &attitude);
@@ -132,9 +137,12 @@ void rawDataLoop(
 		dmpch->GetEvent(evIdx);
 		// Reset filter event flags
 		filter.Reset();
+		// Reset tuple
+		tuple->Reset();
 		// Build BGO and PSD vault objects
 		DmpBgoContainer bgoVault;
 		DmpPsdContainer psdVault;
+		DmpNudContainer nudVault;
 		// Update event counter
 		filter.UpdateEvtCounter();
 		// Status printout
@@ -177,6 +185,8 @@ void rawDataLoop(
 			psdVault.scanPSDHits(
 				psdhits,
 				data_config.GetPSDBarMinEnergy());
+			// Load NUD class
+			nudVault.scanNudHits(nudraw);
 			// Filter event
 			filter.pipeline(
 				bgorec,
@@ -214,7 +224,11 @@ void rawDataLoop(
 				filter.GetPSDCharge(),
 				filter.GetSTKCharge(),
 				filter.GetClassifiers(),
-				filter.GetTrigger());
+				filter.GetTrigger(),
+				nudVault.GetADC(),
+				nudVault.GetTotalADC(),
+				nudVault.GetMaxADC(),
+				nudVault.GetMaxChannelID());
 		else
 			h_data->Fill(
 				filter.GetFilterOutput(),
