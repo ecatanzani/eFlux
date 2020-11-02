@@ -124,10 +124,13 @@ void ntuple::fill_nud_info(
 	const double max_adc,
 	const int max_channel_id)
 {
-	nud_adc = adc;
-	nud_total_adc = total_adc;
-	nud_max_adc = max_adc;
-	nud_max_channel_id = max_channel_id;
+	if (evtfilter_good_event)
+	{
+		nud_adc = adc;
+		nud_total_adc = total_adc;
+		nud_max_adc = max_adc;
+		nud_max_channel_id = max_channel_id;
+	}
 }
 
 void ntuple::core_reset()
@@ -160,28 +163,28 @@ void ntuple::core_reset()
 	// BGO
 	energy = -999;
 	energy_corr = -999;
-	eLayer = std::vector<double> (DAMPE_bgo_nLayers, -999);
+	eLayer = std::vector<double>(DAMPE_bgo_nLayers, -999);
 	BGOrec_slopeX = -999;
 	BGOrec_slopeY = -999;
 	BGOrec_interceptX = -999;
 	BGOrec_interceptY = -999;
 	sumRms = -999;
-	rmsLayer = std::vector<double> (DAMPE_bgo_nLayers, -999);
-	fracLayer = std::vector<double> (DAMPE_bgo_nLayers, -999);
+	rmsLayer = std::vector<double>(DAMPE_bgo_nLayers, -999);
+	fracLayer = std::vector<double>(DAMPE_bgo_nLayers, -999);
 	fracLast = -999;
 	fracLast_13 = -999;
 	lastBGOLayer = -999;
 	nBGOentries = -999;
-	energy_1R_radius = std::vector<double> (DAMPE_bgo_nLayers, -999);
-	energy_2R_radius = std::vector<double> (DAMPE_bgo_nLayers, -999);
-	energy_3R_radius = std::vector<double> (DAMPE_bgo_nLayers, -999);
-	energy_5R_radius = std::vector<double> (DAMPE_bgo_nLayers, -999);
+	energy_1R_radius = std::vector<double>(DAMPE_bgo_nLayers, -999);
+	energy_2R_radius = std::vector<double>(DAMPE_bgo_nLayers, -999);
+	energy_3R_radius = std::vector<double>(DAMPE_bgo_nLayers, -999);
+	energy_5R_radius = std::vector<double>(DAMPE_bgo_nLayers, -999);
 	// PSD
 	PSD_chargeX = -999;
 	PSD_chargeY = -999;
 	PSD_charge = -999;
 	// NUD
-	nud_adc = std::vector<double> (DAMPE_NUD_channels, -999);
+	nud_adc = std::vector<double>(DAMPE_NUD_channels, -999);
 	nud_total_adc = -999;
 	nud_max_adc = -999;
 	nud_max_channel_id = -999;

@@ -38,7 +38,7 @@ void DmpBgoContainer::scanBGOHits(
 		intercept[0] = bgorec->GetInterceptXZ();
 		intercept[1] = bgorec->GetInterceptYZ();
 	}
-
+	
 	// Get the number of BGO hits
 	nBgoHits = bgohits->GetHittedBarNumber();
 	// Vector of BGO Z values
