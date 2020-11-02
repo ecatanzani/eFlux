@@ -13,7 +13,7 @@ max_event_energy                    18196.901           GeV
 energy_lRatio                       0.35
 shower_axis_delta                   280                 mm
 max_rms_shower_width                100                 mm
-layer_min_energy                    10                  MeV
+layer_min_energy                    0                   MeV
 track_X_clusters                    4
 track_Y_clusters                    4
 track_missingHit_X                  1
