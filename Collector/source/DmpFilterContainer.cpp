@@ -889,16 +889,15 @@ void DmpFilterContainer::CheckGeometry(
 		}
 }
 
-const bool DmpFilterContainer::checkBGOreco(
+void DmpFilterContainer::checkBGOreco(
 	const std::vector<double> bgoRec_slope,
 	const std::vector<double> bgoRec_intercept,
 	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 {
+	bool bgoreco_status = false;
 	if ((bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0) || (bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0))
 	{
-		if (!simu_primaries)
-			return false;
-		else
+		if (simu_primaries)
 		{
 			TVector3 orgPosition;
 			orgPosition.SetX(simu_primaries->pv_x);
@@ -925,17 +924,16 @@ const bool DmpFilterContainer::checkBGOreco(
 
 			int position_sensitivity = 30;
 
-			if (fabs(actual_X - topX) > position_sensitivity || fabs(actual_Y - topY) > position_sensitivity)
-				return false;
-			else
-				return true;
+			if (fabs(actual_X - topX) < position_sensitivity && fabs(actual_Y - topY) < position_sensitivity)
+				bgoreco_status = true;
 		}
 	}
 	else
-		return true;
+		bgoreco_status = true;
+	output.correct_bgo_reco = bgoreco_status;
 }
 
-const bool DmpFilterContainer::check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header)
+void DmpFilterContainer::check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header)
 {
 	evt_trigger.mip1 = evt_header->GeneratedTrigger(1);
 	evt_trigger.mip2 = evt_header->GeneratedTrigger(2);
@@ -943,11 +941,10 @@ const bool DmpFilterContainer::check_trigger(const std::shared_ptr<DmpEvtHeader>
 	evt_trigger.LET = evt_header->GeneratedTrigger(4) && evt_header->EnabledTrigger(4);
 	evt_trigger.MIP = evt_trigger.mip1 || evt_trigger.mip2;
 	evt_trigger.general = evt_trigger.MIP || evt_trigger.HET || evt_trigger.LET;
-	if (evt_trigger.general)
+	if (evt_trigger.HET)
 		++particle_counter.triggered_events;
-	output.evt_triggered = evt_trigger.general;
+	output.evt_triggered = evt_trigger.HET;
 	output.trigger_check = true;
-	return output.evt_triggered;
 }
 
 const bool DmpFilterContainer::CheckIncomingEvent(
@@ -957,16 +954,12 @@ const bool DmpFilterContainer::CheckIncomingEvent(
 	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 {
 	if (!output.evt_in_saa)
-		if (check_trigger(evt_header))
-		{
-			output.correct_bgo_reco =
-				checkBGOreco(
-					bgoRec_slope,
-					bgoRec_intercept,
-					simu_primaries);
-			if (output.correct_bgo_reco)
-				output.good_event = true;
-		}
+	{
+		check_trigger(evt_header);
+		checkBGOreco(bgoRec_slope, bgoRec_intercept, simu_primaries);
+		if (output.evt_triggered && output.correct_bgo_reco)
+			output.good_event = true;
+	}
 	return output.good_event;
 }
 

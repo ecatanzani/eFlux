@@ -203,8 +203,8 @@ private:
 	const bool geometric_cut_data(
 		const std::vector<double> bgoRec_slope,
 		const std::vector<double> bgoRec_intercept);
-	const bool check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header);
-	const bool checkBGOreco(
+	void check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header);
+	void checkBGOreco(
 		const std::vector<double> bgoRec_slope,
 		const std::vector<double> bgoRec_intercept,
 		const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::shared_ptr<DmpEvtSimuPrimaries>(nullptr));
