@@ -101,7 +101,7 @@ private:
 	std::vector<int> iMaxLayer;
 	int nBgoHits = -999;
 	int lastLayer = -999;
-	double sumRms = -999;
+	double sumRms = 0;
 	std::vector<double> slope{-999, -999};
 	std::vector<double> intercept{-999, -999};
 	std::vector<double> energy_1R_radius;
