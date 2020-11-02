@@ -46,15 +46,15 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch(
 		"STK_bestTrack_npoints",
 		&STK_bestTrack_npoints,
-		"STK_bestTrack_npoints/i");
+		"STK_bestTrack_npoints/I");
 	DmpNtupTree->Branch(
 		"STK_bestTrack_nholesX",
 		&STK_bestTrack_nholesX,
-		"STK_bestTrack_nholesX/i");
+		"STK_bestTrack_nholesX/I");
 	DmpNtupTree->Branch(
 		"STK_bestTrack_nholesY",
 		&STK_bestTrack_nholesY,
-		"STK_bestTrack_nholesY/i");
+		"STK_bestTrack_nholesY/I");
 	DmpNtupTree->Branch(
 		"STK_bestTrack_slopeX",
 		&STK_bestTrack_slopeX,
@@ -160,11 +160,11 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch(
 		"lastBGOLayer",
 		&lastBGOLayer,
-		"lastBGOLayer/i");
+		"lastBGOLayer/I");
 	DmpNtupTree->Branch(
 		"nBGOentries",
 		&nBGOentries,
-		"nBGOentries/i");
+		"nBGOentries/I");
 	DmpNtupTree->Branch(
 		"energy_1R_radius",
 		&energy_1R_radius);
@@ -190,6 +190,22 @@ void data_tuple::branch_tree()
 		"PSD_charge",
 		&PSD_charge,
 		"PSD_charge/D");
+	// NUD
+	DmpNtupTree->Branch(
+		"NUD_ADC",
+		&nud_adc);
+	DmpNtupTree->Branch(
+		"NUD_total_ADC",
+		&nud_total_adc,
+		"nud_total_adc/D");
+	DmpNtupTree->Branch(
+		"NUD_max_ADC",
+		&nud_max_adc,
+		"nud_max_adc/D");
+	DmpNtupTree->Branch(
+		"NUD_max_channel_ID",
+		&nud_max_channel_id,
+		"nud_max_channel_id/I");
 	// Classifiers
 	DmpNtupTree->Branch(
 		"xtr",
@@ -280,7 +296,7 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch(
 		"nActiveCuts",
 		&nActiveCuts,
-		"nActiveCuts/i");
+		"nActiveCuts/I");
 	// Filters
 	DmpNtupTree->Branch(
 		"evtfilter_out_energy_range",
@@ -381,8 +397,8 @@ void data_tuple::Fill(
 	const std::vector<double> bgo_fracLayer,
 	const double lastFracLayer,
 	const double frac_layer_13,
-	const unsigned int last_bgo_layer,
-	const unsigned int bgo_entries,
+	const int last_bgo_layer,
+	const int bgo_entries,
 	const std::vector<double> energy_1_moliere_radius,
 	const std::vector<double> energy_2_moliere_radius,
 	const std::vector<double> energy_3_moliere_radius,
@@ -390,7 +406,11 @@ void data_tuple::Fill(
 	const psd_charge &extracted_psd_charge,
 	const stk_charge &extracted_stk_charge,
 	const bgo_classifiers &classifier,
-	const trigger_info &evt_trigger)
+	const trigger_info &evt_trigger,
+	const std::vector<double> adc,
+	const double total_adc,
+	const double max_adc,
+	const int max_channel_id)
 {
 	fill_trigger_info(evt_trigger);
 	fill_filter_info(output);
@@ -416,6 +436,11 @@ void data_tuple::Fill(
 	fill_psdcharge_info(extracted_psd_charge);
 	fill_stkcharge_info(extracted_stk_charge);
 	fill_classifier_info(classifier);
+	fill_nud_info(
+		adc,
+		total_adc,
+		max_adc,
+		max_channel_id);
 	DmpNtupTree->Fill();
 }
 
@@ -459,4 +484,27 @@ void data_tuple::fill_attitude_info(const std::shared_ptr<DmpEvtAttitude> &attit
 	ra_scy = attitude->ra_scy;
 	dec_scy = attitude->dec_scy;
 	cutoff = attitude->verticalRigidityCutoff;
+}
+
+void data_tuple::Reset()
+{
+	core_reset();
+	// Event time
+	second = 0;
+	// Attitude
+	glat = -999;
+	glon = -999;
+	geo_lat = -999;
+	geo_lon = -999;
+	ra_zenith = -999;
+	dec_zenith = -999;
+	ra_scz = -999;
+	dec_scz = -999;
+	ra_scx = -999;
+	dec_scx = -999;
+	ra_scy = -999;
+	dec_scy = -999;
+	cutoff = -999;
+	// Filters
+	evtfilter_evt_in_saa = false;
 }
