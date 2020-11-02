@@ -121,6 +121,9 @@ void data_tuple::branch_tree()
 		&energy_corr,
 		"energy_corr/D");
 	DmpNtupTree->Branch(
+		"eLayer",
+		&eLayer);
+	DmpNtupTree->Branch(
 		"BGOrec_slopeX",
 		&BGOrec_slopeX,
 		"BGOrec_slopeX/D");
@@ -141,6 +144,9 @@ void data_tuple::branch_tree()
 		&sumRms,
 		"sumRms/D");
 	DmpNtupTree->Branch(
+		"rmsLayer",
+		&rmsLayer);
+	DmpNtupTree->Branch(
 		"fracLayer",
 		&fracLayer);
 	DmpNtupTree->Branch(
@@ -159,6 +165,18 @@ void data_tuple::branch_tree()
 		"nBGOentries",
 		&nBGOentries,
 		"nBGOentries/i");
+	DmpNtupTree->Branch(
+		"energy_1R_radius",
+		&energy_1R_radius);
+	DmpNtupTree->Branch(
+		"energy_2R_radius",
+		&energy_2R_radius);
+	DmpNtupTree->Branch(
+		"energy_3R_radius",
+		&energy_3R_radius);
+	DmpNtupTree->Branch(
+		"energy_5R_radius",
+		&energy_5R_radius);
 	// PSD
 	DmpNtupTree->Branch(
 		"PSD_chargeX",
@@ -355,14 +373,20 @@ void data_tuple::Fill(
 	const best_track &event_best_track,
 	const double raw_energy,
 	const double corr_energy,
+	const std::vector<double> &energy_release_layer,
 	const std::vector<double> &bgoRec_slope,
 	const std::vector<double> &bgoRec_intercept,
 	const double sumRMS,
+	const std::vector<double> rms_layer,
 	const std::vector<double> bgo_fracLayer,
 	const double lastFracLayer,
 	const double frac_layer_13,
 	const unsigned int last_bgo_layer,
 	const unsigned int bgo_entries,
+	const std::vector<double> energy_1_moliere_radius,
+	const std::vector<double> energy_2_moliere_radius,
+	const std::vector<double> energy_3_moliere_radius,
+	const std::vector<double> energy_5_moliere_radius,
 	const psd_charge &extracted_psd_charge,
 	const stk_charge &extracted_stk_charge,
 	const bgo_classifiers &classifier,
@@ -375,14 +399,20 @@ void data_tuple::Fill(
 	fill_bgo_info(
 		raw_energy,
 		corr_energy,
+		energy_release_layer,
 		bgoRec_slope,
 		bgoRec_intercept,
 		sumRMS,
+		rms_layer,
 		bgo_fracLayer,
 		lastFracLayer,
 		frac_layer_13,
 		last_bgo_layer,
-		bgo_entries);
+		bgo_entries,
+		energy_1_moliere_radius,
+		energy_2_moliere_radius,
+		energy_3_moliere_radius,
+		energy_5_moliere_radius);
 	fill_psdcharge_info(extracted_psd_charge);
 	fill_stkcharge_info(extracted_stk_charge);
 	fill_classifier_info(classifier);

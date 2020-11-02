@@ -46,29 +46,41 @@ void ntuple::fill_stk_info(const best_track &event_best_track)
 void ntuple::fill_bgo_info(
 	const double raw_energy,
 	const double corr_energy,
+	const std::vector<double> &energy_release_layer,
 	const std::vector<double> &bgoRec_slope,
 	const std::vector<double> &bgoRec_intercept,
 	const double sumRMS,
+	const std::vector<double> rms_layer,
 	const std::vector<double> bgo_fracLayer,
 	const double lastFracLayer,
 	const double frac_layer_13,
 	const unsigned int last_bgo_layer,
-	const unsigned int bgo_entries)
+	const unsigned int bgo_entries,
+	const std::vector<double> energy_1_moliere_radius,
+	const std::vector<double> energy_2_moliere_radius,
+	const std::vector<double> energy_3_moliere_radius,
+	const std::vector<double> energy_5_moliere_radius)
 {
 	if (evtfilter_correct_bgo_reco)
 	{
 		energy = raw_energy;
 		energy_corr = corr_energy;
+		eLayer = energy_release_layer;
 		BGOrec_slopeX = bgoRec_slope[0];
 		BGOrec_slopeY = bgoRec_slope[1];
 		BGOrec_interceptX = bgoRec_intercept[0];
 		BGOrec_interceptY = bgoRec_intercept[1];
 		sumRms = sumRMS;
+		rmsLayer = rms_layer;
 		fracLayer = bgo_fracLayer;
 		fracLast = lastFracLayer;
 		fracLast_13 = frac_layer_13;
 		lastBGOLayer = last_bgo_layer;
 		nBGOentries = bgo_entries;
+		energy_1R_radius = energy_1_moliere_radius;
+		energy_2R_radius = energy_2_moliere_radius;
+		energy_3R_radius = energy_3_moliere_radius;
+		energy_5R_radius = energy_5_moliere_radius;
 	}
 }
 

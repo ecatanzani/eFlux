@@ -24,14 +24,20 @@ protected:
 	void fill_bgo_info(
 		const double raw_energy,
 		const double corr_energy,
+		const std::vector<double> &energy_release_layer,
 		const std::vector<double> &bgoRec_slope,
 		const std::vector<double> &bgoRec_intercept,
 		const double sumRMS,
+		const std::vector<double> rms_layer,
 		const std::vector<double> bgo_fracLayer,
 		const double lastFracLayer,
 		const double frac_layer_13,
 		const unsigned int last_bgo_layer,
-		const unsigned int bgo_entries);
+		const unsigned int bgo_entries,
+		const std::vector<double> energy_1_moliere_radius,
+		const std::vector<double> energy_2_moliere_radius,
+		const std::vector<double> energy_3_moliere_radius,
+		const std::vector<double> energy_5_moliere_radius);
 	void fill_psdcharge_info(const psd_charge &extracted_psd_charge);
 	void fill_stkcharge_info(const stk_charge &extracted_stk_charge);
 	void fill_classifier_info(const bgo_classifiers &classifier);
@@ -66,16 +72,22 @@ protected:
 	// BGO
 	double energy = -999;
 	double energy_corr = -999;
+	std::vector<double> eLayer;
 	double BGOrec_slopeX = -999;
 	double BGOrec_slopeY = -999;
 	double BGOrec_interceptX = -999;
 	double BGOrec_interceptY = -999;
 	double sumRms = -999;
+	std::vector<double> rmsLayer;
 	std::vector<double> fracLayer;
 	double fracLast = -999;
 	double fracLast_13 = -999;
 	unsigned int lastBGOLayer = 0;
 	unsigned int nBGOentries = 0;
+	std::vector<double> energy_1R_radius;
+	std::vector<double> energy_2R_radius;
+	std::vector<double> energy_3R_radius;
+	std::vector<double> energy_5R_radius;
 	// PSD
 	double PSD_chargeX = -999;
 	double PSD_chargeY = -999;

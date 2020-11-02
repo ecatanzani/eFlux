@@ -19,7 +19,11 @@ public:
 						fracLayer(DAMPE_bgo_nLayers, 0),
 						eLayer(DAMPE_bgo_nLayers, 0),
 						eCoreLayer(DAMPE_bgo_nLayers, 0),
-						eCoreCoord(DAMPE_bgo_nLayers, 0)
+						eCoreCoord(DAMPE_bgo_nLayers, 0),
+						energy_1R_radius(DAMPE_bgo_nLayers, 0),
+						energy_2R_radius(DAMPE_bgo_nLayers, 0),
+						energy_3R_radius(DAMPE_bgo_nLayers, 0),
+						energy_5R_radius(DAMPE_bgo_nLayers, 0)
 	{
 	}
 
@@ -31,7 +35,11 @@ public:
 								  fracLayer(m_size, 0),
 								  eLayer(m_size, 0),
 								  eCoreLayer(m_size, 0),
-								  eCoreCoord(m_size, 0)
+								  eCoreCoord(m_size, 0),
+								  energy_1R_radius(m_size, 0),
+								  energy_2R_radius(m_size, 0),
+								  energy_3R_radius(m_size, 0),
+								  energy_5R_radius(m_size, 0)
 	{
 	}
 
@@ -69,8 +77,19 @@ public:
 	const std::vector<double> FastBGOintercept(const std::shared_ptr<DmpEvtBgoRec> bgorec);
 	// BGO hits
 	const int GetNhits();
+	// BGO Energy in moliere radius
+	const std::vector<double> GetEnergy1MR();
+	const std::vector<double> GetEnergy2MR();
+	const std::vector<double> GetEnergy3MR();
+	const std::vector<double> GetEnergy5MR();
 
 private:
+	const bool compute_energy_in_cone(
+		const double bartmpX,
+		const double bartmpY,
+		const double showeraxisX,
+		const double showeraxisY,
+		const int radius_value);
 	std::vector<std::vector<short>> layerBarIndex;	// arrange BGO hits by layer
 	std::vector<std::vector<short>> layerBarNumber; // arrange BGO bars by layer
 	std::vector<int> idxBarMaxLayer;
@@ -85,6 +104,10 @@ private:
 	double sumRms = -999;
 	std::vector<double> slope{-999, -999};
 	std::vector<double> intercept{-999, -999};
+	std::vector<double> energy_1R_radius;
+	std::vector<double> energy_2R_radius;
+	std::vector<double> energy_3R_radius;
+	std::vector<double> energy_5R_radius;
 };
 
 #endif
