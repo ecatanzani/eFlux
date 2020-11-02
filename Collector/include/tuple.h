@@ -13,7 +13,16 @@
 class ntuple
 {
 public:
-	ntuple() : fracLayer(DAMPE_bgo_nLayers, -999){};
+	ntuple()	:	eLayer(DAMPE_bgo_nLayers, -999),
+					rmsLayer(DAMPE_bgo_nLayers, -999),
+					fracLayer(DAMPE_bgo_nLayers, -999),
+					energy_1R_radius(DAMPE_bgo_nLayers, -999),
+					energy_2R_radius(DAMPE_bgo_nLayers, -999),
+					energy_3R_radius(DAMPE_bgo_nLayers, -999),
+					energy_5R_radius(DAMPE_bgo_nLayers, -999),
+					nud_adc(DAMPE_NUD_channels, -999)
+					{
+					};
 	~ntuple(){};
 	void Write(TFile &outfile);
 
@@ -32,8 +41,8 @@ protected:
 		const std::vector<double> bgo_fracLayer,
 		const double lastFracLayer,
 		const double frac_layer_13,
-		const unsigned int last_bgo_layer,
-		const unsigned int bgo_entries,
+		const int last_bgo_layer,
+		const int bgo_entries,
 		const std::vector<double> energy_1_moliere_radius,
 		const std::vector<double> energy_2_moliere_radius,
 		const std::vector<double> energy_3_moliere_radius,
@@ -41,6 +50,12 @@ protected:
 	void fill_psdcharge_info(const psd_charge &extracted_psd_charge);
 	void fill_stkcharge_info(const stk_charge &extracted_stk_charge);
 	void fill_classifier_info(const bgo_classifiers &classifier);
+	void fill_nud_info(
+		const std::vector<double> adc,
+		const double total_adc,
+		const double max_adc,
+		const int max_channel_id);
+	void core_reset();
 
 	// Tree
 	std::unique_ptr<TTree> DmpNtupTree;
@@ -52,9 +67,9 @@ protected:
 	bool MIP_trigger = false;
 	bool general_trigger = false;
 	// STK
-	unsigned int STK_bestTrack_npoints = 0;
-	unsigned int STK_bestTrack_nholesX = 0;
-	unsigned int STK_bestTrack_nholesY = 0;
+	int STK_bestTrack_npoints = -999;
+	int STK_bestTrack_nholesX = -999;
+	int STK_bestTrack_nholesY = -999;
 	double STK_bestTrack_slopeX = -999;
 	double STK_bestTrack_slopeY = -999;
 	double STK_bestTrack_interceptX = -999;
@@ -82,8 +97,8 @@ protected:
 	std::vector<double> fracLayer;
 	double fracLast = -999;
 	double fracLast_13 = -999;
-	unsigned int lastBGOLayer = 0;
-	unsigned int nBGOentries = 0;
+	int lastBGOLayer = -999;
+	int nBGOentries = -999;
 	std::vector<double> energy_1R_radius;
 	std::vector<double> energy_2R_radius;
 	std::vector<double> energy_3R_radius;
@@ -92,6 +107,11 @@ protected:
 	double PSD_chargeX = -999;
 	double PSD_chargeY = -999;
 	double PSD_charge = -999;
+	// NUD
+	std::vector<double> nud_adc;
+	double nud_total_adc = -999;
+	double nud_max_adc = -999;
+	int nud_max_channel_id = -999;
 	// Classifiers
 	double xtr = -999;
 	double xtrl = -999;
@@ -123,7 +143,7 @@ protected:
 	bool cut_psd_stk_match = false;
 	bool cut_psd_charge = false;
 	bool cut_stk_charge = false;
-	unsigned int nActiveCuts = 0;
+	int nActiveCuts = -999;
 };
 
 #endif
