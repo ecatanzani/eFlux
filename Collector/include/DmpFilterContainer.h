@@ -28,8 +28,8 @@
 
 struct best_track
 {
-	unsigned int n_points = 0;
-	std::vector<unsigned int> n_holes{0, 0};
+	int n_points = -999;
+	std::vector<int> n_holes{-999, -999};
 	std::vector<double> track_slope{-999, -999};
 	std::vector<double> track_intercept{-999, -999};
 	TVector3 track_direction{-999, -999, -999};

@@ -403,7 +403,7 @@ inline void get_track_points(
 	DmpStkTrack *track,
 	const std::shared_ptr<TClonesArray> stkclusters,
 	const std::vector<int> LadderToLayer,
-	std::vector<unsigned int> &track_nHoles,
+	std::vector<int> &track_nHoles,
 	best_track &event_best_track,
 	const bool best_track = false)
 {
@@ -516,7 +516,7 @@ const bool DmpFilterContainer::track_selection_cut(
 	// Loop on the tracks
 	for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx)
 	{
-		std::vector<unsigned int> track_nHoles(2, 0);
+		std::vector<int> track_nHoles(2, 0);
 		std::vector<double> track_slope(2, 0);
 		std::vector<double> track_intercept(2, 0);
 		std::vector<double> extr_BGO_top(2, 0);
@@ -573,7 +573,7 @@ const bool DmpFilterContainer::track_selection_cut(
 	if (selectedTracks.size() > 0)
 	{
 		DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
-		std::vector<unsigned int> track_nHoles(2, 0);
+		std::vector<int> track_nHoles(2, 0);
 
 		// Fill best track structure
 		get_track_points(
