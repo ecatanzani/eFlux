@@ -133,6 +133,15 @@ void mcLoop(
 		DmpBgoContainer bgoVault;
 		DmpPsdContainer psdVault;
 		DmpNudContainer nudVault;
+		// Build simu position and momentum TVector3
+		TVector3 simuPosition(
+			simu_primaries->pv_x,
+			simu_primaries->pv_y,
+			simu_primaries->pv_z);
+		TVector3 simuMomentum(
+			simu_primaries->pvpart_px,
+			simu_primaries->pvpart_py,
+			simu_primaries->pvpart_pz);
 		// Load particle ID
 		simu_particle.Load(simu_primaries->pvpart_pdg);
 		// Update event counter
@@ -218,6 +227,9 @@ void mcLoop(
 				bgoVault.GetEnergy2MR(),
 				bgoVault.GetEnergy3MR(),
 				bgoVault.GetEnergy5MR(),
+				simuPosition,
+				simuMomentum,
+				evt_energy.GetSimuEnergy(),
 				filter.GetPSDCharge(),
 				filter.GetSTKCharge(),
 				filter.GetClassifiers(),

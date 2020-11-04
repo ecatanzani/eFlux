@@ -172,6 +172,35 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch(
 		"energy_5R_radius",
 		&energy_5R_radius);
+	// Simu
+	DmpNtupTree->Branch(
+		"simu_energy",
+		&simu_energy,
+		"simu_energy/D");
+	DmpNtupTree->Branch(
+		"simu_position", 
+		"TVector3", 
+		&simuPosition);
+	DmpNtupTree->Branch(
+		"simu_momentum", 
+		"TVector3", 
+		&simuMomentum);
+	DmpNtupTree->Branch(
+		"simuSlopeX",
+		&simuSlopeX,
+		"simuSlopeX/D");
+	DmpNtupTree->Branch(
+		"simuSlopeY",
+		&simuSlopeY,
+		"simuSlopeY/D");
+	DmpNtupTree->Branch(
+		"simuInterceptX",
+		&simuInterceptX,
+		"simuInterceptX/D");
+	DmpNtupTree->Branch(
+		"simuInterceptY",
+		&simuInterceptY,
+		"simuInterceptY/D");
 	// PSD
 	DmpNtupTree->Branch(
 		"PSD_chargeX",
@@ -348,6 +377,9 @@ void mc_tuple::Fill(
 	const std::vector<double> energy_2_moliere_radius,
 	const std::vector<double> energy_3_moliere_radius,
 	const std::vector<double> energy_5_moliere_radius,
+	const TVector3 mc_position,
+	const TVector3 mc_momentum,
+	const double mc_simu_energy,
 	const psd_charge &extracted_psd_charge,
 	const stk_charge &extracted_stk_charge,
 	const bgo_classifiers &classifier,
@@ -377,6 +409,10 @@ void mc_tuple::Fill(
 		energy_2_moliere_radius,
 		energy_3_moliere_radius,
 		energy_5_moliere_radius);
+	fill_simu_info(
+		mc_position,
+		mc_momentum, 
+		mc_simu_energy);
 	fill_psdcharge_info(extracted_psd_charge);
 	fill_stkcharge_info(extracted_stk_charge);
 	fill_classifier_info(classifier);
@@ -414,9 +450,35 @@ void mc_tuple::fill_filter_info(const filter_output &output)
 	evtfilter_all_cut = output.all_cut;
 }
 
+void mc_tuple::fill_simu_info(
+	const TVector3 mc_position,
+	const TVector3 mc_momentum,
+	const double mc_simu_energy)
+{
+	simuPosition = mc_position;
+	simuMomentum = mc_momentum;
+	simu_energy = mc_simu_energy;
+	simuSlopeX = mc_momentum.Z() ? mc_momentum.X() / mc_momentum.Z() : -999;
+	simuSlopeY = mc_momentum.Z() ? mc_momentum.Y() / mc_momentum.Z() : -999;
+	simuInterceptX = mc_position.X() - simuSlopeX * mc_position.Z();
+	simuInterceptY = mc_position.Y() - simuSlopeY * mc_position.Z();
+}
+
 void mc_tuple::Reset()
 {
 	core_reset();
+	reset_simu_info();
 	evtfilter_geometric_before_trigger = false;
 	evtfilter_trigger_check = false;
+}
+
+void mc_tuple::reset_simu_info()
+{
+	simu_energy = -999;
+	simuSlopeX = -999;
+	simuSlopeY = -999;
+	simuInterceptX = -999;
+	simuInterceptY = -999;
+	simuPosition.SetXYZ(-999, -999, -999);
+	simuMomentum.SetXYZ(-999, -999, -999);
 }

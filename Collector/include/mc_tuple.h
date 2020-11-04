@@ -3,6 +3,8 @@
 
 #include "tuple.h"
 
+#include "TVector3.h"
+
 class mc_tuple : public ntuple
 {
 public:
@@ -30,6 +32,9 @@ public:
 		const std::vector<double> energy_2_moliere_radius,
 		const std::vector<double> energy_3_moliere_radius,
 		const std::vector<double> energy_5_moliere_radius,
+		const TVector3 mc_position,
+		const TVector3 mc_momentum,
+		const double mc_simu_energy,
 		const psd_charge &extracted_psd_charge,
 		const stk_charge &extracted_stk_charge,
 		const bgo_classifiers &classifier,
@@ -39,11 +44,25 @@ public:
 		const double max_adc,
 		const int max_channel_id);
 	void Reset();
-	
+
 private:
 	void init(const active_cuts &acuts);
 	void branch_tree();
 	void fill_filter_info(const filter_output &output);
+	void fill_simu_info(
+		const TVector3 mc_position,
+		const TVector3 mc_momentum,
+		const double mc_simu_energy);
+	void reset_simu_info();
+
+	// Energy
+	double simu_energy = -999;
+	TVector3 simuPosition{-999, -999, -999};
+	TVector3 simuMomentum{-999, -999, -999};
+	double simuSlopeX = -999;
+	double simuSlopeY = -999;
+	double simuInterceptX = -999;
+	double simuInterceptY = -999;
 
 	// Filters
 	bool evtfilter_geometric_before_trigger = false;
