@@ -18,6 +18,7 @@ public:
 		const best_track &event_best_track,
 		const double raw_energy,
 		const double corr_energy,
+		const double mc_corr_energy_w,
 		const std::vector<double> &energy_release_layer,
 		const std::vector<double> &bgoRec_slope,
 		const std::vector<double> &bgoRec_intercept,
@@ -35,6 +36,7 @@ public:
 		const TVector3 mc_position,
 		const TVector3 mc_momentum,
 		const double mc_simu_energy,
+		const double mc_simu_energy_w,
 		const psd_charge &extracted_psd_charge,
 		const stk_charge &extracted_stk_charge,
 		const bgo_classifiers &classifier,
@@ -52,11 +54,15 @@ private:
 	void fill_simu_info(
 		const TVector3 mc_position,
 		const TVector3 mc_momentum,
-		const double mc_simu_energy);
+		const double mc_simu_energy,
+		const double mc_corr_energy_w,
+		const double mc_simu_energy_w);
 	void reset_simu_info();
 
 	// Energy
 	double simu_energy = -999;
+	double simu_energy_w = -999;
+	double corr_energy_w = -999;
 	TVector3 simuPosition{-999, -999, -999};
 	TVector3 simuMomentum{-999, -999, -999};
 	double simuSlopeX = -999;

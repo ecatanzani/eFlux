@@ -93,7 +93,7 @@ void mcLoop(
 	// Load particle ID class
 	mc_particle simu_particle;
 	// Load config class
-	config mc_config(wd, _MC, _DATA);
+	config mc_config(wd, _MC);
 	// Compute energy binning
 	auto logEBins = mc_config.GetEnergyBinning();
 	// Create MC histos objects
@@ -159,9 +159,15 @@ void mcLoop(
 			bgorec->GetElectronEcor());
 		// Compute energy weights for MC event
 		if (simu_particle.IsElectron())
-			evt_energy.SetEnergyWeight(pow(evt_energy.GetSimuEnergy() * _GeV, -2));
+		{
+			evt_energy.SetSimuEnergyWeight(pow(evt_energy.GetSimuEnergy() * _GeV, -2));
+			evt_energy.SetCorrEnergyWeight(pow(evt_energy.GetCorrEnergy() * _GeV, -2));
+		}
 		else if (simu_particle.IsProton())
-			evt_energy.SetEnergyWeight(pow(evt_energy.GetSimuEnergy() * _GeV, -1.7));
+		{
+			evt_energy.SetSimuEnergyWeight(pow(evt_energy.GetSimuEnergy() * _GeV, -1.7));
+			evt_energy.SetCorrEnergyWeight(pow(evt_energy.GetCorrEnergy() * _GeV, -1.7));
+		}
 		// Check particle energy
 		filter.EnergyCheck(
 			mc_config.GetCutsConfigValues(),
@@ -213,6 +219,7 @@ void mcLoop(
 				filter.GetBestTrack(),
 				evt_energy.GetRawEnergy(),
 				evt_energy.GetCorrEnergy(),
+				evt_energy.GetCorrWeight(),
 				bgoVault.GetLayerEnergies(),
 				bgoVault.GetBGOslope(),
 				bgoVault.GetBGOintercept(),
@@ -230,6 +237,7 @@ void mcLoop(
 				simuPosition,
 				simuMomentum,
 				evt_energy.GetSimuEnergy(),
+				evt_energy.GetSimuWeight(),
 				filter.GetPSDCharge(),
 				filter.GetSTKCharge(),
 				filter.GetClassifiers(),
@@ -255,7 +263,7 @@ void mcLoop(
 				evt_energy.GetSimuEnergy(),
 				evt_energy.GetRawEnergy(),
 				evt_energy.GetCorrEnergy(),
-				evt_energy.GetWeight());
+				evt_energy.GetSimuWeight());
 	}
 
 	if (_VERBOSE)

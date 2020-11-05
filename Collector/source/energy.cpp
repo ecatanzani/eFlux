@@ -4,24 +4,28 @@ energy::energy(
 	const double input_simuEnergy,
 	const double input_bgoTotalE_raw,
 	const double input_bgoTotalE_corr,
-	const double input_energy_w)
+	const double input_simu_energy_w,
+	const double input_corr_energy_w)
 {
 	simuEnergy = input_simuEnergy;
 	bgoTotalE_raw = input_bgoTotalE_raw;
 	bgoTotalE_corr = input_bgoTotalE_corr;
-	energy_w = input_energy_w;
+	simu_energy_w = input_simu_energy_w;
+	corr_energy_w = input_corr_energy_w;
 }
 
 void energy::Set(
 	const double input_simuEnergy,
 	const double input_bgoTotalE_raw,
 	const double input_bgoTotalE_corr,
-	const double input_energy_w)
+	const double input_simu_energy_w,
+	const double input_corr_energy_w)
 {
 	simuEnergy = input_simuEnergy;
 	bgoTotalE_raw = input_bgoTotalE_raw;
 	bgoTotalE_corr = input_bgoTotalE_corr;
-	energy_w = input_energy_w;
+	simu_energy_w = input_simu_energy_w;
+	corr_energy_w = input_corr_energy_w;
 }
 
 void energy::SetEnergies(
@@ -39,7 +43,8 @@ void energy::Reset()
 	simuEnergy = -999;
 	bgoTotalE_raw = -999;
 	bgoTotalE_corr = -999;
-	energy_w = -999;
+	simu_energy_w = -999;
+	corr_energy_w = -999;
 }
 
 void energy::SetSimuEnergy(const double input_simuEnergy)
@@ -57,9 +62,14 @@ void energy::SetCorrEnergy(const double input_bgoTotalE_corr)
 	bgoTotalE_corr = input_bgoTotalE_corr;
 }
 
-void energy::SetEnergyWeight(const double input_energy_w)
+void energy::SetSimuEnergyWeight(const double input_energy_w)
 {
-	energy_w = input_energy_w;
+	simu_energy_w = input_energy_w;
+}
+
+void energy::SetCorrEnergyWeight(const double input_energy_w)
+{
+	corr_energy_w = input_energy_w;
 }
 
 const double energy::GetSimuEnergy()
@@ -77,7 +87,12 @@ const double energy::GetCorrEnergy()
 	return bgoTotalE_corr;
 }
 
-const double energy::GetWeight()
+const double energy::GetSimuWeight()
 {
-	return energy_w;
+	return simu_energy_w;
+}
+
+const double energy::GetCorrWeight()
+{
+	return corr_energy_w;
 }

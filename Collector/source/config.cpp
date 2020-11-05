@@ -3,8 +3,7 @@
 
 config::config(
 	const std::string working_dir,
-	const bool mc,
-	const bool data)
+	const bool mc)
 {
 	std::string config_file_name;
 	mc ? config_file_name = "mc_config.txt" : config_file_name = "data_config.txt";

@@ -101,7 +101,7 @@ void rawDataLoop(
 	pFilter->ActiveMe(); // Call this function to calculate SAA through House Keeping Data
 
 	// Load config class
-	config data_config(wd, _MC, _DATA);
+	config data_config(wd, _MC);
 	// Compute energy binning
 	auto logEBins = data_config.GetEnergyBinning();
 	// Create data histos objects

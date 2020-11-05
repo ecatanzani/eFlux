@@ -116,6 +116,10 @@ void mc_tuple::branch_tree()
 		&energy_corr,
 		"energy_corr/D");
 	DmpNtupTree->Branch(
+		"energy_corr_w",
+		&corr_energy_w,
+		"corr_energy_w/D");	
+	DmpNtupTree->Branch(
 		"eLayer",
 		&eLayer);
 	DmpNtupTree->Branch(
@@ -177,6 +181,10 @@ void mc_tuple::branch_tree()
 		"simu_energy",
 		&simu_energy,
 		"simu_energy/D");
+	DmpNtupTree->Branch(
+		"simu_energy_w",
+		&simu_energy_w,
+		"simu_energy_w/D");
 	DmpNtupTree->Branch(
 		"simu_position", 
 		"TVector3", 
@@ -363,6 +371,7 @@ void mc_tuple::Fill(
 	const best_track &event_best_track,
 	const double raw_energy,
 	const double corr_energy,
+	const double mc_corr_energy_w,
 	const std::vector<double> &energy_release_layer,
 	const std::vector<double> &bgoRec_slope,
 	const std::vector<double> &bgoRec_intercept,
@@ -380,6 +389,7 @@ void mc_tuple::Fill(
 	const TVector3 mc_position,
 	const TVector3 mc_momentum,
 	const double mc_simu_energy,
+	const double mc_simu_energy_w,
 	const psd_charge &extracted_psd_charge,
 	const stk_charge &extracted_stk_charge,
 	const bgo_classifiers &classifier,
@@ -412,7 +422,9 @@ void mc_tuple::Fill(
 	fill_simu_info(
 		mc_position,
 		mc_momentum, 
-		mc_simu_energy);
+		mc_simu_energy,
+		mc_corr_energy_w,
+		mc_simu_energy_w);
 	fill_psdcharge_info(extracted_psd_charge);
 	fill_stkcharge_info(extracted_stk_charge);
 	fill_classifier_info(classifier);
@@ -453,8 +465,12 @@ void mc_tuple::fill_filter_info(const filter_output &output)
 void mc_tuple::fill_simu_info(
 	const TVector3 mc_position,
 	const TVector3 mc_momentum,
-	const double mc_simu_energy)
+	const double mc_simu_energy,
+	const double mc_corr_energy_w,
+	const double mc_simu_energy_w)
 {
+	corr_energy_w = mc_corr_energy_w;
+	simu_energy_w = mc_simu_energy_w;
 	simuPosition = mc_position;
 	simuMomentum = mc_momentum;
 	simu_energy = mc_simu_energy;

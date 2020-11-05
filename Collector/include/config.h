@@ -46,8 +46,7 @@ class config
 public:
 	config(
 		const std::string working_dir,
-		const bool mc,
-		const bool data);
+		const bool mc);
 	~config(){};
 	std::vector<float> GetEnergyBinning();
 	void PrintActiveFilters();
