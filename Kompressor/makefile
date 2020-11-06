@@ -24,8 +24,8 @@ ANYOPT_INC = $(TOP)/../deps/AnyOption
 
 DEBUG_DIR    = Debug/obj
 RELEASE_DIR  = Release/obj
-DEBUG_PROG   = Debug/Jafari
-RELEASE_PROG = Release/Jafari
+DEBUG_PROG   = Debug/Kompressor
+RELEASE_PROG = Release/Kompressor
 
 # Don't compile specific files
 FILTER := 
