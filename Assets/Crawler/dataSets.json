@@ -125,7 +125,7 @@
 		"particle": "p",
 		"eMin": "100",
 		"eMax": "1000",
-		"dSet": "allProton-v6r0p10_100GeV_1TeV_FTFP_HP-p1",
+		"dSet": "allProton-v6r0p10_100GeV_1TeV_FTFP-p1",
 		"pSpectrum": -1
 	},
 	{
