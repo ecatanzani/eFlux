@@ -24,6 +24,7 @@ private:
 
 	std::shared_ptr<mc_histos> _histos;
 	// Energy
+	double weight_shift;
 	double simu_energy;
 	double simu_energy_w;
 	double corr_energy_w;

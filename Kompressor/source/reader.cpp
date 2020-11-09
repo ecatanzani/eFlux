@@ -32,5 +32,4 @@ void mc_reader(
     for (auto i : ROOT::TSeqUL(evtch->GetEntries())) 
         _tuple->GetEntry(i);
     _tuple->WriteHistos(outputPath);
-
 }

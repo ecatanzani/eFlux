@@ -26,6 +26,7 @@ public:
 		const double simu_energy,
 		const double simu_energy_w,
 		const double corr_energy,
+		const double raw_energy,
 		const double simuSlopeX,
 		const double simuSlopeY,
 		const double simuInterceptX,
@@ -55,8 +56,11 @@ private:
 	std::unique_ptr<TH1D> h_simu_energy;
 	std::unique_ptr<TH1D> h_simu_energy_w;
 	std::unique_ptr<TH1D> h_energy_diff;
+	std::unique_ptr<TH1D> h_energy_diff_corr;
 	std::unique_ptr<TH2D> h_energy_diff2D;
+	std::unique_ptr<TH2D> h_energy_diff2D_corr;
 	std::unique_ptr<TH2D> h_energy_unfold;
+	std::unique_ptr<TH2D> h_energy_unfold_corr;
 
 	// Simu histos
 	std::unique_ptr<TH1D> h_simu_BGOrec_topX_vs_realX;

@@ -13,6 +13,7 @@ class histos
 public:
 	histos(std::vector<float> energy_bins);
 	~histos(){};
+	const int GetEnergyBin(const double energy);
 	void FillTrigger(
 		const double energy,
 		const double energy_w);
@@ -20,6 +21,7 @@ public:
 		const double raw_energy,
 		const double corr_energy,
 		const double simu_energy_w,
+		const int reco_bidx,
 		const std::vector<double> *fracLayer,
 		const std::vector<double> *eLayer,
 		const std::vector<double> *rmsLayer,
@@ -35,15 +37,18 @@ public:
 		const double BGOrec_slopeX,
 		const double BGOrec_slopeY,
 		const double BGOrec_interceptX,
-		const double BGOrec_interceptY);
+		const double BGOrec_interceptY,
+		const double cosine_STK);
 	void FillSumRmsCosine(
 		const double energy,
 		const double energy_w,
+		const int reco_bidx,
 		const double sum_rms,
 		const double cosine);
 	void FillSumRmsFLast(
 		const double energy,
 		const double energy_w,
+		const int reco_bidx,
 		const double sum_rms,
 		const double last_energy_fraction,
 		const double energy_fraction_13);
@@ -123,7 +128,6 @@ public:
 		const double energy,
 		const double energy_w,
 		const double xtrl);
-
 	void WriteCore(TFile* outfile);
 
 protected:
@@ -176,25 +180,33 @@ protected:
 	// BGO histos
 	std::unique_ptr<TH1D> h_BGOrec_energy;
 	std::unique_ptr<TH1D> h_BGOrec_corr_energy;
-	std::unique_ptr<TH1D> h_BGOrec_layer_max_energy_ratio;
-	std::vector<std::unique_ptr<TH1D>> h_BGOrec_layer_energy_ratio;
-	std::vector<std::unique_ptr<TH1D>> h_BGOrec_layer_rms;
-	std::unique_ptr<TH1D> h_BGOrec_sumrms;
-	std::unique_ptr<TH1D> h_BGOrec_fraclast;
-	std::unique_ptr<TH1D> h_BGOrec_frac13;
-	std::unique_ptr<TH1D> h_BGOrec_last_layer;
-	std::unique_ptr<TH1D> h_BGOrec_hits;
-	std::vector<std::unique_ptr<TH1D>> h_BGOrec_energy_frac_1R;
-	std::vector<std::unique_ptr<TH1D>> h_BGOrec_energy_frac_2R;
-	std::vector<std::unique_ptr<TH1D>> h_BGOrec_energy_frac_3R;
-	std::vector<std::unique_ptr<TH1D>> h_BGOrec_energy_frac_5R;
-	std::unique_ptr<TH1D> h_BGOrec_slopeX;
-	std::unique_ptr<TH1D> h_BGOrec_slopeY;
-	std::unique_ptr<TH1D> h_BGOrec_interceptX;
-	std::unique_ptr<TH1D> h_BGOrec_interceptY;
-	std::unique_ptr<TH2D> h_BGOrec_topMap;
-	std::unique_ptr<TH2D> h_BGOrec_bottomMap;
+	std::unique_ptr<TH1D> h_BGOrec_layer_energy_diff;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_layer_max_energy_ratio;
+	std::vector<std::vector<std::unique_ptr<TH1D>>> h_BGOrec_layer_energy_ratio;
+	std::vector<std::vector<std::unique_ptr<TH1D>>> h_BGOrec_layer_rms;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_sumrms;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_sumrms_weighted;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_sumrms_cosine;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_fraclast;
+	std::vector<std::unique_ptr<TH2D>> h_BGOrec_fraclast_cosine;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_frac13;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_last_layer;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_hits;
+	std::vector<std::vector<std::unique_ptr<TH1D>>> h_BGOrec_energy_frac_1R;
+	std::vector<std::vector<std::unique_ptr<TH1D>>> h_BGOrec_energy_frac_2R;
+	std::vector<std::vector<std::unique_ptr<TH1D>>> h_BGOrec_energy_frac_3R;
+	std::vector<std::vector<std::unique_ptr<TH1D>>> h_BGOrec_energy_frac_5R;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_slopeX;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_slopeY;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_interceptX;
+	std::vector<std::unique_ptr<TH1D>> h_BGOrec_interceptY;
+	std::vector<std::unique_ptr<TH2D>> h_BGOrec_topMap;
+	std::vector<std::unique_ptr<TH2D>> h_BGOrec_bottomMap;
+	std::vector<std::unique_ptr<TH2D>> h_BGOrec_shower_profile;
+	std::vector<std::unique_ptr<TH2D>> h_BGOrec_shower_profile_cosine_upto_09;
+	std::vector<std::unique_ptr<TH2D>> h_BGOrec_shower_profile_cone_from_09;
 
+	std::vector<std::unique_ptr<TH2D>> sumRms_cosine;
 	std::unique_ptr<TH2D> sumRms_cosine_20_100;
 	std::unique_ptr<TH2D> sumRms_cosine_100_250;
 	std::unique_ptr<TH2D> sumRms_cosine_250_500;
@@ -207,7 +219,7 @@ protected:
 	std::unique_ptr<TH2D> h_xtrl;
 	std::vector<std::unique_ptr<TH1D>> h_xtrl_bin;
 
-	std::unique_ptr<TH2D> e_discrimination_last;
+	std::vector<std::unique_ptr<TH2D>> e_discrimination_last;
 	std::unique_ptr<TH2D> e_discrimination_last_20_100;
 	std::unique_ptr<TH2D> e_discrimination_last_100_250;
 	std::unique_ptr<TH2D> e_discrimination_last_250_500;
@@ -216,7 +228,7 @@ protected:
 	std::unique_ptr<TH2D> e_discrimination_last_3000_10000;
 	std::unique_ptr<TH2D> e_discrimination_last_10000_20000;
 
-	std::unique_ptr<TH2D> e_discrimination;
+	std::vector<std::unique_ptr<TH2D>> e_discrimination;
 	std::unique_ptr<TH2D> e_discrimination_20_100;
 	std::unique_ptr<TH2D> e_discrimination_100_250;
 	std::unique_ptr<TH2D> e_discrimination_250_500;

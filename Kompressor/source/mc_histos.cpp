@@ -11,7 +11,6 @@ void mc_histos::init_geo_factor()
 		"Energy Distribution of the geometric factor; Real Energy (GeV); counts",
 		logEBins.size() - 1,
 		&(logEBins[0]));
-	h_geo_factor->Sumw2();
 }
 
 void mc_histos::init_simu_incoming()
@@ -21,7 +20,6 @@ void mc_histos::init_simu_incoming()
 		"Energy Distribution of the incoming particles; Real Energy (GeV); counts",
 		logEBins.size() - 1,
 		&(logEBins[0]));
-	h_incoming->Sumw2();
 }
 
 void mc_histos::init_simu_energy_histos()
@@ -32,17 +30,18 @@ void mc_histos::init_simu_energy_histos()
 		"Simu Energy; Real Energy (GeV); counts",
 		logEBins.size() - 1,
 		&(logEBins[0]));
-	h_simu_energy->Sumw2();
 	h_simu_energy_w = std::make_unique<TH1D>(
 		"h_simu_energy_w",
 		"Simu Energy Weight",
-		100, 0, 1);
-	h_simu_energy_w->Sumw2();
+		100, 0, 100);
 	h_energy_diff = std::make_unique<TH1D>(
 		"h_energy_diff",
+		"Simu vs Raw Reco BGO energy: Real Energy - Raw Energy (GeV); counts",
+		100, 0, 1);
+	h_energy_diff_corr = std::make_unique<TH1D>(
+		"h_energy_diff_corr",
 		"Simu vs Corrected Reco BGO energy: Real Energy - Corrected Energy (GeV); counts",
 		100, 0, 1);
-	h_energy_diff->Sumw2();
 	h_energy_diff2D = std::make_unique<TH2D>(
 		"h_energy_diff2D",
 		"Energy Ratio; Real Energy (GeV); (Real - Raw)/Raw",
@@ -50,7 +49,13 @@ void mc_histos::init_simu_energy_histos()
 		&(logEBins[0]),
 		ratio_line_binning.size() - 1,
 		&(ratio_line_binning[0]));
-	h_energy_diff2D->Sumw2();
+	h_energy_diff2D_corr = std::make_unique<TH2D>(
+		"h_energy_diff2D_corr",
+		"Energy Ratio; Real Energy (GeV); (Real - Corr)/Raw",
+		logEBins.size() - 1,
+		&(logEBins[0]),
+		ratio_line_binning.size() - 1,
+		&(ratio_line_binning[0]));
 	h_energy_unfold = std::make_unique<TH2D>(
 		"h_energy_unfold",
 		"Energy Unfolding Matrix; Real Energy (GeV); Raw Energy (GeV)",
@@ -58,7 +63,13 @@ void mc_histos::init_simu_energy_histos()
 		&(logEBins[0]),
 		logEBins.size() - 1,
 		&(logEBins[0]));
-	h_energy_unfold->Sumw2();
+	h_energy_unfold_corr = std::make_unique<TH2D>(
+		"h_energy_unfold_corr",
+		"Energy Unfolding Matrix; Real Energy (GeV); Corr Energy (GeV)",
+		logEBins.size() - 1,
+		&(logEBins[0]),
+		logEBins.size() - 1,
+		&(logEBins[0]));
 }
 
 void mc_histos::init_simu_histos()
@@ -67,44 +78,36 @@ void mc_histos::init_simu_histos()
 		"h_simu_BGOrec_topX_vs_realX",
 		"Simu X - BGOrec TOP X",
 		100, -100, 100);
-	h_simu_BGOrec_topX_vs_realX->Sumw2();
 	h_simu_BGOrec_topY_vs_realY = std::make_unique<TH1D>(
 		"h_simu_BGOrec_topY_vs_realY",
 		"Simu Y - BGOrec TOP Y",
 		100, -100, 100);
-	h_simu_BGOrec_topY_vs_realY->Sumw2();
 	h_simu_slopeX = std::make_unique<TH1D>(
 		"h_simu_slopeX",
 		"Simu Slope X",
 		1000, -90, 90);
-	h_simu_slopeX->Sumw2();
 	h_simu_slopeY = std::make_unique<TH1D>(
 		"h_simu_slopeY",
 		"Simu Slope Y",
 		1000, -90, 90);
-	h_simu_slopeY->Sumw2();
 	h_simu_interceptX = std::make_unique<TH1D>(
 		"h_simu_interceptX",
 		"Simu Intercept X",
 		500, -500, 500);
-	h_simu_interceptX->Sumw2();
 	h_simu_interceptY = std::make_unique<TH1D>(
 		"h_simu_interceptY",
 		"Simu Intercept Y",
 		500, -500, 500);
-	h_simu_interceptY->Sumw2();
 	h_simu_topMap = std::make_unique<TH2D>(
 		"h_simu_topMap",
 		"Simu BGO TOP Map",
 		500, -500, 500,
 		500, -500, 500);
-	h_simu_topMap->Sumw2();
 	h_simu_bottomMap = std::make_unique<TH2D>(
 		"h_simu_bottomMap",
 		"Simu BGO BOTTOM Map",
 		500, -500, 500,
 		500, -500, 500);
-	h_simu_bottomMap->Sumw2();
 }
 
 void mc_histos::FillGeoFactor(
@@ -124,6 +127,7 @@ void mc_histos::FillIncoming(
 void mc_histos::FillSimu(
 	const double simu_energy,
 	const double simu_energy_w,
+	const double raw_energy,
 	const double corr_energy,
 	const double simuSlopeX,
 	const double simuSlopeY,
@@ -137,9 +141,12 @@ void mc_histos::FillSimu(
 	const double _GeV = 0.001;
 	h_simu_energy->Fill(simu_energy * _GeV, simu_energy_w);
 	h_simu_energy_w->Fill(simu_energy_w, simu_energy_w);
-	h_energy_diff->Fill((simu_energy - corr_energy) / simu_energy, simu_energy_w);
-	h_energy_diff2D->Fill(simu_energy * _GeV, (simu_energy - corr_energy) / simu_energy, simu_energy_w);
-	h_energy_unfold->Fill(simu_energy * _GeV, corr_energy * _GeV, simu_energy_w);
+	h_energy_diff->Fill((simu_energy - raw_energy) / simu_energy, simu_energy_w);
+	h_energy_diff_corr->Fill((simu_energy - corr_energy) / simu_energy, simu_energy_w);
+	h_energy_diff2D->Fill(simu_energy * _GeV, (simu_energy - raw_energy) / simu_energy, simu_energy_w);
+	h_energy_diff2D_corr->Fill(simu_energy * _GeV, (simu_energy - corr_energy) / simu_energy, simu_energy_w);
+	h_energy_unfold->Fill(simu_energy * _GeV, raw_energy * _GeV, simu_energy_w);
+	h_energy_unfold_corr->Fill(simu_energy * _GeV, corr_energy * _GeV, simu_energy_w);
 	h_simu_slopeX->Fill(simuSlopeX, simu_energy_w);
 	h_simu_slopeY->Fill(simuSlopeY, simu_energy_w);
 	h_simu_interceptX->Fill(simuInterceptX, simu_energy_w);
@@ -173,8 +180,11 @@ void mc_histos::Write(TFile* outfile)
 	h_simu_energy->Write();
 	h_simu_energy_w->Write();
 	h_energy_diff->Write();
+	h_energy_diff_corr->Write();
 	h_energy_diff2D->Write();
+	h_energy_diff2D_corr->Write();
 	h_energy_unfold->Write();
+	h_energy_unfold_corr->Write();
 	h_simu_BGOrec_topX_vs_realX->Write();
 	h_simu_BGOrec_topY_vs_realY->Write();
 	h_simu_slopeX->Write();
