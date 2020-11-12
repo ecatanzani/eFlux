@@ -15,6 +15,8 @@ public:
 	~ntuple(){};
 protected:
 	void set_core_address();
+	const std::vector<double> fit_shower_profile(const double costheta);
+	const double compute_bgoreco_costheta();
 	// Tree
 	std::shared_ptr<TChain> evtch;
 	// Trigger

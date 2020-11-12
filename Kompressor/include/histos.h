@@ -38,7 +38,11 @@ public:
 		const double BGOrec_slopeY,
 		const double BGOrec_interceptX,
 		const double BGOrec_interceptY,
-		const double cosine_STK);
+		const double BGOrec_costheta);
+	void FillBGOShowerFit(
+		const std::vector<double> bgo_profile_fit_res,
+		const double corr_energy,
+		const double simu_energy_w);
 	void FillSumRmsCosine(
 		const double energy,
 		const double energy_w,
@@ -103,6 +107,9 @@ public:
 	void FillBGOFiducialAll(
 		const double energy,
 		const double energy_w);
+	void FillBGOCosine(
+		const double energy_w,
+		const double BGOrec_cosine);
 	void FillNUD(
 		const double energy_w,
 		const std::vector<double> *nud_adc,
@@ -121,6 +128,10 @@ public:
 		const double stk_charge_y,
 		const double stk_charge,
 		const bool selected=false);
+	void FillStkCosine(
+		const double energy_w,
+		const double STK_cosine,
+		const double BGOrec_cosine);
 	void FillAllCut(
 		const double energy,
 		const double energy_w);
@@ -147,6 +158,7 @@ protected:
 	void init_BGO_histos();
 	void init_xtrl_histos();
 	void init_ep_histos();
+	void init_STK_histos();
 	void init_psd_charge_histos();
 	void init_stk_charge_histos();
 	void init_nud_histos();
@@ -181,6 +193,8 @@ protected:
 	std::unique_ptr<TH1D> h_BGOrec_energy;
 	std::unique_ptr<TH1D> h_BGOrec_corr_energy;
 	std::unique_ptr<TH1D> h_BGOrec_layer_energy_diff;
+	std::unique_ptr<TH1D> h_BGOrec_costheta;
+	std::unique_ptr<TH1D> h_BGOrec_costheta_presel;
 	std::vector<std::unique_ptr<TH1D>> h_BGOrec_layer_max_energy_ratio;
 	std::vector<std::vector<std::unique_ptr<TH1D>>> h_BGOrec_layer_energy_ratio;
 	std::vector<std::vector<std::unique_ptr<TH1D>>> h_BGOrec_layer_rms;
@@ -237,6 +251,14 @@ protected:
 	std::unique_ptr<TH2D> e_discrimination_3000_10000;
 	std::unique_ptr<TH2D> e_discrimination_10000_20000;
 
+	std::unique_ptr<TH1D> h_BGOrec_shower_profile_fit_energy;
+	std::unique_ptr<TH1D> h_BGOrec_shower_profile_fit_a;
+	std::unique_ptr<TH1D> h_BGOrec_shower_profile_fit_b;
+	std::unique_ptr<TH1D> h_BGOrec_shower_profile_energy_diff;
+
+	// STK
+	std::unique_ptr<TH1D> h_STK_costheta;
+	std::unique_ptr<TH1D> h_STK_BGO_costheta_diff;
 	// PSD charge
 	std::unique_ptr<TH1D> h_psd_chargeX;
 	std::unique_ptr<TH1D> h_psd_chargeY;
