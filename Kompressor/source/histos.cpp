@@ -182,37 +182,37 @@ void histos::init_BGO_histos()
 	h_BGOrec_layer_energy_diff = std::make_unique<TH1D>(
 		"h_BGOrec_layer_energy_diff",
 		"Sum Energy Layer - Raw Energy",
-		10, 0, 1);
+		1000, 0, 10);
 	h_BGOrec_costheta = std::make_unique<TH1D>(
 		"h_BGOrec_costheta",
 		"BGO Reco costheta",
-		10, 0, 1);
+		1000, 0, 1);
 	h_BGOrec_costheta_presel = std::make_unique<TH1D>(
 		"h_BGOrec_costheta_presel",
 		"BGO Reco costheta - After Preselection Cuts",
-		10, 0, 1);
+		1000, 0, 1);
 
 	for (unsigned int bidx = 0; bidx < (logEBins.size() - 1); ++bidx)
 	{
 		h_BGOrec_layer_max_energy_ratio[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_layer_max_energy_ratio_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("Max Layer Energy Ratio - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-			10, 0, 1);
+			1000, 0, 1);
 		h_BGOrec_shower_profile[bidx] = std::make_unique<TH2D>(
 			(std::string("h_BGOrec_shower_profile_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("Shower Profile - Reco Energy bin") + std::to_string(bidx + 1)).c_str(),
 			14, 0, 13,
-			10, 0, 1);
+			1000, 0, 1);
 		h_BGOrec_shower_profile_cosine_upto_09[bidx] = std::make_unique<TH2D>(
 			(std::string("h_BGOrec_shower_profile_cosine_upto_09_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("Shower Profile (cosine < 0.9) - Reco Energy bin") + std::to_string(bidx + 1)).c_str(),
 			14, 0, 13,
-			10, 0, 1);
+			1000, 0, 1);
 		h_BGOrec_shower_profile_cone_from_09[bidx] = std::make_unique<TH2D>(
 			(std::string("h_BGOrec_shower_profile_cone_from_09_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("Shower Profile 0.9 < cosine < 1 - Reco Energy bin") + std::to_string(bidx + 1)).c_str(),
 			14, 0, 13,
-			10, 0, 1);
+			1000, 0, 1);
 
 		h_BGOrec_layer_energy_ratio[bidx].resize(DAMPE_bgo_nLayers);
 		h_BGOrec_layer_rms[bidx].resize(DAMPE_bgo_nLayers);
@@ -227,32 +227,32 @@ void histos::init_BGO_histos()
 			h_BGOrec_layer_energy_ratio[bidx][lIdx] = std::make_unique<TH1D>(
 				(std::string("h_BGOrec_layer_energy_ratio_") + std::to_string(lIdx) + std::string("_recobin_") + std::to_string(bidx + 1)).c_str(),
 				(std::string("Energy Ratio - BGO layer ") + std::to_string(lIdx) + std::string(" - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-				10, 0, 1);
+				1000, 0, 1);
 			// h_BGOrec_layer_rms
 			h_BGOrec_layer_rms[bidx][lIdx] = std::make_unique<TH1D>(
 				(std::string("h_BGOrec_layer_rms_") + std::to_string(lIdx) + std::string("_recobin_") + std::to_string(bidx + 1)).c_str(),
 				(std::string("RMS - BGO layer ") + std::to_string(lIdx) + std::string(" - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-				10, 0, 300);
+				100, 0, 300);
 			// h_BGOrec_energy_frac_1R
 			h_BGOrec_energy_frac_1R[bidx][lIdx] = std::make_unique<TH1D>(
 				(std::string("h_BGOrec_energy_frac_1R_") + std::to_string(lIdx) + std::string("_recobin_") + std::to_string(bidx + 1)).c_str(),
 				(std::string("Energy fraction 1 Moliere Radius - BGO layer ") + std::to_string(lIdx) + std::string(" - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-				10, 0, 1);
+				100, 0, 1);
 			// h_BGOrec_energy_frac_2R
 			h_BGOrec_energy_frac_2R[bidx][lIdx] = std::make_unique<TH1D>(
 				(std::string("h_BGOrec_energy_frac_2R_") + std::to_string(lIdx) + std::string("_recobin_") + std::to_string(bidx + 1)).c_str(),
 				(std::string("Energy fraction 2 Moliere Radius - BGO layer ") + std::to_string(lIdx) + std::string(" - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-				10, 0, 1);
+				100, 0, 1);
 			// h_BGOrec_energy_frac_3R
 			h_BGOrec_energy_frac_3R[bidx][lIdx] = std::make_unique<TH1D>(
 				(std::string("h_BGOrec_energy_frac_3R_") + std::to_string(lIdx) + std::string("_recobin_") + std::to_string(bidx + 1)).c_str(),
 				(std::string("Energy fraction 3 Moliere Radius - BGO layer ") + std::to_string(lIdx) + std::string(" - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-				10, 0, 1);
+				100, 0, 1);
 			// h_BGOrec_energy_frac_5R
 			h_BGOrec_energy_frac_5R[bidx][lIdx] = std::make_unique<TH1D>(
 				(std::string("h_BGOrec_energy_frac_5R_") + std::to_string(lIdx) + std::string("_recobin_") + std::to_string(bidx + 1)).c_str(),
 				(std::string("Energy fraction 5 Moliere Radius - BGO layer ") + std::to_string(lIdx) + std::string(" - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-				10, 0, 1);
+				100, 0, 1);
 		}
 
 		h_BGOrec_sumrms[bidx] = std::make_unique<TH1D>(
@@ -262,7 +262,7 @@ void histos::init_BGO_histos()
 		h_BGOrec_sumrms_weighted[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_sumrms_weighted_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("weighted sumRMS - Reco Energy bin ") + std::to_string(bidx + 1) + std::string("; sumRms[mm]")).c_str(),
-			sumRms_bins.size() - 1, &(sumRms_bins[0]));
+			100, 0, 200);
 		h_BGOrec_sumrms_cosine[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_sumrms_cosine_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("cosine sumRMS - Reco Energy bin ") + std::to_string(bidx + 1) + std::string("; sumRms[mm]")).c_str(),
@@ -270,16 +270,16 @@ void histos::init_BGO_histos()
 		h_BGOrec_fraclast[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_fraclast_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("Energy Fraction - BGO last layer - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-			100, 0, 1);
+			100, 0, 0.1);
 		h_BGOrec_fraclast_cosine[bidx] = std::make_unique<TH2D>(
 			(std::string("h_BGOrec_fraclast_cosine_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("Energy Fraction - BGO last layer vs STK cosine Reco Energy bin ") + std::to_string(bidx + 1) + std::string("; cos(#theta); F_{last}")).c_str(),
-			10, 0, 1,
-			10, 0, 1);
+			100, 0, 1,
+			100, 0, 0.1);
 		h_BGOrec_frac13[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_frac13_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("Energy Fraction - BGO 13th layer - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-			10, 0, 1);
+			100, 0, 0.1);
 		h_BGOrec_last_layer[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_last_layer_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("BGO last energy layer - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
@@ -287,15 +287,15 @@ void histos::init_BGO_histos()
 		h_BGOrec_hits[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_hits_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("BGO hits - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-			10, 0, 1e+3);
+			100, 0, 400);
 		h_BGOrec_slopeX[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_slopeX_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("BGOrec Slope X - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-			10, -90, 90);
+			100, -20, 20);
 		h_BGOrec_slopeY[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_slopeY_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("BGOrec Slope Y - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
-			10, -90, 90);
+			100, -20, 20);
 		h_BGOrec_interceptX[bidx] = std::make_unique<TH1D>(
 			(std::string("h_BGOrec_interceptX_recobin_") + std::to_string(bidx + 1)).c_str(),
 			(std::string("BGOrec Intercept X - Reco Energy bin ") + std::to_string(bidx + 1)).c_str(),
@@ -373,15 +373,15 @@ void histos::init_BGO_histos()
 	h_BGOrec_shower_profile_fit_a = std::make_unique<TH1D>(
 		"h_BGOrec_shower_profile_fit_a",
 		"a parameter - BGO Shower Profile Fit",
-		10, 0, 1);
+		100, 0, 1);
 	h_BGOrec_shower_profile_fit_b = std::make_unique<TH1D>(
 		"h_BGOrec_shower_profile_fit_b",
 		"b parameter - BGO Shower Profile Fit",
-		10, 0, 1);
+		100, 0, 1);
 	h_BGOrec_shower_profile_energy_diff = std::make_unique<TH1D>(
 		"h_BGOrec_shower_profile_energy_diff",
 		"Fit Energy - BGO Correct energy - BGO Shower Profile Fit",
-		10, -100, 100);
+		1000, -100, 100);
 }
 
 void histos::init_xtrl_histos()
@@ -497,37 +497,37 @@ void histos::init_psd_charge_histos()
 	h_psd_chargeX = std::make_unique<TH1D>(
 		"h_psd_chargeX",
 		"Charge distribution X; X charge",
-		10, 0, 100);
+		10, 0, 20);
 	h_psd_chargeY = std::make_unique<TH1D>(
 		"h_psd_chargeY",
 		"Charge distribution Y; Y charge",
-		10, 0, 100);
+		10, 0, 20);
 	h_psd_charge2D = std::make_unique<TH2D>(
 		"h_psd_charge2D",
 		"PSD charge; X charge; Y charge",
-		10, 0, 100,
-		10, 0, 100);
+		10, 0, 20,
+		10, 0, 20);
 	h_psd_charge = std::make_unique<TH1D>(
 		"h_psd_charge",
 		"Mean PSD charge; Mean charge",
-		10, 0, 100);
+		10, 0, 20);
 	h_psd_selected_chargeX = std::make_unique<TH1D>(
 		"h_psd_selected_chargeX",
 		"Charge distribution X; X charge",
-		10, 0, 100);
+		10, 0, 20);
 	h_psd_selected_chargeY = std::make_unique<TH1D>(
 		"h_psd_selected_chargeY",
 		"Charge distribution Y; Y charge",
-		10, 0, 100);
+		10, 0, 20);
 	h_psd_selected_charge2D = std::make_unique<TH2D>(
 		"h_psd_selected_charge2D",
 		"PSD charge; X charge; Y charge",
-		10, 0, 100,
-		10, 0, 100);
+		10, 0, 20,
+		10, 0, 20);
 	h_psd_selected_charge = std::make_unique<TH1D>(
 		"h_psd_selected_charge",
 		"Mean PSD charge; Mean charge",
-		10, 0, 1000);
+		10, 0, 20);
 }
 
 void histos::init_stk_charge_histos()
@@ -535,37 +535,37 @@ void histos::init_stk_charge_histos()
 	h_stk_chargeX = std::make_unique<TH1D>(
 		"h_stk_chargeX",
 		"Charge distribution X; X charge",
-		10, 0, 100);
+		100, 0, 100);
 	h_stk_chargeY = std::make_unique<TH1D>(
 		"h_stk_chargeY",
 		"Charge distribution Y; Y charge",
-		10, 0, 100);
+		100, 0, 100);
 	h_stk_charge2D = std::make_unique<TH2D>(
 		"h_stk_charge2D",
 		"STK charge; X charge; Y charge",
-		10, 0, 100,
-		10, 0, 100);
+		100, 0, 100,
+		100, 0, 100);
 	h_stk_charge = std::make_unique<TH1D>(
 		"h_stk_charge",
 		"Mean STK charge; Mean charge",
-		10, 0, 100);
+		100, 0, 100);
 	h_stk_selected_chargeX = std::make_unique<TH1D>(
 		"h_stk_selected_chargeX",
 		"Charge distribution X; X charge",
-		10, 0, 100);
+		100, 0, 100);
 	h_stk_selected_chargeY = std::make_unique<TH1D>(
 		"h_stk_selected_chargeY",
 		"Charge distribution Y; Y charge",
-		10, 0, 100);
+		100, 0, 100);
 	h_stk_selected_charge2D = std::make_unique<TH2D>(
 		"h_stk_selected_charge2D",
 		"STK charge; X charge; Y charge",
-		10, 0, 100,
-		10, 0, 100);
+		100, 0, 100,
+		100, 0, 100);
 	h_stk_selected_charge = std::make_unique<TH1D>(
 		"h_stk_selected_charge",
 		"Mean STK charge; Mean charge",
-		10, 0, 100);
+		100, 0, 100);
 }
 
 void histos::init_nud_histos()
@@ -579,7 +579,7 @@ void histos::init_nud_histos()
 		h_NUD_adc[channel] = std::make_unique<TH1D>(
 			h_name.c_str(),
 			h_title.c_str(),
-			10, 0, 1e+3);
+			100, 0, 1e+3);
 	}
 	h_NUD_total_adc = std::make_unique<TH1D>(
 		"h_NUD_total_adc",
@@ -588,7 +588,7 @@ void histos::init_nud_histos()
 	h_NUD_max_adc = std::make_unique<TH1D>(
 		"h_NUD_max_adc",
 		"NUD max ADC",
-		10, 0, 1e+3);
+		100, 0, 1e+3);
 	h_NUD_max_channel = std::make_unique<TH1D>(
 		"h_NUD_max_channel",
 		"NUD channel max ADC",
@@ -658,7 +658,7 @@ void histos::FillBGO(
 	h_BGOrec_sumrms[reco_bidx]->Fill(sumRms, simu_energy_w);
 	h_BGOrec_sumrms_weighted[reco_bidx]->Fill(weighted_sumRms, simu_energy_w);
 	h_BGOrec_sumrms_cosine[reco_bidx]->Fill(sumRms / BGOrec_costheta, simu_energy_w);
-	h_BGOrec_layer_energy_diff->Fill(fabs(sum_energy_layer - raw_energy));
+	h_BGOrec_layer_energy_diff->Fill(fabs((sum_energy_layer - raw_energy)*_GeV));
 	h_BGOrec_fraclast[reco_bidx]->Fill(fracLast, simu_energy_w);
 	h_BGOrec_fraclast_cosine[reco_bidx]->Fill(BGOrec_costheta, fracLast, simu_energy_w);
 	h_BGOrec_frac13[reco_bidx]->Fill(fracLast_13, simu_energy_w);
