@@ -34,7 +34,3 @@ track_selection                     YES
 psd_stk_match                       YES
 psd_charge                          YES
 stk_charge                          YES
-
-## Simu Params
-
-generation_vertex_radius            1.381976597885342   m
