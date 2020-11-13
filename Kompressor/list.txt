@@ -1,1 +1,0 @@
-/home/myRepo/eFlux/Kompressor/sample_electron_ntuple.root
