@@ -15,18 +15,26 @@ void reader(
 {
     std::unique_ptr<parser> evt_parser = std::make_unique<parser>(inputList, mc, _VERBOSE);
     std::shared_ptr<config> _config = std::make_shared<config>(wd, mc);
+    const double _entries = evtch->GetEntries();
     if (_VERBOSE)
 	{
 		_config->PrintActiveFilters();
+        std::cout << "Total number of events: " << _entries << "\n\n";
 		std::cout << "Reading events..." << std::endl;
 	}
     if (mc)
-        mc_reader(evt_parser->GetEvtTree(), _config, outputPath, _VERBOSE);
+        mc_reader(
+            evt_parser->GetEvtTree(), 
+            _config, 
+            _entries, 
+            outputPath, 
+            _VERBOSE);
 }
 
 void mc_reader(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
+    const double _entries,
     const std::string outputPath,
     const bool _VERBOSE)
 {
@@ -36,7 +44,7 @@ void mc_reader(
     int kStep = 10;
     std::unique_ptr<mc_tuple> _tuple = std::make_unique<mc_tuple>(evtch);
     _tuple->InitHistos(_config->GetEnergyBinning());
-    auto _entries = evtch->GetEntries();
+    
     for (auto i : ROOT::TSeqUL(_entries)) 
     {
         if (_VERBOSE)

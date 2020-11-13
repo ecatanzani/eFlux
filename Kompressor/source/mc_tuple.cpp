@@ -184,7 +184,7 @@ void mc_tuple::fill_histos()
                                     simu_energy_w,
                                     reco_bidx,
                                     sumRms,
-                                    BGOrec_costheta);
+                                    STK_bestTrack_costheta);
                             }
                             if (evtfilter_stk_charge_cut)
                                 _histos->FillStkCharge(simu_energy_w, STK_chargeX, STK_chargeY, STK_charge, true);

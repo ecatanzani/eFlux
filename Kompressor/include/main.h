@@ -22,6 +22,7 @@ void reader(
 void mc_reader(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
+    const double _entries,
     const std::string outputPath,
     const bool _VERBOSE);
 
