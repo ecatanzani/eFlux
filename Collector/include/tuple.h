@@ -6,6 +6,7 @@
 #include "DAMPE_geo_structure.h"
 
 #include "TTree.h"
+#include "TVector3.h"
 
 #include <memory>
 #include <vector>
@@ -36,17 +37,18 @@ protected:
 		const std::vector<double> &energy_release_layer,
 		const std::vector<double> &bgoRec_slope,
 		const std::vector<double> &bgoRec_intercept,
+		const TVector3 &bgoRec_trajectory2D,
 		const double sumRMS,
-		const std::vector<double> rms_layer,
-		const std::vector<double> bgo_fracLayer,
+		const std::vector<double> &rms_layer,
+		const std::vector<double> &bgo_fracLayer,
 		const double lastFracLayer,
 		const double frac_layer_13,
 		const int last_bgo_layer,
 		const int bgo_entries,
-		const std::vector<double> energy_1_moliere_radius,
-		const std::vector<double> energy_2_moliere_radius,
-		const std::vector<double> energy_3_moliere_radius,
-		const std::vector<double> energy_5_moliere_radius);
+		const std::vector<double> &energy_1_moliere_radius,
+		const std::vector<double> &energy_2_moliere_radius,
+		const std::vector<double> &energy_3_moliere_radius,
+		const std::vector<double> &energy_5_moliere_radius);
 	void fill_psdcharge_info(const psd_charge &extracted_psd_charge);
 	void fill_stkcharge_info(const stk_charge &extracted_stk_charge);
 	void fill_classifier_info(const bgo_classifiers &classifier);
@@ -92,6 +94,7 @@ protected:
 	double BGOrec_slopeY = -999;
 	double BGOrec_interceptX = -999;
 	double BGOrec_interceptY = -999;
+	TVector3 trajectoryDirection2D {-999, -999, -999};
 	double sumRms = -999;
 	std::vector<double> rmsLayer;
 	std::vector<double> fracLayer;

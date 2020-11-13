@@ -6,7 +6,6 @@ void mcCore(
 	const std::string outputPath,
 	const bool verbose,
 	const bool pedantic,
-	const bool ntuple_flag,
 	AnyOption &opt,
 	const std::string wd)
 {
@@ -23,7 +22,6 @@ void mcCore(
 		inputPath,
 		outFile,
 		verbose,
-		ntuple_flag,
 		wd);
 
 	// Close output file ...

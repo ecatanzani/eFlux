@@ -49,17 +49,18 @@ void ntuple::fill_bgo_info(
 	const std::vector<double> &energy_release_layer,
 	const std::vector<double> &bgoRec_slope,
 	const std::vector<double> &bgoRec_intercept,
+	const TVector3 &bgoRec_trajectory2D,
 	const double sumRMS,
-	const std::vector<double> rms_layer,
-	const std::vector<double> bgo_fracLayer,
+	const std::vector<double> &rms_layer,
+	const std::vector<double> &bgo_fracLayer,
 	const double lastFracLayer,
 	const double frac_layer_13,
 	const int last_bgo_layer,
 	const int bgo_entries,
-	const std::vector<double> energy_1_moliere_radius,
-	const std::vector<double> energy_2_moliere_radius,
-	const std::vector<double> energy_3_moliere_radius,
-	const std::vector<double> energy_5_moliere_radius)
+	const std::vector<double> &energy_1_moliere_radius,
+	const std::vector<double> &energy_2_moliere_radius,
+	const std::vector<double> &energy_3_moliere_radius,
+	const std::vector<double> &energy_5_moliere_radius)
 {
 	if (evtfilter_correct_bgo_reco)
 	{
@@ -70,6 +71,7 @@ void ntuple::fill_bgo_info(
 		BGOrec_slopeY = bgoRec_slope[1];
 		BGOrec_interceptX = bgoRec_intercept[0];
 		BGOrec_interceptY = bgoRec_intercept[1];
+		trajectoryDirection2D = bgoRec_trajectory2D;
 		sumRms = sumRMS;
 		rmsLayer = rms_layer;
 		fracLayer = bgo_fracLayer;
@@ -168,6 +170,7 @@ void ntuple::core_reset()
 	BGOrec_slopeY = -999;
 	BGOrec_interceptX = -999;
 	BGOrec_interceptY = -999;
+	trajectoryDirection2D.SetXYZ(-999, -999, -999);
 	sumRms = -999;
 	rmsLayer = std::vector<double>(DAMPE_bgo_nLayers, -999);
 	fracLayer = std::vector<double>(DAMPE_bgo_nLayers, -999);

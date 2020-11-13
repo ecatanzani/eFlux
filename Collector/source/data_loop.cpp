@@ -1,7 +1,6 @@
 #include "data.h"
 #include "utils.h"
 #include "config.h"
-#include "histos.h"
 #include "energy.h"
 #include "data_tuple.h"
 #include "DmpBgoContainer.h"
@@ -30,11 +29,9 @@ void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
-	const bool ntuple_flag,
 	const std::string wd)
 {
 	bool _MC = false;
-	bool _DATA = true;
 
 	std::shared_ptr<TChain> dmpch;
 	event_collector collector(
@@ -104,21 +101,14 @@ void rawDataLoop(
 	config data_config(wd, _MC);
 	// Compute energy binning
 	auto logEBins = data_config.GetEnergyBinning();
-	// Create data histos objects
-	std::unique_ptr<histos> h_data;
 	// Create DATA tuple objects
-	std::unique_ptr<data_tuple> tuple;
+	std::unique_ptr<data_tuple> tuple = std::make_unique<data_tuple>(data_config.GetActiveCuts());
 	// Load energy class
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
 	// Load output file
 	outFile.cd();
-	
-	if (ntuple_flag)
-		tuple = std::make_unique<data_tuple>(data_config.GetActiveCuts());
-	else
-		h_data = std::make_unique<histos>(logEBins);
 
 	auto nevents = dmpch->GetEntries();
 	int kStep = 10;
@@ -200,49 +190,35 @@ void rawDataLoop(
 				stktracks,
 				data_config.GetActiveCuts());
 		}
-		if (ntuple_flag)
-			tuple->Fill(
-				filter.GetFilterOutput(),
-				attitude,
-				filter.GetBestTrack(),
-				evt_energy.GetRawEnergy(),
-				evt_energy.GetCorrEnergy(),
-				bgoVault.GetLayerEnergies(),
-				bgoVault.GetBGOslope(),
-				bgoVault.GetBGOintercept(),
-				bgoVault.GetSumRMS(),
-				bgoVault.GetRmsLayer(),
-				bgoVault.GetFracLayer(),
-				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-				bgoVault.GetSingleFracLayer(13),
-				bgoVault.GetLastEnergyLayer(),
-				bgoVault.GetNhits(),
-				bgoVault.GetEnergy1MR(),
-				bgoVault.GetEnergy2MR(),
-				bgoVault.GetEnergy3MR(),
-				bgoVault.GetEnergy5MR(),
-				filter.GetPSDCharge(),
-				filter.GetSTKCharge(),
-				filter.GetClassifiers(),
-				filter.GetTrigger(),
-				nudVault.GetADC(),
-				nudVault.GetTotalADC(),
-				nudVault.GetMaxADC(),
-				nudVault.GetMaxChannelID());
-		else
-			h_data->Fill(
-				filter.GetFilterOutput(),
-				bgoVault.GetFracLayer(),
-				bgoVault.GetBGOslope(),
-				bgoVault.GetBGOintercept(),
-				filter.GetPSDCharge(),
-				filter.GetSTKCharge(),
-				bgoVault.GetSumRMS(),
-				filter.GetBestTrackObj().getDirection().CosTheta(),
-				filter.GetClassifiers(),
-				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-				bgoVault.GetSingleFracLayer(13),
-				evt_energy.GetCorrEnergy());
+		tuple->Fill(
+			filter.GetFilterOutput(),
+			attitude,
+			filter.GetBestTrack(),
+			evt_energy.GetRawEnergy(),
+			evt_energy.GetCorrEnergy(),
+			bgoVault.GetLayerEnergies(),
+			bgoVault.GetBGOslope(),
+			bgoVault.GetBGOintercept(),
+			bgoVault.GetBGOTrajectory2D(),
+			bgoVault.GetSumRMS(),
+			bgoVault.GetRmsLayer(),
+			bgoVault.GetFracLayer(),
+			bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
+			bgoVault.GetSingleFracLayer(13),
+			bgoVault.GetLastEnergyLayer(),
+			bgoVault.GetNhits(),
+			bgoVault.GetEnergy1MR(),
+			bgoVault.GetEnergy2MR(),
+			bgoVault.GetEnergy3MR(),
+			bgoVault.GetEnergy5MR(),
+			filter.GetPSDCharge(),
+			filter.GetSTKCharge(),
+			filter.GetClassifiers(),
+			filter.GetTrigger(),
+			nudVault.GetADC(),
+			nudVault.GetTotalADC(),
+			nudVault.GetMaxADC(),
+			nudVault.GetMaxChannelID());
 	}
 
 	if (_VERBOSE)
@@ -257,9 +233,6 @@ void rawDataLoop(
 		std::cout << "Particles surviving the selection cuts: " << filter.GetStatEvtSelection() << "\t | " << ((double)filter.GetStatEvtSelection() / filter.GetStatiEvtTrigger()) * 100 << "%";
 		std::cout << "\n\n ***********************\n\n";
 	}
-
-	if (ntuple_flag)
-		tuple->Write(outFile);
-	else
-		h_data->Write(outFile);
+	
+	tuple->Write(outFile);
 }

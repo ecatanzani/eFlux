@@ -4,7 +4,6 @@
 #include "config.h"
 #include "particle.h"
 #include "mc_tuple.h"
-#include "mc_histos.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
 #include "DmpNudContainer.h"
@@ -28,11 +27,9 @@ void mcLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
-	const bool ntuple_flag,
 	const std::string wd)
 {
 	bool _MC = true;
-	bool _DATA = false;
 	double _GeV = 0.001;
 
 	std::shared_ptr<TChain> dmpch;
@@ -96,21 +93,14 @@ void mcLoop(
 	config mc_config(wd, _MC);
 	// Compute energy binning
 	auto logEBins = mc_config.GetEnergyBinning();
-	// Create MC histos objects
-	std::unique_ptr<mc_histos> h_mc;
 	// Create MC tuple objects
-	std::unique_ptr<mc_tuple> simu_tuple;
+	std::unique_ptr<mc_tuple> simu_tuple = std::make_unique<mc_tuple>(mc_config.GetActiveCuts());
 	// Load energy class
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
 	// Load output file
 	outFile.cd();
-	
-	if (ntuple_flag)
-		simu_tuple = std::make_unique<mc_tuple>(mc_config.GetActiveCuts());
-	else
-		h_mc = std::make_unique<mc_histos>(logEBins);
 
 	auto nevents = dmpch->GetEntries();
 	int kStep = 10;
@@ -212,58 +202,39 @@ void mcLoop(
 				stktracks,
 				mc_config.GetActiveCuts());
 		}
-
-		if (ntuple_flag)
-			simu_tuple->Fill(
-				filter.GetFilterOutput(),
-				filter.GetBestTrack(),
-				evt_energy.GetRawEnergy(),
-				evt_energy.GetCorrEnergy(),
-				evt_energy.GetCorrWeight(),
-				bgoVault.GetLayerEnergies(),
-				bgoVault.GetBGOslope(),
-				bgoVault.GetBGOintercept(),
-				bgoVault.GetSumRMS(),
-				bgoVault.GetRmsLayer(),
-				bgoVault.GetFracLayer(),
-				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-				bgoVault.GetSingleFracLayer(13),
-				bgoVault.GetLastEnergyLayer(),
-				bgoVault.GetNhits(),
-				bgoVault.GetEnergy1MR(),
-				bgoVault.GetEnergy2MR(),
-				bgoVault.GetEnergy3MR(),
-				bgoVault.GetEnergy5MR(),
-				simuPosition,
-				simuMomentum,
-				evt_energy.GetSimuEnergy(),
-				evt_energy.GetSimuWeight(),
-				filter.GetPSDCharge(),
-				filter.GetSTKCharge(),
-				filter.GetClassifiers(),
-				filter.GetTrigger(),
-				nudVault.GetADC(),
-				nudVault.GetTotalADC(),
-				nudVault.GetMaxADC(),
-				nudVault.GetMaxChannelID());
-		else
-			h_mc->FillMC(
-				filter.GetFilterOutput(),
-				bgoVault.GetFracLayer(),
-				bgoVault.GetBGOslope(),
-				bgoVault.GetBGOintercept(),
-				simu_primaries,
-				filter.GetPSDCharge(),
-				filter.GetSTKCharge(),
-				bgoVault.GetSumRMS(),
-				filter.GetBestTrackObj().getDirection().CosTheta(),
-				filter.GetClassifiers(),
-				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-				bgoVault.GetSingleFracLayer(13),
-				evt_energy.GetSimuEnergy(),
-				evt_energy.GetRawEnergy(),
-				evt_energy.GetCorrEnergy(),
-				evt_energy.GetSimuWeight());
+		simu_tuple->Fill(
+			filter.GetFilterOutput(),
+			filter.GetBestTrack(),
+			evt_energy.GetRawEnergy(),
+			evt_energy.GetCorrEnergy(),
+			evt_energy.GetCorrWeight(),
+			bgoVault.GetLayerEnergies(),
+			bgoVault.GetBGOslope(),
+			bgoVault.GetBGOintercept(),
+			bgoVault.GetBGOTrajectory2D(),
+			bgoVault.GetSumRMS(),
+			bgoVault.GetRmsLayer(),
+			bgoVault.GetFracLayer(),
+			bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
+			bgoVault.GetSingleFracLayer(13),
+			bgoVault.GetLastEnergyLayer(),
+			bgoVault.GetNhits(),
+			bgoVault.GetEnergy1MR(),
+			bgoVault.GetEnergy2MR(),
+			bgoVault.GetEnergy3MR(),
+			bgoVault.GetEnergy5MR(),
+			simuPosition,
+			simuMomentum,
+			evt_energy.GetSimuEnergy(),
+			evt_energy.GetSimuWeight(),
+			filter.GetPSDCharge(),
+			filter.GetSTKCharge(),
+			filter.GetClassifiers(),
+			filter.GetTrigger(),
+			nudVault.GetADC(),
+			nudVault.GetTotalADC(),
+			nudVault.GetMaxADC(),
+			nudVault.GetMaxChannelID());
 	}
 
 	if (_VERBOSE)
@@ -278,9 +249,6 @@ void mcLoop(
 		std::cout << "Particles surviving the selection cuts: " << filter.GetStatEvtSelection() << "\t | " << ((double)filter.GetStatEvtSelection() / filter.GetStatiEvtTrigger()) * 100 << "%";
 		std::cout << "\n\n ***********************\n\n";
 	}
-
-	if (ntuple_flag)
-		simu_tuple->Write(outFile);
-	else
-		h_mc->WriteMC(outFile);
+	
+	simu_tuple->Write(outFile);
 }

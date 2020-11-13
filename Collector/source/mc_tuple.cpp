@@ -139,6 +139,10 @@ void mc_tuple::branch_tree()
 		&BGOrec_interceptY,
 		"BGOrec_interceptY/D");
 	DmpNtupTree->Branch(
+		"BGOrec_trajectoryDirection2D", 
+		"TVector3", 
+		&trajectoryDirection2D);
+	DmpNtupTree->Branch(
 		"sumRms",
 		&sumRms,
 		"sumRms/D");
@@ -375,29 +379,30 @@ void mc_tuple::Fill(
 	const std::vector<double> &energy_release_layer,
 	const std::vector<double> &bgoRec_slope,
 	const std::vector<double> &bgoRec_intercept,
+	const TVector3 &bgo_trajectory2D,
 	const double sumRMS,
-	const std::vector<double> rms_layer,
-	const std::vector<double> bgo_fracLayer,
+	const std::vector<double> &rms_layer,
+	const std::vector<double> &bgo_fracLayer,
 	const double lastFracLayer,
 	const double frac_layer_13,
 	const int last_bgo_layer,
 	const int bgo_entries,
-	const std::vector<double> energy_1_moliere_radius,
-	const std::vector<double> energy_2_moliere_radius,
-	const std::vector<double> energy_3_moliere_radius,
-	const std::vector<double> energy_5_moliere_radius,
-	const TVector3 mc_position,
-	const TVector3 mc_momentum,
+	const std::vector<double> &energy_1_moliere_radius,
+	const std::vector<double> &energy_2_moliere_radius,
+	const std::vector<double> &energy_3_moliere_radius,
+	const std::vector<double> &energy_5_moliere_radius,
+	const TVector3 &mc_position,
+	const TVector3 &mc_momentum,
 	const double mc_simu_energy,
 	const double mc_simu_energy_w,
 	const psd_charge &extracted_psd_charge,
 	const stk_charge &extracted_stk_charge,
 	const bgo_classifiers &classifier,
 	const trigger_info &evt_trigger,
-	const std::vector<double> adc,
-	const double total_adc,
-	const double max_adc,
-	const int max_channel_id)
+	const std::vector<double> &nud_adc,
+	const double nud_total_adc,
+	const double nud_max_adc,
+	const int nud_max_channel_id)
 {
 	fill_trigger_info(evt_trigger);
 	fill_filter_info(output);
@@ -408,6 +413,7 @@ void mc_tuple::Fill(
 		energy_release_layer,
 		bgoRec_slope,
 		bgoRec_intercept,
+		bgo_trajectory2D,
 		sumRMS,
 		rms_layer,
 		bgo_fracLayer,
@@ -429,10 +435,10 @@ void mc_tuple::Fill(
 	fill_stkcharge_info(extracted_stk_charge);
 	fill_classifier_info(classifier);
 	fill_nud_info(
-		adc,
-		total_adc,
-		max_adc,
-		max_channel_id);
+		nud_adc,
+		nud_total_adc,
+		nud_max_adc,
+		nud_max_channel_id);
 	DmpNtupTree->Fill();
 }
 

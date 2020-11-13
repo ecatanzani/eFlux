@@ -38,6 +38,8 @@ void DmpBgoContainer::scanBGOHits(
 		intercept[0] = bgorec->GetInterceptXZ();
 		intercept[1] = bgorec->GetInterceptYZ();
 	}
+	// Get BGO reco 2D trajectory
+	trajectoryDirection2D = bgorec->GetTrajectoryDirection2D();
 	
 	// Get the number of BGO hits
 	nBgoHits = bgohits->GetHittedBarNumber();
@@ -252,6 +254,11 @@ const std::vector<double> DmpBgoContainer::FastBGOintercept(const std::shared_pt
 	intercept[0] = bgorec->GetInterceptXZ();
 	intercept[1] = bgorec->GetInterceptYZ();
 	return intercept;
+}
+
+const TVector3 DmpBgoContainer::GetBGOTrajectory2D()
+{
+	return trajectoryDirection2D;
 }
 
 const std::vector<double> DmpBgoContainer::GetEnergy1MR()

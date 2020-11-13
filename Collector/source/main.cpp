@@ -24,8 +24,7 @@ int main(int argc, char **argv)
 
 	opt.addUsage(" -m  --mc														MC event loop");
 	opt.addUsage(" -r  --raw_data												Raw data event loop");
-	opt.addUsage(" -n  --ntuple													nTuple production facility");
-
+	
 	opt.addUsage("");
 
 	opt.setFlag("help", 'h');
@@ -37,8 +36,7 @@ int main(int argc, char **argv)
 	opt.setFlag("pedantic", 'p');
 	opt.setFlag("mc", 'm');
 	opt.setFlag("raw_data", 'r');
-	opt.setFlag("ntuple", 'n');
-
+	
 	opt.processCommandArgs(argc, argv);
 
 	std::string wd;
@@ -51,7 +49,6 @@ int main(int argc, char **argv)
 	// Tasks
 	bool mc_flag = false;
 	bool rawdata_flag = false;
-	bool ntuple_flag = false;
 
 	if (!opt.hasOptions())
 	{
@@ -80,8 +77,6 @@ int main(int argc, char **argv)
 		mc_flag = true;
 	if (opt.getFlag("raw_data") || opt.getFlag('r'))
 		rawdata_flag = true;
-	if (opt.getFlag("ntuple") || opt.getFlag('n'))
-		ntuple_flag = true;
 
 	if (mc_flag)
 		mcCore(
@@ -89,7 +84,6 @@ int main(int argc, char **argv)
 			outputPath,
 			verbose,
 			pedantic,
-			ntuple_flag,
 			opt,
 			wd);
 	else if (rawdata_flag)
@@ -98,7 +92,6 @@ int main(int argc, char **argv)
 			outputPath,
 			verbose,
 			pedantic,
-			ntuple_flag,
 			opt,
 			wd);
 	else

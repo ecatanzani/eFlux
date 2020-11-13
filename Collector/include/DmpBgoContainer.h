@@ -8,6 +8,8 @@
 #include "DmpEvtBgoHits.h"
 #include "DAMPE_geo_structure.h"
 
+#include "TVector3.h"
+
 class DmpBgoContainer
 {
 public:
@@ -75,6 +77,7 @@ public:
 	const std::vector<double> GetBGOintercept();
 	const std::vector<double> FastBGOslope(const std::shared_ptr<DmpEvtBgoRec> bgorec);
 	const std::vector<double> FastBGOintercept(const std::shared_ptr<DmpEvtBgoRec> bgorec);
+	const TVector3 GetBGOTrajectory2D();
 	// BGO hits
 	const int GetNhits();
 	// BGO Energy in moliere radius
@@ -108,6 +111,7 @@ private:
 	std::vector<double> energy_2R_radius;
 	std::vector<double> energy_3R_radius;
 	std::vector<double> energy_5R_radius;
+	TVector3 trajectoryDirection2D;
 };
 
 #endif
