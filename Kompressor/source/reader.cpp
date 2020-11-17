@@ -15,7 +15,7 @@ void reader(
 {
     std::unique_ptr<parser> evt_parser = std::make_unique<parser>(inputList, mc, _VERBOSE);
     std::shared_ptr<config> _config = std::make_shared<config>(wd, mc);
-    const double _entries = evtch->GetEntries();
+    const double _entries = evt_parser->GetEvtTree()->GetEntries();
     if (_VERBOSE)
 	{
 		_config->PrintActiveFilters();
@@ -38,9 +38,11 @@ void mc_reader(
     const std::string outputPath,
     const bool _VERBOSE)
 {
+/*    
 #if _PARALLER
     ROOT::EnableImplicitMT(nthreads);
 #endif
+*/
     int kStep = 10;
     std::unique_ptr<mc_tuple> _tuple = std::make_unique<mc_tuple>(evtch);
     _tuple->InitHistos(_config->GetEnergyBinning());
