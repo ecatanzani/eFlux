@@ -4,6 +4,7 @@
 #include "DAMPE_geo_structure.h"
 
 #include "TChain.h"
+#include "TVector3.h"
 
 #include <memory>
 #include <vector>
@@ -15,8 +16,7 @@ public:
 	~ntuple(){};
 protected:
 	void set_core_address();
-	const std::vector<double> fit_shower_profile(const double costheta);
-	const double compute_bgoreco_costheta();
+	const std::vector<double> fit_shower_profile();
 	// Tree
 	std::shared_ptr<TChain> evtch;
 	// Trigger
@@ -63,6 +63,7 @@ protected:
 	std::vector<double> *energy_2R_radius = nullptr;
 	std::vector<double> *energy_3R_radius = nullptr;
 	std::vector<double> *energy_5R_radius = nullptr;
+	TVector3* trajectoryDirection2D = nullptr;
 	// PSD
 	double PSD_chargeX;
 	double PSD_chargeY;

@@ -5,6 +5,7 @@
 #include "TMath.h"
 #include "TGraph.h"
 #include "TMinuit.h"
+#include "TVector3.h"
 
 void ntuple::set_core_address()
 {
@@ -41,6 +42,7 @@ void ntuple::set_core_address()
     evtch->SetBranchAddress("BGOrec_slopeY", &BGOrec_slopeY);
     evtch->SetBranchAddress("BGOrec_interceptX", &BGOrec_interceptX);
     evtch->SetBranchAddress("BGOrec_interceptY", &BGOrec_interceptY);
+    evtch->SetBranchAddress("BGOrec_trajectoryDirection2D", &trajectoryDirection2D);
     evtch->SetBranchAddress("sumRms", &sumRms);
     evtch->SetBranchAddress("rmsLayer", &rmsLayer);
     evtch->SetBranchAddress("fracLayer", &fracLayer);
@@ -101,7 +103,7 @@ double function(double *x, double *par)
     return func;
 }
 
-const std::vector<double> ntuple::fit_shower_profile(const double costheta)
+const std::vector<double> ntuple::fit_shower_profile()
 {
     const double bgoX0 = 11.2;                                                         // BGO X0 in mm
     const double bgoEc = 10.50;                                                        // BGO critical energy for electrons in MeV
@@ -110,7 +112,7 @@ const std::vector<double> ntuple::fit_shower_profile(const double costheta)
 
     std::vector<double> t_bgo(DAMPE_bgo_nLayers, -999);
     for (int idx = 0; idx < DAMPE_bgo_nLayers; ++idx)
-        t_bgo[idx] = (BGO_bar_lateral * (idx + 1)) / (bgoX0 * costheta);
+        t_bgo[idx] = (BGO_bar_lateral * (idx + 1)) / (bgoX0 * trajectoryDirection2D->CosTheta());
 
 #if _DEBUG
     std::cout << "\nBGO layer displacement: " << BGO_layer_displacement;
@@ -143,19 +145,4 @@ const std::vector<double> ntuple::fit_shower_profile(const double costheta)
         fit_res[idx] = fitfunc.GetParameter(idx);
 
     return fit_res;
-}
-
-const double ntuple::compute_bgoreco_costheta()
-{
-    /*
-    const double bgo_deltaX = fabs(BGOrec_slopeX * BGO_TopZ + BGOrec_interceptX - BGOrec_slopeX * BGO_BottomZ + BGOrec_interceptX);
-    const double bgo_deltaY = fabs(BGOrec_slopeY * BGO_TopZ + BGOrec_interceptY - BGOrec_slopeY * BGO_BottomZ + BGOrec_interceptY);
-    const double bgo_costheta = TMath::Cos(TMath::ATan2(bgo_deltaY, bgo_deltaX));
-    */
-    const double rise = BGO_TopZ - BGO_BottomZ;
-    const double bgo_deltaX = fabs(BGOrec_slopeX * BGO_TopZ + BGOrec_interceptX - BGOrec_slopeX * BGO_BottomZ + BGOrec_interceptX);
-    const double bgo_deltaY = fabs(BGOrec_slopeY * BGO_TopZ + BGOrec_interceptY - BGOrec_slopeY * BGO_BottomZ + BGOrec_interceptY);
-    const double run = TMath::Sqrt(TMath::Power(bgo_deltaX, 2) + TMath::Power(bgo_deltaY, 2));
-    const double bgo_costheta = TMath::Cos(fabs(rise/run));
-    return bgo_costheta;
 }

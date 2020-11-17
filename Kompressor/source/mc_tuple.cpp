@@ -57,7 +57,8 @@ void mc_tuple::fill_histos()
                     auto reco_bidx = _histos->GetEnergyBin(energy_corr * _GeV);
                     if (reco_bidx != -999)
                     {
-                        auto BGOrec_costheta = compute_bgoreco_costheta();
+                        auto BGOrec_costheta = trajectoryDirection2D->CosTheta();
+                        _histos->FillBGOCosine(simu_energy_w, BGOrec_costheta);
                         _histos->FillIncoming(simu_energy * _GeV, simu_energy_w);
                         _histos->FillSimu(
                             simu_energy,
@@ -94,14 +95,12 @@ void mc_tuple::fill_histos()
                             BGOrec_interceptX,
                             BGOrec_interceptY,
                             BGOrec_costheta);
-                        /*
                         _histos->FillSumRmsCosine(
                             energy_corr * _GeV,
                             simu_energy_w,
                             reco_bidx,
                             sumRms,
                             BGOrec_costheta);
-                        */
                         _histos->FillSumRmsFLast(
                             energy_corr * _GeV,
                             simu_energy_w,
@@ -115,14 +114,12 @@ void mc_tuple::fill_histos()
                             nud_total_adc,
                             nud_max_adc,
                             nud_max_channel_id);
-                        /*    
                         // Shower profile fit
                         auto fit_res = fit_shower_profile();
                         _histos->FillBGOShowerFit(
                             fit_res,
                             energy_corr,
                             simu_energy_w);
-                        */
                         if (evtfilter_good_event)
                         {
                             if (evtfilter_geometric)
@@ -174,17 +171,6 @@ void mc_tuple::fill_histos()
                             {
                                 _histos->FillStkCharge(simu_energy_w, STK_chargeX, STK_chargeY, STK_charge);
                                 _histos->FillStkCosine(simu_energy_w, STK_bestTrack_costheta, BGOrec_costheta);
-                                _histos->FillBGOCosine(simu_energy_w, BGOrec_costheta);
-                                // Shower profile fit
-                                auto fit_res = fit_shower_profile(STK_bestTrack_costheta);
-                                _histos->FillBGOShowerFit(fit_res, energy_corr, simu_energy_w);
-                                // SumRMS cosine
-                                _histos->FillSumRmsCosine(
-                                    energy_corr * _GeV,
-                                    simu_energy_w,
-                                    reco_bidx,
-                                    sumRms,
-                                    STK_bestTrack_costheta);
                             }
                             if (evtfilter_stk_charge_cut)
                                 _histos->FillStkCharge(simu_energy_w, STK_chargeX, STK_chargeY, STK_charge, true);
