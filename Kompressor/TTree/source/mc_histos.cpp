@@ -36,22 +36,22 @@ void mc_histos::init_simu_energy_histos()
 		100, 0, 100);
 	h_energy_diff = std::make_unique<TH1D>(
 		"h_energy_diff",
-		"Simu vs Raw Reco BGO energy: Real Energy - Raw Energy (GeV); counts",
-		100, 0, 1);
+		"Simu vs Raw Reco BGO energy: Simu Energy - Raw Energy (GeV); counts",
+		1000, 0, 100);
 	h_energy_diff_corr = std::make_unique<TH1D>(
 		"h_energy_diff_corr",
-		"Simu vs Corrected Reco BGO energy: Real Energy - Corrected Energy (GeV); counts",
-		100, 0, 1);
+		"Simu vs Corrected Reco BGO energy: Simu Energy - Corrected Energy (GeV); counts",
+		1000, -100, 100);
 	h_energy_diff2D = std::make_unique<TH2D>(
 		"h_energy_diff2D",
-		"Energy Ratio; Real Energy (GeV); (Real - Raw)/Raw",
+		"Energy Ratio; Real Energy (GeV); (Raw - Simu)/Simu",
 		logEBins.size() - 1,
 		&(logEBins[0]),
 		ratio_line_binning.size() - 1,
 		&(ratio_line_binning[0]));
 	h_energy_diff2D_corr = std::make_unique<TH2D>(
 		"h_energy_diff2D_corr",
-		"Energy Ratio; Real Energy (GeV); (Real - Corr)/Raw",
+		"Energy Ratio; Real Energy (GeV); (Corr - Simu)/Simu",
 		logEBins.size() - 1,
 		&(logEBins[0]),
 		ratio_line_binning.size() - 1,
@@ -141,10 +141,10 @@ void mc_histos::FillSimu(
 	const double _GeV = 0.001;
 	h_simu_energy->Fill(simu_energy * _GeV, simu_energy_w);
 	h_simu_energy_w->Fill(simu_energy_w, simu_energy_w);
-	h_energy_diff->Fill((simu_energy - raw_energy) / simu_energy, simu_energy_w);
-	h_energy_diff_corr->Fill((simu_energy - corr_energy) / simu_energy, simu_energy_w);
-	h_energy_diff2D->Fill(simu_energy * _GeV, (simu_energy - raw_energy) / simu_energy, simu_energy_w);
-	h_energy_diff2D_corr->Fill(simu_energy * _GeV, (simu_energy - corr_energy) / simu_energy, simu_energy_w);
+	h_energy_diff->Fill((simu_energy - raw_energy)*_GeV, simu_energy_w);
+	h_energy_diff_corr->Fill((simu_energy - corr_energy)*_GeV, simu_energy_w);
+	h_energy_diff2D->Fill(simu_energy * _GeV, (raw_energy -simu_energy) / simu_energy, simu_energy_w);
+	h_energy_diff2D_corr->Fill(simu_energy * _GeV, (corr_energy - simu_energy) / simu_energy, simu_energy_w);
 	h_energy_unfold->Fill(simu_energy * _GeV, raw_energy * _GeV, simu_energy_w);
 	h_energy_unfold_corr->Fill(simu_energy * _GeV, corr_energy * _GeV, simu_energy_w);
 	h_simu_slopeX->Fill(simuSlopeX, simu_energy_w);
