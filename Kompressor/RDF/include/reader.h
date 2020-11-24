@@ -3,13 +3,12 @@
 
 #include <memory>
 #include <string>
+#include <memory>
 
 #include "TChain.h" 
 
 #include "config.h"
 #include "list_parser.h"
-
-#define nthreads 20
 
 void reader(
     const std::string wd,

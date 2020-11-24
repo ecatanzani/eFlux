@@ -1,4 +1,5 @@
 #include "main.h"
+#include "utils.h"
 
 int main(int argc, char **argv)
 {
@@ -12,6 +13,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -i  --input			<path_to_input_list>				(*)	Input file list");
 	opt.addUsage(" -w  --workdir		<path_to_software_config_dir>		(*) Config directory");
 	opt.addUsage(" -o  --output			<path_to_output_TFile>					Output ROOT TFile");
+	opt.addUsage(" -d  --outputdir		<path_to_output_TFile_dir>				Output ROOT TFile directory");
 	opt.addUsage(" -v  --verbose												Verbose output");
 	
 	opt.addUsage("");
@@ -26,6 +28,7 @@ int main(int argc, char **argv)
 	opt.setOption("input", 'i');
 	opt.setOption("workdir", 'w');
 	opt.setOption("output", 'o');
+	opt.setOption("outputdir", 'd');
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("mc", 'm');
 
@@ -56,16 +59,18 @@ int main(int argc, char **argv)
 		wd = opt.getValue('w');
 	if (opt.getValue("output") || opt.getValue('o'))
 		output_path = opt.getValue('o');
+	if (opt.getValue("outputdir") || opt.getValue('d'))
+		output_path = opt.getValue('d');
 	if (opt.getFlag("verbose") || opt.getFlag('v'))
 		_VERBOSE = opt.getFlag('v');
 	
 	if (opt.getFlag("mc") || opt.getFlag('m'))
 		mc_flag = true;
-		
+
 	reader(
 		wd, 
 		input_list, 
-		output_path, 
+		expand_output_path(opt, output_path), 
 		_VERBOSE, 
 		mc_flag);
 		

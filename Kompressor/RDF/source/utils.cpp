@@ -1,17 +1,11 @@
 #include "utils.h"
 
-void UpdateProcessStatus(
-	const int evIdx,
-	int &kStep,
-	const int nevents)
+std::string expand_output_path(
+	AnyOption &opt,
+	std::string output)
 {
-	auto percentage = ((evIdx + 1) / (double)nevents) * 100;
-	if (floor(percentage) != 0 && ((int)floor(percentage) % kStep) == 0)
-	{
-		std::cout << "\n"
-				  << (int)percentage << " %\t | \tProcessed " << evIdx + 1 << " events / " << nevents;
-		if ((int)percentage == 100)
-			std::cout << "\n\n";
-		kStep += 10;
-	}
+	auto result = output;
+    if (opt.getValue("outputdir") || opt.getValue('d'))
+        result += "/kompressor_output.root";
+    return result; 
 }

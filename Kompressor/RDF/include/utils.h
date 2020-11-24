@@ -1,12 +1,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <iostream>
-#include <cmath>
+#include <string>
 
-extern void UpdateProcessStatus(
-    const int evIdx,
-    int &kStep,
-    const int nevents);
+#include "anyoption.h"
+
+extern std::string expand_output_path(
+    AnyOption& opt, 
+    std::string output);
 
 #endif
