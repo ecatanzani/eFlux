@@ -386,11 +386,9 @@ void mc_reader(
     for (int channel = 0; channel < DAMPE_NUD_channels; ++channel)
         h_NUD_adc[channel] = _fr_preselected.Define("nud_adc_channel", [channel](std::vector<double> nud_adc) {return nud_adc[channel];}, {"NUD_ADC"})
                                             .Histo1D<double, double>({(std::string("h_NUD_adc_") + std::to_string(channel)).c_str(), (std::string("NUD ADC - channel ") + std::to_string(channel)).c_str(), 100, 0, 1000}, "nud_adc_channel", "simu_energy_w_pathc");
-    /*
-    auto h_NUD_total_adc = _fr_preselected.Histo1D<double, double>({"h_NUD_total_adc", "NUD Total ADC", 100, 0, 10000}, "NUD_total_ADC", "simu_energy_w_pathc");
-    auto h_NUD_max_adc = _fr_preselected.Histo1D<double, double>({"h_NUD_max_adc", "NUD Max ADC", 100, 0, 1000}, "NUD_max_ADC", "simu_energy_w_pathc");
-    auto h_NUD_max_channel = _fr_preselected.Histo1D<double, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID", "simu_energy_w_pathc");
-    */
+    auto h_NUD_total_adc = _fr_preselected.Histo1D<double, double>({"h_NUD_total_adc", "NUD Total ADC", 100, 0, 10000}, "NUD_total_ADC.nud_total_adc", "simu_energy_w_pathc");
+    auto h_NUD_max_adc = _fr_preselected.Histo1D<double, double>({"h_NUD_max_adc", "NUD Max ADC", 100, 0, 1000}, "NUD_max_ADC.nud_max_adc", "simu_energy_w_pathc");
+    auto h_NUD_max_channel = _fr_preselected.Histo1D<double, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w_pathc");
 
     if (_VERBOSE)
         std::cout << "Writing to disk... [" << outputPath << "]" << std::endl;
@@ -520,11 +518,9 @@ void mc_reader(
 
     for (auto& _elm : h_NUD_adc)
         _elm->Write();
-    /*
     h_NUD_total_adc->Write();
     h_NUD_max_adc->Write();
     h_NUD_max_channel->Write();
-    */
    
     outfile->Close();
 }
