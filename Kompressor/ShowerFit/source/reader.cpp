@@ -101,16 +101,16 @@ void mc_reader(
             fitfunc.SetParameter(2, a_shower_par);
             fitfunc.SetParNames("bgo_energy", "b", "a");
 #if _DEBUG
-            gr_profile.back()->Fit(&fitfunc, "IR");
+            gr_profile.back()->Fit(&fitfunc, "R");
 #else
-            gr_profile.back()->Fit(&fitfunc, "qIR");
+            gr_profile.back()->Fit(&fitfunc, "qR");
 #endif
 
             // Fill histos
             h_a_shower_par->Fill(fitfunc.GetParameter(2));
             h_b_shower_par->Fill(fitfunc.GetParameter(1));
             h_energy_fit->Fill(fitfunc.GetParameter(0) * _gev);
-            h_energy_ratio->Fill((*corr_energy/fitfunc.GetParameter(0)));
+            h_energy_ratio->Fill(*corr_energy/fitfunc.GetParameter(0));
             h_chi2_ndof->Fill(fitfunc.GetChisquare() / fitfunc.GetNDF());
             h_corr_energy->Fill(*corr_energy);
         }
