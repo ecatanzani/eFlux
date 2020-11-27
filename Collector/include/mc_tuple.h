@@ -20,6 +20,7 @@ public:
 		const double corr_energy,
 		const double mc_corr_energy_w,
 		const std::vector<double> &energy_release_layer,
+		const std::vector<std::vector<double>> &energy_release_layer_bar,
 		const std::vector<double> &bgoRec_slope,
 		const std::vector<double> &bgoRec_intercept,
 		const TVector3 &bgo_trajectory2D,

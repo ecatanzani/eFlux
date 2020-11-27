@@ -124,6 +124,9 @@ void data_tuple::branch_tree()
 		"eLayer",
 		&eLayer);
 	DmpNtupTree->Branch(
+		"layerBarEnergy",
+		&layerBarEnergy);
+	DmpNtupTree->Branch(
 		"BGOrec_slopeX",
 		&BGOrec_slopeX,
 		"BGOrec_slopeX/D");
@@ -394,6 +397,7 @@ void data_tuple::Fill(
 	const double raw_energy,
 	const double corr_energy,
 	const std::vector<double> &energy_release_layer,
+	const std::vector<std::vector<double>> &energy_release_layer_bar,
 	const std::vector<double> &bgoRec_slope,
 	const std::vector<double> &bgoRec_intercept,
 	const TVector3 &bgoRec_trajectory2D,
@@ -425,6 +429,7 @@ void data_tuple::Fill(
 		raw_energy,
 		corr_energy,
 		energy_release_layer,
+		energy_release_layer_bar,
 		bgoRec_slope,
 		bgoRec_intercept,
 		bgoRec_trajectory2D,

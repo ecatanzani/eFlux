@@ -209,6 +209,7 @@ void mcLoop(
 			evt_energy.GetCorrEnergy(),
 			evt_energy.GetCorrWeight(),
 			bgoVault.GetLayerEnergies(),
+			bgoVault.GetLayerBarEnergies(),
 			bgoVault.GetBGOslope(),
 			bgoVault.GetBGOintercept(),
 			bgoVault.GetBGOTrajectory2D(),

@@ -15,6 +15,7 @@ class DmpBgoContainer
 public:
 	DmpBgoContainer() : layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>()),
 						layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>()),
+						layerBarEnergy(DAMPE_bgo_nLayers, std::vector<double> (DAMPE_bgo_bars_layer, 0)),
 						idxBarMaxLayer(DAMPE_bgo_nLayers, -1),
 						iMaxLayer(DAMPE_bgo_nLayers, -1),
 						rmsLayer(DAMPE_bgo_nLayers, 0),
@@ -31,6 +32,7 @@ public:
 
 	DmpBgoContainer(int m_size) : layerBarIndex(m_size, std::vector<short>()),
 								  layerBarNumber(m_size, std::vector<short>()),
+								  layerBarEnergy(m_size, std::vector<double> (DAMPE_bgo_bars_layer, 0)),
 								  idxBarMaxLayer(m_size, -1),
 								  iMaxLayer(m_size, -1),
 								  rmsLayer(m_size, 0),
@@ -72,6 +74,7 @@ public:
 	std::vector<int> GetiMaxLayer();
 	const int GetiMaxSingleLayer(const int layedIdx);
 	const std::vector<double> GetLayerEnergies();
+	const std::vector<std::vector<double>> GetLayerBarEnergies();
 	// BGO slope and itercept
 	const std::vector<double> GetBGOslope();
 	const std::vector<double> GetBGOintercept();
@@ -95,6 +98,7 @@ private:
 		const int radius_value);
 	std::vector<std::vector<short>> layerBarIndex;	// arrange BGO hits by layer
 	std::vector<std::vector<short>> layerBarNumber; // arrange BGO bars by layer
+	std::vector<std::vector<double>> layerBarEnergy; // store BGO bars energy
 	std::vector<int> idxBarMaxLayer;
 	std::vector<double> rmsLayer;
 	std::vector<double> fracLayer;

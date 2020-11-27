@@ -15,6 +15,7 @@ class ntuple
 {
 public:
 	ntuple()	:	eLayer(DAMPE_bgo_nLayers, -999),
+					layerBarEnergy(DAMPE_bgo_nLayers, std::vector<double> (DAMPE_bgo_bars_layer, -999)),
 					rmsLayer(DAMPE_bgo_nLayers, -999),
 					fracLayer(DAMPE_bgo_nLayers, -999),
 					energy_1R_radius(DAMPE_bgo_nLayers, -999),
@@ -35,6 +36,7 @@ protected:
 		const double raw_energy,
 		const double corr_energy,
 		const std::vector<double> &energy_release_layer,
+		const std::vector<std::vector<double>> &energy_release_layer_bar,
 		const std::vector<double> &bgoRec_slope,
 		const std::vector<double> &bgoRec_intercept,
 		const TVector3 &bgoRec_trajectory2D,
@@ -90,6 +92,7 @@ protected:
 	double energy = -999;
 	double energy_corr = -999;
 	std::vector<double> eLayer;
+	std::vector<std::vector<double>> layerBarEnergy;
 	double BGOrec_slopeX = -999;
 	double BGOrec_slopeY = -999;
 	double BGOrec_interceptX = -999;

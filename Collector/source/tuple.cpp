@@ -47,6 +47,7 @@ void ntuple::fill_bgo_info(
 	const double raw_energy,
 	const double corr_energy,
 	const std::vector<double> &energy_release_layer,
+	const std::vector<std::vector<double>> &energy_release_layer_bar, 
 	const std::vector<double> &bgoRec_slope,
 	const std::vector<double> &bgoRec_intercept,
 	const TVector3 &bgoRec_trajectory2D,
@@ -67,6 +68,7 @@ void ntuple::fill_bgo_info(
 		energy = raw_energy;
 		energy_corr = corr_energy;
 		eLayer = energy_release_layer;
+		layerBarEnergy = energy_release_layer_bar;
 		BGOrec_slopeX = bgoRec_slope[0];
 		BGOrec_slopeY = bgoRec_slope[1];
 		BGOrec_interceptX = bgoRec_intercept[0];
@@ -166,6 +168,7 @@ void ntuple::core_reset()
 	energy = -999;
 	energy_corr = -999;
 	eLayer = std::vector<double>(DAMPE_bgo_nLayers, -999);
+	layerBarEnergy = std::vector<std::vector<double>> (DAMPE_bgo_nLayers, std::vector<double> (DAMPE_bgo_bars_layer, -999));
 	BGOrec_slopeX = -999;
 	BGOrec_slopeY = -999;
 	BGOrec_interceptX = -999;

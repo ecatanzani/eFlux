@@ -73,6 +73,7 @@ void DmpBgoContainer::scanBGOHits(
 			auto index = std::distance(layerBarNumber[lay].begin(), it);
 			int ihit = layerBarIndex[lay][index];
 			double hitE = (bgohits->fEnergy)[ihit];
+			layerBarEnergy[lay][index] = hitE;
 			if (hitE > maxE)
 			{
 				maxE = hitE;
@@ -230,6 +231,11 @@ const int DmpBgoContainer::GetNhits()
 const std::vector<double> DmpBgoContainer::GetLayerEnergies()
 {
 	return eLayer;
+}
+
+const std::vector<std::vector<double>> DmpBgoContainer::GetLayerBarEnergies()
+{
+	return layerBarEnergy;
 }
 
 const std::vector<double> DmpBgoContainer::GetBGOslope()

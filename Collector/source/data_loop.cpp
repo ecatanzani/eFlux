@@ -197,6 +197,7 @@ void rawDataLoop(
 			evt_energy.GetRawEnergy(),
 			evt_energy.GetCorrEnergy(),
 			bgoVault.GetLayerEnergies(),
+			bgoVault.GetLayerBarEnergies(),
 			bgoVault.GetBGOslope(),
 			bgoVault.GetBGOintercept(),
 			bgoVault.GetBGOTrajectory2D(),
