@@ -48,7 +48,7 @@ void SliceNormalization(
     h_energy_unfold_corr->SetDirectory(0);
 
     // XTRL histo
-    auto h_xtrl = slicenorm(static_cast<TH2D*>(_input->Get("xtrl/h_xtrl")));
+    auto h_xtrl = slicenorm(static_cast<TH2D*>(_input->Get("BGO/h_xtrl")));
 
     h_xtrl->SetDirectory(0);
     
