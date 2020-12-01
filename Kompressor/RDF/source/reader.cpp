@@ -48,7 +48,7 @@ void mc_reader(
             if (energy * _gev >= energy_binning[bin_idx] && energy * _gev < energy_binning[bin_idx+1])
                 break;
         return bin_idx+1; };
-    
+
     /*
     auto _fr_weight_patch = _data_fr.Define("simu_energy_w_shift", [&energy_binning] { return pow(energy_binning[0], 2); })
                                 .Define("simu_energy_w_pathc", "simu_energy_w_shift*simu_energy_w")
@@ -165,12 +165,12 @@ void mc_reader(
     auto h_BGOrec_sumRms_flast_13_10000_20000 = _fr_bgo_analysis.Define("corr_energy_gev", "energy_corr * 0.001")
                                                     .Filter("corr_energy_gev >= 10000 && corr_energy_gev<20000")
                                                     .Histo2D<double, double, double>({"h_BGOrec_sumRms_flast_13_10000_20000", "sumRms vs F_{13} correlation - 10 TeV - 20 TeV ;sumRms [mm]; F_{last}", (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast_13", "simu_energy_w");
-    
+
     std::shared_ptr<TH1D> h_BGOrec_bar_energy = std::make_shared<TH1D>("h_BGOrec_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 100, 0, 1000);
     _fr_bgo_analysis.Foreach([&h_BGOrec_bar_energy](std::vector<std::vector<double>> bar_energy, double energy_w) { 
             for (auto& bgo_ly : bar_energy)
                 for(auto& energy : bgo_ly) 
-                    h_BGOrec_bar_energy->Fill(energy, energy_w); }, {"layerBarEnergy","simu_energy_w"});
+                    h_BGOrec_bar_energy->Fill(energy, energy_w); }, {"layerBarEnergy", "simu_energy_w"});
 
     auto h_BGOrec_slopeX = _fr_bgo_analysis.Histo1D<double, double>({"h_BGOrec_slopeX", "BGOrec Slope X", 200, -10, 10}, "BGOrec_slopeX", "simu_energy_w");
     auto h_BGOrec_slopeY = _fr_bgo_analysis.Histo1D<double, double>({"h_BGOrec_slopeY", "BGOrec Slope Y", 200, -10, 10}, "BGOrec_slopeY", "simu_energy_w");
@@ -204,11 +204,13 @@ void mc_reader(
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_energy_ratio_3R(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_energy_ratio_5R(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
 
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_bar_energy_bin(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile_upto_09(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile_from_09(energy_nbins);
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
+        h_BGOrec_bar_energy_bin[bin_idx - 1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 100, 0, 1000);
         h_BGOrec_shower_profile[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_shower_profile_upto_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_upto_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) < 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_shower_profile_from_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_from_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) > 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
@@ -270,6 +272,12 @@ void mc_reader(
                                          .Histo1D<int, double>({(std::string("h_BGOrec_hits_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO hits - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 1000}, "nBGOentries", "simu_energy_w");
         h_xtrl_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                       .Histo1D<double, double>({(std::string("h_xtrl_bin_") + std::to_string(bin_idx)).c_str(), (std::string("XTRL - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 150}, "xtrl", "simu_energy_w");
+
+        _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+            .Foreach([&h_BGOrec_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
+            for (auto& bgo_ly : bar_energy)
+                for(auto& energy : bgo_ly) 
+                    h_BGOrec_bar_energy_bin[bin_idx -1]->Fill(energy, energy_w); }, {"layerBarEnergy", "simu_energy_w"});
 
         _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_shower_profile, bin_idx](std::vector<double> &energy_frac, double energy_w) { 
@@ -359,8 +367,8 @@ void mc_reader(
     auto h_stk_interceptY = _fr_stk_analysis.Histo1D<double, double>({"h_stk_interceptY", "Simu Intercept Y", 100, -500, 500}, "STK_bestTrack_interceptY", "simu_energy_w");
 
     // Extract PSD charge histos
-    auto h_psd_chargeX = _fr_psd_charge_analysis.Histo1D<double, double > ({"h_psd_chargeX", "PSD Charge X", 100, 0, 20}, "PSD_chargeX", "simu_energy_w");
-    auto h_psd_chargeY = _fr_psd_charge_analysis.Histo1D<double, double > ({"h_psd_chargeY", "PSD Charge Y", 100, 0, 20}, "PSD_chargeY", "simu_energy_w");
+    auto h_psd_chargeX = _fr_psd_charge_analysis.Histo1D<double, double>({"h_psd_chargeX", "PSD Charge X", 100, 0, 20}, "PSD_chargeX", "simu_energy_w");
+    auto h_psd_chargeY = _fr_psd_charge_analysis.Histo1D<double, double>({"h_psd_chargeY", "PSD Charge Y", 100, 0, 20}, "PSD_chargeY", "simu_energy_w");
     auto h_psd_charge = _fr_psd_charge_analysis.Define("psd_charge", [](double psd_chargeX, double psd_chargeY) { return 0.5 * (psd_chargeX + psd_chargeY); }, {"PSD_chargeX", "PSD_chargeY"})
                             .Histo1D<double, double>({"h_psd_charge", "PSD Charge", 100, 0, 20}, "psd_charge", "simu_energy_w");
     auto h_psd_charge2D = _fr_psd_charge_analysis.Histo2D<double, double, double>({"h_psd_charge2D", "PSD Charge", 100, 0, 20, 100, 0, 20}, "PSD_chargeX", "PSD_chargeY", "simu_energy_w");
@@ -368,7 +376,7 @@ void mc_reader(
     auto h_psd_selected_chargeX = _fr_psd_charge_analysis.Filter("evtfilter_psd_charge_cut==true")
                                       .Histo1D<double, double>({"h_psd_selected_chargeX", "PSD Charge X", 100, 0, 20}, "PSD_chargeX", "simu_energy_w");
     auto h_psd_selected_chargeY = _fr_psd_charge_analysis.Filter("evtfilter_psd_charge_cut==true")
-                                      .Histo1D<double, double > ({"h_psd_selected_chargeY", "PSD Charge Y", 100, 0, 20}, "PSD_chargeY", "simu_energy_w");
+                                      .Histo1D<double, double>({"h_psd_selected_chargeY", "PSD Charge Y", 100, 0, 20}, "PSD_chargeY", "simu_energy_w");
     auto h_psd_selected_charge = _fr_psd_charge_analysis.Filter("evtfilter_psd_charge_cut==true")
                                      .Define("psd_charge", [](double psd_chargeX, double psd_chargeY) { return 0.5 * (psd_chargeX + psd_chargeY); }, {"PSD_chargeX", "PSD_chargeY"})
                                      .Histo1D<double, double>({"h_psd_selected_charge", "PSD Charge", 100, 0, 20}, "psd_charge", "simu_energy_w");
@@ -376,8 +384,8 @@ void mc_reader(
                                        .Histo2D<double, double, double>({"h_psd_selected_charge2D", "PSD Charge", 100, 0, 20, 100, 0, 20}, "PSD_chargeX", "PSD_chargeY", "simu_energy_w");
 
     // Extract STK charge histos
-    auto h_stk_chargeX = _fr_stk_charge_analysis.Histo1D<double, double > ({"h_stk_chargeX", "STK Charge X", 100, 0, 20}, "STK_chargeX", "simu_energy_w");
-    auto h_stk_chargeY = _fr_stk_charge_analysis.Histo1D<double, double > ({"h_stk_chargeY", "STK Charge Y", 100, 0, 20}, "STK_chargeY", "simu_energy_w");
+    auto h_stk_chargeX = _fr_stk_charge_analysis.Histo1D<double, double>({"h_stk_chargeX", "STK Charge X", 100, 0, 20}, "STK_chargeX", "simu_energy_w");
+    auto h_stk_chargeY = _fr_stk_charge_analysis.Histo1D<double, double>({"h_stk_chargeY", "STK Charge Y", 100, 0, 20}, "STK_chargeY", "simu_energy_w");
     auto h_stk_charge = _fr_stk_charge_analysis.Define("stk_charge", [](double stk_chargeX, double stk_chargeY) { return 0.5 * (stk_chargeX + stk_chargeY); }, {"STK_chargeX", "STK_chargeY"})
                             .Histo1D<double, double>({"h_stk_charge", "STK Charge", 100, 0, 20}, "stk_charge", "simu_energy_w");
     auto h_stk_charge2D = _fr_stk_charge_analysis.Histo2D<double, double, double>({"h_stk_charge2D", "STK Charge", 100, 0, 20, 100, 0, 20}, "STK_chargeX", "STK_chargeY", "simu_energy_w");
@@ -385,7 +393,7 @@ void mc_reader(
     auto h_stk_selected_chargeX = _fr_stk_charge_analysis.Filter("evtfilter_stk_charge_cut==true")
                                       .Histo1D<double, double>({"h_stk_selected_chargeX", "STK Charge X", 100, 0, 20}, "STK_chargeX", "simu_energy_w");
     auto h_stk_selected_chargeY = _fr_stk_charge_analysis.Filter("evtfilter_stk_charge_cut==true")
-                                      .Histo1D<double, double > ({"h_stk_selected_chargeY", "STK Charge Y", 100, 0, 20}, "STK_chargeY", "simu_energy_w");
+                                      .Histo1D<double, double>({"h_stk_selected_chargeY", "STK Charge Y", 100, 0, 20}, "STK_chargeY", "simu_energy_w");
     auto h_stk_selected_charge = _fr_stk_charge_analysis.Filter("evtfilter_stk_charge_cut==true")
                                      .Define("stk_charge", [](double stk_chargeX, double stk_chargeY) { return 0.5 * (stk_chargeX + stk_chargeY); }, {"STK_chargeX", "STK_chargeY"})
                                      .Histo1D<double, double>({"h_stk_selected_charge", "STK Charge", 100, 0, 20}, "stk_charge", "simu_energy_w");
@@ -393,11 +401,11 @@ void mc_reader(
                                        .Histo2D<double, double, double>({"h_stk_selected_charge2D", "STK Charge", 100, 0, 20, 100, 0, 20}, "STK_chargeX", "STK_chargeY", "simu_energy_w");
 
     // Extract NUD hisos
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_NUD_adc (DAMPE_NUD_channels); 
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_NUD_adc(DAMPE_NUD_channels);
 
     for (int channel = 0; channel < DAMPE_NUD_channels; ++channel)
-        h_NUD_adc[channel] = _fr_preselected.Define("nud_adc_channel", [channel](std::vector<double> nud_adc) {return nud_adc[channel];}, {"NUD_ADC"})
-                                            .Histo1D<double, double>({(std::string("h_NUD_adc_") + std::to_string(channel)).c_str(), (std::string("NUD ADC - channel ") + std::to_string(channel)).c_str(), 100, 0, 1000}, "nud_adc_channel", "simu_energy_w");
+        h_NUD_adc[channel] = _fr_preselected.Define("nud_adc_channel", [channel](std::vector<double> nud_adc) { return nud_adc[channel]; }, {"NUD_ADC"})
+                                 .Histo1D<double, double>({(std::string("h_NUD_adc_") + std::to_string(channel)).c_str(), (std::string("NUD ADC - channel ") + std::to_string(channel)).c_str(), 100, 0, 1000}, "nud_adc_channel", "simu_energy_w");
     auto h_NUD_total_adc = _fr_preselected.Histo1D<double, double>({"h_NUD_total_adc", "NUD Total ADC", 100, 0, 10000}, "NUD_total_ADC.nud_total_adc", "simu_energy_w");
     auto h_NUD_max_adc = _fr_preselected.Histo1D<double, double>({"h_NUD_max_adc", "NUD Max ADC", 100, 0, 1000}, "NUD_max_ADC.nud_max_adc", "simu_energy_w");
     auto h_NUD_max_channel = _fr_preselected.Histo1D<double, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w");
@@ -485,9 +493,9 @@ void mc_reader(
     h_BGOrec_sumRms_flast_13_1000_3000->Write();
     h_BGOrec_sumRms_flast_13_3000_10000->Write();
     h_BGOrec_sumRms_flast_13_10000_20000->Write();
-    h_BGOrec_bar_energy->Write();
     h_xtrl_energy_int->Write();
     h_xtrl->Write();
+    h_BGOrec_bar_energy->Write();
 
     for (int bidx = 0; bidx < energy_nbins; ++bidx)
     {
@@ -511,6 +519,7 @@ void mc_reader(
         h_BGOrec_last_layer[bidx]->Write();
         h_BGOrec_hits[bidx]->Write();
         h_xtrl_bin[bidx]->Write();
+        h_BGOrec_bar_energy_bin[bidx]->Write();
         h_BGOrec_shower_profile[bidx]->Write();
         h_BGOrec_shower_profile_upto_09[bidx]->Write();
         h_BGOrec_shower_profile_from_09[bidx]->Write();
@@ -529,11 +538,11 @@ void mc_reader(
     auto nud_dir = outfile->mkdir("NUD");
     nud_dir->cd();
 
-    for (auto& _elm : h_NUD_adc)
+    for (auto &_elm : h_NUD_adc)
         _elm->Write();
     h_NUD_total_adc->Write();
     h_NUD_max_adc->Write();
     h_NUD_max_channel->Write();
-   
+
     outfile->Close();
 }
