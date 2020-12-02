@@ -166,7 +166,7 @@ void mc_reader(
                                                     .Filter("corr_energy_gev >= 10000 && corr_energy_gev<20000")
                                                     .Histo2D<double, double, double>({"h_BGOrec_sumRms_flast_13_10000_20000", "sumRms vs F_{13} correlation - 10 TeV - 20 TeV ;sumRms [mm]; F_{last}", (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast_13", "simu_energy_w");
 
-    std::shared_ptr<TH1D> h_BGOrec_bar_energy = std::make_shared<TH1D>("h_BGOrec_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 100, 0, 1000);
+    std::shared_ptr<TH1D> h_BGOrec_bar_energy = std::make_shared<TH1D>("h_BGOrec_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 100, 0, 10000);
     _fr_bgo_analysis.Foreach([&h_BGOrec_bar_energy](std::vector<std::vector<double>> bar_energy, double energy_w) { 
             for (auto& bgo_ly : bar_energy)
                 for(auto& energy : bgo_ly) 
@@ -408,7 +408,7 @@ void mc_reader(
                                  .Histo1D<double, double>({(std::string("h_NUD_adc_") + std::to_string(channel)).c_str(), (std::string("NUD ADC - channel ") + std::to_string(channel)).c_str(), 100, 0, 1000}, "nud_adc_channel", "simu_energy_w");
     auto h_NUD_total_adc = _fr_preselected.Histo1D<double, double>({"h_NUD_total_adc", "NUD Total ADC", 100, 0, 10000}, "NUD_total_ADC.nud_total_adc", "simu_energy_w");
     auto h_NUD_max_adc = _fr_preselected.Histo1D<double, double>({"h_NUD_max_adc", "NUD Max ADC", 100, 0, 1000}, "NUD_max_ADC.nud_max_adc", "simu_energy_w");
-    auto h_NUD_max_channel = _fr_preselected.Histo1D<double, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w");
+    auto h_NUD_max_channel = _fr_preselected.Histo1D<int, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w");
 
     if (_VERBOSE)
         std::cout << "Writing to disk... [" << outputPath << "]" << std::endl;
