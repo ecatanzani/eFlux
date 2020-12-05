@@ -23,8 +23,15 @@ void SliceNormalization(
 {
     auto slicenorm = [](TH2D* histo) { 
         for (int bidx=1; bidx<=histo->GetNbinsX(); ++bidx)
-            histo->Scale(1/histo->Integral(bidx, bidx, 1, histo->GetNbinsY()));
-        return histo; };
+	{
+		auto scale_factor = 1/histo->Integral(bidx, bidx, 1, histo->GetNbinsY());
+		for (int bidy=1; bidy<=histo->GetNbinsY(); ++bidy)
+		{
+            		histo->SetBinContent(bidx, bidy, histo->GetBinContent(bidx, bidy)*scale_factor);
+			histo->SetBinError(bidx, bidy, histo->GetBinError(bidx, bidy)*scale_factor);
+        	}
+	}
+	return histo; };
 
     TFile *_input = TFile::Open(full_histo_path, "READ");
     if (_input->IsZombie())
