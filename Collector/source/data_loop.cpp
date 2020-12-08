@@ -178,7 +178,7 @@ void rawDataLoop(
 			// Load NUD class
 			nudVault.scanNudHits(nudraw);
 			// Filter event
-			filter.pipeline(
+			filter.Pipeline(
 				bgorec,
 				bgohits,
 				data_config.GetCutsConfigValues(),

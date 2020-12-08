@@ -1,6 +1,7 @@
 #ifndef MC_TUPLE_H
 #define MC_TUPLE_H
 
+#include "mc.h"
 #include "tuple.h"
 
 #include "TVector3.h"
@@ -13,40 +14,14 @@ public:
 		init(acuts);
 	};
 	~mc_tuple(){};
+	
 	void Fill(
-		const filter_output &output,
-		const best_track &event_best_track,
-		const double raw_energy,
-		const double corr_energy,
-		const double mc_corr_energy_w,
-		const std::vector<double> &energy_release_layer,
-		const std::vector<std::vector<double>> &energy_release_layer_bar,
-		const std::vector<double> &bgoRec_slope,
-		const std::vector<double> &bgoRec_intercept,
-		const TVector3 &bgo_trajectory2D,
-		const double sumRMS,
-		const std::vector<double> &rms_layer,
-		const std::vector<double> &bgo_fracLayer,
-		const double lastFracLayer,
-		const double frac_layer_13,
-		const int last_bgo_layer,
-		const int bgo_entries,
-		const std::vector<double> &energy_1_moliere_radius,
-		const std::vector<double> &energy_2_moliere_radius,
-		const std::vector<double> &energy_3_moliere_radius,
-		const std::vector<double> &energy_5_moliere_radius,
-		const TVector3 &mc_position,
-		const TVector3 &mc_momentum,
-		const double mc_simu_energy,
-		const double mc_simu_energy_w,
-		const psd_charge &extracted_psd_charge,
-		const stk_charge &extracted_stk_charge,
-		const bgo_classifiers &classifier,
-		const trigger_info &evt_trigger,
-		const std::vector<double> &nud_adc,
-		const double nud_total_adc,
-		const double nud_max_adc,
-		const int nud_max_channel_id);
+		const std::shared_ptr<_tmp_filter> _filter_res,
+		const std::shared_ptr<_tmp_bgo> _bgo_res,
+		const std::shared_ptr<_tmp_simu> _simu_res,
+		const std::shared_ptr<_tmp_energy> _energy_res,
+		const std::shared_ptr<_tmp_nud> _nud_res);
+
 	void Reset();
 
 private:
@@ -54,23 +29,53 @@ private:
 	void branch_tree();
 	void fill_filter_info(const filter_output &output);
 	void fill_simu_info(
-		const TVector3 mc_position,
-		const TVector3 mc_momentum,
-		const double mc_simu_energy,
-		const double mc_corr_energy_w,
-		const double mc_simu_energy_w);
+		const std::shared_ptr<_tmp_simu> _simu_res,
+		const std::shared_ptr<_tmp_energy> _energy_res);
 	void reset_simu_info();
 
-	// Energy
+	// Simu
 	double simu_energy = -999;
 	double simu_energy_w = -999;
 	double corr_energy_w = -999;
-	TVector3 simuPosition{-999, -999, -999};
-	TVector3 simuMomentum{-999, -999, -999};
-	double simuSlopeX = -999;
-	double simuSlopeY = -999;
-	double simuInterceptX = -999;
-	double simuInterceptY = -999;
+	TVector3 simu_position{-999, -999, -999};
+	TVector3 simu_momentum{-999, -999, -999};
+	double simu_slope_x = -999;
+	double simu_slope_y = -999;
+	double simu_intercept_x = -999;
+	double simu_intercept_y = -999;
+
+	// Generation info
+	double simu_radius = -999;
+	double simu_theta = -999;
+	double simu_phi = -999;
+	double simu_flux_w = -999;
+	int simu_n_particle = -999;
+	double simu_cos_x = -999;
+	double simu_cos_y = -999;
+	double simu_cos_z = -999;
+	double simu_charge = -999;
+	double simu_zenith = -999;
+	double simu_azimuth = -999;
+	double simu_w = -999;
+	long simu_PDG = -999;
+	int simu_geocut = -999;
+
+	// Simu Truth Trajectories
+	double simu_thuthtrajectory_x = -999;
+	double simu_thuthtrajectory_y = -999;
+	double simu_thuthtrajectory_z = -999;
+	double simu_truthtrajectory_energy = -999;
+	double simu_thuthtrajectory_start_x = -999;
+	double simu_thuthtrajectory_start_y = -999;
+	double simu_thuthtrajectory_start_z = -999;
+	double simu_thuthtrajectory_stop_x = -999;
+	double simu_thuthtrajectory_stop_y = -999;
+	double simu_thuthtrajectory_stop_z = -999;
+	double simu_truthtrajectory_trackID = -999;
+	double simu_truthtrajectory_parentID = -999;
+	double simu_truthtrajectory_charge = -999;
+	double simu_truthtrajectory_PDG = -999;
+	double simu_truthtrajectory_stop_index = -999;
 
 	// Filters
 	bool evtfilter_geometric_before_trigger = false;

@@ -18,6 +18,7 @@
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtBgoHits.h"
 #include "DmpStkSiCluster.h"
+#include "DmpSimuTrajectory.h"
 #include "DmpEvtSimuPrimaries.h"
 
 #include <vector>
@@ -52,6 +53,10 @@ void mcLoop(
 	// Register SimuPrimaries container
 	std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::make_shared<DmpEvtSimuPrimaries>();
 	dmpch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
+
+	// Register SimuTrajectory container
+	std::shared_ptr<DmpSimuTrajectory> simu_trajectories = std::make_shared<DmpSimuTrajectory>();
+	dmpch->SetBranchAddress("DmpTruthTrajectoriesCollection", &simu_trajectories);
 
 	// Register BGO container
 	std::shared_ptr<DmpEvtBgoHits> bgohits = std::make_shared<DmpEvtBgoHits>();
@@ -123,15 +128,6 @@ void mcLoop(
 		DmpBgoContainer bgoVault;
 		DmpPsdContainer psdVault;
 		DmpNudContainer nudVault;
-		// Build simu position and momentum TVector3
-		TVector3 simuPosition(
-			simu_primaries->pv_x,
-			simu_primaries->pv_y,
-			simu_primaries->pv_z);
-		TVector3 simuMomentum(
-			simu_primaries->pvpart_px,
-			simu_primaries->pvpart_py,
-			simu_primaries->pvpart_pz);
 		// Load particle ID
 		simu_particle.Load(simu_primaries->pvpart_pdg);
 		// Update event counter
@@ -190,7 +186,7 @@ void mcLoop(
 			// Load NUD class
 			nudVault.scanNudHits(nudraw);
 			// Filter event
-			filter.pipeline(
+			filter.Pipeline(
 				bgorec,
 				bgohits,
 				mc_config.GetCutsConfigValues(),
@@ -202,40 +198,16 @@ void mcLoop(
 				stktracks,
 				mc_config.GetActiveCuts());
 		}
+		
+		// Fill output structures
+		/*
 		simu_tuple->Fill(
-			filter.GetFilterOutput(),
-			filter.GetBestTrack(),
-			evt_energy.GetRawEnergy(),
-			evt_energy.GetCorrEnergy(),
-			evt_energy.GetCorrWeight(),
-			bgoVault.GetLayerEnergies(),
-			bgoVault.GetLayerBarEnergies(),
-			bgoVault.GetBGOslope(),
-			bgoVault.GetBGOintercept(),
-			bgoVault.GetBGOTrajectory2D(),
-			bgoVault.GetSumRMS(),
-			bgoVault.GetRmsLayer(),
-			bgoVault.GetFracLayer(),
-			bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-			bgoVault.GetSingleFracLayer(13),
-			bgoVault.GetLastEnergyLayer(),
-			bgoVault.GetNhits(),
-			bgoVault.GetEnergy1MR(),
-			bgoVault.GetEnergy2MR(),
-			bgoVault.GetEnergy3MR(),
-			bgoVault.GetEnergy5MR(),
-			simuPosition,
-			simuMomentum,
-			evt_energy.GetSimuEnergy(),
-			evt_energy.GetSimuWeight(),
-			filter.GetPSDCharge(),
-			filter.GetSTKCharge(),
-			filter.GetClassifiers(),
-			filter.GetTrigger(),
-			nudVault.GetADC(),
-			nudVault.GetTotalADC(),
-			nudVault.GetMaxADC(),
-			nudVault.GetMaxChannelID());
+			fillFilterTmpStruct(filter),
+			fillBGOTmpStruct(bgoVault),
+			fillSimuTmpStruct(simu_primaries, simu_trajectories),
+			fillEnergyTmpStruct(evt_energy),
+			fillNUDTmpStruct(nudVault));
+		*/
 	}
 
 	if (_VERBOSE)
@@ -252,4 +224,106 @@ void mcLoop(
 	}
 	
 	simu_tuple->Write(outFile);
+}
+
+std::shared_ptr<_tmp_simu> fillSimuTmpStruct(
+	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
+	const std::shared_ptr<DmpSimuTrajectory> simu_trajectories)
+{
+	std::shared_ptr<_tmp_simu> _simu_res = std::make_shared<_tmp_simu>();
+	_simu_res->position = TVector3(simu_primaries->pv_x, simu_primaries->pv_y, simu_primaries->pv_z);
+	_simu_res->momentum = TVector3(simu_primaries->pvpart_px, simu_primaries->pvpart_py, simu_primaries->pvpart_pz);
+	_simu_res->radius = simu_primaries->pv_r;
+	_simu_res->theta = simu_primaries->pv_theta;
+	_simu_res->phi = simu_primaries->pv_phi;
+	_simu_res->flux_w = simu_primaries->pv_fluxw;
+	_simu_res->n_particle = simu_primaries->npvpart;
+	_simu_res->cos_x = simu_primaries->pvpart_cosx;
+	_simu_res->cos_y = simu_primaries->pvpart_cosy;
+	_simu_res->cos_z = simu_primaries->pvpart_cosz;
+	_simu_res->charge = simu_primaries->pvpart_q;
+	_simu_res->zenith = simu_primaries->pvpart_zenith;
+	_simu_res->azimuth = simu_primaries->pvpart_azimuth;
+	_simu_res->w = simu_primaries->pvpart_weight;
+	_simu_res->PDG = simu_primaries->pvpart_pdg;
+	_simu_res->geocut = simu_primaries->pvpart_geocut;
+	_simu_res->thuthtrajectory_x = simu_trajectories->px;
+	_simu_res->thuthtrajectory_y = simu_trajectories->py;
+	_simu_res->thuthtrajectory_z = simu_trajectories->pz;
+	_simu_res->truthtrajectory_energy = simu_trajectories->ekin;
+	_simu_res->thuthtrajectory_start_x = simu_trajectories->start_x;
+	_simu_res->thuthtrajectory_start_y = simu_trajectories->start_y;
+	_simu_res->thuthtrajectory_start_z = simu_trajectories->start_z;	
+	_simu_res->thuthtrajectory_stop_x = simu_trajectories->stop_x;
+	_simu_res->thuthtrajectory_stop_y = simu_trajectories->stop_y;
+	_simu_res->thuthtrajectory_stop_z = simu_trajectories->stop_z;
+	_simu_res->truthtrajectory_trackID = simu_trajectories->trackID;
+	_simu_res->truthtrajectory_parentID = simu_trajectories->parentID;
+	_simu_res->truthtrajectory_charge = simu_trajectories->charge;
+	_simu_res->truthtrajectory_PDG = simu_trajectories->pdg_id;
+	_simu_res->truthtrajectory_stop_index = simu_trajectories->stop_index;
+
+	return _simu_res;
+}
+
+std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter)
+{
+	std::shared_ptr<_tmp_filter> _filter_res = std::make_shared<_tmp_filter>();	
+	_filter_res->output = filter.GetFilterOutput();
+	_filter_res->evt_best_track = filter.GetBestTrack();
+	_filter_res->evt_psd_charge = filter.GetPSDCharge();
+	_filter_res->evt_stk_charge = filter.GetSTKCharge();
+	_filter_res->evt_bgo_classifier = filter.GetClassifiers();
+	_filter_res->evt_trigger_info = filter.GetTrigger();
+
+	return _filter_res;
+}
+
+std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault)
+{
+	std::shared_ptr<_tmp_bgo> _bgo_res = std::make_shared<_tmp_bgo>();
+
+	_bgo_res->layer_energies = bgoVault.GetLayerEnergies();
+	_bgo_res->layer_bar_energies = bgoVault.GetLayerBarEnergies();
+	_bgo_res->slope = bgoVault.GetBGOslope();
+	_bgo_res->intercept = bgoVault.GetBGOintercept();
+	_bgo_res->trajectory2D = bgoVault.GetBGOTrajectory2D();
+	_bgo_res->sumrms = bgoVault.GetSumRMS();
+	_bgo_res->sumrms_layer = bgoVault.GetRmsLayer();
+	_bgo_res->energy_fraction_layer = bgoVault.GetFracLayer();
+	_bgo_res->energy_fraction_last_layer = bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer());
+	_bgo_res->energy_fraction_13th_layer = bgoVault.GetSingleFracLayer(13);
+	_bgo_res->last_energy_layer = bgoVault.GetLastEnergyLayer();
+	_bgo_res->hits = bgoVault.GetNhits();
+	_bgo_res->energy_1mr = bgoVault.GetEnergy1MR();
+	_bgo_res->energy_2mr = bgoVault.GetEnergy2MR();
+	_bgo_res->energy_3mr = bgoVault.GetEnergy3MR();
+	_bgo_res->energy_5mr = bgoVault.GetEnergy5MR();
+
+	return _bgo_res;
+}
+
+std::shared_ptr<_tmp_energy> fillEnergyTmpStruct(energy &evt_energy)
+{
+	std::shared_ptr<_tmp_energy> _energy_res = std::make_shared<_tmp_energy>();
+
+	_energy_res->simu = evt_energy.GetSimuEnergy();
+	_energy_res->simu_w = evt_energy.GetSimuWeight();
+	_energy_res->raw = evt_energy.GetRawEnergy();
+	_energy_res->correct = evt_energy.GetCorrEnergy();
+	_energy_res->correct_w = evt_energy.GetCorrWeight();
+
+	return _energy_res;
+}
+
+std::shared_ptr<_tmp_nud> fillNUDTmpStruct(DmpNudContainer &nudVault)
+{
+	std::shared_ptr<_tmp_nud> _nud_res = std::make_shared<_tmp_nud>();
+	
+	_nud_res->adc = nudVault.GetADC();
+	_nud_res->total_adc = nudVault.GetTotalADC();
+	_nud_res->max_adc = nudVault.GetMaxADC();
+	_nud_res->max_channel_ID = nudVault.GetMaxChannelID();
+
+	return _nud_res;
 }

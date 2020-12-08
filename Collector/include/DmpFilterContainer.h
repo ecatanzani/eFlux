@@ -147,7 +147,7 @@ class DmpFilterContainer
 public:
 	DmpFilterContainer(){};
 	~DmpFilterContainer(){};
-	void pipeline(
+	void Pipeline(
 		const std::shared_ptr<DmpEvtBgoRec> &bgorec,
 		const std::shared_ptr<DmpEvtBgoHits> &bgohits,
 		const cuts_conf &cuts,

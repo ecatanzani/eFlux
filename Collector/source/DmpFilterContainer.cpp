@@ -1,7 +1,7 @@
 #include "DmpFilterContainer.h"
 #include "xtrX_computation.h"
 
-void DmpFilterContainer::pipeline(
+void DmpFilterContainer::Pipeline(
 	const std::shared_ptr<DmpEvtBgoRec> &bgorec,
 	const std::shared_ptr<DmpEvtBgoHits> &bgohits,
 	const cuts_conf &cuts,

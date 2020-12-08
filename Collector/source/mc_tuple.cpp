@@ -195,27 +195,145 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch(
 		"simu_position", 
 		"TVector3", 
-		&simuPosition);
+		&simu_position);
 	DmpNtupTree->Branch(
 		"simu_momentum", 
 		"TVector3", 
-		&simuMomentum);
+		&simu_momentum);
 	DmpNtupTree->Branch(
-		"simuSlopeX",
-		&simuSlopeX,
-		"simuSlopeX/D");
+		"simu_slope_x",
+		&simu_slope_x,
+		"simu_slope_x/D");
 	DmpNtupTree->Branch(
-		"simuSlopeY",
-		&simuSlopeY,
-		"simuSlopeY/D");
+		"simu_slope_y",
+		&simu_slope_y,
+		"simu_slope_y/D");
 	DmpNtupTree->Branch(
-		"simuInterceptX",
-		&simuInterceptX,
-		"simuInterceptX/D");
+		"simu_intercept_x",
+		&simu_intercept_x,
+		"simu_intercept_x/D");
 	DmpNtupTree->Branch(
-		"simuInterceptY",
-		&simuInterceptY,
-		"simuInterceptY/D");
+		"simu_intercept_y",
+		&simu_intercept_y,
+		"simu_intercept_y/D");
+	DmpNtupTree->Branch(
+		"simu_radius",
+		&simu_radius,
+		"simu_radius/D");
+	DmpNtupTree->Branch(
+		"simu_theta",
+		&simu_theta,
+		"simu_theta/D");
+	DmpNtupTree->Branch(
+		"simu_phi",
+		&simu_phi,
+		"simu_phi/D");
+	DmpNtupTree->Branch(
+		"simu_flux_w",
+		&simu_flux_w,
+		"simu_flux_w/D");
+	DmpNtupTree->Branch(
+		"simu_n_particle",
+		&simu_n_particle,
+		"simu_n_particle/I");
+	DmpNtupTree->Branch(
+		"simu_cos_x",
+		&simu_cos_x,
+		"simu_cos_x/D");
+	DmpNtupTree->Branch(
+		"simu_cos_y",
+		&simu_cos_y,
+		"simu_cos_y/D");
+	DmpNtupTree->Branch(
+		"simu_cos_z",
+		&simu_cos_z,
+		"simu_cos_z/D");
+	DmpNtupTree->Branch(
+		"simu_charge",
+		&simu_charge,
+		"simu_charge/D");
+	DmpNtupTree->Branch(
+		"simu_zenith",
+		&simu_zenith,
+		"simu_zenith/D");
+	DmpNtupTree->Branch(
+		"simu_azimuth",
+		&simu_azimuth,
+		"simu_azimuth/D");
+	DmpNtupTree->Branch(
+		"simu_w",
+		&simu_w,
+		"simu_w/D");
+	DmpNtupTree->Branch(
+		"simu_PDG",
+		&simu_PDG,
+		"simu_PDG/D");
+	DmpNtupTree->Branch(
+		"simu_geocut",
+		&simu_geocut,
+		"simu_geocut/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_x",
+		&simu_thuthtrajectory_x,
+		"simu_thuthtrajectory_x/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_y",
+		&simu_thuthtrajectory_y,
+		"simu_thuthtrajectory_y/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_z",
+		&simu_thuthtrajectory_z,
+		"simu_thuthtrajectory_z/D");
+	DmpNtupTree->Branch(
+		"simu_truthtrajectory_energy",
+		&simu_truthtrajectory_energy,
+		"simu_truthtrajectory_energy/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_start_x",
+		&simu_thuthtrajectory_start_x,
+		"simu_thuthtrajectory_start_x/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_start_y",
+		&simu_thuthtrajectory_start_y,
+		"simu_thuthtrajectory_start_y/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_start_z",
+		&simu_thuthtrajectory_start_z,
+		"simu_thuthtrajectory_start_z/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_stop_x",
+		&simu_thuthtrajectory_stop_x,
+		"simu_thuthtrajectory_stop_x/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_stop_y",
+		&simu_thuthtrajectory_stop_y,
+		"simu_thuthtrajectory_stop_y/D");
+	DmpNtupTree->Branch(
+		"simu_thuthtrajectory_stop_z",
+		&simu_thuthtrajectory_stop_z,
+		"simu_thuthtrajectory_stop_z/D");
+	DmpNtupTree->Branch(
+		"simu_truthtrajectory_trackID",
+		&simu_truthtrajectory_trackID,
+		"simu_truthtrajectory_trackID/D");
+	DmpNtupTree->Branch(
+		"simu_truthtrajectory_parentID",
+		&simu_truthtrajectory_parentID,
+		"simu_truthtrajectory_parentID/D");
+	DmpNtupTree->Branch(
+		"simu_truthtrajectory_charge",
+		&simu_truthtrajectory_charge,
+		"simu_truthtrajectory_charge/D");
+	DmpNtupTree->Branch(
+		"simu_truthtrajectory_PDG",
+		&simu_truthtrajectory_PDG,
+		"simu_truthtrajectory_PDG/D");
+	DmpNtupTree->Branch(
+		"simu_truthtrajectory_stop_index",
+		&simu_truthtrajectory_stop_index,
+		"simu_truthtrajectory_stop_index/D");		
+
+
 	// PSD
 	DmpNtupTree->Branch(
 		"PSD_chargeX",
@@ -374,76 +492,43 @@ void mc_tuple::branch_tree()
 }
 
 void mc_tuple::Fill(
-	const filter_output &output,
-	const best_track &event_best_track,
-	const double raw_energy,
-	const double corr_energy,
-	const double mc_corr_energy_w,
-	const std::vector<double> &energy_release_layer,
-	const std::vector<std::vector<double>> &energy_release_layer_bar,
-	const std::vector<double> &bgoRec_slope,
-	const std::vector<double> &bgoRec_intercept,
-	const TVector3 &bgo_trajectory2D,
-	const double sumRMS,
-	const std::vector<double> &rms_layer,
-	const std::vector<double> &bgo_fracLayer,
-	const double lastFracLayer,
-	const double frac_layer_13,
-	const int last_bgo_layer,
-	const int bgo_entries,
-	const std::vector<double> &energy_1_moliere_radius,
-	const std::vector<double> &energy_2_moliere_radius,
-	const std::vector<double> &energy_3_moliere_radius,
-	const std::vector<double> &energy_5_moliere_radius,
-	const TVector3 &mc_position,
-	const TVector3 &mc_momentum,
-	const double mc_simu_energy,
-	const double mc_simu_energy_w,
-	const psd_charge &extracted_psd_charge,
-	const stk_charge &extracted_stk_charge,
-	const bgo_classifiers &classifier,
-	const trigger_info &evt_trigger,
-	const std::vector<double> &nud_adc,
-	const double nud_total_adc,
-	const double nud_max_adc,
-	const int nud_max_channel_id)
+	const std::shared_ptr<_tmp_filter> _filter_res,
+	const std::shared_ptr<_tmp_bgo> _bgo_res,
+	const std::shared_ptr<_tmp_simu> _simu_res,
+	const std::shared_ptr<_tmp_energy> _energy_res,
+	const std::shared_ptr<_tmp_nud> _nud_res)
 {
-	fill_trigger_info(evt_trigger);
-	fill_filter_info(output);
-	fill_stk_info(event_best_track);
+	fill_trigger_info(_filter_res->evt_trigger_info);
+	fill_filter_info(_filter_res->output);
+	fill_stk_info(_filter_res->evt_best_track);
 	fill_bgo_info(
-		raw_energy,
-		corr_energy,
-		energy_release_layer,
-		energy_release_layer_bar,
-		bgoRec_slope,
-		bgoRec_intercept,
-		bgo_trajectory2D,
-		sumRMS,
-		rms_layer,
-		bgo_fracLayer,
-		lastFracLayer,
-		frac_layer_13,
-		last_bgo_layer,
-		bgo_entries,
-		energy_1_moliere_radius,
-		energy_2_moliere_radius,
-		energy_3_moliere_radius,
-		energy_5_moliere_radius);
-	fill_simu_info(
-		mc_position,
-		mc_momentum, 
-		mc_simu_energy,
-		mc_corr_energy_w,
-		mc_simu_energy_w);
-	fill_psdcharge_info(extracted_psd_charge);
-	fill_stkcharge_info(extracted_stk_charge);
-	fill_classifier_info(classifier);
+		_energy_res->raw,
+		_energy_res->correct,
+		_bgo_res->layer_energies,
+		_bgo_res->layer_bar_energies,
+		_bgo_res->slope,
+		_bgo_res->intercept,
+		_bgo_res->trajectory2D,
+		_bgo_res->sumrms,
+		_bgo_res->sumrms_layer,
+		_bgo_res->energy_fraction_layer,
+		_bgo_res->energy_fraction_last_layer,
+		_bgo_res->energy_fraction_13th_layer,
+		_bgo_res->last_energy_layer,
+		_bgo_res->hits,
+		_bgo_res->energy_1mr,
+		_bgo_res->energy_2mr,
+		_bgo_res->energy_3mr,
+		_bgo_res->energy_5mr);
+	fill_simu_info(_simu_res, _energy_res);
+	fill_psdcharge_info(_filter_res->evt_psd_charge);
+	fill_stkcharge_info(_filter_res->evt_stk_charge);
+	fill_classifier_info(_filter_res->evt_bgo_classifier);
 	fill_nud_info(
-		nud_adc,
-		nud_total_adc,
-		nud_max_adc,
-		nud_max_channel_id);
+		_nud_res->adc,
+		_nud_res->total_adc,
+		_nud_res->max_adc,
+		_nud_res->max_channel_ID);
 	DmpNtupTree->Fill();
 }
 
@@ -474,21 +559,47 @@ void mc_tuple::fill_filter_info(const filter_output &output)
 }
 
 void mc_tuple::fill_simu_info(
-	const TVector3 mc_position,
-	const TVector3 mc_momentum,
-	const double mc_simu_energy,
-	const double mc_corr_energy_w,
-	const double mc_simu_energy_w)
+	const std::shared_ptr<_tmp_simu> _simu_res,
+	const std::shared_ptr<_tmp_energy> _energy_res)
 {
-	corr_energy_w = mc_corr_energy_w;
-	simu_energy_w = mc_simu_energy_w;
-	simuPosition = mc_position;
-	simuMomentum = mc_momentum;
-	simu_energy = mc_simu_energy;
-	simuSlopeX = mc_momentum.Z() ? mc_momentum.X() / mc_momentum.Z() : -999;
-	simuSlopeY = mc_momentum.Z() ? mc_momentum.Y() / mc_momentum.Z() : -999;
-	simuInterceptX = mc_position.X() - simuSlopeX * mc_position.Z();
-	simuInterceptY = mc_position.Y() - simuSlopeY * mc_position.Z();
+	corr_energy_w = _energy_res->correct_w;
+	simu_energy_w = _energy_res->simu_w;
+	simu_position = _simu_res->position;
+	simu_momentum = _simu_res->momentum;
+	simu_energy = _energy_res->simu;
+	simu_slope_x = _simu_res->momentum.Z() ? _simu_res->momentum.X() / _simu_res->momentum.Z() : -999;
+	simu_slope_y = _simu_res->momentum.Z() ? _simu_res->momentum.Y() / _simu_res->momentum.Z() : -999;
+	simu_intercept_x = _simu_res->position.X() - simu_slope_x * _simu_res->position.Z();
+	simu_intercept_y = _simu_res->position.Y() - simu_slope_y * _simu_res->position.Z();
+	simu_radius = _simu_res->radius;
+	simu_theta = _simu_res->theta;
+	simu_phi = _simu_res->phi;
+	simu_flux_w = _simu_res->flux_w;
+	simu_n_particle = _simu_res->n_particle;
+	simu_cos_x = _simu_res->cos_x;
+	simu_cos_y = _simu_res->cos_y;
+	simu_cos_z = _simu_res->cos_z;
+	simu_charge = _simu_res->charge;
+	simu_zenith = _simu_res->zenith;
+	simu_azimuth = _simu_res->azimuth;
+	simu_w = _simu_res->w;
+	simu_PDG = _simu_res->PDG;
+	simu_geocut = _simu_res->geocut;
+	simu_thuthtrajectory_x = _simu_res->thuthtrajectory_x;
+	simu_thuthtrajectory_y = _simu_res->thuthtrajectory_y;
+	simu_thuthtrajectory_z = _simu_res->thuthtrajectory_z;
+	simu_truthtrajectory_energy = _simu_res->truthtrajectory_energy;
+	simu_thuthtrajectory_start_x = _simu_res->thuthtrajectory_start_x;
+	simu_thuthtrajectory_start_y = _simu_res->thuthtrajectory_start_y;
+	simu_thuthtrajectory_start_z = _simu_res->thuthtrajectory_start_z;
+	simu_thuthtrajectory_stop_x = _simu_res->thuthtrajectory_stop_x;
+	simu_thuthtrajectory_stop_y = _simu_res->thuthtrajectory_stop_y;
+	simu_thuthtrajectory_stop_z = _simu_res->thuthtrajectory_stop_z;
+	simu_truthtrajectory_trackID =  _simu_res->truthtrajectory_trackID;
+	simu_truthtrajectory_parentID = _simu_res->truthtrajectory_parentID;
+	simu_truthtrajectory_charge = _simu_res->truthtrajectory_charge;
+	simu_truthtrajectory_PDG = _simu_res->truthtrajectory_PDG;
+	simu_truthtrajectory_stop_index = _simu_res->truthtrajectory_stop_index;
 }
 
 void mc_tuple::Reset()
@@ -502,10 +613,43 @@ void mc_tuple::Reset()
 void mc_tuple::reset_simu_info()
 {
 	simu_energy = -999;
-	simuSlopeX = -999;
-	simuSlopeY = -999;
-	simuInterceptX = -999;
-	simuInterceptY = -999;
-	simuPosition.SetXYZ(-999, -999, -999);
-	simuMomentum.SetXYZ(-999, -999, -999);
+	simu_energy_w = -999;
+	corr_energy_w = -999;
+	simu_position.SetXYZ(-999, -999, -999);
+	simu_momentum.SetXYZ(-999, -999, -999);
+	simu_slope_x = -999;
+	simu_slope_y = -999;
+	simu_intercept_x = -999;
+	simu_intercept_y = -999;
+	simu_radius = -999;
+	simu_theta = -999;
+	simu_phi = -999;
+	simu_flux_w = -999;
+	simu_n_particle = -999;
+	simu_cos_x = -999;
+	simu_cos_y = -999;
+	simu_cos_z = -999;
+	simu_charge = -999;
+	simu_zenith = -999;
+	simu_azimuth = -999;
+	simu_w = -999;
+	simu_PDG = -999;
+	simu_geocut = -999;
+	simu_thuthtrajectory_x = -999;
+	simu_thuthtrajectory_y = -999;
+	simu_thuthtrajectory_z = -999;
+	simu_truthtrajectory_energy = -999;
+	simu_thuthtrajectory_start_x = -999;
+	simu_thuthtrajectory_start_y = -999;
+	simu_thuthtrajectory_start_z = -999;
+	simu_thuthtrajectory_stop_x = -999;
+	simu_thuthtrajectory_stop_y = -999;
+	simu_thuthtrajectory_stop_z = -999;
+	simu_truthtrajectory_trackID = -999;
+	simu_truthtrajectory_parentID = -999;
+	simu_truthtrajectory_charge = -999;
+	simu_truthtrajectory_PDG = -999;
+	simu_truthtrajectory_stop_index = -999;
+	evtfilter_geometric_before_trigger = false;
+	evtfilter_trigger_check = false;
 }
