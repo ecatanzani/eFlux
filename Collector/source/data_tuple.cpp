@@ -204,11 +204,11 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch(
 		"NUD_total_ADC",
 		&nud_total_adc,
-		"nud_total_adc/D");
+		"nud_total_adc/I");
 	DmpNtupTree->Branch(
 		"NUD_max_ADC",
 		&nud_max_adc,
-		"nud_max_adc/D");
+		"nud_max_adc/I");
 	DmpNtupTree->Branch(
 		"NUD_max_channel_ID",
 		&nud_max_channel_id,
@@ -416,9 +416,9 @@ void data_tuple::Fill(
 	const stk_charge &extracted_stk_charge,
 	const bgo_classifiers &classifier,
 	const trigger_info &evt_trigger,
-	const std::vector<double> &nud_adc,
-	const double nud_total_adc,
-	const double nud_max_adc,
+	const std::vector<int> &nud_adc,
+	const int nud_total_adc,
+	const int nud_max_adc,
 	const int nud_max_channel_id)
 {
 	fill_trigger_info(evt_trigger);

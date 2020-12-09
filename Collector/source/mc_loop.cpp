@@ -55,7 +55,7 @@ void mcLoop(
 	dmpch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
 
 	// Register SimuTrajectory container
-	std::shared_ptr<DmpSimuTrajectory> simu_trajectories = std::make_shared<DmpSimuTrajectory>();
+	std::shared_ptr<TClonesArray> simu_trajectories = std::make_shared<TClonesArray>("DmpSimuTrajectory");
 	dmpch->SetBranchAddress("DmpTruthTrajectoriesCollection", &simu_trajectories);
 
 	// Register BGO container
@@ -115,7 +115,7 @@ void mcLoop(
 		filter.PrintDataInfo(dmpch, _MC);
 		std::cout << "Analysing MC...\n\n";
 	}
-
+	
 	for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx)
 	{
 		// Read tree event
@@ -200,14 +200,12 @@ void mcLoop(
 		}
 		
 		// Fill output structures
-		/*
 		simu_tuple->Fill(
 			fillFilterTmpStruct(filter),
 			fillBGOTmpStruct(bgoVault),
 			fillSimuTmpStruct(simu_primaries, simu_trajectories),
 			fillEnergyTmpStruct(evt_energy),
 			fillNUDTmpStruct(nudVault));
-		*/
 	}
 
 	if (_VERBOSE)
@@ -228,7 +226,7 @@ void mcLoop(
 
 std::shared_ptr<_tmp_simu> fillSimuTmpStruct(
 	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
-	const std::shared_ptr<DmpSimuTrajectory> simu_trajectories)
+	const std::shared_ptr<TClonesArray> simu_trajectories)
 {
 	std::shared_ptr<_tmp_simu> _simu_res = std::make_shared<_tmp_simu>();
 	_simu_res->position = TVector3(simu_primaries->pv_x, simu_primaries->pv_y, simu_primaries->pv_z);
@@ -247,21 +245,45 @@ std::shared_ptr<_tmp_simu> fillSimuTmpStruct(
 	_simu_res->w = simu_primaries->pvpart_weight;
 	_simu_res->PDG = simu_primaries->pvpart_pdg;
 	_simu_res->geocut = simu_primaries->pvpart_geocut;
-	_simu_res->thuthtrajectory_x = simu_trajectories->px;
-	_simu_res->thuthtrajectory_y = simu_trajectories->py;
-	_simu_res->thuthtrajectory_z = simu_trajectories->pz;
-	_simu_res->truthtrajectory_energy = simu_trajectories->ekin;
-	_simu_res->thuthtrajectory_start_x = simu_trajectories->start_x;
-	_simu_res->thuthtrajectory_start_y = simu_trajectories->start_y;
-	_simu_res->thuthtrajectory_start_z = simu_trajectories->start_z;	
-	_simu_res->thuthtrajectory_stop_x = simu_trajectories->stop_x;
-	_simu_res->thuthtrajectory_stop_y = simu_trajectories->stop_y;
-	_simu_res->thuthtrajectory_stop_z = simu_trajectories->stop_z;
-	_simu_res->truthtrajectory_trackID = simu_trajectories->trackID;
-	_simu_res->truthtrajectory_parentID = simu_trajectories->parentID;
-	_simu_res->truthtrajectory_charge = simu_trajectories->charge;
-	_simu_res->truthtrajectory_PDG = simu_trajectories->pdg_id;
-	_simu_res->truthtrajectory_stop_index = simu_trajectories->stop_index;
+
+	auto n_simu_trajectories = simu_trajectories->GetEntries();
+
+	_simu_res->thuthtrajectory_x.resize(n_simu_trajectories);
+	_simu_res->thuthtrajectory_y.resize(n_simu_trajectories);
+	_simu_res->thuthtrajectory_z.resize(n_simu_trajectories);
+	_simu_res->truthtrajectory_energy.resize(n_simu_trajectories);
+	_simu_res->thuthtrajectory_start_x.resize(n_simu_trajectories);
+	_simu_res->thuthtrajectory_start_y.resize(n_simu_trajectories);
+	_simu_res->thuthtrajectory_start_z.resize(n_simu_trajectories);
+	_simu_res->thuthtrajectory_stop_x.resize(n_simu_trajectories);
+	_simu_res->thuthtrajectory_stop_y.resize(n_simu_trajectories);
+	_simu_res->thuthtrajectory_stop_z.resize(n_simu_trajectories);
+	_simu_res->truthtrajectory_trackID.resize(n_simu_trajectories);
+	_simu_res->truthtrajectory_parentID.resize(n_simu_trajectories);
+	_simu_res->truthtrajectory_charge.resize(n_simu_trajectories);
+	_simu_res->truthtrajectory_PDG.resize(n_simu_trajectories);
+	_simu_res->truthtrajectory_stop_index.resize(n_simu_trajectories);
+
+	for (int trIdx = 0; trIdx<n_simu_trajectories; ++trIdx)
+	{
+		auto simu_track = static_cast<DmpSimuTrajectory*>(simu_trajectories->ConstructedAt(trIdx));
+
+		_simu_res->thuthtrajectory_x[trIdx] = simu_track->px;
+		_simu_res->thuthtrajectory_y[trIdx] = simu_track->py;
+		_simu_res->thuthtrajectory_z[trIdx] = simu_track->pz;
+		_simu_res->truthtrajectory_energy[trIdx] = simu_track->ekin;
+		_simu_res->thuthtrajectory_start_x[trIdx] = simu_track->start_x;
+		_simu_res->thuthtrajectory_start_y[trIdx] = simu_track->start_y;
+		_simu_res->thuthtrajectory_start_z[trIdx] = simu_track->start_z;	
+		_simu_res->thuthtrajectory_stop_x[trIdx] = simu_track->stop_x;
+		_simu_res->thuthtrajectory_stop_y[trIdx] = simu_track->stop_y;
+		_simu_res->thuthtrajectory_stop_z[trIdx] = simu_track->stop_z;
+		_simu_res->truthtrajectory_trackID[trIdx] = simu_track->trackID;
+		_simu_res->truthtrajectory_parentID[trIdx] = simu_track->parentID;
+		_simu_res->truthtrajectory_charge[trIdx] = simu_track->charge;
+		_simu_res->truthtrajectory_PDG[trIdx] = simu_track->pdg_id;
+		_simu_res->truthtrajectory_stop_index[trIdx] = simu_track->stop_index;
+	}
 
 	return _simu_res;
 }

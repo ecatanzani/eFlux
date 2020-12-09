@@ -62,21 +62,21 @@ struct _tmp_simu
 	double w;
 	long PDG;
 	int geocut;
-	double thuthtrajectory_x;
-	double thuthtrajectory_y;
-	double thuthtrajectory_z;
-	double truthtrajectory_energy;
-	double thuthtrajectory_start_x;
-	double thuthtrajectory_start_y;
-	double thuthtrajectory_start_z;
-	double thuthtrajectory_stop_x;
-	double thuthtrajectory_stop_y;
-	double thuthtrajectory_stop_z;
-	double truthtrajectory_trackID;
-	double truthtrajectory_parentID;
-	double truthtrajectory_charge;
-	double truthtrajectory_PDG;
-	double truthtrajectory_stop_index;
+	std::vector<double> thuthtrajectory_x;
+	std::vector<double> thuthtrajectory_y;
+	std::vector<double> thuthtrajectory_z;
+	std::vector<double> truthtrajectory_energy;
+	std::vector<double> thuthtrajectory_start_x;
+	std::vector<double> thuthtrajectory_start_y;
+	std::vector<double> thuthtrajectory_start_z;
+	std::vector<double> thuthtrajectory_stop_x;
+	std::vector<double> thuthtrajectory_stop_y;
+	std::vector<double> thuthtrajectory_stop_z;
+	std::vector<double> truthtrajectory_trackID;
+	std::vector<double> truthtrajectory_parentID;
+	std::vector<double> truthtrajectory_charge;
+	std::vector<double> truthtrajectory_PDG;
+	std::vector<double> truthtrajectory_stop_index;
 };
 
 struct _tmp_energy
@@ -90,9 +90,9 @@ struct _tmp_energy
 
 struct _tmp_nud
 {
-	std::vector<double> adc;
-	double total_adc;
-	double max_adc;
+	std::vector<int> adc;
+	int total_adc;
+	int max_adc;
 	int max_channel_ID;
 };
 
@@ -114,7 +114,7 @@ extern std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filt
 
 extern std::shared_ptr<_tmp_simu> fillSimuTmpStruct(
 	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
-	const std::shared_ptr<DmpSimuTrajectory> simu_trajectories);
+	const std::shared_ptr<TClonesArray> simu_trajectories);
 
 extern std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault);
 

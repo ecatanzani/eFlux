@@ -13,14 +13,14 @@ public:
 	DmpNudContainer() : adc(DAMPE_NUD_channels, -999){};
 	~DmpNudContainer(){};
 	void scanNudHits(const std::shared_ptr<DmpEvtNudRaw> &nudraw);
-	const std::vector<double> GetADC();
-	const double GetTotalADC();
-	const double GetMaxADC();
+	const std::vector<int> GetADC();
+	const int GetTotalADC();
+	const int GetMaxADC();
 	const int GetMaxChannelID();
 private:
-	std::vector<double> adc;
-	double total_adc = 0;
-	double max_adc = -999;
+	std::vector<int> adc;
+	int total_adc = 0;
+	int max_adc = -999;
 	int max_channel_id = -999;
 };
 

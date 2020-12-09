@@ -22,15 +22,15 @@ void DmpNudContainer::scanNudHits(const std::shared_ptr<DmpEvtNudRaw> &nudraw)
 	}
 }
 
-const std::vector<double> DmpNudContainer::GetADC()
+const std::vector<int> DmpNudContainer::GetADC()
 {
 	return adc;
 }
-const double DmpNudContainer::GetTotalADC()
+const int DmpNudContainer::GetTotalADC()
 {
 	return total_adc;
 }
-const double DmpNudContainer::GetMaxADC()
+const int DmpNudContainer::GetMaxADC()
 {
 	return max_adc;
 }

@@ -274,66 +274,49 @@ void mc_tuple::branch_tree()
 		"simu_geocut/D");
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_x",
-		&simu_thuthtrajectory_x,
-		"simu_thuthtrajectory_x/D");
+		&simu_thuthtrajectory_x);
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_y",
-		&simu_thuthtrajectory_y,
-		"simu_thuthtrajectory_y/D");
+		&simu_thuthtrajectory_y);
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_z",
-		&simu_thuthtrajectory_z,
-		"simu_thuthtrajectory_z/D");
+		&simu_thuthtrajectory_z);
 	DmpNtupTree->Branch(
 		"simu_truthtrajectory_energy",
-		&simu_truthtrajectory_energy,
-		"simu_truthtrajectory_energy/D");
+		&simu_truthtrajectory_energy);
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_start_x",
-		&simu_thuthtrajectory_start_x,
-		"simu_thuthtrajectory_start_x/D");
+		&simu_thuthtrajectory_start_x);
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_start_y",
-		&simu_thuthtrajectory_start_y,
-		"simu_thuthtrajectory_start_y/D");
+		&simu_thuthtrajectory_start_y);
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_start_z",
-		&simu_thuthtrajectory_start_z,
-		"simu_thuthtrajectory_start_z/D");
+		&simu_thuthtrajectory_start_z);
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_stop_x",
-		&simu_thuthtrajectory_stop_x,
-		"simu_thuthtrajectory_stop_x/D");
+		&simu_thuthtrajectory_stop_x);
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_stop_y",
-		&simu_thuthtrajectory_stop_y,
-		"simu_thuthtrajectory_stop_y/D");
+		&simu_thuthtrajectory_stop_y);
 	DmpNtupTree->Branch(
 		"simu_thuthtrajectory_stop_z",
-		&simu_thuthtrajectory_stop_z,
-		"simu_thuthtrajectory_stop_z/D");
+		&simu_thuthtrajectory_stop_z);
 	DmpNtupTree->Branch(
 		"simu_truthtrajectory_trackID",
-		&simu_truthtrajectory_trackID,
-		"simu_truthtrajectory_trackID/D");
+		&simu_truthtrajectory_trackID);
 	DmpNtupTree->Branch(
 		"simu_truthtrajectory_parentID",
-		&simu_truthtrajectory_parentID,
-		"simu_truthtrajectory_parentID/D");
+		&simu_truthtrajectory_parentID);
 	DmpNtupTree->Branch(
 		"simu_truthtrajectory_charge",
-		&simu_truthtrajectory_charge,
-		"simu_truthtrajectory_charge/D");
+		&simu_truthtrajectory_charge);
 	DmpNtupTree->Branch(
 		"simu_truthtrajectory_PDG",
-		&simu_truthtrajectory_PDG,
-		"simu_truthtrajectory_PDG/D");
+		&simu_truthtrajectory_PDG);
 	DmpNtupTree->Branch(
 		"simu_truthtrajectory_stop_index",
-		&simu_truthtrajectory_stop_index,
-		"simu_truthtrajectory_stop_index/D");		
-
-
+		&simu_truthtrajectory_stop_index);
 	// PSD
 	DmpNtupTree->Branch(
 		"PSD_chargeX",
@@ -354,11 +337,11 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch(
 		"NUD_total_ADC",
 		&nud_total_adc,
-		"nud_total_adc/D");
+		"nud_total_adc/I");
 	DmpNtupTree->Branch(
 		"NUD_max_ADC",
 		&nud_max_adc,
-		"nud_max_adc/D");
+		"nud_max_adc/I");
 	DmpNtupTree->Branch(
 		"NUD_max_channel_ID",
 		&nud_max_channel_id,
@@ -606,8 +589,6 @@ void mc_tuple::Reset()
 {
 	core_reset();
 	reset_simu_info();
-	evtfilter_geometric_before_trigger = false;
-	evtfilter_trigger_check = false;
 }
 
 void mc_tuple::reset_simu_info()
@@ -635,21 +616,21 @@ void mc_tuple::reset_simu_info()
 	simu_w = -999;
 	simu_PDG = -999;
 	simu_geocut = -999;
-	simu_thuthtrajectory_x = -999;
-	simu_thuthtrajectory_y = -999;
-	simu_thuthtrajectory_z = -999;
-	simu_truthtrajectory_energy = -999;
-	simu_thuthtrajectory_start_x = -999;
-	simu_thuthtrajectory_start_y = -999;
-	simu_thuthtrajectory_start_z = -999;
-	simu_thuthtrajectory_stop_x = -999;
-	simu_thuthtrajectory_stop_y = -999;
-	simu_thuthtrajectory_stop_z = -999;
-	simu_truthtrajectory_trackID = -999;
-	simu_truthtrajectory_parentID = -999;
-	simu_truthtrajectory_charge = -999;
-	simu_truthtrajectory_PDG = -999;
-	simu_truthtrajectory_stop_index = -999;
+	simu_thuthtrajectory_x = std::vector<double>();
+	simu_thuthtrajectory_y = std::vector<double>();
+	simu_thuthtrajectory_z = std::vector<double>();
+	simu_truthtrajectory_energy = std::vector<double>();
+	simu_thuthtrajectory_start_x = std::vector<double>();
+	simu_thuthtrajectory_start_y = std::vector<double>();
+	simu_thuthtrajectory_start_z = std::vector<double>();
+	simu_thuthtrajectory_stop_x = std::vector<double>();
+	simu_thuthtrajectory_stop_y = std::vector<double>();
+	simu_thuthtrajectory_stop_z = std::vector<double>();
+	simu_truthtrajectory_trackID = std::vector<double>();
+	simu_truthtrajectory_parentID = std::vector<double>();
+	simu_truthtrajectory_charge = std::vector<double>();
+	simu_truthtrajectory_PDG = std::vector<double>();
+	simu_truthtrajectory_stop_index = std::vector<double>();
 	evtfilter_geometric_before_trigger = false;
 	evtfilter_trigger_check = false;
 }

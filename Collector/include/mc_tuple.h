@@ -61,21 +61,21 @@ private:
 	int simu_geocut = -999;
 
 	// Simu Truth Trajectories
-	double simu_thuthtrajectory_x = -999;
-	double simu_thuthtrajectory_y = -999;
-	double simu_thuthtrajectory_z = -999;
-	double simu_truthtrajectory_energy = -999;
-	double simu_thuthtrajectory_start_x = -999;
-	double simu_thuthtrajectory_start_y = -999;
-	double simu_thuthtrajectory_start_z = -999;
-	double simu_thuthtrajectory_stop_x = -999;
-	double simu_thuthtrajectory_stop_y = -999;
-	double simu_thuthtrajectory_stop_z = -999;
-	double simu_truthtrajectory_trackID = -999;
-	double simu_truthtrajectory_parentID = -999;
-	double simu_truthtrajectory_charge = -999;
-	double simu_truthtrajectory_PDG = -999;
-	double simu_truthtrajectory_stop_index = -999;
+	std::vector<double> simu_thuthtrajectory_x;
+	std::vector<double> simu_thuthtrajectory_y;
+	std::vector<double> simu_thuthtrajectory_z;
+	std::vector<double> simu_truthtrajectory_energy;
+	std::vector<double> simu_thuthtrajectory_start_x;
+	std::vector<double> simu_thuthtrajectory_start_y;
+	std::vector<double> simu_thuthtrajectory_start_z;
+	std::vector<double> simu_thuthtrajectory_stop_x;
+	std::vector<double> simu_thuthtrajectory_stop_y;
+	std::vector<double> simu_thuthtrajectory_stop_z;
+	std::vector<double> simu_truthtrajectory_trackID;
+	std::vector<double> simu_truthtrajectory_parentID;
+	std::vector<double> simu_truthtrajectory_charge;
+	std::vector<double> simu_truthtrajectory_PDG;
+	std::vector<double> simu_truthtrajectory_stop_index;
 
 	// Filters
 	bool evtfilter_geometric_before_trigger = false;

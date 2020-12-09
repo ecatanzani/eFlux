@@ -123,9 +123,9 @@ void ntuple::Write(TFile &outfile)
 }
 
 void ntuple::fill_nud_info(
-	const std::vector<double> adc,
-	const double total_adc,
-	const double max_adc,
+	const std::vector<int> adc,
+	const int total_adc,
+	const int max_adc,
 	const int max_channel_id)
 {
 	if (evtfilter_good_event)
@@ -190,7 +190,7 @@ void ntuple::core_reset()
 	PSD_chargeY = -999;
 	PSD_charge = -999;
 	// NUD
-	nud_adc = std::vector<double>(DAMPE_NUD_channels, -999);
+	nud_adc = std::vector<int>(DAMPE_NUD_channels, -999);
 	nud_total_adc = -999;
 	nud_max_adc = -999;
 	nud_max_channel_id = -999;

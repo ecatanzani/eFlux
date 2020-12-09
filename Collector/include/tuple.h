@@ -55,9 +55,9 @@ protected:
 	void fill_stkcharge_info(const stk_charge &extracted_stk_charge);
 	void fill_classifier_info(const bgo_classifiers &classifier);
 	void fill_nud_info(
-		const std::vector<double> adc,
-		const double total_adc,
-		const double max_adc,
+		const std::vector<int> adc,
+		const int total_adc,
+		const int max_adc,
 		const int max_channel_id);
 	void core_reset();
 
@@ -114,9 +114,9 @@ protected:
 	double PSD_chargeY = -999;
 	double PSD_charge = -999;
 	// NUD
-	std::vector<double> nud_adc;
-	double nud_total_adc = -999;
-	double nud_max_adc = -999;
+	std::vector<int> nud_adc;
+	int nud_total_adc = -999;
+	int nud_max_adc = -999;
 	int nud_max_channel_id = -999;
 	// Classifiers
 	double xtr = -999;
