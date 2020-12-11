@@ -1,2 +1,0 @@
-root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p10/allElectron-v6r0p10_1GeV_100GeV_FTFP_HP/allElectron-v6r0p10_1GeV_100GeV_FTFP_HP.noOrb.000002.reco.root
-root://xrootd-dampe.cloud.ba.infn.it///MC/reco/v6r0p10/allElectron-v6r0p10_1GeV_100GeV_FTFP_HP/allElectron-v6r0p10_1GeV_100GeV_FTFP_HP.noOrb.000003.reco.root
