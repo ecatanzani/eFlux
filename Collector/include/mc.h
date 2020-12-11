@@ -62,21 +62,21 @@ struct _tmp_simu
 	double w;
 	long PDG;
 	int geocut;
-	std::vector<double> thuthtrajectory_x;
-	std::vector<double> thuthtrajectory_y;
-	std::vector<double> thuthtrajectory_z;
-	std::vector<double> truthtrajectory_energy;
-	std::vector<double> thuthtrajectory_start_x;
-	std::vector<double> thuthtrajectory_start_y;
-	std::vector<double> thuthtrajectory_start_z;
-	std::vector<double> thuthtrajectory_stop_x;
-	std::vector<double> thuthtrajectory_stop_y;
-	std::vector<double> thuthtrajectory_stop_z;
-	std::vector<double> truthtrajectory_trackID;
-	std::vector<double> truthtrajectory_parentID;
-	std::vector<double> truthtrajectory_charge;
-	std::vector<double> truthtrajectory_PDG;
-	std::vector<double> truthtrajectory_stop_index;
+	std::vector<double> thruthtrajectory_x;
+	std::vector<double> thruthtrajectory_y;
+	std::vector<double> thruthtrajectory_z;
+	std::vector<double> thruthtrajectory_energy;
+	std::vector<double> thruthtrajectory_start_x;
+	std::vector<double> thruthtrajectory_start_y;
+	std::vector<double> thruthtrajectory_start_z;
+	std::vector<double> thruthtrajectory_stop_x;
+	std::vector<double> thruthtrajectory_stop_y;
+	std::vector<double> thruthtrajectory_stop_z;
+	std::vector<double> thruthtrajectory_trackID;
+	std::vector<double> thruthtrajectory_parentID;
+	std::vector<double> thruthtrajectory_charge;
+	std::vector<double> thruthtrajectory_PDG;
+	std::vector<double> thruthtrajectory_stop_index;
 };
 
 struct _tmp_energy
