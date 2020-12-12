@@ -371,16 +371,16 @@ void mc_reader(
     auto h_simu_cosz = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_cosz", "Simu #cos(z);", 100, -1, 1}, "simu_cos_z", "simu_energy_w");
     auto h_simu_zenith = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_zenith", "Simu zenith; Zenith [deg]", 100, 0, 90}, "simu_zenith", "simu_energy_w");
     auto h_simu_azimuth = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_azimuth", "Simu azimuth; Azimuth [deg]", 200, -180, 180}, "simu_azimuth", "simu_energy_w");
-    auto h_simu_truthtrajectory_start_x = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500}, "simu_truthtrajectory_start_x", "simu_energy_w");
-    auto h_simu_truthtrajectory_start_y = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500}, "simu_truthtrajectory_start_y", "simu_energy_w");
-    auto h_simu_truthtrajectory_start_z = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500}, "simu_truthtrajectory_start_z", "simu_energy_w");
-    auto h_simu_truthtrajectory_stop_x = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000}, "simu_truthtrajectory_stop_x", "simu_energy_w");
-    auto h_simu_truthtrajectory_stop_y = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000}, "simu_truthtrajectory_stop_y", "simu_energy_w");
-    auto h_simu_truthtrajectory_stop_z = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000}, "simu_truthtrajectory_stop_z", "simu_energy_w");
-    auto h_simu_truthtrajectory_trackID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200}, "simu_truthtrajectory_trackID", "simu_energy_w");
-    auto h_simu_truthtrajectory_parentID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1}, "simu_truthtrajectory_parentID", "simu_energy_w");
-    auto h_simu_truthtrajectory_pdgID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000}, "simu_truthtrajectory_PDG", "simu_energy_w");
-    auto h_simu_truthtrajectory_stop_index = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_truthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10}, "simu_truthtrajectory_stop_index", "simu_energy_w");
+    auto h_simu_thruthtrajectory_start_x = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_x", "simu_energy_w");
+    auto h_simu_thruthtrajectory_start_y = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_y", "simu_energy_w");
+    auto h_simu_thruthtrajectory_start_z = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_z", "simu_energy_w");
+    auto h_simu_thruthtrajectory_stop_x = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_x", "simu_energy_w");
+    auto h_simu_thruthtrajectory_stop_y = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_y", "simu_energy_w");
+    auto h_simu_thruthtrajectory_stop_z = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_z", "simu_energy_w");
+    auto h_simu_thruthtrajectory_trackID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200}, "simu_thruthtrajectory_trackID", "simu_energy_w");
+    auto h_simu_thruthtrajectory_parentID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1}, "simu_thruthtrajectory_parentID", "simu_energy_w");
+    auto h_simu_thruthtrajectory_pdgID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000}, "simu_thruthtrajectory_PDG", "simu_energy_w");
+    auto h_simu_thruthtrajectory_stop_index = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10}, "simu_thruthtrajectory_stop_index", "simu_energy_w");
 
     // Extract STK histos
     auto h_stk_cosine = _fr_stk_analysis.Histo1D({"h_stk_cosine", "h_stk_cosine", 100, 0, 1}, "STK_bestTrack_costheta");
@@ -720,16 +720,16 @@ void mc_reader(
     auto h_simu_ps_zenith = _fr_preselected.Histo1D<double, double>({"h_simu_ps_zenith", "Simu zenith; Zenith [deg]", 100, 0, 90}, "simu_zenith", "simu_energy_w");
     auto h_simu_ps_azimuth = _fr_preselected.Histo1D<double, double>({"h_simu_ps_azimuth", "Simu azimuth; Azimuth [deg]", 200, -180, 180}, "simu_azimuth", "simu_energy_w");
     
-    auto h_simu_ps_truthtrajectory_start_x = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500}, "simu_truthtrajectory_start_x", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_start_y = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500}, "simu_truthtrajectory_start_y", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_start_z = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500}, "simu_truthtrajectory_start_z", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_stop_x = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000}, "simu_truthtrajectory_stop_x", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_stop_y = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000}, "simu_truthtrajectory_stop_y", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_stop_z = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000}, "simu_truthtrajectory_stop_z", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_trackID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200}, "simu_truthtrajectory_trackID", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_parentID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1}, "simu_truthtrajectory_parentID", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_pdgID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000}, "simu_truthtrajectory_PDG", "simu_energy_w");
-    auto h_simu_ps_truthtrajectory_stop_index = _fr_preselected.Histo1D<double, double>({"h_simu_ps_truthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10}, "simu_truthtrajectory_stop_index", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_start_x = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_x", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_start_y = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_y", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_start_z = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_z", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_stop_x = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_x", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_stop_y = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_y", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_stop_z = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_z", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_trackID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200}, "simu_thruthtrajectory_trackID", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_parentID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1}, "simu_thruthtrajectory_parentID", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_pdgID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000}, "simu_thruthtrajectory_PDG", "simu_energy_w");
+    auto h_simu_ps_thruthtrajectory_stop_index = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10}, "simu_thruthtrajectory_stop_index", "simu_energy_w");
 
     // Extract STK histos
     auto h_stk_ps_cosine = _fr_preselected.Histo1D({"h_stk_ps_cosine", "h_stk_cosine", 100, 0, 1}, "STK_bestTrack_costheta");
@@ -817,16 +817,16 @@ void mc_reader(
     h_simu_cosz->Write();
     h_simu_zenith->Write();
     h_simu_azimuth->Write();
-    h_simu_truthtrajectory_start_x->Write();
-    h_simu_truthtrajectory_start_y->Write();
-    h_simu_truthtrajectory_start_z->Write();
-    h_simu_truthtrajectory_stop_x->Write();
-    h_simu_truthtrajectory_stop_y->Write();
-    h_simu_truthtrajectory_stop_z->Write();
-    h_simu_truthtrajectory_trackID->Write();
-    h_simu_truthtrajectory_parentID->Write();
-    h_simu_truthtrajectory_pdgID->Write();
-    h_simu_truthtrajectory_stop_index->Write();
+    h_simu_thruthtrajectory_start_x->Write();
+    h_simu_thruthtrajectory_start_y->Write();
+    h_simu_thruthtrajectory_start_z->Write();
+    h_simu_thruthtrajectory_stop_x->Write();
+    h_simu_thruthtrajectory_stop_y->Write();
+    h_simu_thruthtrajectory_stop_z->Write();
+    h_simu_thruthtrajectory_trackID->Write();
+    h_simu_thruthtrajectory_parentID->Write();
+    h_simu_thruthtrajectory_pdgID->Write();
+    h_simu_thruthtrajectory_stop_index->Write();
     
     outfile->mkdir("STK");
     outfile->cd("STK");
@@ -973,16 +973,16 @@ void mc_reader(
     h_simu_ps_cosz->Write();
     h_simu_ps_zenith->Write();
     h_simu_ps_azimuth->Write();
-    h_simu_ps_truthtrajectory_start_x->Write();
-    h_simu_ps_truthtrajectory_start_y->Write();
-    h_simu_ps_truthtrajectory_start_z->Write();
-    h_simu_ps_truthtrajectory_stop_x->Write();
-    h_simu_ps_truthtrajectory_stop_y->Write();
-    h_simu_ps_truthtrajectory_stop_z->Write();
-    h_simu_ps_truthtrajectory_trackID->Write();
-    h_simu_ps_truthtrajectory_parentID->Write();
-    h_simu_ps_truthtrajectory_pdgID->Write();
-    h_simu_ps_truthtrajectory_stop_index->Write();
+    h_simu_ps_thruthtrajectory_start_x->Write();
+    h_simu_ps_thruthtrajectory_start_y->Write();
+    h_simu_ps_thruthtrajectory_start_z->Write();
+    h_simu_ps_thruthtrajectory_stop_x->Write();
+    h_simu_ps_thruthtrajectory_stop_y->Write();
+    h_simu_ps_thruthtrajectory_stop_z->Write();
+    h_simu_ps_thruthtrajectory_trackID->Write();
+    h_simu_ps_thruthtrajectory_parentID->Write();
+    h_simu_ps_thruthtrajectory_pdgID->Write();
+    h_simu_ps_thruthtrajectory_stop_index->Write();
 
     outfile->mkdir("Preselection/STK");
     outfile->cd("Preselection/STK");
