@@ -371,16 +371,48 @@ void mc_reader(
     auto h_simu_cosz = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_cosz", "Simu #cos(z);", 100, -1, 1}, "simu_cos_z", "simu_energy_w");
     auto h_simu_zenith = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_zenith", "Simu zenith; Zenith [deg]", 100, 0, 90}, "simu_zenith", "simu_energy_w");
     auto h_simu_azimuth = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_azimuth", "Simu azimuth; Azimuth [deg]", 200, -180, 180}, "simu_azimuth", "simu_energy_w");
-    auto h_simu_thruthtrajectory_start_x = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_x", "simu_energy_w");
-    auto h_simu_thruthtrajectory_start_y = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_y", "simu_energy_w");
-    auto h_simu_thruthtrajectory_start_z = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_z", "simu_energy_w");
-    auto h_simu_thruthtrajectory_stop_x = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_x", "simu_energy_w");
-    auto h_simu_thruthtrajectory_stop_y = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_y", "simu_energy_w");
-    auto h_simu_thruthtrajectory_stop_z = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_z", "simu_energy_w");
-    auto h_simu_thruthtrajectory_trackID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200}, "simu_thruthtrajectory_trackID", "simu_energy_w");
-    auto h_simu_thruthtrajectory_parentID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1}, "simu_thruthtrajectory_parentID", "simu_energy_w");
-    auto h_simu_thruthtrajectory_pdgID = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000}, "simu_thruthtrajectory_PDG", "simu_energy_w");
-    auto h_simu_thruthtrajectory_stop_index = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10}, "simu_thruthtrajectory_stop_index", "simu_energy_w");
+
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_x = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_y = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_z = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_x = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_y = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_z = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_trackID = std::make_unique<TH1D>("h_simu_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_parentID = std::make_unique<TH1D>("h_simu_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_pdgID = std::make_unique<TH1D>("h_simu_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000);
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_index = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10);
+
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_x](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_start_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_x", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_y](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_start_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_y", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_z](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_start_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_z", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_x](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_stop_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_x", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_y](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_stop_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_y", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_z](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_stop_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_z", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_trackID](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_trackID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_trackID", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_parentID](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_parentID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_parentID", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_pdgID](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_thruthtrajectory_pdgID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_PDG", "simu_energy_w"});
+    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_index](std::vector<double> thruthtrajectory, double energy_w) { 
+        for (auto& _elm : thruthtrajectory)
+            h_simu_thruthtrajectory_stop_index->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_index", "simu_energy_w"});
 
     // Extract STK histos
     auto h_stk_cosine = _fr_stk_analysis.Histo1D({"h_stk_cosine", "h_stk_cosine", 100, 0, 1}, "STK_bestTrack_costheta");
@@ -720,16 +752,47 @@ void mc_reader(
     auto h_simu_ps_zenith = _fr_preselected.Histo1D<double, double>({"h_simu_ps_zenith", "Simu zenith; Zenith [deg]", 100, 0, 90}, "simu_zenith", "simu_energy_w");
     auto h_simu_ps_azimuth = _fr_preselected.Histo1D<double, double>({"h_simu_ps_azimuth", "Simu azimuth; Azimuth [deg]", 200, -180, 180}, "simu_azimuth", "simu_energy_w");
     
-    auto h_simu_ps_thruthtrajectory_start_x = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_x", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_start_y = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_y", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_start_z = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500}, "simu_thruthtrajectory_start_z", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_stop_x = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_x", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_stop_y = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_y", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_stop_z = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000}, "simu_thruthtrajectory_stop_z", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_trackID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200}, "simu_thruthtrajectory_trackID", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_parentID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1}, "simu_thruthtrajectory_parentID", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_pdgID = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000}, "simu_thruthtrajectory_PDG", "simu_energy_w");
-    auto h_simu_ps_thruthtrajectory_stop_index = _fr_preselected.Histo1D<double, double>({"h_simu_ps_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10}, "simu_thruthtrajectory_stop_index", "simu_energy_w");
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_x = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_y = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_z = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_x = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_y = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_z = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_trackID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_parentID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_pdgID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_index = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10);
+
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_x](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_start_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_x", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_y](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_start_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_y", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_z](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_start_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_z", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_x](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_stop_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_x", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_y](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_stop_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_y", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_z](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_stop_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_z", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_trackID](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_trackID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_trackID", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_parentID](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_parentID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_parentID", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_pdgID](std::vector<double> thruthtrajectory, double energy_w) { 
+            for (auto& _elm : thruthtrajectory)
+                h_simu_ps_thruthtrajectory_pdgID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_PDG", "simu_energy_w"});
+    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_index](std::vector<double> thruthtrajectory, double energy_w) { 
+        for (auto& _elm : thruthtrajectory)
+            h_simu_ps_thruthtrajectory_stop_index->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_index", "simu_energy_w"});
 
     // Extract STK histos
     auto h_stk_ps_cosine = _fr_preselected.Histo1D({"h_stk_ps_cosine", "h_stk_cosine", 100, 0, 1}, "STK_bestTrack_costheta");
@@ -827,7 +890,7 @@ void mc_reader(
     h_simu_thruthtrajectory_parentID->Write();
     h_simu_thruthtrajectory_pdgID->Write();
     h_simu_thruthtrajectory_stop_index->Write();
-    
+
     outfile->mkdir("STK");
     outfile->cd("STK");
 
