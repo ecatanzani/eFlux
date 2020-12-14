@@ -29,3 +29,23 @@ const std::string uniqueOutFile(
 
 	return fPath.str();
 }
+
+std::shared_ptr<ofstream> ev_logger(
+	const std::string outputPath,
+	AnyOption &opt)
+{
+	std::shared_ptr<ofstream> _flogger;
+	std::stringstream fPath;
+	
+	if (opt.getValue("outputDir") || opt.getValue('d'))
+		fPath << outputPath << "/eventdisplay_logger.txt";
+	else
+		fPath << "eventdisplay_logger.txt";
+	_flogger = std::make_shared<ofstream> (fPath.str());
+	if (!_flogger->is_open())
+	{
+		std::cerr << "\n\nError writing event data file logger [" << fPath.str() << "]\n\n";
+		exit(100);
+	}
+	return _flogger;
+}

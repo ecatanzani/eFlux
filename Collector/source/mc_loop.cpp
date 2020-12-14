@@ -28,6 +28,7 @@ void mcLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
+	std::shared_ptr<ofstream> evlogger,
 	const std::string wd)
 {
 	bool _MC = true;
@@ -187,16 +188,20 @@ void mcLoop(
 			nudVault.scanNudHits(nudraw);
 			// Filter event
 			filter.Pipeline(
+				evIdx,
 				bgorec,
 				bgohits,
 				mc_config.GetCutsConfigValues(),
+				mc_config.GetLoggerCutsConfigValues(),
 				evt_energy.GetRawEnergy(),
 				evt_energy.GetCorrEnergy(),
 				bgoVault,
 				psdVault,
 				stkclusters,
 				stktracks,
-				mc_config.GetActiveCuts());
+				mc_config.GetActiveCuts(),
+				mc_config.GetLoggerActiveCuts(),
+				evlogger);
 		}
 		
 		// Fill output structures

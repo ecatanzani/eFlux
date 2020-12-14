@@ -26,6 +26,12 @@ int main(int argc, char **argv)
 	opt.addUsage(" -r  --raw_data												Raw data event loop");
 	
 	opt.addUsage("");
+	opt.addUsage("Tasks: ");
+	opt.addUsage("");
+
+	opt.addUsage(" -f  --filter													Event Display analysis filter");
+
+	opt.addUsage("");
 
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
@@ -36,6 +42,7 @@ int main(int argc, char **argv)
 	opt.setFlag("pedantic", 'p');
 	opt.setFlag("mc", 'm');
 	opt.setFlag("raw_data", 'r');
+	opt.setFlag("filter", 'f');
 	
 	opt.processCommandArgs(argc, argv);
 
@@ -49,6 +56,9 @@ int main(int argc, char **argv)
 	// Tasks
 	bool mc_flag = false;
 	bool rawdata_flag = false;
+
+	// Event display filter
+	bool edfilter_flag = false;
 
 	if (!opt.hasOptions())
 	{
@@ -78,12 +88,16 @@ int main(int argc, char **argv)
 	if (opt.getFlag("raw_data") || opt.getFlag('r'))
 		rawdata_flag = true;
 
+	if (opt.getFlag("filter") || opt.getFlag('f'))
+		edfilter_flag = true;
+
 	if (mc_flag)
 		mcCore(
 			inputPath,
 			outputPath,
 			verbose,
 			pedantic,
+			edfilter_flag,
 			opt,
 			wd);
 	else if (rawdata_flag)
@@ -92,6 +106,7 @@ int main(int argc, char **argv)
 			outputPath,
 			verbose,
 			pedantic,
+			edfilter_flag,
 			opt,
 			wd);
 	else

@@ -148,16 +148,20 @@ public:
 	DmpFilterContainer(){};
 	~DmpFilterContainer(){};
 	void Pipeline(
+		const unsigned int event_idx,
 		const std::shared_ptr<DmpEvtBgoRec> &bgorec,
 		const std::shared_ptr<DmpEvtBgoHits> &bgohits,
 		const cuts_conf &cuts,
+		const logger_cuts &log_cuts,
 		const double bgoTotalE,
 		const double bgoTotalE_corr,
 		DmpBgoContainer &bgoVault,
 		DmpPsdContainer &psdVault,
 		const std::shared_ptr<TClonesArray> &stkclusters,
 		const std::shared_ptr<TClonesArray> &stktracks,
-		const active_cuts &acuts);
+		const active_cuts &acuts,
+		const logger_active_cuts &log_a_cuts,
+		std::shared_ptr<ofstream> evlogger);
 	void Reset();
 	void CheckGeometry(
 		const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::shared_ptr<DmpEvtSimuPrimaries>(nullptr),

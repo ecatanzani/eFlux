@@ -7,6 +7,7 @@ void dataCore(
 	const std::string outputPath,
 	const bool verbose,
 	const bool pedantic,
+	const bool edfilter_flag,
 	AnyOption &opt,
 	const std::string wd)
 {
@@ -20,11 +21,16 @@ void dataCore(
 		std::cerr << "\n\nError (100) writing output TFile... [" << outFilePath << "]" << std::endl;
 		exit(100);
 	}
+	// Load event display filter logger
+	std::shared_ptr<ofstream> evlogger (nullptr);
+	if (edfilter_flag)
+		evlogger = ev_logger(outputPath, opt);
 
 	rawDataLoop(
 		inputPath,
 		outFile,
 		verbose,
+		evlogger,
 		wd);
 
 	// Close output file ...

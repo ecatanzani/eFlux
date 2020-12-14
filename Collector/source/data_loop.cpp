@@ -29,6 +29,7 @@ void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
+	std::shared_ptr<ofstream> evlogger,
 	const std::string wd)
 {
 	bool _MC = false;
@@ -179,16 +180,20 @@ void rawDataLoop(
 			nudVault.scanNudHits(nudraw);
 			// Filter event
 			filter.Pipeline(
+				evIdx,
 				bgorec,
 				bgohits,
 				data_config.GetCutsConfigValues(),
+				data_config.GetLoggerCutsConfigValues(),
 				evt_energy.GetRawEnergy(),
 				evt_energy.GetCorrEnergy(),
 				bgoVault,
 				psdVault,
 				stkclusters,
 				stktracks,
-				data_config.GetActiveCuts());
+				data_config.GetActiveCuts(),
+				data_config.GetLoggerActiveCuts(),
+				evlogger);
 		}
 		tuple->Fill(
 			filter.GetFilterOutput(),
