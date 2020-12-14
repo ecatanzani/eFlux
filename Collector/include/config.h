@@ -53,6 +53,9 @@ struct logger_active_cuts
 {
 	bool sum_rms = false;
 	bool energy = false;
+	bool trigger_only = false;
+	bool bgo_only = false;
+	bool all_cuts = false;
 };
 
 class config

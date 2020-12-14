@@ -152,6 +152,16 @@ void DmpFilterContainer::Pipeline(
 				if (bgoTotalE_corr < log_cuts.energy_min || bgoTotalE_corr > log_cuts.energy_max)
 					log_trigger = false;
 		if (log_trigger)
+			if (log_a_cuts.trigger_only)
+				if (!output.good_event)
+					log_trigger = false;
+			else if (log_a_cuts.bgo_only)
+				if (!output.BGO_fiducial)
+					log_trigger = false;
+			else if (log_a_cuts.all_cuts)
+				if (!output.all_cut)
+					log_trigger = false;
+		if (log_trigger)
 			*evlogger << "\nEvent: " << event_idx;
 	}
 }
