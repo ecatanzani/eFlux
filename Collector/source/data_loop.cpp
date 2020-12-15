@@ -3,6 +3,7 @@
 #include "config.h"
 #include "energy.h"
 #include "data_tuple.h"
+#include "DmpStkContainer.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
 #include "DmpNudContainer.h"
@@ -131,6 +132,7 @@ void rawDataLoop(
 		// Reset tuple
 		tuple->Reset();
 		// Build BGO and PSD vault objects
+		DmpStkContainer stkVault;
 		DmpBgoContainer bgoVault;
 		DmpPsdContainer psdVault;
 		DmpNudContainer nudVault;
@@ -166,6 +168,8 @@ void rawDataLoop(
 				std::shared_ptr<DmpEvtSimuPrimaries>(nullptr),
 				bgoVault.FastBGOslope(bgorec),
 				bgoVault.FastBGOintercept(bgorec));
+			// Load STK class
+			stkVault.scanSTKHits(stkclusters);
 			// Load BGO class
 			bgoVault.scanBGOHits(
 				bgohits,
@@ -199,6 +203,7 @@ void rawDataLoop(
 			filter.GetFilterOutput(),
 			attitude,
 			filter.GetBestTrack(),
+			stkVault.GetNPlaneClusters(),
 			evt_energy.GetRawEnergy(),
 			evt_energy.GetCorrEnergy(),
 			bgoVault.GetLayerEnergies(),

@@ -111,6 +111,9 @@ void data_tuple::branch_tree()
 		"STK_charge",
 		&STK_charge,
 		"STK_charge/D");
+	DmpNtupTree->Branch(
+		"STK_plane_clusters",
+		&STK_plane_clusters);
 	// BGO
 	DmpNtupTree->Branch(
 		"energy",
@@ -394,6 +397,7 @@ void data_tuple::Fill(
 	const filter_output &output,
 	const std::shared_ptr<DmpEvtAttitude> &attitude,
 	const best_track &event_best_track,
+	const std::vector<int> _stk_clusters_on_plane,
 	const double raw_energy,
 	const double corr_energy,
 	const std::vector<double> &energy_release_layer,
@@ -424,7 +428,9 @@ void data_tuple::Fill(
 	fill_trigger_info(evt_trigger);
 	fill_filter_info(output);
 	fill_attitude_info(attitude);
-	fill_stk_info(event_best_track);
+	fill_stk_info(
+		event_best_track,
+		_stk_clusters_on_plane);
 	fill_bgo_info(
 		raw_energy,
 		corr_energy,

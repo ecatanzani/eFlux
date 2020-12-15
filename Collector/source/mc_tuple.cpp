@@ -106,6 +106,9 @@ void mc_tuple::branch_tree()
 		"STK_charge",
 		&STK_charge,
 		"STK_charge/D");
+	DmpNtupTree->Branch(
+		"STK_plane_clusters",
+		&STK_plane_clusters);	
 	// BGO
 	DmpNtupTree->Branch(
 		"energy",
@@ -476,6 +479,7 @@ void mc_tuple::branch_tree()
 
 void mc_tuple::Fill(
 	const std::shared_ptr<_tmp_filter> _filter_res,
+	const std::vector<int> _stk_clusters_on_plane,
 	const std::shared_ptr<_tmp_bgo> _bgo_res,
 	const std::shared_ptr<_tmp_simu> _simu_res,
 	const std::shared_ptr<_tmp_energy> _energy_res,
@@ -483,7 +487,9 @@ void mc_tuple::Fill(
 {
 	fill_trigger_info(_filter_res->evt_trigger_info);
 	fill_filter_info(_filter_res->output);
-	fill_stk_info(_filter_res->evt_best_track);
+	fill_stk_info(
+		_filter_res->evt_best_track, 
+		_stk_clusters_on_plane);
 	fill_bgo_info(
 		_energy_res->raw,
 		_energy_res->correct,

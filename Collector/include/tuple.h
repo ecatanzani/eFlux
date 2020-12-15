@@ -14,24 +14,25 @@
 class ntuple
 {
 public:
-	ntuple()	:	eLayer(DAMPE_bgo_nLayers, -999),
-					layerBarEnergy(DAMPE_bgo_nLayers, std::vector<double> (DAMPE_bgo_bars_layer, -999)),
-					rmsLayer(DAMPE_bgo_nLayers, -999),
-					fracLayer(DAMPE_bgo_nLayers, -999),
-					energy_1R_radius(DAMPE_bgo_nLayers, -999),
-					energy_2R_radius(DAMPE_bgo_nLayers, -999),
-					energy_3R_radius(DAMPE_bgo_nLayers, -999),
-					energy_5R_radius(DAMPE_bgo_nLayers, -999),
-					nud_adc(DAMPE_NUD_channels, -999)
-					{
-					};
+	ntuple() : eLayer(DAMPE_bgo_nLayers, -999),
+			   layerBarEnergy(DAMPE_bgo_nLayers, std::vector<double>(DAMPE_bgo_bars_layer, -999)),
+			   rmsLayer(DAMPE_bgo_nLayers, -999),
+			   fracLayer(DAMPE_bgo_nLayers, -999),
+			   energy_1R_radius(DAMPE_bgo_nLayers, -999),
+			   energy_2R_radius(DAMPE_bgo_nLayers, -999),
+			   energy_3R_radius(DAMPE_bgo_nLayers, -999),
+			   energy_5R_radius(DAMPE_bgo_nLayers, -999),
+			   nud_adc(DAMPE_NUD_channels, -999),
+			   STK_plane_clusters(DAMPE_stk_planes, -999){};
 	~ntuple(){};
 	void Write(TFile &outfile);
 
 protected:
 	void set_active_cuts(const active_cuts &acuts);
 	void fill_trigger_info(const trigger_info &evt_trigger);
-	void fill_stk_info(const best_track &event_best_track);
+	void fill_stk_info(
+		const best_track &event_best_track,
+		const std::vector<int> _stk_clusters_on_plane);
 	void fill_bgo_info(
 		const double raw_energy,
 		const double corr_energy,
@@ -88,6 +89,7 @@ protected:
 	double STK_chargeX = -999;
 	double STK_chargeY = -999;
 	double STK_charge = -999;
+	std::vector<int> STK_plane_clusters;
 	// BGO
 	double energy = -999;
 	double energy_corr = -999;
@@ -97,7 +99,7 @@ protected:
 	double BGOrec_slopeY = -999;
 	double BGOrec_interceptX = -999;
 	double BGOrec_interceptY = -999;
-	TVector3 trajectoryDirection2D {-999, -999, -999};
+	TVector3 trajectoryDirection2D{-999, -999, -999};
 	double sumRms = -999;
 	std::vector<double> rmsLayer;
 	std::vector<double> fracLayer;

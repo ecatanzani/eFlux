@@ -17,6 +17,7 @@ public:
 		const filter_output &output,
 		const std::shared_ptr<DmpEvtAttitude> &attitude,
 		const best_track &event_best_track,
+		const std::vector<int> _stk_clusters_on_plane,
 		const double raw_energy,
 		const double corr_energy,
 		const std::vector<double> &energy_release_layer,

@@ -21,7 +21,9 @@ void ntuple::fill_trigger_info(const trigger_info &evt_trigger)
 	general_trigger = evt_trigger.general;
 }
 
-void ntuple::fill_stk_info(const best_track &event_best_track)
+void ntuple::fill_stk_info(
+	const best_track &event_best_track,
+	const std::vector<int> _stk_clusters_on_plane)
 {
 	if (evtfilter_track_selection_cut)
 	{
@@ -41,6 +43,7 @@ void ntuple::fill_stk_info(const best_track &event_best_track)
 		STK_bestTrack_STK_BGO_topY_distance = event_best_track.STK_BGO_topY_distance;
 		STK_bestTrack_angular_distance_STK_BGO = event_best_track.angular_distance_STK_BGO;
 	}
+	STK_plane_clusters = _stk_clusters_on_plane;
 }
 
 void ntuple::fill_bgo_info(
@@ -164,6 +167,7 @@ void ntuple::core_reset()
 	STK_chargeX = -999;
 	STK_chargeY = -999;
 	STK_charge = -999;
+	STK_plane_clusters = std::vector<int> (DAMPE_stk_planes, -999);
 	// BGO
 	energy = -999;
 	energy_corr = -999;

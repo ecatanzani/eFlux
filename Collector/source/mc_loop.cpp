@@ -4,6 +4,7 @@
 #include "config.h"
 #include "particle.h"
 #include "mc_tuple.h"
+#include "DmpStkContainer.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
 #include "DmpNudContainer.h"
@@ -13,6 +14,7 @@
 
 #include "TClonesArray.h"
 
+#include "DmpStkHit.hh"
 #include "DmpStkTrack.h"
 #include "DmpEvtNudRaw.h"
 #include "DmpEvtBgoRec.h"
@@ -126,6 +128,7 @@ void mcLoop(
 		// Reset tuple
 		simu_tuple->Reset();
 		// Build BGO, PSD and NUD vault objects
+		DmpStkContainer stkVault;
 		DmpBgoContainer bgoVault;
 		DmpPsdContainer psdVault;
 		DmpNudContainer nudVault;
@@ -174,6 +177,8 @@ void mcLoop(
 		{
 			// Check BGO geometry after trigger
 			filter.CheckGeometry(simu_primaries);
+			// Load STK class
+			stkVault.scanSTKHits(stkclusters);
 			// Load BGO class
 			bgoVault.scanBGOHits(
 				bgohits,
@@ -207,6 +212,7 @@ void mcLoop(
 		// Fill output structures
 		simu_tuple->Fill(
 			fillFilterTmpStruct(filter),
+			stkVault.GetNPlaneClusters(),
 			fillBGOTmpStruct(bgoVault),
 			fillSimuTmpStruct(simu_primaries, simu_trajectories),
 			fillEnergyTmpStruct(evt_energy),
