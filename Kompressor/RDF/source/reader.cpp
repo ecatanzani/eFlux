@@ -359,7 +359,7 @@ void mc_reader(
     auto h_simu_position = _fr_bgo_analysis.Define("simu_position_comp_x", "simu_position.fX")
                                .Define("simu_position_comp_y", "simu_position.fY")
                                .Define("simu_position_comp_z", "simu_position.fZ")
-                               .Histo3D<double, double, double, double>({"h_simu_position", "Simu Position; Z [mm]; Y [mm]; X [mm]", 100, -1500, 1500, 100, -1500, 1500, 100, -1500, 1500}, "simu_position_comp_z", "simu_position_comp_y", "simu_position_comp_x", "simu_energy_w");
+                               .Histo3D<double, double, double, double>({"h_simu_position", "Simu Position; Y [mm]; X [mm]; Z [mm]", 100, -1500, 1500, 100, -1500, 1500, 100, -1500, 1500}, "simu_position_comp_y", "simu_position_comp_x", "simu_position_comp_z", "simu_energy_w");
     auto h_simu_flux_w = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_flux_w", "Simu F_{w}; F_{w}", 100, 0, 2}, "simu_flux_w", "simu_energy_w");
     auto h_simu_w = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_w", "Simu w; w", 100, 0, 2}, "simu_w", "simu_energy_w");
     auto h_simu_particle = _fr_bgo_analysis.Histo1D<int, double>({"h_simu_particle", "Simu particle", 3, 0, 3}, "simu_n_particle", "simu_energy_w");
@@ -739,7 +739,7 @@ void mc_reader(
     auto h_simu_ps_position = _fr_preselected.Define("simu_position_comp_x", "simu_position.fX")
                                .Define("simu_position_comp_y", "simu_position.fY")
                                .Define("simu_position_comp_z", "simu_position.fZ")
-                               .Histo3D<double, double, double, double>({"h_simu_ps_position", "Simu Position; Z [mm]; Y [mm]; X [mm]", 100, -1500, 1500, 100, -1500, 1500, 100, -1500, 1500}, "simu_position_comp_z", "simu_position_comp_y", "simu_position_comp_x", "simu_energy_w");
+                               .Histo3D<double, double, double, double>({"h_simu_ps_position", "Simu Position; Y [mm]; X [mm]; Z [mm]", 100, -1500, 1500, 100, -1500, 1500, 100, -1500, 1500}, "simu_position_comp_y", "simu_position_comp_x", "simu_position_comp_z", "simu_energy_w");
     auto h_simu_ps_flux_w = _fr_preselected.Histo1D<double, double>({"h_simu_ps_flux_w", "Simu F_{w}; F_{w}", 100, 0, 2}, "simu_flux_w", "simu_energy_w");
     auto h_simu_ps_w = _fr_preselected.Histo1D<double, double>({"h_simu_ps_w", "Simu w; w", 100, 0, 2}, "simu_w", "simu_energy_w");
     auto h_simu_ps_particle = _fr_preselected.Histo1D<int, double>({"h_simu_ps_particle", "Simu particle", 3, 0, 3}, "simu_n_particle", "simu_energy_w");
