@@ -75,7 +75,7 @@ void mc_reader(
     auto sumRms_bins = createLogBinning(10, 2e+3, 1e+2);
     auto xtrl_bins = createLinearBinning(0, 150, 1e+2);
     auto cosine_bins = createLinearBinning(0, 1, 1e+2);
-    auto energy_ratio_bins = createLinearBinning(-1, 1, 1e+3);
+    auto energy_ratio_bins = createLinearBinning(-1, 0.2, 1e+3);
     auto flast_binning = createLogBinning(1e-5, 2e-1, 1e+2);
 
     auto h_BGOrec_raw_energy = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
