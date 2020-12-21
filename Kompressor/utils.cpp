@@ -133,3 +133,54 @@ void SliceNormalization(
     _output->Close();
 
 }
+
+
+void FlastCosineProfile(
+    const char *full_histo_path, 
+    const char* output)
+{
+    TFile *input_file = TFile::Open(full_histo_path, "READ");
+    if (input_file->IsZombie())
+    {
+        std::cerr << "\n\nError opening input file: [" << full_histo_path << "]\n\n";
+        exit(100);
+    }
+
+    int nbins_energy = 50;
+    int nbins_cosine = 100;
+    std::string hname;
+    std::vector<TH2D*> flast_cosine (nbins_energy);
+    std::vector<std::vector<TProfile*>> flast_cosine_profile (nbins_energy, std::vector<TProfile*> (nbins_cosine));
+    for (int idx=0; idx<nbins_energy; ++idx)
+    {
+        hname = "Preselection/BGO/energybin_" + to_string(idx) + "/h_BGOrec_ps_ratio_last_cosine_fdr_bin_" + std::to_string(idx);
+        flast_cosine[idx] = static_cast<TH2D*>(input_file->Get(hname.c_str()));
+        flast_cosine[idx]->SetDirectory(0);
+        for (int idx_prof=0; idx_prof<nbins_cosine; ++idx_prof)
+        {
+            hname = std::string(flast_cosine[idx]->GetName()) + "_profileY_" + std::to_string(idx_prof);
+            flast_cosine_profile[idx][idx_prof] = static_cast<TProfile*>(flast_cosine[idx]->ProfileX(hname.c_str() ,0, flast_cosine[idx]->GetYaxis()->GetNbins()));
+            flast_cosine_profile[idx][idx_prof]->Fit("pol3");
+        }
+    }
+    input_file->Close();
+
+    TFile *output_file = TFile::Open(output, "RECREATE");
+    if (output_file->IsZombie())
+    {
+        std::cerr << "\n\nError writing output file: [" << output << "]\n\n";
+        exit(100);
+    }
+
+
+    for (int idx=0; idx<nbins_energy; ++idx)
+    {    
+        output_file->mkdir((std::string("energybin_") + std::to_string(idx)).c_str());
+        output_file->cd((std::string("energybin_") + std::to_string(idx)).c_str());
+        flast_cosine[idx]->Write();
+        for (auto& _elm : flast_cosine_profile[idx])
+            _elm->Write();
+    }
+    output_file->Close();
+
+}
