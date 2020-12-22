@@ -73,10 +73,14 @@ void mc_reader(
 
     // Extract BGO histos
     auto sumRms_bins = createLogBinning(10, 2e+3, 1e+2);
+    auto sumRms_cosine_bins = createLogBinning(10, 3e+3, 1e+2);
     auto xtrl_bins = createLinearBinning(0, 150, 1e+2);
     auto cosine_bins = createLinearBinning(0, 1, 1e+2);
     auto energy_ratio_bins = createLinearBinning(-1, 0.2, 1e+3);
-    auto flast_binning = createLogBinning(1e-5, 2e-1, 1e+2);
+    auto flast_binning = createLogBinning(1e-5, 2e-1, 1e+3);
+    auto flast_zoom_binning = createLogBinning(1e-5, 1e-2, 1e+3);
+    auto flast_cosine_binning = createLogBinning(1e-5, 3e-1, 1e+3);
+    
 
     auto h_BGOrec_raw_energy = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
                                    .Histo1D<double, double>({"h_BGOrec_raw_energy", "BGO Raw energy", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w");
@@ -179,14 +183,22 @@ void mc_reader(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_sumRms_bin_weight(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_sumRms_sumRms_weight(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_sumRms_bin_cosine(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_sumRms_bin_cosine_cosine2D(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_sumRms_bin_cosine_cosine2D_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_sumRms_bin_cosine2D(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_sumRms_bin_cosine2D_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_sumRms_flast_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_sumRms_flast_13_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_max_energy_ratio(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ratio_last(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ratio_13(energy_nbins);
-    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine(energy_nbins);
-    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine_fdr(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ratio_last_cosine(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine_cosine2D(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine_cosine2D_log(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D_log(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D_fdr(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D_fdr_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_last_layer(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_hits(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_bin(energy_nbins);
@@ -203,7 +215,7 @@ void mc_reader(
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile_from_09(energy_nbins);
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
-        h_BGOrec_bar_energy_bin[bin_idx - 1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 100, 0, 1000);
+        h_BGOrec_bar_energy_bin[bin_idx - 1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 100, 0, 10000);
         h_BGOrec_shower_profile[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_shower_profile_upto_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_upto_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) < 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_shower_profile_from_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_from_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) > 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
@@ -241,9 +253,20 @@ void mc_reader(
                                                       .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
                                                       .Define("sumRms_cosine", "sumRms/bgorec_cosine")
                                                       .Histo1D<double, double>({(std::string("h_BGOrec_sumRms_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; sumRms/cos(#theta); counts")).c_str(), 100, 0, 3000}, "sumRms_cosine", "simu_energy_w");
+        h_BGOrec_sumRms_bin_cosine_cosine2D[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Define("sumRms_cosine", "sumRms/bgorec_cosine")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_sumRms_cosine_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms/cos(#theta)")).c_str(), 100, 0, 1, 100, 0, 3000}, "bgorec_cosine", "sumRms_cosine", "simu_energy_w");
+        h_BGOrec_sumRms_bin_cosine_cosine2D_log[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Define("sumRms_cosine", "sumRms/bgorec_cosine")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_sumRms_cosine_cosine2D_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms/cos(#theta)")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)sumRms_cosine_bins.size() -1, &sumRms_cosine_bins[0]}, "bgorec_cosine", "sumRms_cosine", "simu_energy_w");
         h_BGOrec_sumRms_bin_cosine2D[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                         .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
-                                                        .Histo2D<double, double>({(std::string("h_BGOrec_sumRms_bin_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms [mm]")).c_str(), (int)cosine_bins.size() - 1, &cosine_bins[0], (int)sumRms_bins.size() - 1, &sumRms_bins[0]}, "bgorec_cosine", "sumRms", "simu_energy_w");
+                                                        .Histo2D<double, double>({(std::string("h_BGOrec_sumRms_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms [mm]")).c_str(), 100, 0, 1, 100, 0, 2000}, "bgorec_cosine", "sumRms", "simu_energy_w");
+        h_BGOrec_sumRms_bin_cosine2D_log[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                        .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                        .Histo2D<double, double>({(std::string("h_BGOrec_sumRms_cosine2D_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms [mm]")).c_str(), (int)cosine_bins.size() - 1, &cosine_bins[0], (int)sumRms_bins.size() - 1, &sumRms_bins[0]}, "bgorec_cosine", "sumRms", "simu_energy_w");
         h_BGOrec_sumRms_flast_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_sumRms_flast_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms vs F_{last} - bin ") + std::to_string(bin_idx) + std::string("; sumRms [mm]; F_{last}")).c_str(), (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast", "simu_energy_w");
         h_BGOrec_sumRms_flast_13_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
@@ -255,13 +278,31 @@ void mc_reader(
                                                .Histo1D<double, double>({(std::string("h_BGOrec_ratio_last_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 0.01}, "fracLast", "simu_energy_w");
         h_BGOrec_ratio_13[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                              .Define("energy_ratio_13", "fracLayer[13]")
-                                             .Histo1D<double, double>({(std::string("h_BGOrec_ratio_13_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio 13th Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, .1}, "energy_ratio_13", "simu_energy_w");
+                                             .Histo1D<double, double>({(std::string("h_BGOrec_ratio_13_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio 13th Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 0.01}, "energy_ratio_13", "simu_energy_w");
         h_BGOrec_ratio_last_cosine[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                                  .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                                  .Define("frac_last_cosine", "fracLast/bgorec_cosine")
+                                                                  .Histo1D<double, double>({(std::string("h_BGOrec_ratio_last_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("F_{last}/cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; F_{last}/cos(#theta); entries")).c_str(), 1000, 0, 0.3}, "frac_last_cosine", "simu_energy_w");  
+        h_BGOrec_ratio_last_cosine_cosine2D[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                                  .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                                  .Define("frac_last_cosine", "fracLast/bgorec_cosine")
+                                                                  .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("F_{last}/cos(#theta) vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}/cos(#theta)")).c_str(), 100, 0, 1, 1000, 0, 0.3}, "bgorec_cosine", "frac_last_cosine", "simu_energy_w");
+        h_BGOrec_ratio_last_cosine_cosine2D_log[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                                  .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                                  .Define("frac_last_cosine", "fracLast/bgorec_cosine")
+                                                                  .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine_cosine2D_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("F_{last}/cos(#theta) vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}/cos(#theta)")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)flast_cosine_binning.size() -1, &flast_cosine_binning[0]}, "bgorec_cosine", "frac_last_cosine", "simu_energy_w");
+        h_BGOrec_ratio_last_cosine2D[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                       .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
-                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), 100, 0, 1, 100, 0, 0.01}, "bgorec_cosine", "fracLast", "simu_energy_w");
-        h_BGOrec_ratio_last_cosine_fdr[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), 100, 0, 1, 100, 0, 0.01}, "bgorec_cosine", "fracLast", "simu_energy_w");
+        h_BGOrec_ratio_last_cosine2D_log[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                       .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
-                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine_fdr_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), 100, 0, 1, 1000, 0, 1}, "bgorec_cosine", "fracLast", "simu_energy_w");
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine2D_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)flast_zoom_binning.size() -1, &flast_zoom_binning[0]}, "bgorec_cosine", "fracLast", "simu_energy_w");
+        h_BGOrec_ratio_last_cosine2D_fdr[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine2D_fdr_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), 100, 0, 1, 1000, 0, 0.2}, "bgorec_cosine", "fracLast", "simu_energy_w");
+        h_BGOrec_ratio_last_cosine2D_fdr_log[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine2D_fdr_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)flast_binning.size() -1, &flast_binning[0]}, "bgorec_cosine", "fracLast", "simu_energy_w");
         h_BGOrec_last_layer[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                .Histo1D<int, double>({(std::string("h_BGOrec_last_layer_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Last BGO layer - bin ") + std::to_string(bin_idx)).c_str(), 14, 0, 13}, "lastBGOLayer", "simu_energy_w");
         h_BGOrec_hits[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
@@ -572,14 +613,22 @@ void mc_reader(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_sumRms_bin_weight(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_sumRms_sumRms_weight(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_sumRms_bin_cosine(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_sumRms_bin_cosine_cosine2D(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_sumRms_bin_cosine_cosine2D_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_sumRms_bin_cosine2D(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_sumRms_bin_cosine2D_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_sumRms_flast_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_sumRms_flast_13_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_max_energy_ratio(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_ratio_last(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_ratio_13(energy_nbins);
-    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine(energy_nbins);
-    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine_fdr(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_ratio_last_cosine(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine_cosine2D(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine_cosine2D_log(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D_log(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D_fdr(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D_fdr_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_last_layer(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_hits(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_ps_bin(energy_nbins);
@@ -596,7 +645,7 @@ void mc_reader(
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_ps_shower_profile_from_09(energy_nbins);
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
-        h_BGOrec_ps_bar_energy_bin[bin_idx - 1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_bar_energy_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 100, 0, 1000);
+        h_BGOrec_ps_bar_energy_bin[bin_idx - 1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_bar_energy_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 100, 0, 10000);
         h_BGOrec_ps_shower_profile[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_ps_shower_profile_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_ps_shower_profile_upto_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_ps_shower_profile_upto_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) < 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_ps_shower_profile_from_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_ps_shower_profile_from_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) > 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
@@ -606,46 +655,75 @@ void mc_reader(
     {
         auto bin_filter = [=](int energy_bin) -> bool { return energy_bin == bin_idx; };
         h_BGOrec_ps_cosine_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                  .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
-                                                  .Histo1D<double, double>({(std::string("h_BGOrec_ps_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Reco cosine - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 1}, "bgorec_cosine", "simu_energy_w");
+                                               .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                               .Histo1D<double, double>({(std::string("h_BGOrec_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Reco cosine - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 1}, "bgorec_cosine", "simu_energy_w");
         h_BGOrec_ps_sumRms_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                  .Histo1D<double, double>({(std::string("h_BGOrec_ps_sumRms_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 3000}, "sumRms", "simu_energy_w");
+                                               .Histo1D<double, double>({(std::string("h_BGOrec_ps_sumRms_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 3000}, "sumRms", "simu_energy_w");
         h_BGOrec_ps_sumRms_mean_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                       .Define("num_layers", [](int last_layer) -> int { return last_layer + 1; }, {"lastBGOLayer"})
-                                                       .Define("sumRms_eff", "sumRms/(lastBGOLayer+1)")
-                                                       .Histo1D<double, double>({(std::string("h_BGOrec_ps_sumRms_mean_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms - bin ") + std::to_string(bin_idx)).c_str(), 50, 0, 100}, "sumRms_eff", "simu_energy_w");
+                                                    .Define("num_layers", [](int last_layer) -> int { return last_layer + 1; }, {"lastBGOLayer"})
+                                                    .Define("sumRms_eff", "sumRms/(lastBGOLayer+1)")
+                                                    .Histo1D<double, double>({(std::string("h_BGOrec_ps_sumRms_mean_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms - bin ") + std::to_string(bin_idx)).c_str(), 200, 0, 500}, "sumRms_eff", "simu_energy_w");
         h_BGOrec_ps_sumRms_bin_weight[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                         .Define("sumRms_w", computeSumRmsWeight, {"eLayer", "rmsLayer", "energy"})
-                                                         .Histo1D<double, double>({(std::string("h_BGOrec_ps_sumRms_weight_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms weighted - bin ") + std::to_string(bin_idx)).c_str(), 50, 0, 100}, "sumRms_w", "simu_energy_w");
+                                                      .Define("sumRms_w", computeSumRmsWeight, {"eLayer", "rmsLayer", "energy"})
+                                                      .Histo1D<double, double>({(std::string("h_BGOrec_ps_sumRms_weight_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms weighted - bin ") + std::to_string(bin_idx)).c_str(), 50, 0, 100}, "sumRms_w", "simu_energy_w");
         h_BGOrec_ps_sumRms_sumRms_weight[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                            .Define("sumRms_w", computeSumRmsWeight, {"eLayer", "rmsLayer", "energy"})
-                                                            .Define("sumRms_eff", "sumRms/(lastBGOLayer+1)")
-                                                            .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_sumRms_sumRms_weight_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms_{mean} vs sumRms_{weighted} - bin ") + std::to_string(bin_idx) + std::string("; sumRms_{weighted} [mm]; sumRms_{mean} [mm]")).c_str(), 50, 0, 100, 50, 0, 100}, "sumRms_w", "sumRms_eff", "simu_energy_w");
+                                                         .Define("sumRms_w", computeSumRmsWeight, {"eLayer", "rmsLayer", "energy"})
+                                                         .Define("sumRms_eff", "sumRms/(lastBGOLayer+1)")
+                                                         .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_sumRms_sumRms_weight_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms_{mean} vs sumRms_{weighted} - bin ") + std::to_string(bin_idx) + std::string("; sumRms_{weighted} [mm]; sumRms_{mean} [mm]")).c_str(), 50, 0, 100, 50, 0, 100}, "sumRms_w", "sumRms_eff", "simu_energy_w");
         h_BGOrec_ps_sumRms_bin_cosine[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                         .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
-                                                         .Define("sumRms_cosine", "sumRms/bgorec_cosine")
-                                                         .Histo1D<double, double>({(std::string("h_BGOrec_ps_sumRms_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; sumRms/cos(#theta); counts")).c_str(), 100, 0, 3000}, "sumRms_cosine", "simu_energy_w");
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Define("sumRms_cosine", "sumRms/bgorec_cosine")
+                                                      .Histo1D<double, double>({(std::string("h_BGOrec_ps_sumRms_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; sumRms/cos(#theta); counts")).c_str(), 100, 0, 3000}, "sumRms_cosine", "simu_energy_w");
+        h_BGOrec_ps_sumRms_bin_cosine_cosine2D[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Define("sumRms_cosine", "sumRms/bgorec_cosine")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_sumRms_cosine_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms/cos(#theta)")).c_str(), 100, 0, 1, 100, 0, 3000}, "bgorec_cosine", "sumRms_cosine", "simu_energy_w");
+        h_BGOrec_ps_sumRms_bin_cosine_cosine2D_log[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Define("sumRms_cosine", "sumRms/bgorec_cosine")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_sumRms_cosine_cosine2D_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms/cos(#theta)")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)sumRms_cosine_bins.size() -1, &sumRms_cosine_bins[0]}, "bgorec_cosine", "sumRms_cosine", "simu_energy_w");
         h_BGOrec_ps_sumRms_bin_cosine2D[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                           .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
-                                                           .Histo2D<double, double>({(std::string("h_BGOrec_ps_sumRms_bin_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms [mm]")).c_str(), (int)cosine_bins.size() - 1, &cosine_bins[0], (int)sumRms_bins.size() - 1, &sumRms_bins[0]}, "bgorec_cosine", "sumRms", "simu_energy_w");
+                                                        .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                        .Histo2D<double, double>({(std::string("h_BGOrec_ps_sumRms_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms [mm]")).c_str(), 100, 0, 1, 100, 0, 2000}, "bgorec_cosine", "sumRms", "simu_energy_w");
+        h_BGOrec_ps_sumRms_bin_cosine2D_log[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                        .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                        .Histo2D<double, double>({(std::string("h_BGOrec_ps_sumRms_cosine2D_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms [mm]")).c_str(), (int)cosine_bins.size() - 1, &cosine_bins[0], (int)sumRms_bins.size() - 1, &sumRms_bins[0]}, "bgorec_cosine", "sumRms", "simu_energy_w");
         h_BGOrec_ps_sumRms_flast_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                        .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_sumRms_flast_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms vs F_{last} - bin ") + std::to_string(bin_idx) + std::string("; sumRms [mm]; F_{last}")).c_str(), (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast", "simu_energy_w");
+                                                     .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_sumRms_flast_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms vs F_{last} - bin ") + std::to_string(bin_idx) + std::string("; sumRms [mm]; F_{last}")).c_str(), (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast", "simu_energy_w");
         h_BGOrec_ps_sumRms_flast_13_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                           .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_sumRms_flast_13_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms vs F_{13} - bin ") + std::to_string(bin_idx) + std::string("sumRms [mm]; F_{13}")).c_str(), (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast_13", "simu_energy_w");
+                                                        .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_sumRms_flast_13_bin_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms vs F_{13} - bin ") + std::to_string(bin_idx) + std::string("sumRms [mm]; F_{13}")).c_str(), (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast_13", "simu_energy_w");
         h_BGOrec_ps_max_energy_ratio[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                        .Define("max_energy_ratio", GetMaxEnergyRatio, {"fracLayer"})
-                                                        .Histo1D<double, double>({(std::string("h_BGOrec_ps_max_energy_ratio_bin_") + std::to_string(bin_idx)).c_str(), (std::string("max energy ratio - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 1}, "max_energy_ratio", "simu_energy_w");
+                                                     .Define("max_energy_ratio", GetMaxEnergyRatio, {"fracLayer"})
+                                                     .Histo1D<double, double>({(std::string("h_BGOrec_ps_max_energy_ratio_bin_") + std::to_string(bin_idx)).c_str(), (std::string("max energy ratio - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 1}, "max_energy_ratio", "simu_energy_w");
         h_BGOrec_ps_ratio_last[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                  .Histo1D<double, double>({(std::string("h_BGOrec_ratio_last_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 0.01}, "fracLast", "simu_energy_w");
+                                               .Histo1D<double, double>({(std::string("h_BGOrec_ps_ratio_last_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 0.01}, "fracLast", "simu_energy_w");
         h_BGOrec_ps_ratio_13[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                .Define("energy_ratio_13", "fracLayer[13]")
-                                                .Histo1D<double, double>({(std::string("h_BGOrec_ps_ratio_13_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio 13th Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, .1}, "energy_ratio_13", "simu_energy_w");
+                                             .Define("energy_ratio_13", "fracLayer[13]")
+                                             .Histo1D<double, double>({(std::string("h_BGOrec_ps_ratio_13_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio 13th Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 0.01}, "energy_ratio_13", "simu_energy_w");
         h_BGOrec_ps_ratio_last_cosine[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                         .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
-                                                         .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), 100, 0, 1, 100, 0, 0.01}, "bgorec_cosine", "fracLast", "simu_energy_w");
-        h_BGOrec_ps_ratio_last_cosine_fdr[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                         .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
-                                                         .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine_fdr_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), 100, 0, 1, 1000, 0, 1}, "bgorec_cosine", "fracLast", "simu_energy_w");
+                                                                  .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                                  .Define("frac_last_cosine", "fracLast/bgorec_cosine")
+                                                                  .Histo1D<double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine_bin_") + std::to_string(bin_idx)).c_str(), (std::string("F_{last}/cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; F_{last}/cos(#theta); entries")).c_str(), 1000, 0, 0.3}, "frac_last_cosine", "simu_energy_w");  
+        h_BGOrec_ps_ratio_last_cosine_cosine2D[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                                  .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                                  .Define("frac_last_cosine", "fracLast/bgorec_cosine")
+                                                                  .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("F_{last}/cos(#theta) vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}/cos(#theta)")).c_str(), 100, 0, 1, 1000, 0, 0.3}, "bgorec_cosine", "frac_last_cosine", "simu_energy_w");
+        h_BGOrec_ps_ratio_last_cosine_cosine2D_log[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                                  .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                                  .Define("frac_last_cosine", "fracLast/bgorec_cosine")
+                                                                  .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine_cosine2D_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("F_{last}/cos(#theta) vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}/cos(#theta)")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)flast_cosine_binning.size() -1, &flast_cosine_binning[0]}, "bgorec_cosine", "frac_last_cosine", "simu_energy_w");
+        h_BGOrec_ps_ratio_last_cosine2D[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine2D_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), 100, 0, 1, 100, 0, 0.01}, "bgorec_cosine", "fracLast", "simu_energy_w");
+        h_BGOrec_ps_ratio_last_cosine2D_log[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine2D_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)flast_zoom_binning.size() -1, &flast_zoom_binning[0]}, "bgorec_cosine", "fracLast", "simu_energy_w");
+        h_BGOrec_ps_ratio_last_cosine2D_fdr[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine2D_fdr_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), 100, 0, 1, 1000, 0, 0.2}, "bgorec_cosine", "fracLast", "simu_energy_w");
+        h_BGOrec_ps_ratio_last_cosine2D_fdr_log[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                      .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                                      .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine2D_fdr_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)flast_binning.size() -1, &flast_binning[0]}, "bgorec_cosine", "fracLast", "simu_energy_w");
         h_BGOrec_ps_last_layer[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                                   .Histo1D<int, double>({(std::string("h_BGOrec_ps_last_layer_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Last BGO layer - bin ") + std::to_string(bin_idx)).c_str(), 14, 0, 13}, "lastBGOLayer", "simu_energy_w");
         h_BGOrec_ps_hits[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
@@ -976,14 +1054,22 @@ void mc_reader(
         h_BGOrec_sumRms_bin_weight[bidx]->Write();
         h_BGOrec_sumRms_sumRms_weight[bidx]->Write();
         h_BGOrec_sumRms_bin_cosine[bidx]->Write();
+        h_BGOrec_sumRms_bin_cosine_cosine2D[bidx]->Write();
+        h_BGOrec_sumRms_bin_cosine_cosine2D_log[bidx]->Write();
         h_BGOrec_sumRms_bin_cosine2D[bidx]->Write();
+        h_BGOrec_sumRms_bin_cosine2D_log[bidx]->Write();
         h_BGOrec_sumRms_flast_bin[bidx]->Write();
         h_BGOrec_sumRms_flast_13_bin[bidx]->Write();
         h_BGOrec_max_energy_ratio[bidx]->Write();
         h_BGOrec_ratio_last[bidx]->Write();
         h_BGOrec_ratio_13[bidx]->Write();
         h_BGOrec_ratio_last_cosine[bidx]->Write();
-        h_BGOrec_ratio_last_cosine_fdr[bidx]->Write();
+        h_BGOrec_ratio_last_cosine_cosine2D[bidx]->Write();
+        h_BGOrec_ratio_last_cosine_cosine2D_log[bidx]->Write();
+        h_BGOrec_ratio_last_cosine2D[bidx]->Write();
+        h_BGOrec_ratio_last_cosine2D_log[bidx]->Write();
+        h_BGOrec_ratio_last_cosine2D_fdr[bidx]->Write();
+        h_BGOrec_ratio_last_cosine2D_fdr_log[bidx]->Write();
         h_BGOrec_last_layer[bidx]->Write();
         h_BGOrec_hits[bidx]->Write();
         h_xtrl_bin[bidx]->Write();
@@ -1133,14 +1219,22 @@ void mc_reader(
         h_BGOrec_ps_sumRms_bin_weight[bidx]->Write();
         h_BGOrec_ps_sumRms_sumRms_weight[bidx]->Write();
         h_BGOrec_ps_sumRms_bin_cosine[bidx]->Write();
+        h_BGOrec_ps_sumRms_bin_cosine_cosine2D[bidx]->Write();
+        h_BGOrec_ps_sumRms_bin_cosine_cosine2D_log[bidx]->Write();
         h_BGOrec_ps_sumRms_bin_cosine2D[bidx]->Write();
+        h_BGOrec_ps_sumRms_bin_cosine2D_log[bidx]->Write();
         h_BGOrec_ps_sumRms_flast_bin[bidx]->Write();
         h_BGOrec_ps_sumRms_flast_13_bin[bidx]->Write();
         h_BGOrec_ps_max_energy_ratio[bidx]->Write();
         h_BGOrec_ps_ratio_last[bidx]->Write();
         h_BGOrec_ps_ratio_13[bidx]->Write();
         h_BGOrec_ps_ratio_last_cosine[bidx]->Write();
-        h_BGOrec_ps_ratio_last_cosine_fdr[bidx]->Write();
+        h_BGOrec_ps_ratio_last_cosine_cosine2D[bidx]->Write();
+        h_BGOrec_ps_ratio_last_cosine_cosine2D_log[bidx]->Write();
+        h_BGOrec_ps_ratio_last_cosine2D[bidx]->Write();
+        h_BGOrec_ps_ratio_last_cosine2D_log[bidx]->Write();
+        h_BGOrec_ps_ratio_last_cosine2D_fdr[bidx]->Write();
+        h_BGOrec_ps_ratio_last_cosine2D_fdr_log[bidx]->Write();
         h_BGOrec_ps_last_layer[bidx]->Write();
         h_BGOrec_ps_hits[bidx]->Write();
         h_xtrl_ps_bin[bidx]->Write();
