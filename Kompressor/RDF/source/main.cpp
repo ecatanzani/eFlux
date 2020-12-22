@@ -67,12 +67,18 @@ int main(int argc, char **argv)
 	if (opt.getFlag("mc") || opt.getFlag('m'))
 		mc_flag = true;
 
-	reader(
-		wd, 
-		input_list, 
-		expand_output_path(opt, output_path), 
-		_VERBOSE, 
-		mc_flag);
+	if (!output_path.empty())
+		reader(
+			wd, 
+			input_list, 
+			expand_output_path(opt, output_path), 
+			_VERBOSE, 
+			mc_flag);
+	else
+	{
+		std::cerr << "\n\nError ! No output path has been specified...\n\n";
+		exit(100);
+	}
 		
 	return 0;
 }
