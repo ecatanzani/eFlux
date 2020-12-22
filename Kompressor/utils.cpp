@@ -134,10 +134,22 @@ void SliceNormalization(
 
 }
 
+inline double get_left_index(TProfile* profile)
+{
+    double firstx = -1;
+    for (int idx=1; idx<=profile->GetNbinsX(); ++idx)
+        if (profile->GetBinContent(idx))
+        {
+            firstx = profile->GetBinCenter(idx);
+            break;
+        }
+    return firstx;
+}
 
 void FlastCosineProfile(
-    const char *full_histo_path, 
-    const char* output)
+    const char* full_histo_path, 
+    const char* output,
+    const int nbins_energy=50)
 {
     TFile *input_file = TFile::Open(full_histo_path, "READ");
     if (input_file->IsZombie())
@@ -145,23 +157,25 @@ void FlastCosineProfile(
         std::cerr << "\n\nError opening input file: [" << full_histo_path << "]\n\n";
         exit(100);
     }
-
-    int nbins_energy = 50;
-    int nbins_cosine = 100;
+    
     std::string hname;
     std::vector<TH2D*> flast_cosine (nbins_energy);
-    std::vector<std::vector<TProfile*>> flast_cosine_profile (nbins_energy, std::vector<TProfile*> (nbins_cosine));
+    std::vector<TProfile*> flast_cosine_profile (nbins_energy);
     for (int idx=0; idx<nbins_energy; ++idx)
-    {
-        hname = "Preselection/BGO/energybin_" + to_string(idx) + "/h_BGOrec_ps_ratio_last_cosine_fdr_bin_" + std::to_string(idx);
+    {   
+        // Read 2D histo
+        hname = "Preselection/BGO/energybin_" + to_string(idx+1) + "/h_BGOrec_ps_ratio_last_cosine2D_fdr_bin_" + std::to_string(idx+1);
         flast_cosine[idx] = static_cast<TH2D*>(input_file->Get(hname.c_str()));
         flast_cosine[idx]->SetDirectory(0);
-        for (int idx_prof=0; idx_prof<nbins_cosine; ++idx_prof)
-        {
-            hname = std::string(flast_cosine[idx]->GetName()) + "_profileY_" + std::to_string(idx_prof);
-            flast_cosine_profile[idx][idx_prof] = static_cast<TProfile*>(flast_cosine[idx]->ProfileX(hname.c_str() ,0, flast_cosine[idx]->GetYaxis()->GetNbins()));
-            flast_cosine_profile[idx][idx_prof]->Fit("pol3");
-        }
+        // Profile
+        hname = std::string(flast_cosine[idx]->GetName()) + "_profileX";
+        flast_cosine_profile[idx] = static_cast<TProfile*>(flast_cosine[idx]->ProfileX(hname.c_str() ,0 , flast_cosine[idx]->GetYaxis()->GetNbins()));
+        flast_cosine_profile[idx]->SetDirectory(0);
+        if (!flast_cosine_profile[idx]->GetEntries())
+            continue;
+        auto lidx = get_left_index(flast_cosine_profile[idx]);
+        auto ridx = 1;
+        flast_cosine_profile[idx]->Fit("pol3", "Q", "", lidx, ridx);
     }
     input_file->Close();
 
@@ -175,11 +189,10 @@ void FlastCosineProfile(
 
     for (int idx=0; idx<nbins_energy; ++idx)
     {    
-        output_file->mkdir((std::string("energybin_") + std::to_string(idx)).c_str());
-        output_file->cd((std::string("energybin_") + std::to_string(idx)).c_str());
+        output_file->mkdir((std::string("energybin_") + std::to_string(idx+1)).c_str());
+        output_file->cd((std::string("energybin_") + std::to_string(idx+1)).c_str());
         flast_cosine[idx]->Write();
-        for (auto& _elm : flast_cosine_profile[idx])
-            _elm->Write();
+        flast_cosine_profile[idx]->Write();
     }
     output_file->Close();
 
