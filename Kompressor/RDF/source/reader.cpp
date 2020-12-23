@@ -49,10 +49,10 @@ void mc_reader(
                 break;
         return bin_idx+1; };
 
-    auto _fr_weight_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"});
+    auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"});
 
     // Create the RDF for BGO analysis
-    auto _fr_bgo_analysis = _fr_weight_patch.Filter("evtfilter_good_event==true");
+    auto _fr_bgo_analysis = _fr_bin_patch.Filter("evtfilter_good_event==true");
     // Create the RDF for the preselected events
     auto _fr_preselected = _fr_bgo_analysis.Filter("evtfilter_all_cut==true");
     // Create the RDF for STK analysis
@@ -161,6 +161,7 @@ void mc_reader(
     auto h_BGOrec_sumRms_flast_13_10000_20000 = _fr_bgo_analysis.Define("corr_energy_gev", "energy_corr * 0.001")
                                                     .Filter("corr_energy_gev >= 10000 && corr_energy_gev<20000")
                                                     .Histo2D<double, double, double>({"h_BGOrec_sumRms_flast_13_10000_20000", "sumRms vs F_{13} correlation - 10 TeV - 20 TeV ;sumRms [mm]; F_{last}", (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast_13", "simu_energy_w");
+    auto h_BGOrec_last_layer = _fr_bgo_analysis.Histo1D<int, double>({"h_BGOrec_last_layer", "Last BGO layer; Last Energy Layer; entries", 14, 0, 14}, "lastBGOLayer", "simu_energy_w");
 
     std::shared_ptr<TH1D> h_BGOrec_bar_energy = std::make_shared<TH1D>("h_BGOrec_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 100, 0, 10000);
     _fr_bgo_analysis.Foreach([&h_BGOrec_bar_energy](std::vector<std::vector<double>> bar_energy, double energy_w) { 
@@ -199,7 +200,7 @@ void mc_reader(
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D_fdr(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D_fdr_log(energy_nbins);
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_last_layer(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_last_layer_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_hits(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_bin(energy_nbins);
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_rms_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
@@ -303,8 +304,8 @@ void mc_reader(
         h_BGOrec_ratio_last_cosine2D_fdr_log[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                       .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
                                                       .Histo2D<double, double, double>({(std::string("h_BGOrec_ratio_last_cosine2D_fdr_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)flast_binning.size() -1, &flast_binning[0]}, "bgorec_cosine", "fracLast", "simu_energy_w");
-        h_BGOrec_last_layer[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
-                                               .Histo1D<int, double>({(std::string("h_BGOrec_last_layer_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Last BGO layer - bin ") + std::to_string(bin_idx)).c_str(), 14, 0, 13}, "lastBGOLayer", "simu_energy_w");
+        h_BGOrec_last_layer_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                               .Histo1D<int, double>({(std::string("h_BGOrec_last_layer_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Last BGO layer - bin ") + std::to_string(bin_idx) + std::string("; Last Energy Layer; entries")).c_str(), 14, 0, 14}, "lastBGOLayer", "simu_energy_w");
         h_BGOrec_hits[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                          .Histo1D<int, double>({(std::string("h_BGOrec_hits_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO hits - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 1000}, "nBGOentries", "simu_energy_w");
         h_xtrl_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
@@ -591,6 +592,7 @@ void mc_reader(
     auto h_BGOrec_ps_sumRms_flast_13_10000_20000 = _fr_preselected.Define("corr_energy_gev", "energy_corr * 0.001")
                                                        .Filter("corr_energy_gev >= 10000 && corr_energy_gev<20000")
                                                        .Histo2D<double, double, double>({"h_BGOrec_ps_sumRms_flast_13_10000_20000", "sumRms vs F_{13} correlation - 10 TeV - 20 TeV ;sumRms [mm]; F_{last}", (int)sumRms_bins.size() - 1, &sumRms_bins[0], (int)flast_binning.size() - 1, &flast_binning[0]}, "sumRms", "fracLast_13", "simu_energy_w");
+    auto h_BGOrec_ps_last_layer = _fr_preselected.Histo1D<int, double>({"h_BGOrec_ps_last_layer", "Last BGO layer; Last Energy Layer; entries", 14, 0, 14}, "lastBGOLayer", "simu_energy_w");
 
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 100, 0, 10000);
     _fr_preselected.Foreach([&h_BGOrec_ps_bar_energy](std::vector<std::vector<double>> bar_energy, double energy_w) { 
@@ -629,7 +631,7 @@ void mc_reader(
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D_fdr(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D_fdr_log(energy_nbins);
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_last_layer(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_last_layer_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_hits(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_ps_bin(energy_nbins);
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_ps_rms_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
@@ -724,8 +726,8 @@ void mc_reader(
         h_BGOrec_ps_ratio_last_cosine2D_fdr_log[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                                       .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
                                                       .Histo2D<double, double, double>({(std::string("h_BGOrec_ps_ratio_last_cosine2D_fdr_log_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer vs cos(#theta) - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); F_{last}")).c_str(), (int)cosine_bins.size() -1, &cosine_bins[0], (int)flast_binning.size() -1, &flast_binning[0]}, "bgorec_cosine", "fracLast", "simu_energy_w");
-        h_BGOrec_ps_last_layer[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                  .Histo1D<int, double>({(std::string("h_BGOrec_ps_last_layer_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Last BGO layer - bin ") + std::to_string(bin_idx)).c_str(), 14, 0, 13}, "lastBGOLayer", "simu_energy_w");
+        h_BGOrec_ps_last_layer_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                  .Histo1D<int, double>({(std::string("h_BGOrec_ps_last_layer_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Last BGO layer - bin ") + std::to_string(bin_idx) + std::string("; Last Energy Layer; entries")).c_str(), 14, 0, 14}, "lastBGOLayer", "simu_energy_w");
         h_BGOrec_ps_hits[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                             .Histo1D<int, double>({(std::string("h_BGOrec_ps_hits_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO hits - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 1000}, "nBGOentries", "simu_energy_w");
         h_xtrl_ps_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
@@ -1041,6 +1043,7 @@ void mc_reader(
     h_xtrl_energy_int->Write();
     h_xtrl->Write();
     h_BGOrec_bar_energy->Write();
+    h_BGOrec_last_layer->Write();
 
     for (int bidx = 0; bidx < energy_nbins; ++bidx)
     {
@@ -1070,7 +1073,7 @@ void mc_reader(
         h_BGOrec_ratio_last_cosine2D_log[bidx]->Write();
         h_BGOrec_ratio_last_cosine2D_fdr[bidx]->Write();
         h_BGOrec_ratio_last_cosine2D_fdr_log[bidx]->Write();
-        h_BGOrec_last_layer[bidx]->Write();
+        h_BGOrec_last_layer_bin[bidx]->Write();
         h_BGOrec_hits[bidx]->Write();
         h_xtrl_bin[bidx]->Write();
         h_BGOrec_bar_energy_bin[bidx]->Write();
@@ -1206,6 +1209,7 @@ void mc_reader(
     h_xtrl_ps_energy_int->Write();
     h_xtrl_ps->Write();
     h_BGOrec_ps_bar_energy->Write();
+    h_BGOrec_ps_last_layer->Write();
 
     for (int bidx = 0; bidx < energy_nbins; ++bidx)
     {
@@ -1235,7 +1239,7 @@ void mc_reader(
         h_BGOrec_ps_ratio_last_cosine2D_log[bidx]->Write();
         h_BGOrec_ps_ratio_last_cosine2D_fdr[bidx]->Write();
         h_BGOrec_ps_ratio_last_cosine2D_fdr_log[bidx]->Write();
-        h_BGOrec_ps_last_layer[bidx]->Write();
+        h_BGOrec_ps_last_layer_bin[bidx]->Write();
         h_BGOrec_ps_hits[bidx]->Write();
         h_xtrl_ps_bin[bidx]->Write();
         h_BGOrec_ps_bar_energy_bin[bidx]->Write();
