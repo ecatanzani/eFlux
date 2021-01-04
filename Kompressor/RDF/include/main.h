@@ -7,13 +7,8 @@
 
 #include "anyoption.h"
 
-#pragma once
+#include "reader.h"
 
-void reader(
-    const std::string wd,
-    const std::string inputList,
-    const std::string outputPath,
-    const bool _VERBOSE,
-    const bool mc);
+#pragma once
 
 #endif
