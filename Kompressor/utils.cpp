@@ -208,13 +208,16 @@ void FullFitSummary(
 
     TTree fit_tree(output_tree_name, "Fit Summary Tree");
 
+    // Get number of fit parameters
     const auto npars = flast_profile_fit_func[0]->GetNpar();
+    // Get number of energy bins
     const auto nbins = flast_profile_fit_func.size();
+    // vector to store fit parameters
     std::vector<double> flast_pars (npars, 0);
     std::vector<double> flast_err_pars (npars, 0);
     std::vector<double> sumrms_pars (npars, 0);
     std::vector<double> sumrms_err_pars (npars, 0);
-
+    // Chi2
     double flast_chi2;
     double flast_chi2_ndf;
     double flast_err_chi2;
@@ -223,16 +226,24 @@ void FullFitSummary(
     double sumrms_chi2_ndf;
     double sumrms_err_chi2;
     double sumrms_err_chi2_ndf;
+    // dof
     int flast_ndof;
     int flast_err_ndof;
     int sumrms_ndof;
     int sumrms_err_ndof;
+    // Functions range
+    std::vector<double> sumrms_fit_func_range(2, 0);
+    std::vector<double> sumrms_err_fit_func_range(2, 0);
+    std::vector<double> flast_fit_func_range(2, 0);
+    std::vector<double> flast_err_fit_func_range(2, 0);
 
+    // Fit parameters
     fit_tree.Branch("flast_pars", &flast_pars);
     fit_tree.Branch("flast_err_pars", &flast_err_pars);
     fit_tree.Branch("sumrms_pars", &sumrms_pars);
     fit_tree.Branch("sumrms_err_pars", &sumrms_err_pars);
 
+    // Chi2
     fit_tree.Branch("flast_chi2", &flast_chi2, "flast_chi2/D");
     fit_tree.Branch("flast_chi2_ndf", &flast_chi2_ndf, "flast_chi2_ndf/D");
     fit_tree.Branch("flast_err_chi2", &flast_err_chi2, "flast_err_chi2/D");
@@ -242,11 +253,19 @@ void FullFitSummary(
     fit_tree.Branch("sumrms_chi2_ndf", &sumrms_chi2_ndf, "sumrms_chi2_ndf/D");
     fit_tree.Branch("sumrms_err_chi2", &sumrms_err_chi2, "sumrms_err_chi2/D");
     fit_tree.Branch("sumrms_err_chi2_ndf", &sumrms_err_chi2_ndf, "sumrms_err_chi2_ndf/D");
-    
+
+    // dof    
     fit_tree.Branch("flast_ndof", &flast_ndof, "flast_ndof/I");
     fit_tree.Branch("flast_err_ndof", &flast_err_ndof, "flast_err_ndof/I");
     fit_tree.Branch("sumrms_ndof", &sumrms_ndof, "sumrms_ndof/I");
     fit_tree.Branch("sumrms_err_ndof", &sumrms_err_ndof, "sumrms_err_ndof/I");
+
+    // Functions range    
+    fit_tree.Branch("flast_fit_func_range", &flast_fit_func_range);
+    fit_tree.Branch("flast_err_fit_func_range", &flast_err_fit_func_range);
+    fit_tree.Branch("sumrms_fit_func_range", &sumrms_fit_func_range);
+    fit_tree.Branch("sumrms_err_fit_func_range", &sumrms_err_fit_func_range);
+
 
     for (unsigned int idx=0; idx<nbins; ++idx)
     {
@@ -256,7 +275,18 @@ void FullFitSummary(
             flast_err_pars[idx_par] =  flast_err_fit_func[idx]->GetParameter(idx_par);
             sumrms_pars[idx_par] =  sumrms_profile_fit_func[idx]->GetParameter(idx_par);
             sumrms_err_pars[idx_par] =  sumrms_err_fit_func[idx]->GetParameter(idx_par);
-        }    
+        }
+
+        flast_fit_func_range[0] = flast_profile_fit_func[idx]->GetXmin();
+        flast_fit_func_range[1] = flast_profile_fit_func[idx]->GetXmax();
+        flast_err_fit_func_range[0] = flast_err_fit_func[idx]->GetXmin();
+        flast_err_fit_func_range[1] = flast_err_fit_func[idx]->GetXmax();
+        sumrms_fit_func_range[0] = sumrms_profile_fit_func[idx]->GetXmin();
+        sumrms_fit_func_range[1] = sumrms_profile_fit_func[idx]->GetXmax();
+        sumrms_err_fit_func_range[0] = sumrms_err_fit_func[idx]->GetXmin();
+        sumrms_err_fit_func_range[1] = sumrms_err_fit_func[idx]->GetXmax();
+
+
         flast_chi2 = flast_profile_fit_func[idx]->GetChisquare();
         flast_err_chi2 = flast_err_fit_func[idx]->GetChisquare();
         sumrms_chi2 = sumrms_profile_fit_func[idx]->GetChisquare();
