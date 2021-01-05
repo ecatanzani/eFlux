@@ -191,6 +191,95 @@ void FitSummary(
     fit_summary->Close();
 }
 
+void FullFitSummary(
+    std::vector<std::shared_ptr<TF1>> flast_profile_fit_func,
+    std::vector<std::shared_ptr<TF1>> flast_err_fit_func,
+    std::vector<std::shared_ptr<TF1>> sumrms_profile_fit_func,
+    std::vector<std::shared_ptr<TF1>> sumrms_err_fit_func,
+    const char* output_file_name,
+    const char* output_tree_name)
+{
+    TFile* fit_summary = TFile::Open(output_file_name, "RECREATE");
+    if (!fit_summary->IsOpen())
+    {
+        std::cerr << "\n\nError writing summary fit TFile [" << output_file_name << "]\n\n";
+        exit(100);
+    }
+
+    TTree fit_tree(output_tree_name, "Fit Summary Tree");
+
+    const auto npars = flast_profile_fit_func[0]->GetNpar();
+    const auto nbins = flast_profile_fit_func.size();
+    std::vector<double> flast_pars (npars, 0);
+    std::vector<double> flast_err_pars (npars, 0);
+    std::vector<double> sumrms_pars (npars, 0);
+    std::vector<double> sumrms_err_pars (npars, 0);
+
+    double flast_chi2;
+    double flast_chi2_ndf;
+    double flast_err_chi2;
+    double flast_err_chi2_ndf;
+    double sumrms_chi2;
+    double sumrms_chi2_ndf;
+    double sumrms_err_chi2;
+    double sumrms_err_chi2_ndf;
+    int flast_ndof;
+    int flast_err_ndof;
+    int sumrms_ndof;
+    int sumrms_err_ndof;
+
+    fit_tree.Branch("flast_pars", &flast_pars);
+    fit_tree.Branch("flast_err_pars", &flast_err_pars);
+    fit_tree.Branch("sumrms_pars", &sumrms_pars);
+    fit_tree.Branch("sumrms_err_pars", &sumrms_err_pars);
+
+    fit_tree.Branch("flast_chi2", &flast_chi2, "flast_chi2/D");
+    fit_tree.Branch("flast_chi2_ndf", &flast_chi2_ndf, "flast_chi2_ndf/D");
+    fit_tree.Branch("flast_err_chi2", &flast_err_chi2, "flast_err_chi2/D");
+    fit_tree.Branch("flast_err_chi2_ndf", &flast_err_chi2_ndf, "flast_err_chi2_ndf/D");
+
+    fit_tree.Branch("sumrms_chi2", &sumrms_chi2, "sumrms_chi2/D");
+    fit_tree.Branch("sumrms_chi2_ndf", &sumrms_chi2_ndf, "sumrms_chi2_ndf/D");
+    fit_tree.Branch("sumrms_err_chi2", &sumrms_err_chi2, "sumrms_err_chi2/D");
+    fit_tree.Branch("sumrms_err_chi2_ndf", &sumrms_err_chi2_ndf, "sumrms_err_chi2_ndf/D");
+    
+    fit_tree.Branch("flast_ndof", &flast_ndof, "flast_ndof/I");
+    fit_tree.Branch("flast_err_ndof", &flast_err_ndof, "flast_err_ndof/I");
+    fit_tree.Branch("sumrms_ndof", &sumrms_ndof, "sumrms_ndof/I");
+    fit_tree.Branch("sumrms_err_ndof", &sumrms_err_ndof, "sumrms_err_ndof/I");
+
+    for (unsigned int idx=0; idx<nbins; ++idx)
+    {
+        for (int idx_par = 0; idx_par < npars; ++idx_par)
+        {
+            flast_pars[idx_par] =  flast_profile_fit_func[idx]->GetParameter(idx_par);
+            flast_err_pars[idx_par] =  flast_err_fit_func[idx]->GetParameter(idx_par);
+            sumrms_pars[idx_par] =  sumrms_profile_fit_func[idx]->GetParameter(idx_par);
+            sumrms_err_pars[idx_par] =  sumrms_err_fit_func[idx]->GetParameter(idx_par);
+        }    
+        flast_chi2 = flast_profile_fit_func[idx]->GetChisquare();
+        flast_err_chi2 = flast_err_fit_func[idx]->GetChisquare();
+        sumrms_chi2 = sumrms_profile_fit_func[idx]->GetChisquare();
+        sumrms_err_chi2 = sumrms_err_fit_func[idx]->GetChisquare();
+
+        flast_ndof = flast_profile_fit_func[idx]->GetNDF();
+        flast_err_ndof = flast_err_fit_func[idx]->GetNDF();
+        sumrms_ndof = sumrms_profile_fit_func[idx]->GetNDF();
+        sumrms_err_ndof = sumrms_err_fit_func[idx]->GetNDF();
+
+        flast_chi2_ndf = flast_chi2/flast_ndof;
+        flast_err_chi2_ndf = flast_err_chi2/flast_err_ndof;
+        sumrms_chi2_ndf = sumrms_chi2/sumrms_ndof;
+        sumrms_err_chi2_ndf = sumrms_err_chi2/sumrms_err_ndof;
+
+        fit_tree.Fill();
+    }
+
+    fit_tree.Write();
+
+    fit_summary->Close();
+}
+
 
 void FlastCosineProfile(
     const char* full_histo_path, 
@@ -226,7 +315,7 @@ void FlastCosineProfile(
     {   
         // Read 2D histo
         std::string hname = "Preselection/BGO/energybin_" + to_string(idx+1) + "/h_BGOrec_ps_ratio_last_cosine2D_fdr_bin_" + std::to_string(idx+1);
-        std::string hname_norm = "h_BGOrec_ps_ratio_last_cosine2D_fdr_norm_bin_" + std::to_string(idx+1);
+
         flast_cosine[idx] = static_cast<TH2D*>(input_file->Get(hname.c_str()));
         flast_cosine[idx]->SetDirectory(0);
         
@@ -535,6 +624,185 @@ void sumRMSCosineProfile(
         std::cout << "\nWriting pol2 error fit summary [fit_pol4_err_summary.root]\n";
     FitSummary(profile_err_fit_func_p4, "fit_pol4_err_summary.root", "fit_pol4_err_tree");
 }
+
+void BuildVariablesProfiles(
+    const char* full_histo_path, 
+    const char* output,
+    const char* fit_summary_output,
+    const int nbins_energy=50,
+    const char* profile_err_opt = "s",
+    const bool full_profiles_canvas = true,
+    const bool verbose = true)
+{
+    std::vector<TH2D*> sumrms_cosine (nbins_energy);
+    std::vector<TProfile*> sumrms_cosine_profile (nbins_energy);
+    std::vector<std::shared_ptr<TH1D>> sumrms_cosine_err (nbins_energy);
+    std::vector<std::shared_ptr<TF1>> sumrms_profile_fit_func (nbins_energy);
+    std::vector<std::shared_ptr<TF1>> sumrms_profile_err_fit_func (nbins_energy);
+
+    std::vector<TH2D*> flast_cosine (nbins_energy);
+    std::vector<TProfile*> flast_cosine_profile (nbins_energy);
+    std::vector<std::shared_ptr<TH1D>> flast_cosine_err (nbins_energy);
+    std::vector<std::shared_ptr<TF1>> flast_profile_fit_func (nbins_energy);
+    std::vector<std::shared_ptr<TF1>> flast_profile_err_fit_func (nbins_energy);
+
+    if (verbose)
+        std::cout << "\nReading input ROOT file [" << full_histo_path << "]\n";
+    TFile *input_file = TFile::Open(full_histo_path, "READ");
+    if (input_file->IsZombie())
+    {
+        std::cerr << "\n\nError opening input file: [" << full_histo_path << "]\n\n";
+        exit(100);
+    }
+
+    if (verbose)
+        std::cout << "\nFitting... \n";
+
+    for (int idx=0; idx<nbins_energy; ++idx)
+    {   
+        // Read 2D histo
+        std::string hname = "Preselection/BGO/energybin_" + to_string(idx+1) + "/h_BGOrec_ps_ratio_last_cosine2D_fdr_bin_" + std::to_string(idx+1);
+        flast_cosine[idx] = static_cast<TH2D*>(input_file->Get(hname.c_str()));
+        hname = "Preselection/BGO/energybin_" + to_string(idx+1) + "/h_BGOrec_ps_sumRms_cosine2D_bin_" + std::to_string(idx+1);
+        sumrms_cosine[idx] = static_cast<TH2D*>(input_file->Get(hname.c_str()));
+        flast_cosine[idx]->SetDirectory(0);
+        sumrms_cosine[idx]->SetDirectory(0);
+
+        // Build profiles
+        flast_cosine_profile[idx] = static_cast<TProfile*>(flast_cosine[idx]->ProfileX(
+            (std::string(flast_cosine[idx]->GetName()) + "_profileX").c_str() ,0 , flast_cosine[idx]->GetNbinsY(), profile_err_opt));
+        sumrms_cosine_profile[idx] = static_cast<TProfile*>(sumrms_cosine[idx]->ProfileX(
+            (std::string(sumrms_cosine[idx]->GetName()) + "_profileX").c_str() ,0 , sumrms_cosine[idx]->GetNbinsY(), profile_err_opt));
+        flast_cosine_profile[idx]->SetDirectory(0);
+        sumrms_cosine_profile[idx]->SetDirectory(0);
+
+        flast_cosine_err[idx] = std::make_shared<TH1D>(
+            (std::string(flast_cosine[idx]->GetName()) + std::string("_profileX_err_") + std::to_string(idx+1)).c_str(), 
+            "profileX Error; cos(#theta); RMS", 
+            flast_cosine_profile[idx]->GetNbinsX(), 0, 1);
+        sumrms_cosine_err[idx] = std::make_shared<TH1D>(
+            (std::string(sumrms_cosine[idx]->GetName()) + std::string("_profileX_err_") + std::to_string(idx+1)).c_str(), 
+            "profileX Error; cos(#theta); RMS", 
+            sumrms_cosine_profile[idx]->GetNbinsX(), 0, 1);
+       
+        for (int b_idx=1; b_idx<=flast_cosine_err[idx]->GetNbinsX(); ++b_idx)
+        {
+            flast_cosine_err[idx]->SetBinContent(b_idx, flast_cosine_profile[idx]->GetBinError(b_idx));
+            flast_cosine_err[idx]->SetBinError(b_idx, sqrt(flast_cosine_profile[idx]->GetBinError(b_idx)));
+            sumrms_cosine_err[idx]->SetBinContent(b_idx, sumrms_cosine_profile[idx]->GetBinError(b_idx));
+            sumrms_cosine_err[idx]->SetBinError(b_idx, sqrt(sumrms_cosine_profile[idx]->GetBinError(b_idx)));
+        }
+
+        // TF1s
+        auto flast_lidx = get_left_index(flast_cosine_profile[idx]);
+        auto sumrms_lidx = get_left_index(flast_cosine_profile[idx]);
+        flast_profile_fit_func[idx] = std::make_shared<TF1>((std::string("flast_profile_fitfunc_") + std::to_string(idx+1)).c_str(), "pol3", flast_lidx, 1);
+        flast_profile_err_fit_func[idx] = std::make_shared<TF1>((std::string("flast_profile_err_fitfunc_") + std::to_string(idx+1)).c_str(), "pol3", flast_lidx, 1);
+        sumrms_profile_fit_func[idx] = std::make_shared<TF1>((std::string("sumrms_profile_fitfunc_") + std::to_string(idx+1)).c_str(), "pol3", sumrms_lidx, 1);
+        sumrms_profile_err_fit_func[idx] = std::make_shared<TF1>((std::string("sumrms_profile_err_fitfunc_") + std::to_string(idx+1)).c_str(), "pol3", sumrms_lidx, 1);
+
+        flast_profile_fit_func[idx]->SetNpx(1000);
+        flast_profile_err_fit_func[idx]->SetNpx(1000);
+        sumrms_profile_fit_func[idx]->SetNpx(1000);
+        sumrms_profile_err_fit_func[idx]->SetNpx(1000);
+        
+        // Fitting
+        flast_cosine_profile[idx]->Fit(flast_profile_fit_func[idx]->GetName(), "WQRN");
+        flast_cosine_err[idx]->Fit(flast_profile_err_fit_func[idx]->GetName(), "WQRN");
+        sumrms_cosine_profile[idx]->Fit(sumrms_profile_fit_func[idx]->GetName(), "WQRN");
+        sumrms_cosine_err[idx]->Fit(sumrms_profile_err_fit_func[idx]->GetName(), "WQRN");
+    }
+    
+    input_file->Close();
+
+    if (verbose)
+        std::cout << "\nWriting output ROOT file [" << output << "]\n";
+    TFile *output_file = TFile::Open(output, "RECREATE");
+    if (output_file->IsZombie())
+    {
+        std::cerr << "\n\nError writing output file: [" << output << "]\n\n";
+        exit(100);
+    }    
+
+    for (int idx=0; idx<nbins_energy; ++idx)
+    {    
+        output_file->mkdir((std::string("energybin_") + std::to_string(idx+1)).c_str());
+        output_file->cd((std::string("energybin_") + std::to_string(idx+1)).c_str());
+        // Save flast results
+        flast_cosine[idx]->Write();
+        flast_cosine_profile[idx]->Write();
+        flast_cosine_err[idx]->Write();
+        flast_profile_fit_func[idx]->Write();
+        flast_profile_err_fit_func[idx]->Write();
+        // Save sumrms results
+        sumrms_cosine[idx]->Write();
+        sumrms_cosine_profile[idx]->Write();
+        sumrms_cosine_err[idx]->Write();
+        sumrms_profile_fit_func[idx]->Write();
+        sumrms_profile_err_fit_func[idx]->Write();
+    }
+
+    if (full_profiles_canvas)
+    {
+        output_file->cd();
+        double lidx = 0.6;
+        std::unique_ptr<TCanvas> flast_full_profiles = std::make_unique<TCanvas>("flast_full_profiles", "Profiles", 1500, 950);
+        std::unique_ptr<TCanvas> flast_full_profiles_err = std::make_unique<TCanvas>("flast_full_profiles_err", "Profiles Errors", 1500, 950);
+        std::unique_ptr<TCanvas> sumrms_full_profiles = std::make_unique<TCanvas>("sumrms_full_profiles", "Profiles", 1500, 950);
+        std::unique_ptr<TCanvas> sumrms_full_profiles_err = std::make_unique<TCanvas>("sumrms_full_profiles_err", "Profiles Errors", 1500, 950);
+        flast_full_profiles->Divide(5, 10);
+        flast_full_profiles_err->Divide(5, 10);
+        sumrms_full_profiles->Divide(5, 10);
+        sumrms_full_profiles_err->Divide(5, 10);
+
+        for (int idx=0; idx<nbins_energy; ++idx)
+        {
+            // Set ranges
+            flast_cosine_profile[idx]->GetXaxis()->SetRangeUser(lidx, 1);
+            flast_cosine_err[idx]->GetXaxis()->SetRangeUser(lidx, 1);
+            sumrms_cosine_profile[idx]->GetXaxis()->SetRangeUser(lidx, 1);
+            sumrms_cosine_err[idx]->GetXaxis()->SetRangeUser(lidx, 1);
+            
+            // Profile canvas
+            flast_full_profiles->cd(idx+1);
+            gStyle->SetOptStat(0);
+            flast_cosine_profile[idx]->Draw();
+            flast_profile_fit_func[idx]->Draw("same");
+            sumrms_full_profiles->cd(idx+1);
+            gStyle->SetOptStat(0);
+            sumrms_cosine_profile[idx]->Draw();
+            sumrms_profile_fit_func[idx]->Draw("same");
+
+            // Profile error canvas
+            flast_full_profiles_err->cd(idx+1);
+            gStyle->SetOptStat(0);
+            flast_cosine_err[idx]->Draw();
+            flast_profile_err_fit_func[idx]->Draw("same");
+            sumrms_full_profiles_err->cd(idx+1);
+            gStyle->SetOptStat(0);
+            sumrms_cosine_err[idx]->Draw();
+            sumrms_profile_err_fit_func[idx]->Draw("same");
+        }
+
+        flast_full_profiles->Write();
+        flast_full_profiles_err->Write();
+        sumrms_full_profiles->Write();
+        sumrms_full_profiles_err->Write();
+    }
+
+    // Write fit summary
+    if (verbose)
+        std::cout << "\nWriting fit summary [" << fit_summary_output << "]\n";
+    FullFitSummary(
+        flast_profile_fit_func,
+        flast_profile_err_fit_func,
+        sumrms_profile_fit_func,
+        sumrms_profile_err_fit_func,
+        fit_summary_output,
+        "fit_summary");
+
+}
+
 
 void NUDFit(
     const char* full_histo_path, 
