@@ -14,12 +14,14 @@ void reader(
     const std::string wd,
     const std::string inputList,
     const std::string outputPath,
+    const std::string fit_tree_path,
     const bool _VERBOSE,
     const bool mc);
 
 void mc_reader(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
+    const std::string fit_tree_path,
     const double _entries,
     const std::string outputPath,
     const bool _VERBOSE);
