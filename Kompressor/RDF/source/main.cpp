@@ -21,7 +21,8 @@ int main(int argc, char **argv)
 	opt.addUsage("");
 
 	opt.addUsage(" -m  --mc														MC event loop");
-	
+	opt.addUsage(" -r  --regularize		<path_to_summary_fit_TTree>				Regularize variables behaviour");
+
 	opt.addUsage("");
 
 	opt.setFlag("help", 'h');
@@ -31,12 +32,14 @@ int main(int argc, char **argv)
 	opt.setOption("outputdir", 'd');
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("mc", 'm');
+	opt.setOption("regularize", 'r');
 
 	opt.processCommandArgs(argc, argv);
 	
 	std::string wd;
 	std::string input_list;
 	std::string output_path;
+	std::string fit_tree_path;
 
 	bool _VERBOSE = false;
 
@@ -66,12 +69,15 @@ int main(int argc, char **argv)
 	
 	if (opt.getFlag("mc") || opt.getFlag('m'))
 		mc_flag = true;
+	if (opt.getValue("regularize") || opt.getValue('r'))
+		fit_tree_path = opt.getValue('r');
 
 	if (!output_path.empty())
 		reader(
 			wd, 
 			input_list, 
-			expand_output_path(opt, output_path), 
+			expand_output_path(opt, output_path),
+			fit_tree_path, 
 			_VERBOSE, 
 			mc_flag);
 	else

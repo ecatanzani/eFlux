@@ -4,6 +4,7 @@ void reader(
     const std::string wd,
     const std::string inputList,
     const std::string outputPath,
+    const std::string fit_tree_path,
     const bool _VERBOSE,
     const bool mc)
 {
@@ -18,7 +19,8 @@ void reader(
     if (mc)
         mc_reader(
             evt_parser->GetEvtTree(), 
-            _config, 
+            _config,
+            fit_tree_path,
             _entries, 
             outputPath, 
             _VERBOSE);
