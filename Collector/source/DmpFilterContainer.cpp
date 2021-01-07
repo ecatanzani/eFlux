@@ -2,20 +2,16 @@
 #include "xtrX_computation.h"
 
 void DmpFilterContainer::Pipeline(
-	const unsigned int event_idx,
 	const std::shared_ptr<DmpEvtBgoRec> &bgorec,
 	const std::shared_ptr<DmpEvtBgoHits> &bgohits,
 	const cuts_conf &cuts,
-	const logger_cuts &log_cuts,
 	const double bgoTotalE,
 	const double bgoTotalE_corr,
 	DmpBgoContainer &bgoVault,
 	DmpPsdContainer &psdVault,
 	const std::shared_ptr<TClonesArray> &stkclusters,
 	const std::shared_ptr<TClonesArray> &stktracks,
-	const active_cuts &acuts,
-	const logger_active_cuts &log_a_cuts,
-	std::shared_ptr<ofstream> evlogger)
+	const active_cuts &acuts)
 {
 	// **** BGO Fiducial Volume ****
 	// maxElayer_cut
@@ -138,31 +134,6 @@ void DmpFilterContainer::Pipeline(
 				}
 			}
 		}
-	}
-
-	if (evlogger)
-	{
-		// Event logger filter
-		bool log_trigger = true;
-		if (log_a_cuts.sum_rms)
-			if (bgoVault.GetSumRMS() < log_cuts.sum_rms_min || bgoVault.GetSumRMS() > log_cuts.sum_rms_max)
-				log_trigger = false;
-		if (log_trigger)
-			if (log_a_cuts.energy)
-				if (bgoTotalE_corr < log_cuts.energy_min || bgoTotalE_corr > log_cuts.energy_max)
-					log_trigger = false;
-		if (log_trigger)
-			if (log_a_cuts.trigger_only)
-				if (!output.good_event)
-					log_trigger = false;
-			else if (log_a_cuts.bgo_only)
-				if (!output.BGO_fiducial)
-					log_trigger = false;
-			else if (log_a_cuts.all_cuts)
-				if (!output.all_cut)
-					log_trigger = false;
-		if (log_trigger)
-			*evlogger << "\nEvent: " << event_idx;
 	}
 }
 
@@ -905,7 +876,7 @@ void DmpFilterContainer::CheckGeometry(
 		if (!output.out_energy_range)
 		{
 			bool geocut_result = false;
-			if (simu_primaries)
+			if (simu_primaries!=nullptr)
 			{
 				geocut_result = geometric_cut(simu_primaries);
 				!output.trigger_check ? output.geometric_before_trigger = geocut_result : output.geometric = geocut_result;

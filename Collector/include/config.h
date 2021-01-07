@@ -41,23 +41,6 @@ struct active_cuts
 	unsigned int nActiveCuts = 0;
 };
 
-struct logger_cuts
-{
-	double sum_rms_min = -999;
-	double sum_rms_max = -999;
-	double energy_min = -999;
-	double energy_max = -999;
-};
-
-struct logger_active_cuts
-{
-	bool sum_rms = false;
-	bool energy = false;
-	bool trigger_only = false;
-	bool bgo_only = false;
-	bool all_cuts = false;
-};
-
 class config
 {
 public:
@@ -72,20 +55,15 @@ public:
 	const double GetBGOLayerMinEnergy();
 	const double GetPSDBarMinEnergy();
 	const cuts_conf GetCutsConfigValues();
-	const logger_cuts GetLoggerCutsConfigValues();
 	const active_cuts GetActiveCuts();
-	const logger_active_cuts GetLoggerActiveCuts();
 
 private:
 	std::string parse_config_file(
 		std::string wd,
 		std::string config_file);
 	void get_config_info(std::string parsed_config);
-	void get_logger_config_info(std::string parsed_config);
 	cuts_conf cuts;
 	active_cuts a_cuts;
-	logger_cuts log_cuts;
-	logger_active_cuts log_a_cuts;
 	std::size_t n_bins;
 	std::vector<float> energy_binning;
 };

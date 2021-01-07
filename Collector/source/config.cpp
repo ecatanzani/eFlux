@@ -8,7 +8,6 @@ config::config(
 	std::string config_file_name;
 	mc ? config_file_name = "mc_config.txt" : config_file_name = "data_config.txt";
 	get_config_info(parse_config_file(working_dir, config_file_name));
-	get_logger_config_info(parse_config_file(working_dir, std::string("evtdisplay_config.txt")));
 	energy_binning = createLogBinning(
 		cuts.min_event_energy,
 		cuts.max_event_energy,
@@ -195,69 +194,6 @@ void config::get_config_info(std::string parsed_config)
 	}
 }
 
-void config::get_logger_config_info(std::string parsed_config)
-{
-	std::string tmp_str;
-	std::istringstream input_stream(parsed_config);
-	std::string::size_type sz;
-
-	while (input_stream >> tmp_str)
-	{
-		// Load cuts variables
-		if (!strcmp(tmp_str.c_str(), "sum_rms_min"))
-		{
-			input_stream >> tmp_str;
-			log_cuts.sum_rms_min = stod(tmp_str, &sz);
-		}
-		if (!strcmp(tmp_str.c_str(), "sum_rms_max"))
-		{
-			input_stream >> tmp_str;
-			log_cuts.sum_rms_max= stod(tmp_str, &sz);
-		}
-		if (!strcmp(tmp_str.c_str(), "energy_min"))
-		{
-			input_stream >> tmp_str;
-			log_cuts.energy_min = stod(tmp_str, &sz);
-		}
-		if (!strcmp(tmp_str.c_str(), "energy_max"))
-		{
-			input_stream >> tmp_str;
-			log_cuts.energy_max = stod(tmp_str, &sz);
-		}
-
-		// Load cuts
-		if (!strcmp(tmp_str.c_str(), "rms_layer"))
-		{
-			input_stream >> tmp_str;
-			if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-				log_a_cuts.sum_rms = true;
-		}
-		if (!strcmp(tmp_str.c_str(), "energy"))
-		{
-			input_stream >> tmp_str;
-			if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-				log_a_cuts.energy = true;
-		}
-		if (!strcmp(tmp_str.c_str(), "trigger_only"))
-		{
-			input_stream >> tmp_str;
-			if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-				log_a_cuts.trigger_only = true;
-		}
-		if (!strcmp(tmp_str.c_str(), "bgo_only"))
-		{
-			input_stream >> tmp_str;
-			if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-				log_a_cuts.bgo_only = true;
-		}if (!strcmp(tmp_str.c_str(), "all_cuts"))
-		{
-			input_stream >> tmp_str;
-			if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-				log_a_cuts.all_cuts = true;
-		}
-	}
-}
-
 std::vector<float> config::GetEnergyBinning()
 {
 	return energy_binning;
@@ -308,17 +244,7 @@ const cuts_conf config::GetCutsConfigValues()
 	return cuts;
 }
 
-const logger_cuts config::GetLoggerCutsConfigValues()
-{
-	return log_cuts;
-}
-
 const active_cuts config::GetActiveCuts()
 {
 	return a_cuts;
-}
-
-const logger_active_cuts config::GetLoggerActiveCuts()
-{
-	return log_a_cuts;
 }
