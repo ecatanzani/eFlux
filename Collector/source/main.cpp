@@ -26,10 +26,6 @@ int main(int argc, char **argv)
 	opt.addUsage(" -r  --raw_data												Raw data event loop");
 	
 	opt.addUsage("");
-	opt.addUsage("Tasks: ");
-	opt.addUsage("");
-
-	opt.addUsage("");
 
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
