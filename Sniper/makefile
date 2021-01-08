@@ -30,8 +30,8 @@ ANYOPT_INC = $(TOP)/../deps/AnyOption
 
 DEBUG_DIR    = Debug/obj
 RELEASE_DIR  = Release/obj
-DEBUG_PROG   = Debug/Collector
-RELEASE_PROG = Release/Collector
+DEBUG_PROG   = Debug/Sniper
+RELEASE_PROG = Release/Sniper
 
 # Don't compile specific files
 FILTER := 

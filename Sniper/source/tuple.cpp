@@ -142,6 +142,8 @@ void ntuple::fill_nud_info(
 
 void ntuple::core_reset()
 {
+	// Event Number
+	evt_number = 0;
 	// Trigger
 	mip1_trigger = false;
 	mip2_trigger = false;

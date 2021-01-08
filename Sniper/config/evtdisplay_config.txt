@@ -4,13 +4,13 @@
 
 sum_rms_min                         600                  mm
 sum_rms_max                         1000                 mm
-energy_min                          20                   GeV
-energy_max                          100                  GeV
 
 **** CUT ****                **** ACTIVE ****
 
-sum_rms                             YES
-energy                              YES
+sum_rms                             NO
+
+**** GLOBAL CUT ****         **** ACTIVE ****
+
 trigger_only                        NO
-bgo_only                            NO
-all_cuts                            YES
+bgo_only                            YES
+all_cuts                            NO

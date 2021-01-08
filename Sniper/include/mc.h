@@ -2,7 +2,6 @@
 #define MC_H
 
 #include <string>
-#include <fstream>
 #include <memory>
 #include <vector>
 
@@ -103,7 +102,6 @@ extern void mcCore(
 	const std::string outputPath,
 	const bool _VERBOSE,
 	const bool pedantic,
-	const bool edfilter_flag,
 	AnyOption &opt,
 	const std::string wd);
 
@@ -111,7 +109,6 @@ extern void mcLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
-	std::shared_ptr<ofstream> evlogger,
 	const std::string wd);
 
 extern std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter);

@@ -1,12 +1,11 @@
 #include "DmpFilterContainer.h"
 #include "xtrX_computation.h"
 
-void DmpFilterContainer::Pipeline(
-	const unsigned int event_idx,
+bool DmpFilterContainer::Pipeline(
 	const std::shared_ptr<DmpEvtBgoRec> &bgorec,
 	const std::shared_ptr<DmpEvtBgoHits> &bgohits,
 	const cuts_conf &cuts,
-	const logger_cuts &log_cuts,
+	const logger_cuts &l_cuts,
 	const double bgoTotalE,
 	const double bgoTotalE_corr,
 	DmpBgoContainer &bgoVault,
@@ -14,8 +13,7 @@ void DmpFilterContainer::Pipeline(
 	const std::shared_ptr<TClonesArray> &stkclusters,
 	const std::shared_ptr<TClonesArray> &stktracks,
 	const active_cuts &acuts,
-	const logger_active_cuts &log_a_cuts,
-	std::shared_ptr<ofstream> evlogger)
+	const logger_active_cuts &l_acuts)
 {
 	// **** BGO Fiducial Volume ****
 	// maxElayer_cut
@@ -140,30 +138,34 @@ void DmpFilterContainer::Pipeline(
 		}
 	}
 
-	if (evlogger)
+	auto selected_evt = true;
+
+	if (l_acuts.trigger_only)
 	{
-		// Event logger filter
-		bool log_trigger = true;
-		if (log_a_cuts.sum_rms)
-			if (bgoVault.GetSumRMS() < log_cuts.sum_rms_min || bgoVault.GetSumRMS() > log_cuts.sum_rms_max)
-				log_trigger = false;
-		if (log_trigger)
-			if (log_a_cuts.energy)
-				if (bgoTotalE_corr < log_cuts.energy_min || bgoTotalE_corr > log_cuts.energy_max)
-					log_trigger = false;
-		if (log_trigger)
-			if (log_a_cuts.trigger_only)
-				if (!output.good_event)
-					log_trigger = false;
-			else if (log_a_cuts.bgo_only)
-				if (!output.BGO_fiducial)
-					log_trigger = false;
-			else if (log_a_cuts.all_cuts)
-				if (!output.all_cut)
-					log_trigger = false;
-		if (log_trigger)
-			*evlogger << "\nEvent: " << event_idx;
+		selected_evt = output.evt_triggered;
+		if (l_acuts.nActiveCuts && selected_evt)
+			if (l_acuts.sum_rms)
+				if (bgoVault.GetSumRMS()<l_cuts.sum_rms_min || bgoVault.GetSumRMS()>l_cuts.sum_rms_max)
+					selected_evt = false;
 	}
+	else if (l_acuts.bgo_only)
+	{
+		selected_evt = output.BGO_fiducial;
+		if (l_acuts.nActiveCuts && selected_evt)
+			if (l_acuts.sum_rms)
+				if (bgoVault.GetSumRMS()<l_cuts.sum_rms_min || bgoVault.GetSumRMS()>l_cuts.sum_rms_max)
+					selected_evt = false;
+	}
+	else if (l_acuts.all_cuts)
+	{
+		selected_evt = output.all_cut;
+		if (l_acuts.nActiveCuts && selected_evt)
+			if (l_acuts.sum_rms)
+				if (bgoVault.GetSumRMS()<l_cuts.sum_rms_min || bgoVault.GetSumRMS()>l_cuts.sum_rms_max)
+					selected_evt = false;
+	}
+	
+	return selected_evt;
 }
 
 const bool DmpFilterContainer::geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
@@ -905,7 +907,7 @@ void DmpFilterContainer::CheckGeometry(
 		if (!output.out_energy_range)
 		{
 			bool geocut_result = false;
-			if (simu_primaries)
+			if (simu_primaries!=nullptr)
 			{
 				geocut_result = geometric_cut(simu_primaries);
 				!output.trigger_check ? output.geometric_before_trigger = geocut_result : output.geometric = geocut_result;

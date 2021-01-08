@@ -30,7 +30,6 @@ void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
-	std::shared_ptr<ofstream> evlogger,
 	const std::string wd)
 {
 	bool _MC = false;
@@ -156,80 +155,76 @@ void rawDataLoop(
 			data_config.GetMinEnergyRange(),
 			data_config.GetMaxEnergyRange());
 		// Check current event (Trigger and BGO reco)
-		auto _good_evt =
-			filter.CheckIncomingEvent(
-				evt_header,
-				bgoVault.FastBGOslope(bgorec),
-				bgoVault.FastBGOintercept(bgorec));
-		if (_good_evt)
-		{
-			// Check BGO geometry after trigger
-			filter.CheckGeometry(
-				std::shared_ptr<DmpEvtSimuPrimaries>(nullptr),
-				bgoVault.FastBGOslope(bgorec),
-				bgoVault.FastBGOintercept(bgorec));
-			// Load STK class
-			stkVault.scanSTKHits(stkclusters);
-			// Load BGO class
-			bgoVault.scanBGOHits(
-				bgohits,
-				bgorec,
-				evt_energy.GetRawEnergy(),
-				data_config.GetBGOLayerMinEnergy());
-			// Load PSD class
-			psdVault.scanPSDHits(
-				psdhits,
-				data_config.GetPSDBarMinEnergy());
-			// Load NUD class
-			nudVault.scanNudHits(nudraw);
-			// Filter event
-			filter.Pipeline(
-				evIdx,
-				bgorec,
-				bgohits,
-				data_config.GetCutsConfigValues(),
-				data_config.GetLoggerCutsConfigValues(),
-				evt_energy.GetRawEnergy(),
-				evt_energy.GetCorrEnergy(),
-				bgoVault,
-				psdVault,
-				stkclusters,
-				stktracks,
-				data_config.GetActiveCuts(),
-				data_config.GetLoggerActiveCuts(),
-				evlogger);
-		}
-		tuple->Fill(
-			filter.GetFilterOutput(),
-			attitude,
-			filter.GetBestTrack(),
-			stkVault.GetNPlaneClusters(),
+		filter.CheckIncomingEvent(
+			evt_header,
+			bgoVault.FastBGOslope(bgorec),
+			bgoVault.FastBGOintercept(bgorec));
+		
+		// Check BGO geometry after trigger
+		filter.CheckGeometry(
+			std::shared_ptr<DmpEvtSimuPrimaries>(nullptr),
+			bgoVault.FastBGOslope(bgorec),
+			bgoVault.FastBGOintercept(bgorec));
+		// Load STK class
+		stkVault.scanSTKHits(stkclusters);
+		// Load BGO class
+		bgoVault.scanBGOHits(
+			bgohits,
+			bgorec,
+			evt_energy.GetRawEnergy(),
+			data_config.GetBGOLayerMinEnergy());
+		// Load PSD class
+		psdVault.scanPSDHits(
+			psdhits,
+			data_config.GetPSDBarMinEnergy());
+		// Load NUD class
+		nudVault.scanNudHits(nudraw);
+		// Filter event
+		if (filter.Pipeline(
+			bgorec,
+			bgohits,
+			data_config.GetCutsConfigValues(),
+			data_config.GetLoggerCutsConfigValues(),
 			evt_energy.GetRawEnergy(),
 			evt_energy.GetCorrEnergy(),
-			bgoVault.GetLayerEnergies(),
-			bgoVault.GetLayerBarEnergies(),
-			bgoVault.GetBGOslope(),
-			bgoVault.GetBGOintercept(),
-			bgoVault.GetBGOTrajectory2D(),
-			bgoVault.GetSumRMS(),
-			bgoVault.GetRmsLayer(),
-			bgoVault.GetFracLayer(),
-			bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-			bgoVault.GetSingleFracLayer(13),
-			bgoVault.GetLastEnergyLayer(),
-			bgoVault.GetNhits(),
-			bgoVault.GetEnergy1MR(),
-			bgoVault.GetEnergy2MR(),
-			bgoVault.GetEnergy3MR(),
-			bgoVault.GetEnergy5MR(),
-			filter.GetPSDCharge(),
-			filter.GetSTKCharge(),
-			filter.GetClassifiers(),
-			filter.GetTrigger(),
-			nudVault.GetADC(),
-			nudVault.GetTotalADC(),
-			nudVault.GetMaxADC(),
-			nudVault.GetMaxChannelID());
+			bgoVault,
+			psdVault,
+			stkclusters,
+			stktracks,
+			data_config.GetActiveCuts(),
+			data_config.GetLoggerActiveCuts()))
+			tuple->Fill(
+				evIdx,
+				filter.GetFilterOutput(),
+				attitude,
+				filter.GetBestTrack(),
+				stkVault.GetNPlaneClusters(),
+				evt_energy.GetRawEnergy(),
+				evt_energy.GetCorrEnergy(),
+				bgoVault.GetLayerEnergies(),
+				bgoVault.GetLayerBarEnergies(),
+				bgoVault.GetBGOslope(),
+				bgoVault.GetBGOintercept(),
+				bgoVault.GetBGOTrajectory2D(),
+				bgoVault.GetSumRMS(),
+				bgoVault.GetRmsLayer(),
+				bgoVault.GetFracLayer(),
+				bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
+				bgoVault.GetSingleFracLayer(13),
+				bgoVault.GetLastEnergyLayer(),
+				bgoVault.GetNhits(),
+				bgoVault.GetEnergy1MR(),
+				bgoVault.GetEnergy2MR(),
+				bgoVault.GetEnergy3MR(),
+				bgoVault.GetEnergy5MR(),
+				filter.GetPSDCharge(),
+				filter.GetSTKCharge(),
+				filter.GetClassifiers(),
+				filter.GetTrigger(),
+				nudVault.GetADC(),
+				nudVault.GetTotalADC(),
+				nudVault.GetMaxADC(),
+				nudVault.GetMaxChannelID());
 	}
 
 	if (_VERBOSE)

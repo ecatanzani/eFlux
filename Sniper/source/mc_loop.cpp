@@ -30,7 +30,6 @@ void mcLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool _VERBOSE,
-	std::shared_ptr<ofstream> evlogger,
 	const std::string wd)
 {
 	bool _MC = true;
@@ -167,56 +166,50 @@ void mcLoop(
 		// Check BGO geometry before trigger
 		filter.CheckGeometry(simu_primaries);
 		// Check current event (Trigger and BGO reco)
-		auto _good_evt =
-			filter.CheckIncomingEvent(
-				evt_header,
-				bgoVault.FastBGOslope(bgorec),
-				bgoVault.FastBGOintercept(bgorec),
-				simu_primaries);
-		if (_good_evt)
-		{
-			// Check BGO geometry after trigger
-			filter.CheckGeometry(simu_primaries);
-			// Load STK class
-			stkVault.scanSTKHits(stkclusters);
-			// Load BGO class
-			bgoVault.scanBGOHits(
-				bgohits,
-				bgorec,
-				evt_energy.GetRawEnergy(),
-				mc_config.GetBGOLayerMinEnergy());
-			// Load PSD class
-			psdVault.scanPSDHits(
-				psdhits,
-				mc_config.GetPSDBarMinEnergy());
-			// Load NUD class
-			nudVault.scanNudHits(nudraw);
-			// Filter event
-			filter.Pipeline(
+		filter.CheckIncomingEvent(
+			evt_header,
+			bgoVault.FastBGOslope(bgorec),
+			bgoVault.FastBGOintercept(bgorec),
+			simu_primaries);
+		// Check BGO geometry after trigger
+		filter.CheckGeometry(simu_primaries);
+		// Load STK class
+		stkVault.scanSTKHits(stkclusters);
+		// Load BGO class
+		bgoVault.scanBGOHits(
+			bgohits,
+			bgorec,
+			evt_energy.GetRawEnergy(),
+			mc_config.GetBGOLayerMinEnergy());
+		// Load PSD class
+		psdVault.scanPSDHits(
+			psdhits,
+			mc_config.GetPSDBarMinEnergy());
+		// Load NUD class
+		nudVault.scanNudHits(nudraw);
+		// Filter event
+		if (filter.Pipeline(
+			bgorec,
+			bgohits,
+			mc_config.GetCutsConfigValues(),
+			mc_config.GetLoggerCutsConfigValues(),
+			evt_energy.GetRawEnergy(),
+			evt_energy.GetCorrEnergy(),
+			bgoVault,
+			psdVault,
+			stkclusters,
+			stktracks,
+			mc_config.GetActiveCuts(),
+			mc_config.GetLoggerActiveCuts()))
+			// Fill output structures
+			simu_tuple->Fill(
 				evIdx,
-				bgorec,
-				bgohits,
-				mc_config.GetCutsConfigValues(),
-				mc_config.GetLoggerCutsConfigValues(),
-				evt_energy.GetRawEnergy(),
-				evt_energy.GetCorrEnergy(),
-				bgoVault,
-				psdVault,
-				stkclusters,
-				stktracks,
-				mc_config.GetActiveCuts(),
-				mc_config.GetLoggerActiveCuts(),
-				evlogger);
-		}
-		
-		// Fill output structures
-		simu_tuple->Fill(
-			fillFilterTmpStruct(filter),
-			stkVault.GetNPlaneClusters(),
-			fillBGOTmpStruct(bgoVault),
-			fillSimuTmpStruct(simu_primaries, simu_trajectories),
-			fillEnergyTmpStruct(evt_energy),
-			fillNUDTmpStruct(nudVault));
+				fillFilterTmpStruct(filter),
+				stkVault.GetNPlaneClusters(),
+				fillBGOTmpStruct(bgoVault),
+				fillSimuTmpStruct(simu_primaries, simu_trajectories),
+				fillEnergyTmpStruct(evt_energy),
+				fillNUDTmpStruct(nudVault));
 	}
 
 	if (_VERBOSE)

@@ -45,17 +45,15 @@ struct logger_cuts
 {
 	double sum_rms_min = -999;
 	double sum_rms_max = -999;
-	double energy_min = -999;
-	double energy_max = -999;
 };
 
 struct logger_active_cuts
 {
 	bool sum_rms = false;
-	bool energy = false;
 	bool trigger_only = false;
 	bool bgo_only = false;
 	bool all_cuts = false;
+	unsigned int nActiveCuts = 0;
 };
 
 class config

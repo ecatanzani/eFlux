@@ -64,6 +64,8 @@ protected:
 
 	// Tree
 	std::unique_ptr<TTree> DmpNtupTree;
+	// Event Number
+	unsigned int evt_number = 0;
 	// Trigger
 	bool mip1_trigger = false;
 	bool mip2_trigger = false;

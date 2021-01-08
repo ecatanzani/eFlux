@@ -14,6 +14,7 @@ public:
 	};
 	~data_tuple(){};
 	void Fill(
+		const unsigned int evIdx,
 		const filter_output &output,
 		const std::shared_ptr<DmpEvtAttitude> &attitude,
 		const best_track &event_best_track,

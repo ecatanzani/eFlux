@@ -214,16 +214,6 @@ void config::get_logger_config_info(std::string parsed_config)
 			input_stream >> tmp_str;
 			log_cuts.sum_rms_max= stod(tmp_str, &sz);
 		}
-		if (!strcmp(tmp_str.c_str(), "energy_min"))
-		{
-			input_stream >> tmp_str;
-			log_cuts.energy_min = stod(tmp_str, &sz);
-		}
-		if (!strcmp(tmp_str.c_str(), "energy_max"))
-		{
-			input_stream >> tmp_str;
-			log_cuts.energy_max = stod(tmp_str, &sz);
-		}
 
 		// Load cuts
 		if (!strcmp(tmp_str.c_str(), "rms_layer"))
@@ -231,12 +221,7 @@ void config::get_logger_config_info(std::string parsed_config)
 			input_stream >> tmp_str;
 			if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
 				log_a_cuts.sum_rms = true;
-		}
-		if (!strcmp(tmp_str.c_str(), "energy"))
-		{
-			input_stream >> tmp_str;
-			if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
-				log_a_cuts.energy = true;
+				++log_a_cuts.nActiveCuts;
 		}
 		if (!strcmp(tmp_str.c_str(), "trigger_only"))
 		{

@@ -16,6 +16,7 @@ public:
 	~mc_tuple(){};
 	
 	void Fill(
+		const unsigned int evIdx,
 		const std::shared_ptr<_tmp_filter> _filter_res,
 		const std::vector<int> _stk_clusters_on_plane,
 		const std::shared_ptr<_tmp_bgo> _bgo_res,

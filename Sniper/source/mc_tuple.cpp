@@ -12,6 +12,11 @@ void mc_tuple::init(const active_cuts &acuts)
 
 void mc_tuple::branch_tree()
 {
+	// Event Number
+	DmpNtupTree->Branch(
+		"evt_number",
+		&evt_number,
+		"evt_number/i");
 	// Trigger
 	DmpNtupTree->Branch(
 		"mip1_trigger",
@@ -478,6 +483,7 @@ void mc_tuple::branch_tree()
 }
 
 void mc_tuple::Fill(
+	const unsigned int evIdx,
 	const std::shared_ptr<_tmp_filter> _filter_res,
 	const std::vector<int> _stk_clusters_on_plane,
 	const std::shared_ptr<_tmp_bgo> _bgo_res,
@@ -485,6 +491,7 @@ void mc_tuple::Fill(
 	const std::shared_ptr<_tmp_energy> _energy_res,
 	const std::shared_ptr<_tmp_nud> _nud_res)
 {
+	evt_number = evIdx;
 	fill_trigger_info(_filter_res->evt_trigger_info);
 	fill_filter_info(_filter_res->output);
 	fill_stk_info(

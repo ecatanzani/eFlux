@@ -12,6 +12,11 @@ void data_tuple::init(const active_cuts &acuts)
 
 void data_tuple::branch_tree()
 {
+	// Event Number
+	DmpNtupTree->Branch(
+		"evt_number",
+		&evt_number,
+		"evt_number/i");
 	// Trigger
 	DmpNtupTree->Branch(
 		"mip1_trigger",
@@ -394,6 +399,7 @@ void data_tuple::branch_tree()
 }
 
 void data_tuple::Fill(
+	const unsigned int evIdx,
 	const filter_output &output,
 	const std::shared_ptr<DmpEvtAttitude> &attitude,
 	const best_track &event_best_track,
@@ -425,6 +431,7 @@ void data_tuple::Fill(
 	const int nud_max_adc,
 	const int nud_max_channel_id)
 {
+	evt_number = evIdx;
 	fill_trigger_info(evt_trigger);
 	fill_filter_info(output);
 	fill_attitude_info(attitude);
