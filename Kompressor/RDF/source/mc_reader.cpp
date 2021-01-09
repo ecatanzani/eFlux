@@ -33,7 +33,7 @@ void mc_reader(
     // Create the RDFs
     auto GetEnergyBin = [=](double energy) -> int { 
         int bin_idx=0;
-        for (; bin_idx<energy_nbins; ++bin_idx)
+        for (; bin_idx<energy_nbins-1; ++bin_idx)
             if (energy * _gev >= energy_binning[bin_idx] && energy * _gev < energy_binning[bin_idx+1])
                 break;
         return bin_idx+1; };
