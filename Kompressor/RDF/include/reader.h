@@ -7,18 +7,13 @@
 
 #include "TChain.h" 
 
+#include "main.h"
 #include "config.h"
 #include "list_parser.h"
 
-void reader(
-    const std::string wd,
-    const std::string inputList,
-    const std::string outputPath,
-    const std::string fit_tree_path,
-    const bool _VERBOSE,
-    const bool mc);
+extern void reader(in_args input_args);
 
-void mc_reader(
+extern void mc_reader(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
     const std::string fit_tree_path,

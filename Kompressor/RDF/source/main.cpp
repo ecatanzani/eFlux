@@ -1,5 +1,6 @@
 #include "main.h"
 #include "utils.h"
+#include "reader.h"
 
 int main(int argc, char **argv)
 {
@@ -22,6 +23,8 @@ int main(int argc, char **argv)
 
 	opt.addUsage(" -m  --mc														MC event loop");
 	opt.addUsage(" -r  --regularize		<path_to_summary_fit_TTree>				Regularize variables behaviour");
+	opt.addUsage(" -t  --tmva-set		<s(signal)/b(background)>				Create TMVA Test/Training sets");
+	
 
 	opt.addUsage("");
 
@@ -33,18 +36,12 @@ int main(int argc, char **argv)
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("mc", 'm');
 	opt.setOption("regularize", 'r');
+	opt.setOption("tmva-set", 't');
 
 	opt.processCommandArgs(argc, argv);
 	
-	std::string wd;
-	std::string input_list;
-	std::string output_path;
-	std::string fit_tree_path;
-
-	bool _VERBOSE = false;
-
-	// Tasks
-	bool mc_flag = false;
+	// Load args struct
+	in_args input_args;
 
 	if (!opt.hasOptions())
 	{
@@ -57,29 +54,28 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	if (opt.getValue("input") || opt.getValue('i'))
-		input_list = opt.getValue('i');
+		input_args.input_list = opt.getValue('i');
 	if (opt.getValue("workdir") || opt.getValue('w'))
-		wd = opt.getValue('w');
+		input_args.wd = opt.getValue('w');
 	if (opt.getValue("output") || opt.getValue('o'))
-		output_path = opt.getValue('o');
+		input_args.output_path = expand_output_path(opt, opt.getValue('o'));
 	if (opt.getValue("outputdir") || opt.getValue('d'))
-		output_path = opt.getValue('d');
+		input_args.output_path = expand_output_path(opt, opt.getValue('d'));
 	if (opt.getFlag("verbose") || opt.getFlag('v'))
-		_VERBOSE = opt.getFlag('v');
+		input_args._VERBOSE = opt.getFlag('v');
 	
 	if (opt.getFlag("mc") || opt.getFlag('m'))
-		mc_flag = true;
+		input_args.mc_flag = true;
 	if (opt.getValue("regularize") || opt.getValue('r'))
-		fit_tree_path = opt.getValue('r');
+		input_args.fit_tree_path = opt.getValue('r');
+	if (opt.getValue("tmva-set") || opt.getValue('t'))
+	{
+		input_args.tmva_set = true;
+		input_args.SetSeType(opt.getValue('t'));
+	}
 
-	if (!output_path.empty())
-		reader(
-			wd, 
-			input_list, 
-			expand_output_path(opt, output_path),
-			fit_tree_path, 
-			_VERBOSE, 
-			mc_flag);
+	if (!input_args.output_path.empty())
+		reader(input_args);
 	else
 	{
 		std::cerr << "\n\nError ! No output path has been specified...\n\n";

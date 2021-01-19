@@ -49,6 +49,7 @@ public:
 		const bool mc);
 	~config(){};
 	std::vector<float> GetEnergyBinning();
+	const int GetNEnergyBins();
 	void PrintActiveFilters();
 	const double GetMinEnergyRange();
 	const double GetMaxEnergyRange();

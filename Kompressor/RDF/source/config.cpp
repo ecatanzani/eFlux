@@ -199,6 +199,11 @@ std::vector<float> config::GetEnergyBinning()
 	return energy_binning;
 }
 
+const int config::GetNEnergyBins()
+{
+	return (int)energy_binning.size() - 1;
+}
+
 void config::PrintActiveFilters()
 {
 	std::string status_BarLayer13 = a_cuts.nBarLayer13 ? "ON" : "OFF";
