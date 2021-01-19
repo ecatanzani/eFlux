@@ -138,7 +138,7 @@ void createTMVAset(
         expand_tt_output_path(output_file, 1).c_str(),
         {"STK_bestTrack_npoints", "energy", "energy_corr", "sumRms", "sumRms_reg", "fracLast", "fracLast_reg", 
         "rmsLayer_1", "rmsLayer_2", "rmsLayer_3", "rmsLayer_4", "rmsLayer_5", "rmsLayer_6", "rmsLayer_7", "rmsLayer_8", "rmsLayer_9", "rmsLayer_10", 
-        "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2", "fracLayer_3", "fracLayer_4", "fracLayer_5","fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10", "fracLayer_11", "fracLayer_12", "fracLayer_13","fracLayer_14", "lastBGOLayer", "nBGOentries", "energy_1R_radius", "energy_2R_radius", "energy_3R_radius", "energy_5R_radius", "xtrl", "NUD_ADC",
+        "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2", "fracLayer_3", "fracLayer_4", "fracLayer_5","fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10", "fracLayer_11", "fracLayer_12", "fracLayer_13","fracLayer_14", "lastBGOLayer", "nBGOentries", "energy_1R_radius", "energy_2R_radius", "energy_3R_radius", "energy_5R_radius", "xtrl",
         "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc"});
     
     _fr_test.Snapshot(
@@ -146,7 +146,7 @@ void createTMVAset(
         expand_tt_output_path(output_file, 0).c_str(),
         {"STK_bestTrack_npoints", "energy", "energy_corr", "sumRms", "sumRms_reg", "fracLast", "fracLast_reg", 
         "rmsLayer_1", "rmsLayer_2", "rmsLayer_3", "rmsLayer_4", "rmsLayer_5", "rmsLayer_6", "rmsLayer_7", "rmsLayer_8", "rmsLayer_9", "rmsLayer_10", 
-        "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2", "fracLayer_3", "fracLayer_4", "fracLayer_5","fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10", "fracLayer_11", "fracLayer_12", "fracLayer_13","fracLayer_14", "lastBGOLayer", "nBGOentries", "energy_1R_radius", "energy_2R_radius", "energy_3R_radius", "energy_5R_radius", "xtrl", "NUD_ADC",
+        "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2", "fracLayer_3", "fracLayer_4", "fracLayer_5","fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10", "fracLayer_11", "fracLayer_12", "fracLayer_13","fracLayer_14", "lastBGOLayer", "nBGOentries", "energy_1R_radius", "energy_2R_radius", "energy_3R_radius", "energy_5R_radius", "xtrl",
         "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc"});
 
 }
