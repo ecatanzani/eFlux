@@ -22,6 +22,8 @@ struct in_args
 	bool mc_flag = false;
 	bool tmva_set = false;
 	bool signal;
+	unsigned int threads = 1;
+
 	void SetSeType(std::string set_name)
 	{
 		if (!set_name.empty())

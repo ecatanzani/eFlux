@@ -26,7 +26,8 @@ void reader(in_args input_args)
                 input_args.fit_tree_path,
                 input_args.signal,
                 input_args.output_path,
-                input_args._VERBOSE);
+                input_args._VERBOSE,
+                input_args.threads);
         }
         else
         {
@@ -36,7 +37,8 @@ void reader(in_args input_args)
                 input_args.fit_tree_path,
                 _entries, 
                 input_args.output_path, 
-                input_args._VERBOSE);
+                input_args._VERBOSE,
+                input_args.threads);
         }
     }
 }

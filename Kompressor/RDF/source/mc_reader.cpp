@@ -14,10 +14,11 @@ void mc_reader(
     const std::string fit_tree_path,
     const double _entries,
     const std::string outputPath,
-    const bool _VERBOSE)
+    const bool _VERBOSE,
+    const unsigned int threads)
 {
     // Enable multithreading
-    ROOT::EnableImplicitMT();
+    ROOT::EnableImplicitMT(threads);
     // Create RDF
     ROOT::RDataFrame _data_fr(*evtch);
     // Extract the energy binning

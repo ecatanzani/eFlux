@@ -19,6 +19,7 @@ extern void mc_reader(
     const std::string fit_tree_path,
     const double _entries,
     const std::string outputPath,
-    const bool _VERBOSE);
+    const bool _VERBOSE,
+    const unsigned int threads);
 
 #endif

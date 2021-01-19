@@ -24,6 +24,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -m  --mc														MC event loop");
 	opt.addUsage(" -r  --regularize		<path_to_summary_fit_TTree>				Regularize variables behaviour");
 	opt.addUsage(" -t  --tmva-set		<s(signal)/b(background)>				Create TMVA Test/Training sets");
+	opt.addUsage(" -p  --parallel		<number_of_threads>						Multithreading option");
 	
 
 	opt.addUsage("");
@@ -37,6 +38,7 @@ int main(int argc, char **argv)
 	opt.setFlag("mc", 'm');
 	opt.setOption("regularize", 'r');
 	opt.setOption("tmva-set", 't');
+	opt.setOption("parallel", 'p');
 
 	opt.processCommandArgs(argc, argv);
 	
@@ -73,6 +75,8 @@ int main(int argc, char **argv)
 		input_args.tmva_set = true;
 		input_args.SetSeType(opt.getValue('t'));
 	}
+	if (opt.getValue("parallel") || opt.getValue('p'))
+		input_args.threads =  std::stoul(opt.getValue('p'),nullptr, 0);
 
 	if (!input_args.output_path.empty())
 		reader(input_args);

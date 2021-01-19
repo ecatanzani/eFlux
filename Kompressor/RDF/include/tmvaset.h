@@ -14,6 +14,7 @@ extern void createTMVAset(
     const std::string fit_tree_path,
     const bool signal,
     const std::string output_file,
-    const bool _VERBOSE);
+    const bool _VERBOSE,
+    const unsigned int threads);
 
 #endif
