@@ -130,8 +130,8 @@ void createTMVAset(
     // Write trees to file
     std::string train_tree_name;
     std::string test_tree_name;
-    signal ? train_tree_name = "trainSignal" : train_tree_name = "trainBrackground";
-    signal ? test_tree_name = "testSignal" : test_tree_name = "testBrackground";
+    signal ? train_tree_name = "trainSignal" : train_tree_name = "trainBackground";
+    signal ? test_tree_name = "testSignal" : test_tree_name = "testBackground";
 
     _fr_train.Snapshot(
         train_tree_name.c_str(), 
