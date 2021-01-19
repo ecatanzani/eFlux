@@ -1,6 +1,6 @@
-######### Acceptance Config File #########
+################### Collector Config File ###################
 
-## Acceptance Params
+## Binning Parameters
 
 n_energy_bins               50      Number of energy bins
 

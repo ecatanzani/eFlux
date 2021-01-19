@@ -957,7 +957,7 @@ const bool DmpFilterContainer::CheckIncomingEvent(
 	{
 		check_trigger(evt_header);
 		checkBGOreco(bgoRec_slope, bgoRec_intercept, simu_primaries);
-		if (output.evt_triggered && output.correct_bgo_reco)
+		if (output.evt_triggered && output.correct_bgo_reco && !output.out_energy_range)
 			output.good_event = true;
 	}
 	return output.good_event;
@@ -965,20 +965,20 @@ const bool DmpFilterContainer::CheckIncomingEvent(
 
 void DmpFilterContainer::EnergyCheck(
 	const cuts_conf &cuts,
-	const bool bgoTotalE_corr,
-	const bool min_energy,
-	const bool max_energy)
+	const double bgoTotalE_corr,
+	const double min_energy,
+	const double max_energy)
 {
 	if (!output.evt_in_saa)
 	{
 		const double _GeV = 0.001;
 		if (bgoTotalE_corr * _GeV < cuts.min_event_energy || bgoTotalE_corr * _GeV > cuts.max_event_energy)
-			++particle_counter.events_in_range;
-		else
 		{
 			++particle_counter.events_out_range;
 			output.out_energy_range = true;
 		}
+		else
+			++particle_counter.events_in_range;
 	}
 }
 

@@ -1,6 +1,6 @@
-######### eFlux Config File #########
+################### Collector Config File ###################
 
-## Flux Params
+## Binning Parameters
 
 n_energy_bins               50      Number of energy bins
 

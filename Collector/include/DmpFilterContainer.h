@@ -170,9 +170,9 @@ public:
 		const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::shared_ptr<DmpEvtSimuPrimaries>(nullptr));
 	void EnergyCheck(
 		const cuts_conf &cuts,
-		const bool bgoTotalE_corr,
-		const bool min_energy,
-		const bool max_energy);
+		const double bgoTotalE_corr,
+		const double min_energy,
+		const double max_energy);
 	void UpdateEvtCounter();
 	const filter_output GetFilterOutput();
 	const psd_charge GetPSDCharge();
