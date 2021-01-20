@@ -72,10 +72,25 @@ int main(int argc, char **argv)
 	if (opt.getFlag("data-test") || opt.getFlag('t'))
 		input_args.test_with_data = opt.getFlag('t');
 
-	if (input_args.verbose)
-		PrintArgs(input_args);
-	Train(input_args);	
-
+	if (!input_args.output_path.empty())
+	{
+		if (!input_args.learning.empty())
+		{
+			if (input_args.verbose)
+				PrintArgs(input_args);
+			Train(input_args);
+		}
+		else
+		{
+			std::cerr << "\nError ! No learnign method has been specified...\n\n";
+			exit(100);
+		}
+	}
+	else
+	{
+		std::cerr << "\nError ! No output path has been specified...\n\n";
+		exit(100);
+	}
 	
 	return 0;
 }
