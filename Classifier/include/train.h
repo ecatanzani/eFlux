@@ -5,11 +5,19 @@
 
 #include <memory>
 
-#include "TTree.h"
+#include "TChain.h"
+
+#include "TMVA/Factory.h"
+#include "TMVA/Tools.h"
+#include "TMVA/MethodCategory.h"
+#include "TMVA/IMethod.h"
+#include "TMVA/Reader.h"
+#include "TMVA/MethodCuts.h"
+#include "TMVA/DataLoader.h"
 
 extern int Train(in_args input_args);
 
-extern std::shared_ptr<TTree> ReadTreeFromFile(std::string tree_path, const char* tree_name);
 extern std::map<std::string, int> GetTMVAMethods(std::string mymethod);
+extern void SetTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader);
 
 #endif

@@ -1,12 +1,5 @@
 #include "train.h"
-
-#include "TMVA/Factory.h"
-#include "TMVA/Tools.h"
-#include "TMVA/MethodCategory.h"
-#include "TMVA/IMethod.h"
-#include "TMVA/Reader.h"
-#include "TMVA/MethodCuts.h"
-#include "TMVA/DataLoader.h"
+#include "reader.h"
 
 int Train(in_args input_args)
 {
@@ -14,24 +7,37 @@ int Train(in_args input_args)
 
     // Loat TMVA library
     TMVA::Tools::Instance();
-    
-    // Get TMVA methods
-    auto Use = GetTMVAMethods(input_args.learning);
 
+    // Get TMVA methods
+    auto Use = GetTMVAMethods(input_args.learning_method);
+
+    // Read input data sets
     if (input_args.verbose)
-        std::cout << "\n==> Reading signal training data set [" << input_args.train_signal_path << "]" << std::endl;
-    auto signal_train_tree = ReadTreeFromFile(input_args.train_signal_path, "trainSignal");
+        std::cout << "\n==> Reading signal training data [" << input_args.train_signal_input_list << "]" << std::endl;
+    auto signal_train_tree = ReadTreeFromFile(input_args.train_signal_input_list, "trainSignal", input_args.verbose);
     if (input_args.verbose)
-        std::cout << "\n==> Reading background training data set [" << input_args.train_background_path << "]" << std::endl;
-    auto background_train_tree = ReadTreeFromFile(input_args.train_background_path, "trainBackground");
+        std::cout << "\n==> Reading background training data [" << input_args.train_background_input_list << "]" << std::endl;
+    auto background_train_tree = ReadTreeFromFile(input_args.train_background_input_list, "trainBackground", input_args.verbose);
     if (input_args.verbose)
-        std::cout << "\n==> Reading signal test data set [" << input_args.test_signal_path << "]" << std::endl;
-    auto signal_test_tree = ReadTreeFromFile(input_args.test_signal_path, "testSignal");
+        std::cout << "\n==> Reading signal test data [" << input_args.test_signal_input_list << "]" << std::endl;
+    auto signal_test_tree = ReadTreeFromFile(input_args.test_signal_input_list, "testSignal", input_args.verbose);
     if (input_args.verbose)
-        std::cout << "\n==> Reading background test data set [" << input_args.test_background_path << "]" << std::endl;
-    auto background_test_tree = ReadTreeFromFile(input_args.test_background_path, "testBackground");
+        std::cout << "\n==> Reading background test data [" << input_args.test_background_input_list << "]" << std::endl;
+    auto background_test_tree = ReadTreeFromFile(input_args.test_background_input_list, "testBackground", input_args.verbose);
     if (input_args.verbose)
         std::cout << "\n==> Writing TMVA output ROOT file [" << input_args.output_path << "]" << std::endl;
+
+    if (input_args.verbose)
+    {
+        std::cout << "\n\n**** Data Statistics...\n";
+        std::cout << "\nSignal TRAINING data set -> " << signal_train_tree->GetEntries() << " entries";
+        std::cout << "\nSignal TEST data set -> " << signal_test_tree->GetEntries() << " entries";
+        std::cout << "\nBackgound TRAINING data set -> " << background_train_tree->GetEntries() << " entries";
+        std::cout << "\nBackgound TEST data set -> " << background_test_tree->GetEntries() << " entries";
+        std::cout << "\n\n**************************\n";
+    }
+
+    // Create TMVA output file
     TFile *outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (!outfile->IsOpen())
     {
@@ -42,163 +48,46 @@ int Train(in_args input_args)
     if (input_args.verbose)
         std::cout << "\n==> Start TMVAClassification" << std::endl;
 
-    // Create the factory object. Later you can choose the methods
-    // whose performance you'd like to investigate. The factory is
-    // the only TMVA object you have to interact with
-    //
-    // The first argument is the base of the name of all the
-    // weightfiles in the directory weight/
-    //
-    // The second argument is the output file for the training results
-    // All TMVA output can be suppressed by removing the "!" (not) in
-    // front of the "Silent" argument in the option string
-    std::unique_ptr<TMVA::Factory> factory = std::make_unique<TMVA::Factory>("TMVAClassification", outfile,
+    std::shared_ptr<TMVA::Factory> factory = std::make_shared<TMVA::Factory>("TMVAClassification", outfile,
                                                                              "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification");
-    std::unique_ptr<TMVA::DataLoader> dataloader = std::make_unique<TMVA::DataLoader>("dataset");
+    std::shared_ptr<TMVA::DataLoader> dataloader = std::make_shared<TMVA::DataLoader>("dataset");
 
     // Define the input variables that shall be used for the MVA training
-    dataloader->AddVariable("STK_bestTrack_npoints", "STK_bestTrack_npoints", "units", 'I');
-    dataloader->AddVariable("sumRms_reg", "sumRms_reg", "units", 'D');
-    dataloader->AddVariable("fracLast_reg", "fracLast_reg", "units", 'D');
+    SetTMVAVariables(dataloader);
 
-    dataloader->AddVariable("rmsLayer_1", "rmsLayer_1", "units", 'D');
-    dataloader->AddVariable("rmsLayer_2", "rmsLayer_2", "units", 'D');
-    dataloader->AddVariable("rmsLayer_3", "rmsLayer_3", "units", 'D');
-    dataloader->AddVariable("rmsLayer_4", "rmsLayer_4", "units", 'D');
-    dataloader->AddVariable("rmsLayer_5", "rmsLayer_5", "units", 'D');
-    dataloader->AddVariable("rmsLayer_6", "rmsLayer_6", "units", 'D');
-    dataloader->AddVariable("rmsLayer_7", "rmsLayer_7", "units", 'D');
-    dataloader->AddVariable("rmsLayer_8", "rmsLayer_8", "units", 'D');
-    dataloader->AddVariable("rmsLayer_9", "rmsLayer_9", "units", 'D');
-    dataloader->AddVariable("rmsLayer_10", "rmsLayer_10", "units", 'D');
-    dataloader->AddVariable("rmsLayer_11", "rmsLayer_11", "units", 'D');
-    dataloader->AddVariable("rmsLayer_12", "rmsLayer_12", "units", 'D');
-    dataloader->AddVariable("rmsLayer_13", "rmsLayer_13", "units", 'D');
-    dataloader->AddVariable("rmsLayer_14", "rmsLayer_14", "units", 'D');
-    dataloader->AddVariable("fracLayer_1", "fracLayer_1", "units", 'D');
-    dataloader->AddVariable("fracLayer_2", "fracLayer_2", "units", 'D');
-    dataloader->AddVariable("fracLayer_3", "fracLayer_3", "units", 'D');
-    dataloader->AddVariable("fracLayer_4", "fracLayer_4", "units", 'D');
-    dataloader->AddVariable("fracLayer_5", "fracLayer_5", "units", 'D');
-    dataloader->AddVariable("fracLayer_6", "fracLayer_6", "units", 'D');
-    dataloader->AddVariable("fracLayer_7", "fracLayer_7", "units", 'D');
-    dataloader->AddVariable("fracLayer_8", "fracLayer_8", "units", 'D');
-    dataloader->AddVariable("fracLayer_9", "fracLayer_9", "units", 'D');
-    dataloader->AddVariable("fracLayer_10", "fracLayer_10", "units", 'D');
-    dataloader->AddVariable("fracLayer_11", "fracLayer_11", "units", 'D');
-    dataloader->AddVariable("fracLayer_12", "fracLayer_12", "units", 'D');
-    dataloader->AddVariable("fracLayer_13", "fracLayer_13", "units", 'D');
-    dataloader->AddVariable("fracLayer_14", "fracLayer_14", "units", 'D');
-
-    dataloader->AddVariable("lastBGOLayer", "lastBGOLayer", "units", 'I');
-    dataloader->AddVariable("nBGOentries", "nBGOentries", "units", 'I');
-
-    dataloader->AddVariable("energy_1R_radius_1", "energy_1R_radius_1", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_2", "energy_1R_radius_2", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_3", "energy_1R_radius_3", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_4", "energy_1R_radius_4", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_5", "energy_1R_radius_5", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_6", "energy_1R_radius_6", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_7", "energy_1R_radius_7", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_8", "energy_1R_radius_8", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_9", "energy_1R_radius_9", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_10", "energy_1R_radius_10", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_11", "energy_1R_radius_11", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_12", "energy_1R_radius_12", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_13", "energy_1R_radius_13", "units", 'D');
-    dataloader->AddVariable("energy_1R_radius_14", "energy_1R_radius_14", "units", 'D');
-
-    dataloader->AddVariable("energy_2R_radius_1", "energy_2R_radius_1", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_2", "energy_2R_radius_2", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_3", "energy_2R_radius_3", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_4", "energy_2R_radius_4", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_5", "energy_2R_radius_5", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_6", "energy_2R_radius_6", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_7", "energy_2R_radius_7", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_8", "energy_2R_radius_8", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_9", "energy_2R_radius_9", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_10", "energy_2R_radius_10", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_11", "energy_2R_radius_11", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_12", "energy_2R_radius_12", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_13", "energy_2R_radius_13", "units", 'D');
-    dataloader->AddVariable("energy_2R_radius_14", "energy_2R_radius_14", "units", 'D'); 
-
-    dataloader->AddVariable("energy_3R_radius_1", "energy_3R_radius_1", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_2", "energy_3R_radius_2", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_3", "energy_3R_radius_3", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_4", "energy_3R_radius_4", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_5", "energy_3R_radius_5", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_6", "energy_3R_radius_6", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_7", "energy_3R_radius_7", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_8", "energy_3R_radius_8", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_9", "energy_3R_radius_9", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_10", "energy_3R_radius_10", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_11", "energy_3R_radius_11", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_12", "energy_3R_radius_12", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_13", "energy_3R_radius_13", "units", 'D');
-    dataloader->AddVariable("energy_3R_radius_14", "energy_3R_radius_14", "units", 'D'); 
-
-    dataloader->AddVariable("energy_5R_radius_1", "energy_5R_radius_1", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_2", "energy_5R_radius_2", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_3", "energy_5R_radius_3", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_4", "energy_5R_radius_4", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_5", "energy_5R_radius_5", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_6", "energy_5R_radius_6", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_7", "energy_5R_radius_7", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_8", "energy_5R_radius_8", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_9", "energy_5R_radius_9", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_10", "energy_5R_radius_10", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_11", "energy_5R_radius_11", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_12", "energy_5R_radius_12", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_13", "energy_5R_radius_13", "units", 'D');
-    dataloader->AddVariable("energy_5R_radius_14", "energy_5R_radius_14", "units", 'D');
-    
-    dataloader->AddVariable("xtrl", "xtrl", "units", 'D');
-    
-    dataloader->AddVariable("NUD_total_ADC_nud_total_adc", "NUD_total_ADC_nud_total_adc", "units", 'I');
-    dataloader->AddVariable("NUD_max_ADC_nud_max_adc", "NUD_max_ADC_nud_max_adc", "units", 'I');
-
-    // global event weights per tree (see below for setting event-wise weights)
+    // Set global event weights per tree
     double signalWeight = 1.0;
     double backgroundWeight = 1.0;
 
-    // You can add an arbitrary number of signal or background trees
+    // Add signal and backround Train/Test trees
     dataloader->AddSignalTree(signal_train_tree.get(), signalWeight, TMVA::Types::kTraining);
     dataloader->AddSignalTree(signal_test_tree.get(), signalWeight, TMVA::Types::kTesting);
     dataloader->AddBackgroundTree(background_train_tree.get(), backgroundWeight, TMVA::Types::kTraining);
     dataloader->AddBackgroundTree(background_test_tree.get(), backgroundWeight, TMVA::Types::kTesting);
 
-    // Apply additional cuts on the signal and background samples (can be different)
-    TCut mycuts = "";
-    TCut mycutb = "";
-
+    // Apply additional cuts on the signal and background samples
+    TCut signal_cuts = "";
+    TCut background_cuts = "";
+    
+    #if 0
     TCut energyrange = "";
-    mycuts+=energyrange;
-    mycutb+=energyrange;
+    signal_cuts += energyrange;
+    background_cuts += energyrange;
 
-    /*
     TCut removenans = "!(TMath::IsNaN(tofQ) || !(TMath::Finite(tofQ)))";
-    mycuts+=removenans;
-    mycutb+=removenans;
+    signal_cuts+=removenans;
+    background_cuts+=removenans;
 
     TCut removenans2 = "!(TMath::IsNaN(tofQlay[1]) || !(TMath::Finite(tofQlay[1])))";
-    mycuts+=removenans2;
-    mycutb+=removenans2;
+    signal_cuts+=removenans2;
+    background_cuts+=removenans2;
     
-    mycuts.Print();
-    mycutb.Print();
-    */
+    signal_cuts.Print();
+    background_cuts.Print();
+    #endif
 
-    dataloader->PrepareTrainingAndTestTree(mycuts, mycutb,
-                                           //"nTrain_Signal=1000000:nTrain_Background=1000000:nTest_Signal=0:nTest_Background=0:SplitMode=Random:NormMode=None:!V");
-                                            "nTrain_Signal=1000000:nTrain_Background=1000000:nTest_Signal=0:nTest_Background=0:SplitMode=Random:NormMode=None:!V");
-
-    // ### Book MVA methods
-    //
-    // Please lookup the various method configuration options in the corresponding cxx files, eg:
-    // src/MethoCuts.cxx, etc, or here: http://tmva.sourceforge.net/optionRef.html
-    // it is possible to preset ranges in the option string in which the cut optimisation should be done:
-    // "...:CutRangeMin[2]=-1:CutRangeMax[2]=1"...", where [2] is the third input variable
+    dataloader->PrepareTrainingAndTestTree(signal_cuts, background_cuts,
+                                           "nTrain_Signal=1000000:nTrain_Background=1000000:nTest_Signal=0:nTest_Background=0:SplitMode=Random:NormMode=None:!V");
 
     // Cut optimisation
     if (Use["Cuts"])
@@ -435,22 +324,6 @@ int Train(in_args input_args)
     return status;
 }
 
-std::shared_ptr<TTree> ReadTreeFromFile(std::string tree_path, const char *tree_name)
-{
-    TFile *input = TFile::Open(tree_path.c_str(), "READ");
-    if (!input->IsOpen())
-    {
-        std::cout << "\n\nError reading input TTree: [" << tree_path << "]\n\n";
-        exit(100);
-    }
-    std::shared_ptr<TTree> tree = std::shared_ptr<TTree>(static_cast<TTree *>(input->Get(tree_name)));
-    tree->SetDirectory(0);
-    input->Close();
-    return tree;
-}
-
-
-
 std::map<std::string, int> GetTMVAMethods(std::string mymethod)
 {
     std::map<std::string, int> Use;
@@ -460,51 +333,51 @@ std::map<std::string, int> GetTMVAMethods(std::string mymethod)
     Use["CutsPCA"] = 0;
     Use["CutsGA"] = 0;
     Use["CutsSA"] = 0;
-    
+
     Use["Likelihood"] = 0;
     Use["LikelihoodD"] = 0;
     Use["LikelihoodPCA"] = 0;
     Use["LikelihoodKDE"] = 0;
     Use["LikelihoodMIX"] = 0;
-    
+
     Use["PDERS"] = 0;
     Use["PDERSD"] = 0;
     Use["PDERSPCA"] = 0;
     Use["PDEFoam"] = 0;
     Use["PDEFoamBoost"] = 0;
     Use["KNN"] = 0;
-    
+
     Use["LD"] = 0;
     Use["Fisher"] = 0;
     Use["FisherG"] = 0;
     Use["BoostedFisher"] = 0;
     Use["HMatrix"] = 0;
-    
+
     Use["FDA_GA"] = 0;
     Use["FDA_SA"] = 0;
     Use["FDA_MC"] = 0;
     Use["FDA_MT"] = 0;
     Use["FDA_GAMT"] = 0;
     Use["FDA_MCMT"] = 0;
-    
+
     Use["MLP"] = 0;
     Use["MLPBFGS"] = 0;
     Use["MLPBNN"] = 0;
     Use["CFMlpANN"] = 0;
     Use["TMlpANN"] = 0;
-    
+
     Use["SVM"] = 0;
-    
+
     Use["BDT"] = 0;
     Use["BDTG"] = 0;
     Use["BDTB"] = 0;
     Use["BDTD"] = 0;
     Use["BDTF"] = 0;
-    
+
     Use["RuleFit"] = 0;
-    
+
     auto linked_method = false;
-    for (auto&& dmethod : Use)
+    for (auto &&dmethod : Use)
     {
         if (!strcmp(mymethod.c_str(), dmethod.first.c_str()))
         {
@@ -518,7 +391,111 @@ std::map<std::string, int> GetTMVAMethods(std::string mymethod)
     {
         std::cerr << "\nERROR: No match found in TMVA default methods...\n\n";
         exit(100);
-    }    
+    }
 
     return Use;
+}
+
+void SetTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
+{
+    dataloader->AddVariable("STK_bestTrack_npoints", "STK_bestTrack_npoints", "units", 'I');
+    dataloader->AddVariable("sumRms_reg", "sumRms_reg", "units", 'D');
+    dataloader->AddVariable("fracLast_reg", "fracLast_reg", "units", 'D');
+
+    dataloader->AddVariable("rmsLayer_1", "rmsLayer_1", "units", 'D');
+    dataloader->AddVariable("rmsLayer_2", "rmsLayer_2", "units", 'D');
+    dataloader->AddVariable("rmsLayer_3", "rmsLayer_3", "units", 'D');
+    dataloader->AddVariable("rmsLayer_4", "rmsLayer_4", "units", 'D');
+    dataloader->AddVariable("rmsLayer_5", "rmsLayer_5", "units", 'D');
+    dataloader->AddVariable("rmsLayer_6", "rmsLayer_6", "units", 'D');
+    dataloader->AddVariable("rmsLayer_7", "rmsLayer_7", "units", 'D');
+    dataloader->AddVariable("rmsLayer_8", "rmsLayer_8", "units", 'D');
+    dataloader->AddVariable("rmsLayer_9", "rmsLayer_9", "units", 'D');
+    dataloader->AddVariable("rmsLayer_10", "rmsLayer_10", "units", 'D');
+    dataloader->AddVariable("rmsLayer_11", "rmsLayer_11", "units", 'D');
+    dataloader->AddVariable("rmsLayer_12", "rmsLayer_12", "units", 'D');
+    dataloader->AddVariable("rmsLayer_13", "rmsLayer_13", "units", 'D');
+    dataloader->AddVariable("rmsLayer_14", "rmsLayer_14", "units", 'D');
+    dataloader->AddVariable("fracLayer_1", "fracLayer_1", "units", 'D');
+    dataloader->AddVariable("fracLayer_2", "fracLayer_2", "units", 'D');
+    dataloader->AddVariable("fracLayer_3", "fracLayer_3", "units", 'D');
+    dataloader->AddVariable("fracLayer_4", "fracLayer_4", "units", 'D');
+    dataloader->AddVariable("fracLayer_5", "fracLayer_5", "units", 'D');
+    dataloader->AddVariable("fracLayer_6", "fracLayer_6", "units", 'D');
+    dataloader->AddVariable("fracLayer_7", "fracLayer_7", "units", 'D');
+    dataloader->AddVariable("fracLayer_8", "fracLayer_8", "units", 'D');
+    dataloader->AddVariable("fracLayer_9", "fracLayer_9", "units", 'D');
+    dataloader->AddVariable("fracLayer_10", "fracLayer_10", "units", 'D');
+    dataloader->AddVariable("fracLayer_11", "fracLayer_11", "units", 'D');
+    dataloader->AddVariable("fracLayer_12", "fracLayer_12", "units", 'D');
+    dataloader->AddVariable("fracLayer_13", "fracLayer_13", "units", 'D');
+    dataloader->AddVariable("fracLayer_14", "fracLayer_14", "units", 'D');
+
+    dataloader->AddVariable("lastBGOLayer", "lastBGOLayer", "units", 'I');
+    dataloader->AddVariable("nBGOentries", "nBGOentries", "units", 'I');
+
+    dataloader->AddVariable("energy_1R_radius_1", "energy_1R_radius_1", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_2", "energy_1R_radius_2", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_3", "energy_1R_radius_3", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_4", "energy_1R_radius_4", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_5", "energy_1R_radius_5", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_6", "energy_1R_radius_6", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_7", "energy_1R_radius_7", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_8", "energy_1R_radius_8", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_9", "energy_1R_radius_9", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_10", "energy_1R_radius_10", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_11", "energy_1R_radius_11", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_12", "energy_1R_radius_12", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_13", "energy_1R_radius_13", "units", 'D');
+    dataloader->AddVariable("energy_1R_radius_14", "energy_1R_radius_14", "units", 'D');
+
+    dataloader->AddVariable("energy_2R_radius_1", "energy_2R_radius_1", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_2", "energy_2R_radius_2", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_3", "energy_2R_radius_3", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_4", "energy_2R_radius_4", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_5", "energy_2R_radius_5", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_6", "energy_2R_radius_6", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_7", "energy_2R_radius_7", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_8", "energy_2R_radius_8", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_9", "energy_2R_radius_9", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_10", "energy_2R_radius_10", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_11", "energy_2R_radius_11", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_12", "energy_2R_radius_12", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_13", "energy_2R_radius_13", "units", 'D');
+    dataloader->AddVariable("energy_2R_radius_14", "energy_2R_radius_14", "units", 'D');
+
+    dataloader->AddVariable("energy_3R_radius_1", "energy_3R_radius_1", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_2", "energy_3R_radius_2", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_3", "energy_3R_radius_3", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_4", "energy_3R_radius_4", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_5", "energy_3R_radius_5", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_6", "energy_3R_radius_6", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_7", "energy_3R_radius_7", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_8", "energy_3R_radius_8", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_9", "energy_3R_radius_9", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_10", "energy_3R_radius_10", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_11", "energy_3R_radius_11", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_12", "energy_3R_radius_12", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_13", "energy_3R_radius_13", "units", 'D');
+    dataloader->AddVariable("energy_3R_radius_14", "energy_3R_radius_14", "units", 'D');
+
+    dataloader->AddVariable("energy_5R_radius_1", "energy_5R_radius_1", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_2", "energy_5R_radius_2", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_3", "energy_5R_radius_3", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_4", "energy_5R_radius_4", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_5", "energy_5R_radius_5", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_6", "energy_5R_radius_6", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_7", "energy_5R_radius_7", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_8", "energy_5R_radius_8", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_9", "energy_5R_radius_9", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_10", "energy_5R_radius_10", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_11", "energy_5R_radius_11", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_12", "energy_5R_radius_12", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_13", "energy_5R_radius_13", "units", 'D');
+    dataloader->AddVariable("energy_5R_radius_14", "energy_5R_radius_14", "units", 'D');
+
+    dataloader->AddVariable("xtrl", "xtrl", "units", 'D');
+
+    dataloader->AddVariable("NUD_total_ADC_nud_total_adc", "NUD_total_ADC_nud_total_adc", "units", 'I');
+    dataloader->AddVariable("NUD_max_ADC_nud_max_adc", "NUD_max_ADC_nud_max_adc", "units", 'I');
 }
