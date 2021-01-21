@@ -14,38 +14,16 @@ void UpdateProcessStatus(
 	}
 }
 
-const std::string uniqueOutFile(
-	const std::string outputPath,
-	AnyOption &opt)
+const std::string uniqueOutFile(AnyOption &opt)
 {
 	std::time_t ctime = std::time(0);
 	std::stringstream fPath;
 	if (opt.getValue("outputDir") || opt.getValue('d'))
-		fPath << outputPath << "/analysisOutFile_" << ctime << ".root";
+		fPath << opt.getValue('d') << "/analysisOutFile_" << ctime << ".root";
 	else if (opt.getValue("output") || opt.getValue('o'))
-		fPath << outputPath;
+		fPath << opt.getValue('o');
 	else
 		fPath << "analysisOutFile_" << ctime << ".root";
 
 	return fPath.str();
-}
-
-std::shared_ptr<ofstream> ev_logger(
-	const std::string outputPath,
-	AnyOption &opt)
-{
-	std::shared_ptr<ofstream> _flogger;
-	std::stringstream fPath;
-	
-	if (opt.getValue("outputDir") || opt.getValue('d'))
-		fPath << outputPath << "/eventdisplay_logger.txt";
-	else
-		fPath << "eventdisplay_logger.txt";
-	_flogger = std::make_shared<ofstream> (fPath.str());
-	if (!_flogger->is_open())
-	{
-		std::cerr << "\n\nError writing event data file logger [" << fPath.str() << "]\n\n";
-		exit(100);
-	}
-	return _flogger;
 }
