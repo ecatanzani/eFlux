@@ -41,6 +41,19 @@ struct in_pars
             std::cout << std::endl;
         return status;
     }
+
+    void ExpandArgs()
+    {
+        std::cout << "\n\n***** Input Args *****\n\n";
+        std::cout << "Input file list [" << input_path << "]";
+        std::cout << "\nCollector config directory [" << wd << "]";
+        std::cout << "\nOutput path [" << output_path << "]";
+        verbose ? std::cout << "\nVerbosity [True]" : std::cout << "\nVerbosity [False]";
+        pedantic ? std::cout << "\nPedantic [True]" : std::cout << "\nPedantic [False]";
+        mc_flag ? std::cout << "\nMC flag [True]" : std::cout << "\nMC flag [False]";
+        rawdata_flag ? std::cout << "\nRAW Data flag [True]" : std::cout << "\nRAW Data flag [False]";
+        std::cout << "\n\n**********************\n";
+    }
 };
 
 #endif

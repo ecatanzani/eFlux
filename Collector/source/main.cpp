@@ -69,6 +69,8 @@ int main(int argc, char **argv)
 	
 	if (input_pars.CheckArgs())
 	{
+		if (input_pars.verbose)
+			input_pars.ExpandArgs();
 		if (input_pars.mc_flag)
 			mcCore(input_pars);
 		else
