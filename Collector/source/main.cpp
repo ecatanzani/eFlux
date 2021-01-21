@@ -1,6 +1,7 @@
-#include "main.h"
 #include "mc.h"
 #include "data.h"
+#include "main.h"
+#include "utils.h"
 
 int main(int argc, char **argv)
 {
@@ -39,16 +40,8 @@ int main(int argc, char **argv)
 	
 	opt.processCommandArgs(argc, argv);
 
-	std::string wd;
-	std::string inputPath;
-	std::string outputPath;
-
-	bool verbose = false;
-	bool pedantic = false;
-
-	// Tasks
-	bool mc_flag = false;
-	bool rawdata_flag = false;
+	// Load args struct
+	in_pars input_pars;
 	
 	if (!opt.hasOptions())
 	{
@@ -61,41 +54,28 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	if (opt.getValue("input") || opt.getValue('i'))
-		inputPath = opt.getValue('i');
+		input_pars.input_path = opt.getValue('i');
 	if (opt.getValue("workdir") || opt.getValue('w'))
-		wd = opt.getValue('w');
-	if (opt.getValue("output") || opt.getValue('o'))
-		outputPath = opt.getValue('o');
-	if (opt.getValue("outputDir") || opt.getValue('d'))
-		outputPath = opt.getValue('d');
+		input_pars.wd = opt.getValue('w');
+	input_pars.output_path = uniqueOutFile(opt);
 	if (opt.getFlag("verbose") || opt.getFlag('v'))
-		verbose = opt.getFlag('v');
+		input_pars.verbose = opt.getFlag('v');
 	if (opt.getFlag("pedantic") || opt.getFlag('p'))
-		pedantic = opt.getFlag('p');
-
+		input_pars.pedantic = opt.getFlag('p');
 	if (opt.getFlag("mc") || opt.getFlag('m'))
-		mc_flag = true;
+		input_pars.mc_flag = true;
 	if (opt.getFlag("raw_data") || opt.getFlag('r'))
-		rawdata_flag = true;
+		input_pars.rawdata_flag = true;
 	
-	if (mc_flag)
-		mcCore(
-			inputPath,
-			outputPath,
-			verbose,
-			pedantic,
-			opt,
-			wd);
-	else if (rawdata_flag)
-		dataCore(
-			inputPath,
-			outputPath,
-			verbose,
-			pedantic,
-			opt,
-			wd);
+	if (input_pars.CheckArgs())
+	{
+		if (input_pars.mc_flag)
+			mcCore(input_pars);
+		else
+			dataCore(input_pars);
+	}	
 	else
-		std::cerr << "\n\nERROR: Wrong Task selected \n\n";
+		return 100;
 	
 	return 0;
 }
