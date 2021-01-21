@@ -2,6 +2,8 @@
 #include "utils.h"
 #include "config.h"
 #include "energy.h"
+#include "tmpstruct.h"
+#include "data_tmpstruct.h"
 #include "data_tuple.h"
 #include "DmpStkContainer.h"
 #include "DmpBgoContainer.h"
@@ -102,15 +104,15 @@ void rawDataLoop(
 	config data_config(wd, _MC);
 	// Compute energy binning
 	auto logEBins = data_config.GetEnergyBinning();
-	// Create DATA tuple objects
-	std::unique_ptr<data_tuple> tuple = std::make_unique<data_tuple>(data_config.GetActiveCuts());
 	// Load energy class
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
 	// Load output file
 	outFile.cd();
-
+	// Create DATA tuple objects
+	std::unique_ptr<data_tuple> tuple = std::make_unique<data_tuple>(data_config.GetActiveCuts());
+	
 	auto nevents = dmpch->GetEntries();
 	int kStep = 10;
 	// Update event time
@@ -194,37 +196,15 @@ void rawDataLoop(
 				stktracks,
 				data_config.GetActiveCuts());
 		}
+		
+		// Fill output structures
 		tuple->Fill(
-			filter.GetFilterOutput(),
-			attitude,
-			filter.GetBestTrack(),
+			fillFilterTmpStruct(filter),
 			stkVault.GetNPlaneClusters(),
-			evt_energy.GetRawEnergy(),
-			evt_energy.GetCorrEnergy(),
-			bgoVault.GetLayerEnergies(),
-			bgoVault.GetLayerBarEnergies(),
-			bgoVault.GetBGOslope(),
-			bgoVault.GetBGOintercept(),
-			bgoVault.GetBGOTrajectory2D(),
-			bgoVault.GetSumRMS(),
-			bgoVault.GetRmsLayer(),
-			bgoVault.GetFracLayer(),
-			bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()),
-			bgoVault.GetSingleFracLayer(13),
-			bgoVault.GetLastEnergyLayer(),
-			bgoVault.GetNhits(),
-			bgoVault.GetEnergy1MR(),
-			bgoVault.GetEnergy2MR(),
-			bgoVault.GetEnergy3MR(),
-			bgoVault.GetEnergy5MR(),
-			filter.GetPSDCharge(),
-			filter.GetSTKCharge(),
-			filter.GetClassifiers(),
-			filter.GetTrigger(),
-			nudVault.GetADC(),
-			nudVault.GetTotalADC(),
-			nudVault.GetMaxADC(),
-			nudVault.GetMaxChannelID());
+			fillBGOTmpStruct(bgoVault),
+			fillDataEnergyTmpStruct(evt_energy),
+			attitude,
+			fillNUDTmpStruct(nudVault));
 	}
 
 	if (_VERBOSE)
