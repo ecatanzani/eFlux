@@ -3,17 +3,18 @@
 
 #include <string>
 
+#include "main.h"
+#include "energy.h"
 #include "anyoption.h"
+#include "DmpNudContainer.h"
+#include "DmpBgoContainer.h"
+#include "DmpSimuTrajectory.h"
+#include "DmpFilterContainer.h"
 
 #include "TFile.h"
+#include "TVector3.h"
 
-extern void dataCore(
-	const std::string inputPath,
-	const std::string outputPath,
-	const bool verbose,
-	const bool pedantic,
-	AnyOption &opt,
-	const std::string wd);
+extern void dataCore(in_pars input_pars);
 
 extern void rawDataLoop(
 	const std::string inputPath,

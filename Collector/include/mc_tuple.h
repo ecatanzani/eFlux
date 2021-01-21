@@ -3,6 +3,8 @@
 
 #include "mc.h"
 #include "tuple.h"
+#include "tmpstruct.h"
+#include "mc_tmpstruct.h"
 
 #include "TVector3.h"
 

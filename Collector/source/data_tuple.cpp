@@ -394,70 +394,46 @@ void data_tuple::branch_tree()
 }
 
 void data_tuple::Fill(
-	const filter_output &output,
-	const std::shared_ptr<DmpEvtAttitude> &attitude,
-	const best_track &event_best_track,
+	const std::shared_ptr<_tmp_filter> _filter_res,
 	const std::vector<int> _stk_clusters_on_plane,
-	const double raw_energy,
-	const double corr_energy,
-	const std::vector<double> &energy_release_layer,
-	const std::vector<std::vector<double>> &energy_release_layer_bar,
-	const std::vector<double> &bgoRec_slope,
-	const std::vector<double> &bgoRec_intercept,
-	const TVector3 &bgoRec_trajectory2D,
-	const double sumRMS,
-	const std::vector<double> &rms_layer,
-	const std::vector<double> &bgo_fracLayer,
-	const double lastFracLayer,
-	const double frac_layer_13,
-	const int last_bgo_layer,
-	const int bgo_entries,
-	const std::vector<double> &energy_1_moliere_radius,
-	const std::vector<double> &energy_2_moliere_radius,
-	const std::vector<double> &energy_3_moliere_radius,
-	const std::vector<double> &energy_5_moliere_radius,
-	const psd_charge &extracted_psd_charge,
-	const stk_charge &extracted_stk_charge,
-	const bgo_classifiers &classifier,
-	const trigger_info &evt_trigger,
-	const std::vector<int> &nud_adc,
-	const int nud_total_adc,
-	const int nud_max_adc,
-	const int nud_max_channel_id)
+	const std::shared_ptr<_tmp_bgo> _bgo_res,
+	const std::shared_ptr<_tmp_energy_data> _energy_res,
+	const std::shared_ptr<DmpEvtAttitude> attitude,
+	const std::shared_ptr<_tmp_nud> _nud_res)
 {
-	fill_trigger_info(evt_trigger);
-	fill_filter_info(output);
-	fill_attitude_info(attitude);
+	fill_trigger_info(_filter_res->evt_trigger_info);
+	fill_filter_info(_filter_res->output);
 	fill_stk_info(
-		event_best_track,
+		_filter_res->evt_best_track,
 		_stk_clusters_on_plane);
 	fill_bgo_info(
-		raw_energy,
-		corr_energy,
-		energy_release_layer,
-		energy_release_layer_bar,
-		bgoRec_slope,
-		bgoRec_intercept,
-		bgoRec_trajectory2D,
-		sumRMS,
-		rms_layer,
-		bgo_fracLayer,
-		lastFracLayer,
-		frac_layer_13,
-		last_bgo_layer,
-		bgo_entries,
-		energy_1_moliere_radius,
-		energy_2_moliere_radius,
-		energy_3_moliere_radius,
-		energy_5_moliere_radius);
-	fill_psdcharge_info(extracted_psd_charge);
-	fill_stkcharge_info(extracted_stk_charge);
-	fill_classifier_info(classifier);
+		_energy_res->raw,
+		_energy_res->correct,
+		_bgo_res->layer_energies,
+		_bgo_res->layer_bar_energies,
+		_bgo_res->slope,
+		_bgo_res->intercept,
+		_bgo_res->trajectory2D,
+		_bgo_res->sumrms,
+		_bgo_res->sumrms_layer,
+		_bgo_res->energy_fraction_layer,
+		_bgo_res->energy_fraction_last_layer,
+		_bgo_res->energy_fraction_13th_layer,
+		_bgo_res->last_energy_layer,
+		_bgo_res->hits,
+		_bgo_res->energy_1mr,
+		_bgo_res->energy_2mr,
+		_bgo_res->energy_3mr,
+		_bgo_res->energy_5mr);
+	fill_attitude_info(attitude);
+	fill_psdcharge_info(_filter_res->evt_psd_charge);
+	fill_stkcharge_info(_filter_res->evt_stk_charge);
+	fill_classifier_info(_filter_res->evt_bgo_classifier);
 	fill_nud_info(
-		nud_adc,
-		nud_total_adc,
-		nud_max_adc,
-		nud_max_channel_id);
+		_nud_res->adc,
+		_nud_res->total_adc,
+		_nud_res->max_adc,
+		_nud_res->max_channel_ID);
 	DmpNtupTree->Fill();
 }
 

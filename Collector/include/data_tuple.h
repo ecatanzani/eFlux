@@ -2,6 +2,8 @@
 #define DATA_TUPLE_H
 
 #include "tuple.h"
+#include "tmpstruct.h"
+#include "data_tmpstruct.h"
 
 #include "DmpEvtAttitude.h"
 
@@ -13,37 +15,15 @@ public:
 		init(acuts);
 	};
 	~data_tuple(){};
+
 	void Fill(
-		const filter_output &output,
-		const std::shared_ptr<DmpEvtAttitude> &attitude,
-		const best_track &event_best_track,
+		const std::shared_ptr<_tmp_filter> _filter_res,
 		const std::vector<int> _stk_clusters_on_plane,
-		const double raw_energy,
-		const double corr_energy,
-		const std::vector<double> &energy_release_layer,
-		const std::vector<std::vector<double>> &energy_release_layer_bar,
-		const std::vector<double> &bgoRec_slope,
-		const std::vector<double> &bgoRec_intercept,
-		const TVector3 &bgoRec_trajectory2D,
-		const double sumRMS,
-		const std::vector<double> &rms_layer,
-		const std::vector<double> &bgo_fracLayer,
-		const double lastFracLayer,
-		const double frac_layer_13,
-		const int last_bgo_layer,
-		const int bgo_entries,
-		const std::vector<double> &energy_1_moliere_radius,
-		const std::vector<double> &energy_2_moliere_radius,
-		const std::vector<double> &energy_3_moliere_radius,
-		const std::vector<double> &energy_5_moliere_radius,
-		const psd_charge &extracted_psd_charge,
-		const stk_charge &extracted_stk_charge,
-		const bgo_classifiers &classifier,
-		const trigger_info &evt_trigger,
-		const std::vector<int> &nud_adc,
-		const int nud_total_adc,
-		const int nud_max_adc,
-		const int nud_max_channel_id);
+		const std::shared_ptr<_tmp_bgo> _bgo_res,
+		const std::shared_ptr<_tmp_energy_data> _energy_res,
+		const std::shared_ptr<DmpEvtAttitude> attitude,
+		const std::shared_ptr<_tmp_nud> _nud_res);
+		
 	void Reset();
 	
 private:

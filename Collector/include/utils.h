@@ -16,12 +16,6 @@ extern void UpdateProcessStatus(
 	int &kStep,
 	const int nevents);
 
-extern const std::string uniqueOutFile(
-	const std::string outputPath,
-	AnyOption &opt);
-
-extern std::shared_ptr<ofstream> ev_logger(
-	const std::string outputPath,
-	AnyOption &opt);
+extern const std::string uniqueOutFile(AnyOption &opt);
 
 #endif
