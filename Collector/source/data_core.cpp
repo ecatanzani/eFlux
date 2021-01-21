@@ -1,32 +1,23 @@
 #include "data.h"
-#include "utils.h"
-#include "tuple.h"
 
-void dataCore(
-	const std::string inputPath,
-	const std::string outputPath,
-	const bool verbose,
-	const bool pedantic,
-	AnyOption &opt,
-	const std::string wd)
+void dataCore(in_pars input_pars)
 {
 	// Create output TFile
-	const char *outFilePath = static_cast<const char *>(uniqueOutFile(outputPath, opt).c_str());
-	if (verbose)
-		std::cout << "\nCreating output ROOT file... [" << outFilePath << "]" << std::endl;
-	TFile outFile(outFilePath, "NEW", "Analysis Output File");
-	if (!outFile.IsOpen())
+	if (input_pars.verbose)
+		std::cout << "\nCreating output ROOT file... [" << input_pars.output_path << "]" << std::endl;
+	TFile out_file(input_pars.output_path.c_str(), "NEW", "Analysis Output File");
+	if (!out_file.IsOpen())
 	{
-		std::cerr << "\n\nError (100) writing output TFile... [" << outFilePath << "]" << std::endl;
+		std::cerr << "\n\nError (100) writing output TFile... [" << input_pars.output_path << "]" << std::endl;
 		exit(100);
 	}
 	
 	rawDataLoop(
-		inputPath,
-		outFile,
-		verbose,
-		wd);
+		input_pars.input_path,
+		out_file,
+		input_pars.verbose,
+		input_pars.wd);
 
 	// Close output file ...
-	outFile.Close();
+	out_file.Close();
 }
