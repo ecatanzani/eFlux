@@ -48,7 +48,6 @@ public:
 		const std::string working_dir,
 		const bool mc);
 	~config(){};
-	std::vector<float> GetEnergyBinning();
 	void PrintActiveFilters();
 	const double GetMinEnergyRange();
 	const double GetMaxEnergyRange();
@@ -64,8 +63,6 @@ private:
 	void get_config_info(std::string parsed_config);
 	cuts_conf cuts;
 	active_cuts a_cuts;
-	std::size_t n_bins;
-	std::vector<float> energy_binning;
 };
 
 #endif

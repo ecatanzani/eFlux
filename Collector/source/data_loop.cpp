@@ -102,8 +102,6 @@ void rawDataLoop(
 
 	// Load config class
 	config data_config(wd, _MC);
-	// Compute energy binning
-	auto logEBins = data_config.GetEnergyBinning();
 	// Load energy class
 	energy evt_energy;
 	// Load filter class

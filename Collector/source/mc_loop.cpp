@@ -100,8 +100,6 @@ void mcLoop(
 	mc_particle simu_particle;
 	// Load config class
 	config mc_config(wd, _MC);
-	// Compute energy binning
-	auto logEBins = mc_config.GetEnergyBinning();
 	// Load energy class
 	energy evt_energy;
 	// Load filter class
@@ -151,13 +149,13 @@ void mcLoop(
 		// Compute energy weights for MC event
 		if (simu_particle.IsElectron())
 		{
-			evt_energy.SetSimuEnergyWeight(pow(evt_energy.GetSimuEnergy() * _GeV, -2)*pow(logEBins[0], 2));
-			evt_energy.SetCorrEnergyWeight(pow(evt_energy.GetCorrEnergy() * _GeV, -2)*pow(logEBins[0], 2));
+			evt_energy.SetSimuEnergyWeight(pow(evt_energy.GetSimuEnergy() * _GeV, -2));
+			evt_energy.SetCorrEnergyWeight(pow(evt_energy.GetCorrEnergy() * _GeV, -2));
 		}
 		else if (simu_particle.IsProton())
 		{
-			evt_energy.SetSimuEnergyWeight(pow(evt_energy.GetSimuEnergy() * _GeV, -1.7)*pow(logEBins[0], 2));
-			evt_energy.SetCorrEnergyWeight(pow(evt_energy.GetCorrEnergy() * _GeV, -1.7)*pow(logEBins[0], 2));
+			evt_energy.SetSimuEnergyWeight(pow(evt_energy.GetSimuEnergy() * _GeV, -1.7));
+			evt_energy.SetCorrEnergyWeight(pow(evt_energy.GetCorrEnergy() * _GeV, -1.7));
 		}
 		// Check particle energy
 		filter.EnergyCheck(
