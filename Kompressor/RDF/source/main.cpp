@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 
 	opt.addUsage(" -h  --help													Prints this help");
 	opt.addUsage(" -i  --input			<path_to_input_list>				(*)	Input file list");
-	opt.addUsage(" -w  --workdir		<path_to_software_config_dir>		(*) Config directory");
+	opt.addUsage(" -w  --workdir		<path_to_software_config_dir>		(*) Collector config directory");
 	opt.addUsage(" -o  --output			<path_to_output_TFile>					Output ROOT TFile");
 	opt.addUsage(" -d  --outputdir		<path_to_output_TFile_dir>				Output ROOT TFile directory");
 	opt.addUsage(" -v  --verbose												Verbose output");

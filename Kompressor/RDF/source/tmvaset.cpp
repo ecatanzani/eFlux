@@ -13,6 +13,7 @@
 void createTMVAset(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
+    std::shared_ptr<energy_config> _energy_config,
     const std::string fit_tree_path,
     const bool signal,
     const std::string output_file,
@@ -24,7 +25,7 @@ void createTMVAset(
     // Create RDF
     ROOT::RDataFrame _data_fr(*evtch);
     // Extract the energy binning
-    auto energy_binning = _config->GetEnergyBinning();
+    auto energy_binning = _energy_config->GetEnergyBinning();
     auto energy_nbins = (int)energy_binning.size() - 1;
     // Check regularization option
     bool regularize_vars;
