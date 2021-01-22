@@ -1,11 +1,5 @@
 ################### Collector Config File ###################
 
-## Binning Parameters
-
-n_energy_bins               50      Number of energy bins
-
-## Cuts
-
 **** CUT VARIABLE ****       **** VALUE ****      **** UNIT ****
 
 min_event_energy                    10                  GeV
