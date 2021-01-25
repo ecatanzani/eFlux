@@ -583,43 +583,43 @@ void mc_reader(
     auto h_NUD_max_channel = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w_corr");
 
     // Extract filter histos
-    auto h_trigger_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_trigger_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                          .Filter("evtfilter_evt_triggered==true")
                          .Histo1D<int, double>({"h_trigger_cut", "Trigger", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_geometric_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_geometric_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                            .Filter("evtfilter_geometric==true")
                            .Histo1D<int, double>({"h_geometric_cut", "Geometric", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_maxElayer_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_maxElayer_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                               .Filter("evtfilter_BGO_fiducial_maxElayer_cut==true")
                               .Histo1D<int, double>({"h_maxElayer_cut", "maxElayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_maxBarlayer_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_maxBarlayer_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                               .Filter("evtfilter_BGO_fiducial_maxBarLayer_cut==true")
                               .Histo1D<int, double>({"h_maxBarlayer_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_BGOTrackContainment_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_BGOTrackContainment_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                               .Filter("evtfilter_BGO_fiducial_BGOTrackContainment_cut==true")
                               .Histo1D<int, double>({"h_BGOTrackContainment_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_bgo_fiducial_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_bgo_fiducial_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                               .Filter("evtfilter_BGO_fiducial==true")
                               .Histo1D<int, double>({"h_bgo_fiducial_cut", "BGO fiducial", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_nbarlayer13_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_nbarlayer13_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                               .Filter("evtfilter_nBarLayer13_cut==true")
                               .Histo1D<int, double>({"h_nbarlayer13_cut", "nBar layer 13 cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_maxrms_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_maxrms_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                               .Filter("evtfilter_maxRms_cut==true")
                               .Histo1D<int, double>({"h_maxrms_cut", "max RMS cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_track_selection_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_track_selection_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                                 .Filter("evtfilter_track_selection_cut==true")
                                 .Histo1D<int, double>({"h_track_selection_cut", "Track selection cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_psd_stk_match_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_psd_stk_match_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                                 .Filter("evtfilter_psd_stk_match_cut==true")
                                 .Histo1D<int, double>({"h_psd_stk_match_cut", "PSD-STK match cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_psd_charge_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_psd_charge_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                                 .Filter("evtfilter_psd_charge_cut==true")
                                 .Histo1D<int, double>({"h_psd_charge_cut", "PSD charge cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_stk_charge_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_stk_charge_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                                 .Filter("evtfilter_stk_charge_cut==true")
                                 .Histo1D<int, double>({"h_stk_charge_cut", "STK charge cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_all_cuts_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+    auto h_all_cuts_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                                 .Filter("evtfilter_all_cut==true")
                                 .Histo1D<int, double>({"h_all_cuts_cut", "All cuts", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
 
