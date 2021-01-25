@@ -42,7 +42,7 @@ void mc_reader(
 
     // Create the RDF with energy bin and correct energy weight
     auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"})
-                            .Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"});
+                             .Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"});
 
     // Regularize RDF
     std::vector<TF1> sumrms_fitfunc(energy_nbins);
@@ -225,15 +225,6 @@ void mc_reader(
     auto h_xtrl = _fr_bgo_analysis.Define("corr_energy_gev", "energy_corr * 0.001")
                       .Histo2D<double, double, double>({"h_xtrl", "XTRL", energy_nbins, &energy_binning[0], (int)xtrl_bins.size() - 1, &xtrl_bins[0]}, "corr_energy_gev", "xtrl", "simu_energy_w_corr");
 
-    /*
-    auto h_stkclusters = _fr_bgo_analysis.Define("stk_clusters",
-                                                         [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                        .Histo1D<int, double>({"h_stkclusters", "Total STK clusters; total STK clusters; entries", 50, 0, 100});
-    auto h_stkclusters_bgohist = _fr_bgo_analysis.Define("stk_clusters",
-                                                         [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                .Histo2D<int, int, double>({"h_stkclusters_bgohist", "sumRms vs F_{13} correlation - 10 TeV - 20 TeV ;sumRms [mm]; F_{last}",)
-    */
-
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_cosine_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_sumRms_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_sumRms_mean_bin(energy_nbins);
@@ -384,14 +375,12 @@ void mc_reader(
         h_xtrl_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                       .Histo1D<double, double>({(std::string("h_xtrl_bin_") + std::to_string(bin_idx)).c_str(), (std::string("XTRL - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 150}, "xtrl", "simu_energy_w_corr");
 
-
-        h_stkclusters_bin[bin_idx -1] = _fr_bgo_analysis.Define("stk_clusters",
-                                                         [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                    .Histo1D<int, double>({(std::string("h_stkclusters_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100});
-        h_stkclusters_bgohits_bin[bin_idx -1] = _fr_bgo_analysis.Define("stk_clusters",
-                                                         [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                    .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350});
-
+        h_stkclusters_bin[bin_idx - 1] = _fr_bgo_analysis.Define("stk_clusters",
+                                                                 [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
+                                             .Histo1D<int, double>({(std::string("h_stkclusters_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100});
+        h_stkclusters_bgohits_bin[bin_idx - 1] = _fr_bgo_analysis.Define("stk_clusters",
+                                                                         [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
+                                                     .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350});
 
         _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
@@ -592,6 +581,47 @@ void mc_reader(
     auto h_NUD_total_adc = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_total_adc", "NUD Total ADC", 100, 0, 10000}, "NUD_total_ADC.nud_total_adc", "simu_energy_w_corr");
     auto h_NUD_max_adc = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_adc", "NUD Max ADC", 100, 0, 1000}, "NUD_max_ADC.nud_max_adc", "simu_energy_w_corr");
     auto h_NUD_max_channel = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w_corr");
+
+    // Extract filter histos
+    auto h_trigger_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                         .Filter("evtfilter_evt_triggered==true")
+                         .Histo1D<int, double>({"h_trigger_cut", "Trigger", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_geometric_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                           .Filter("evtfilter_geometric==true")
+                           .Histo1D<int, double>({"h_geometric_cut", "Geometric", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_maxElayer_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                              .Filter("evtfilter_BGO_fiducial_maxElayer_cut==true")
+                              .Histo1D<int, double>({"h_maxElayer_cut", "maxElayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_maxBarlayer_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                              .Filter("evtfilter_BGO_fiducial_maxBarLayer_cut==true")
+                              .Histo1D<int, double>({"h_maxBarlayer_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_BGOTrackContainment_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                              .Filter("evtfilter_BGO_fiducial_BGOTrackContainment_cut==true")
+                              .Histo1D<int, double>({"h_BGOTrackContainment_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_bgo_fiducial_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                              .Filter("evtfilter_BGO_fiducial==true")
+                              .Histo1D<int, double>({"h_bgo_fiducial_cut", "BGO fiducial", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_nbarlayer13_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                              .Filter("evtfilter_nBarLayer13_cut==true")
+                              .Histo1D<int, double>({"h_nbarlayer13_cut", "nBar layer 13 cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_maxrms_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                              .Filter("evtfilter_maxRms_cut==true")
+                              .Histo1D<int, double>({"h_maxrms_cut", "max RMS cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_track_selection_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                                .Filter("evtfilter_track_selection_cut==true")
+                                .Histo1D<int, double>({"h_track_selection_cut", "Track selection cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_psd_stk_match_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                                .Filter("evtfilter_psd_stk_match_cut==true")
+                                .Histo1D<int, double>({"h_psd_stk_match_cut", "PSD-STK match cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_psd_charge_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                                .Filter("evtfilter_psd_charge_cut==true")
+                                .Histo1D<int, double>({"h_psd_charge_cut", "PSD charge cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_stk_charge_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                                .Filter("evtfilter_stk_charge_cut==true")
+                                .Histo1D<int, double>({"h_stk_charge_cut", "STK charge cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+    auto h_all_cuts_cut = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
+                                .Filter("evtfilter_all_cut==true")
+                                .Histo1D<int, double>({"h_all_cuts_cut", "All cuts", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
 
     // Preselected events based histos
 
@@ -821,12 +851,12 @@ void mc_reader(
         h_xtrl_ps_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                          .Histo1D<double, double>({(std::string("h_xtrl_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("XTRL - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 150}, "xtrl", "simu_energy_w_corr");
 
-        h_stkclusters_ps_bin[bin_idx -1] = _fr_preselected.Define("stk_clusters",
-                                                         [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                    .Histo1D<int, double>({(std::string("h_stkclusters_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100});
-        h_stkclusters_bgohits_ps_bin[bin_idx -1] = _fr_preselected.Define("stk_clusters",
-                                                         [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                    .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350});
+        h_stkclusters_ps_bin[bin_idx - 1] = _fr_preselected.Define("stk_clusters",
+                                                                   [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
+                                                .Histo1D<int, double>({(std::string("h_stkclusters_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100});
+        h_stkclusters_bgohits_ps_bin[bin_idx - 1] = _fr_preselected.Define("stk_clusters",
+                                                                           [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
+                                                        .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350});
 
         _fr_preselected.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_ps_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
@@ -1092,6 +1122,14 @@ void mc_reader(
     h_stk_selected_charge->Write();
     h_stk_selected_charge2D->Write();
 
+    for (int bidx = 0; bidx < energy_nbins; ++bidx)
+    {
+        auto tmp_dir_name = std::string("STK/energybin_") + std::to_string(bidx + 1);
+        outfile->mkdir(tmp_dir_name.c_str());
+        outfile->cd(tmp_dir_name.c_str());
+        h_stkclusters_bin[bidx]->Write();
+    }
+
     outfile->mkdir("PSD");
     outfile->cd("PSD");
 
@@ -1175,7 +1213,6 @@ void mc_reader(
         h_BGOrec_last_layer_bin[bidx]->Write();
         h_BGOrec_hits[bidx]->Write();
         h_xtrl_bin[bidx]->Write();
-        h_stkclusters_bin[bidx]->Write();
         h_stkclusters_bgohits_bin[bidx]->Write();
         h_BGOrec_bar_energy_bin[bidx]->Write();
         h_BGOrec_shower_profile[bidx]->Write();
@@ -1201,6 +1238,23 @@ void mc_reader(
     h_NUD_total_adc->Write();
     h_NUD_max_adc->Write();
     h_NUD_max_channel->Write();
+
+    outfile->mkdir("Cuts");
+    outfile->cd("Cuts");
+
+    h_trigger_cut->Write();
+    h_geometric_cut->Write();
+    h_maxElayer_cut->Write();
+    h_maxBarlayer_cut->Write();
+    h_BGOTrackContainment_cut->Write();
+    h_bgo_fiducial_cut->Write();
+    h_nbarlayer13_cut->Write();
+    h_maxrms_cut->Write();
+    h_track_selection_cut->Write();
+    h_psd_stk_match_cut->Write();
+    h_psd_charge_cut->Write();
+    h_stk_charge_cut->Write();
+    h_all_cuts_cut->Write();
 
     outfile->mkdir("Preselection");
     outfile->cd("Preselection");
@@ -1263,6 +1317,14 @@ void mc_reader(
     h_stk_ps_selected_chargeY->Write();
     h_stk_ps_selected_charge->Write();
     h_stk_ps_selected_charge2D->Write();
+
+    for (int bidx = 0; bidx < energy_nbins; ++bidx)
+    {
+        auto tmp_dir_name = std::string("Preselection/STK/energybin_") + std::to_string(bidx + 1);
+        outfile->mkdir(tmp_dir_name.c_str());
+        outfile->cd(tmp_dir_name.c_str());
+        h_stkclusters_ps_bin[bidx]->Write();
+    }
 
     outfile->mkdir("Preselection/PSD");
     outfile->cd("Preselection/PSD");
@@ -1347,7 +1409,6 @@ void mc_reader(
         h_BGOrec_ps_last_layer_bin[bidx]->Write();
         h_BGOrec_ps_hits[bidx]->Write();
         h_xtrl_ps_bin[bidx]->Write();
-        h_stkclusters_ps_bin[bidx]->Write();
         h_stkclusters_bgohits_ps_bin[bidx]->Write();
         h_BGOrec_ps_bar_energy_bin[bidx]->Write();
         h_BGOrec_ps_shower_profile[bidx]->Write();
@@ -1373,6 +1434,6 @@ void mc_reader(
     h_NUD_ps_total_adc->Write();
     h_NUD_ps_max_adc->Write();
     h_NUD_ps_max_channel->Write();
-
+    
     outfile->Close();
 }
