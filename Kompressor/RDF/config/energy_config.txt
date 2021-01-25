@@ -3,3 +3,10 @@
 n_energy_bins             50
 min_event_energy          20          (GeV)
 max_event_energy          20000       (GeV)
+
+################### TMVA Set Generator
+
+##### Energy filter
+
+min_event_energy_set      10000       (GeV)
+max_event_energy_set      100000      (GeV)
