@@ -42,10 +42,7 @@ void mc_reader(
 
     // Create the RDF with energy bin and correct energy weight
     auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"})
-                             // NEW NTUPLES
-                             .Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"});
-    //OLD NTUPLES
-    //.Define("simu_energy_w_corr", [&_gev, &energy_binning](const double simu_energy) -> double { return pow(simu_energy*_gev, -2)*pow(energy_binning[0], 2); }, {"simu_energy"});
+                            .Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"});
 
     // Regularize RDF
     std::vector<TF1> sumrms_fitfunc(energy_nbins);
