@@ -77,7 +77,7 @@
 		"particle": "e",
 		"eMin": "100",
 		"eMax": "1000",
-		"dSet": "allElectron-v6r0p10_100GeV_1TeV_FTFP_HP",
+		"dSet": "allElectron-v6r0p10_100GeV_1TeV_FTFP_HP-p1",
 		"pSpectrum": -1
 	},
 	{
