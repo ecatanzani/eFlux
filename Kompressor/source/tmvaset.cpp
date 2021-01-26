@@ -85,10 +85,7 @@ void createTMVAset(
     _fr_bin_patch = _fr_bin_patch.Define("sumRms_reg", regularize_sumrms, {"sumRms", "energy_bin", "BGOrec_trajectoryDirection2D"})
                         .Define("fracLast_reg", regularize_flast, {"fracLast", "energy_bin", "BGOrec_trajectoryDirection2D"});
 
-    // Create the RDF for the preselected events
-    //auto _fr_preselected = _fr_bin_patch.Filter("evtfilter_all_cut==true");
-
-    // Filtering events in the requested energy range
+    // Filtering events
     auto set_filter_min_energy = _energy_config->GetSetMinEvtEnergy();
     auto set_filter_max_energy = _energy_config->GetSetMaxEvtEnergy();
     auto _fr_preselected = _fr_bin_patch.Filter("evtfilter_all_cut==true")
@@ -98,7 +95,7 @@ void createTMVAset(
                                                 status = true;
                                             else
                                                 status = false;
-                                            return status; }, "energy_corr");
+                                            return status; }, {"energy_corr"});
 
     std::cout << "\n\n**** Filter statistics ****\n";
     std::cout << "***************************\n";
