@@ -583,6 +583,9 @@ void mc_reader(
     auto h_NUD_max_channel = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w_corr");
 
     // Extract filter histos
+    auto h_geo_before_trigger_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                                    .Filter("evtfilter_geometric_before_trigger==true")
+                                    .Histo1D<int, double>({"h_geo_before_trigger_cut", "Geometric factor pre trigger", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
     auto h_trigger_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
                          .Filter("evtfilter_evt_triggered==true")
                          .Histo1D<int, double>({"h_trigger_cut", "Trigger", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
@@ -1242,6 +1245,7 @@ void mc_reader(
     outfile->mkdir("Cuts");
     outfile->cd("Cuts");
 
+    h_geo_before_trigger_cut->Write();
     h_trigger_cut->Write();
     h_geometric_cut->Write();
     h_maxElayer_cut->Write();
