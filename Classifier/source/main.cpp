@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 	opt.addUsage("TMVA learning method: ");
 	opt.addUsage("");
 
-	opt.addUsage(" -m  --method					<TMVA_learning_method>					TMVA learning/classifying method");
+	opt.addUsage(" -m  --method					<TMVA_learning_method_1:method_2...>					TMVA learning/classifying method");
 	opt.addUsage(" -t  --data-test														Test with data");
 
 	opt.addUsage("");
@@ -68,16 +68,16 @@ int main(int argc, char **argv)
 	if (opt.getFlag("verbose") || opt.getFlag('v'))
 		input_args.verbose = opt.getFlag('v');
 	if (opt.getValue("method") || opt.getValue('m'))
-		input_args.learning_method = opt.getValue('m');
+		input_args.ParseLearningMethods(opt.getValue('m'));
 	if (opt.getFlag("data-test") || opt.getFlag('t'))
 		input_args.test_with_data = opt.getFlag('t');
-
+	
 	if (input_args.test_input_lists())
 	{
 		if (!input_args.learning_method.empty())
 		{
 			if (input_args.verbose)
-				PrintArgs(input_args);
+				PrintArgs(input_args);	
 			Train(input_args);
 		}
 		else
@@ -96,14 +96,31 @@ int main(int argc, char **argv)
 }
 
 void PrintArgs(in_args input_args)
-{
+{	
+	auto print_methods = [](const std::vector<std::string> methods) -> std::string 
+	{ 
+		std::string ret;
+		if (methods.size())
+			for (unsigned int elm=0; elm< methods.size(); ++elm) 
+				if (!elm)
+					ret = methods[elm];
+				else
+					ret += std::string(":") + methods[elm];
+		else
+			ret = methods[0];
+		return ret;
+	};
+
 	std::cout << "\n***** TMVA input arguments *****\n";
 	std::cout << "\nSignal input training DSet list: [" << input_args.train_signal_input_list << "]";
 	std::cout << "\nBackground input training DSet list: [" << input_args.train_background_input_list << "]";
 	std::cout << "\nSignal input test DSet list: [" << input_args.test_signal_input_list << "]";
 	std::cout << "\nBackground input test DSet list: [" << input_args.test_background_input_list << "]";
 	std::cout << "\nOutput path: [" << input_args.output_path << "]";
-	std::cout << "\n\nLearning method: [" << input_args.learning_method << "]";
+	
+	std::cout << "\n\nLearning method: [" << print_methods(input_args.learning_method) << "]";
+	
+
 	input_args.test_with_data ? std::cout << "\nTest with data: [True]" : std::cout << "\nTest with data: [False]";
 	std::cout << "\n\n******************************\n\n";
 }

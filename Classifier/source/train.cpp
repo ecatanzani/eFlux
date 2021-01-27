@@ -68,26 +68,14 @@ int Train(in_args input_args)
     // Apply additional cuts on the signal and background samples
     TCut signal_cuts = "";
     TCut background_cuts = "";
-    
-    #if 0
-    TCut energyrange = "";
-    signal_cuts += energyrange;
-    background_cuts += energyrange;
 
-    TCut removenans = "!(TMath::IsNaN(tofQ) || !(TMath::Finite(tofQ)))";
-    signal_cuts+=removenans;
-    background_cuts+=removenans;
-
-    TCut removenans2 = "!(TMath::IsNaN(tofQlay[1]) || !(TMath::Finite(tofQlay[1])))";
-    signal_cuts+=removenans2;
-    background_cuts+=removenans2;
-    
-    signal_cuts.Print();
-    background_cuts.Print();
-    #endif
+    SetTMVACuts(
+        signal_cuts, 
+        background_cuts, 
+        input_args.verbose);
 
     dataloader->PrepareTrainingAndTestTree(signal_cuts, background_cuts,
-                                           "nTrain_Signal=1000000:nTrain_Background=1000000:nTest_Signal=0:nTest_Background=0:SplitMode=Random:NormMode=None:!V");
+                                           "nTrain_Signal=10000:nTrain_Background=10000:nTest_Signal=0:nTest_Background=0:SplitMode=Random:NormMode=None:!V");
 
     // Cut optimisation
     if (Use["Cuts"])
@@ -324,7 +312,7 @@ int Train(in_args input_args)
     return status;
 }
 
-std::map<std::string, int> GetTMVAMethods(std::string mymethod)
+std::map<std::string, int> GetTMVAMethods(const std::vector<std::string> mymethod)
 {
     std::map<std::string, int> Use;
 
@@ -378,14 +366,13 @@ std::map<std::string, int> GetTMVAMethods(std::string mymethod)
 
     auto linked_method = false;
     for (auto &&dmethod : Use)
-    {
-        if (!strcmp(mymethod.c_str(), dmethod.first.c_str()))
-        {
-            dmethod.second = 1;
-            linked_method = true;
-            break;
-        }
-    }
+        for (const auto& i_mtd: mymethod)
+            if (!strcmp(i_mtd.c_str(), dmethod.first.c_str()))
+            {
+                dmethod.second = 1;
+                linked_method = true;
+                break;
+            }
 
     if (!linked_method)
     {
@@ -431,7 +418,7 @@ void SetTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
     dataloader->AddVariable("fracLayer_13", "fracLayer_13", "units", 'D');
     dataloader->AddVariable("fracLayer_14", "fracLayer_14", "units", 'D');
 
-    dataloader->AddVariable("lastBGOLayer", "lastBGOLayer", "units", 'I');
+    //dataloader->AddVariable("lastBGOLayer", "lastBGOLayer", "units", 'I');
     dataloader->AddVariable("nBGOentries", "nBGOentries", "units", 'I');
 
     dataloader->AddVariable("energy_1R_radius_1", "energy_1R_radius_1", "units", 'D');
@@ -498,4 +485,85 @@ void SetTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
 
     dataloader->AddVariable("NUD_total_ADC_nud_total_adc", "NUD_total_ADC_nud_total_adc", "units", 'I');
     dataloader->AddVariable("NUD_max_ADC_nud_max_adc", "NUD_max_ADC_nud_max_adc", "units", 'I');
+}
+
+void SetTMVACuts(
+    TCut &signal_cuts, 
+    TCut &background_cuts, 
+    const bool verbose)
+{
+#if 0    
+    TCut energyrange = "";
+    signal_cuts += energyrange;
+    background_cuts += energyrange;
+#endif
+
+    TCut removenans_stk = "!(TMath::IsNaN(STK_bestTrack_npoints) || !(TMath::Finite(STK_bestTrack_npoints)))";
+    signal_cuts+=removenans_stk;
+    background_cuts+=removenans_stk;
+
+    TCut removenans_rmsl1 = "!(TMath::IsNaN(rmsLayer_1) || !(TMath::Finite(rmsLayer_1)))";
+    signal_cuts+=removenans_rmsl1;
+    background_cuts+=removenans_rmsl1;
+
+    TCut removenans_rmsl2 = "!(TMath::IsNaN(rmsLayer_2) || !(TMath::Finite(rmsLayer_2)))";
+    signal_cuts+=removenans_rmsl2;
+    background_cuts+=removenans_rmsl2;
+
+    TCut removenans_rmsl3 = "!(TMath::IsNaN(rmsLayer_3) || !(TMath::Finite(rmsLayer_3)))";
+    signal_cuts+=removenans_rmsl3;
+    background_cuts+=removenans_rmsl3;
+
+    TCut removenans_rmsl4 = "!(TMath::IsNaN(rmsLayer_4) || !(TMath::Finite(rmsLayer_4)))";
+    signal_cuts+=removenans_rmsl4;
+    background_cuts+=removenans_rmsl4;
+
+    TCut removenans_rmsl5 = "!(TMath::IsNaN(rmsLayer_5) || !(TMath::Finite(rmsLayer_5)))";
+    signal_cuts+=removenans_rmsl5;
+    background_cuts+=removenans_rmsl5;
+
+    TCut removenans_rmsl6 = "!(TMath::IsNaN(rmsLayer_6) || !(TMath::Finite(rmsLayer_6)))";
+    signal_cuts+=removenans_rmsl6;
+    background_cuts+=removenans_rmsl6;
+
+    TCut removenans_rmsl7 = "!(TMath::IsNaN(rmsLayer_7) || !(TMath::Finite(rmsLayer_7)))";
+    signal_cuts+=removenans_rmsl7;
+    background_cuts+=removenans_rmsl7;
+
+    TCut removenans_rmsl8 = "!(TMath::IsNaN(rmsLayer_8) || !(TMath::Finite(rmsLayer_8)))";
+    signal_cuts+=removenans_rmsl8;
+    background_cuts+=removenans_rmsl8;
+
+    TCut removenans_rmsl9 = "!(TMath::IsNaN(rmsLayer_9) || !(TMath::Finite(rmsLayer_9)))";
+    signal_cuts+=removenans_rmsl9;
+    background_cuts+=removenans_rmsl9;
+
+    TCut removenans_rmsl10 = "!(TMath::IsNaN(rmsLayer_10) || !(TMath::Finite(rmsLayer_10)))";
+    signal_cuts+=removenans_rmsl10;
+    background_cuts+=removenans_rmsl10;
+
+    TCut removenans_rmsl11 = "!(TMath::IsNaN(rmsLayer_11) || !(TMath::Finite(rmsLayer_11)))";
+    signal_cuts+=removenans_rmsl11;
+    background_cuts+=removenans_rmsl11;
+
+    TCut removenans_rmsl12 = "!(TMath::IsNaN(rmsLayer_12) || !(TMath::Finite(rmsLayer_12)))";
+    signal_cuts+=removenans_rmsl12;
+    background_cuts+=removenans_rmsl12;
+
+    TCut removenans_rmsl13 = "!(TMath::IsNaN(rmsLayer_13) || !(TMath::Finite(rmsLayer_13)))";
+    signal_cuts+=removenans_rmsl13;
+    background_cuts+=removenans_rmsl13;
+
+    TCut removenans_rmsl14 = "!(TMath::IsNaN(rmsLayer_14) || !(TMath::Finite(rmsLayer_14)))";
+    signal_cuts+=removenans_rmsl14;
+    background_cuts+=removenans_rmsl14;
+
+    if (verbose)
+    {
+        std::cout << "\n\nSignal cuts....\n\n";
+        signal_cuts.Print();
+        std::cout << "\n\nBackground cuts....\n\n";
+        background_cuts.Print();
+        std::cout << "\n\n";
+    }
 }

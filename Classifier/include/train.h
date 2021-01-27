@@ -4,7 +4,9 @@
 #include "main.h"
 
 #include <memory>
+#include <vector>
 
+#include "TCut.h"
 #include "TChain.h"
 
 #include "TMVA/Factory.h"
@@ -17,7 +19,11 @@
 
 extern int Train(in_args input_args);
 
-extern std::map<std::string, int> GetTMVAMethods(std::string mymethod);
+extern std::map<std::string, int> GetTMVAMethods(const std::vector<std::string> mymethod);
 extern void SetTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader);
-
+extern void SetTMVACuts(
+    TCut &signal_cuts, 
+    TCut &background_cuts, 
+    const bool verbose);
+    
 #endif
