@@ -16,6 +16,7 @@ struct in_args
 	std::string test_signal_input_list;
 	std::string test_background_input_list;
 	std::string output_path;
+	std::string config_dir;
 	std::vector<std::string> learning_method;
 	bool verbose = false;
 	bool test_with_data = false;
@@ -26,7 +27,8 @@ struct in_args
 		if (train_signal_input_list.empty() ||
 			train_background_input_list.empty() ||
 			test_signal_input_list.empty() ||
-			test_background_input_list.empty())
+			test_background_input_list.empty() ||
+			config_dir.empty())
 			status = false;
 		return status;
 	}

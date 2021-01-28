@@ -14,6 +14,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -B  --train-background		<path_to_input_background_TTree_list>	(*) Input background train list");
 	opt.addUsage(" -s  --test-signal			<path_to_input_signal_TTree_list>		(*)	Input signal test list");
 	opt.addUsage(" -b  --test-background		<path_to_input_background_TTree_list>	(*) Input background test list");
+	opt.addUsage(" -c  --config					<path_to_config_dir>						Config directory");
 	opt.addUsage(" -o  --output					<path_to_output_TFile>						Output ROOT TFile");
 	opt.addUsage(" -d  --outputDir				<path_to_output_TFile_dir>					Output ROOT TFile directory");
 	opt.addUsage(" -v  --verbose															Verbose output");
@@ -32,6 +33,7 @@ int main(int argc, char **argv)
 	opt.setOption("train-background", 'B');
 	opt.setOption("test-signal", 's');
 	opt.setOption("test-background", 'b');
+	opt.setOption("config", 'c');
 	opt.setOption("output", 'o');
 	opt.setOption("outputDir", 'd');
 	opt.setFlag("verbose", 'v');
@@ -61,6 +63,8 @@ int main(int argc, char **argv)
 		input_args.test_signal_input_list = opt.getValue('s');
 	if (opt.getValue("test-background") || opt.getValue('b'))
 		input_args.test_background_input_list = opt.getValue('b');
+	if (opt.getValue("config") || opt.getValue('c'))
+		input_args.config_dir = opt.getValue('c');
 	if (opt.getValue("output") || opt.getValue('o'))
 		input_args.output_path = opt.getValue('o');
 	if (opt.getValue("outputDir") || opt.getValue('d'))
@@ -117,10 +121,8 @@ void PrintArgs(in_args input_args)
 	std::cout << "\nSignal input test DSet list: [" << input_args.test_signal_input_list << "]";
 	std::cout << "\nBackground input test DSet list: [" << input_args.test_background_input_list << "]";
 	std::cout << "\nOutput path: [" << input_args.output_path << "]";
-	
+	std::cout << "\nConfig directory: [" << input_args.config_dir << "]";
 	std::cout << "\n\nLearning method: [" << print_methods(input_args.learning_method) << "]";
-	
-
 	input_args.test_with_data ? std::cout << "\nTest with data: [True]" : std::cout << "\nTest with data: [False]";
 	std::cout << "\n\n******************************\n\n";
 }
