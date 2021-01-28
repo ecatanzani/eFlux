@@ -10,6 +10,8 @@
 #include <ROOT/RDataFrame.hxx>
 #include <ROOT/RDF/RInterface.hxx>
 
+#include <algorithm>
+
 void createTMVAset(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
@@ -200,6 +202,16 @@ void createTMVAset(
                           .Define("NUD_ADC_2", "NUD_ADC[1]")
                           .Define("NUD_ADC_3", "NUD_ADC[2]")
                           .Define("NUD_ADC_4", "NUD_ADC[3]");
+
+    _fr_preselected = _fr_preselected.Define("NUD_ADC_min", [](std::vector<int> adc) -> int { return *std::min_element(adc.begin(), adc.end()); }, {"NUD_ADC"});
+    _fr_preselected = _fr_preselected.Define("NUD_ADC_max", [](std::vector<int> adc) -> int { return *std::max_element(adc.begin(), adc.end()); }, {"NUD_ADC"});
+    _fr_preselected = _fr_preselected.Define("NUD_ADC_rms",
+                                             [](std::vector<int> adc) -> double {
+                                                 double sumq = 0;
+                                                 for (const auto &elm : adc)
+                                                     sumq += pow(elm, 2);
+                                                 return sqrt(sumq / adc.size());
+                                             }, {"NUD_ADC"});
 
     // Create Train/Test frames
     auto _fr_train = _fr_preselected.Filter("tt_assign < 0.5");
