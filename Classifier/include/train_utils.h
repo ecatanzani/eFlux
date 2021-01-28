@@ -22,6 +22,7 @@ extern void SetTMVAVariables(
     const train_vars vars);
 extern void SetAllTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader);
 extern void SetNoNUDTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader);
+extern void SetNUDTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader);
 extern void SetTMVACuts(
     TCut &signal_cuts, 
     TCut &background_cuts, 

@@ -78,7 +78,9 @@ void SetTMVAVariables(
     if (vars.all_vars)
         SetAllTMVAVariables(dataloader);
     else if (vars.no_nud)
-
+        SetNoNUDTMVAVariables(dataloader);
+    else if (vars.nud_only)
+        SetNUDTMVAVariables(dataloader);
 }
 
 void SetAllTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
@@ -284,6 +286,14 @@ extern void SetNoNUDTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
     dataloader->AddVariable("energy_5R_radius_14", "energy_5R_radius_14", "units", 'D');
 
     dataloader->AddVariable("xtrl", "xtrl", "units", 'D');
+}
+
+void SetNUDTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
+{
+    dataloader->AddVariable("NUD_total_ADC_nud_total_adc", "NUD_total_ADC_nud_total_adc", "units", 'I');
+    dataloader->AddVariable("NUD_ADC_min", "NUD_ADC_min", "units", 'I');
+    dataloader->AddVariable("NUD_ADC_max", "NUD_ADC_max", "units", 'I');
+    dataloader->AddVariable("NUD_ADC_rms", "NUD_ADC_rms", "units", 'D');
 }
 
 void SetTMVACuts(
