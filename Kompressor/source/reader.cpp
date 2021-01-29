@@ -35,6 +35,8 @@ void reader(in_args input_args)
                 input_args.signal,
                 input_args.output_path,
                 input_args._VERBOSE,
+                input_args.no_split,
+                input_args.no_split_test,
                 input_args.threads);
         }
         else

@@ -17,6 +17,8 @@ extern void createTMVAset(
     const bool signal,
     const std::string output_file,
     const bool _VERBOSE,
+    const bool no_split,
+    const bool no_split_test,
     const unsigned int threads);
 
 #endif
