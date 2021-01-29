@@ -20,6 +20,8 @@ void createTMVAset(
     const bool signal,
     const std::string output_file,
     const bool _VERBOSE,
+    const bool no_split,
+    const bool no_split_test,
     const unsigned int threads)
 {
     // Enable multithreading
@@ -30,8 +32,10 @@ void createTMVAset(
     auto energy_binning = _energy_config->GetEnergyBinning();
     auto energy_nbins = (int)energy_binning.size() - 1;
     // Check regularization option
-    bool regularize_vars;
     double _gev = 0.001;
+    bool regularize_vars;
+    std::string sumRms_leaf = "sumRms";
+    std::string fracLast_leaf = "fracLast";
     fit_tree_path.empty() ? regularize_vars = false : regularize_vars = true;
     // Create the RDFs
     auto GetEnergyBin = [=](double energy) -> int { 
@@ -73,19 +77,25 @@ void createTMVAset(
         return reg_flast;
     };
 
-    if (_VERBOSE)
-        std::cout << "\n\nINFO: Normalizing data facility has been activated\n";
-    // Reading fit summary TTree
-    load_tf1s(
-        fit_tree_path,
-        sumrms_fitfunc,
-        sumrms_fitfunc_err,
-        flast_fitfunc,
-        flast_fitfunc_err,
-        _VERBOSE);
+    if (regularize_vars)
+    {
+        if (_VERBOSE)
+            std::cout << "\n\nINFO: Normalizing data facility has been activated\n";
+        // Reading fit summary TTree
+        load_tf1s(
+            fit_tree_path,
+            sumrms_fitfunc,
+            sumrms_fitfunc_err,
+            flast_fitfunc,
+            flast_fitfunc_err,
+            _VERBOSE);
 
-    _fr_bin_patch = _fr_bin_patch.Define("sumRms_reg", regularize_sumrms, {"sumRms", "energy_bin", "BGOrec_trajectoryDirection2D"})
-                        .Define("fracLast_reg", regularize_flast, {"fracLast", "energy_bin", "BGOrec_trajectoryDirection2D"});
+        _fr_bin_patch = _fr_bin_patch.Define("sumRms_reg", regularize_sumrms, {"sumRms", "energy_bin", "BGOrec_trajectoryDirection2D"})
+                            .Define("fracLast_reg", regularize_flast, {"fracLast", "energy_bin", "BGOrec_trajectoryDirection2D"});
+        
+        sumRms_leaf = "sumRms_reg";
+        fracLast_leaf = "fracLast_reg";
+    }
 
     // Filtering events
     auto set_filter_min_energy = _energy_config->GetSetMinEvtEnergy();
@@ -211,61 +221,114 @@ void createTMVAset(
                                                  for (const auto &elm : adc)
                                                      sumq += pow(elm, 2);
                                                  return sqrt(sumq / adc.size());
-                                             }, {"NUD_ADC"});
+                                             },
+                                             {"NUD_ADC"});
 
-    // Create Train/Test frames
-    auto _fr_train = _fr_preselected.Filter("tt_assign < 0.5");
-    auto _fr_test = _fr_preselected.Filter("tt_assign > 0.5");
+    if (no_split)
+    {
+        std::string tree_name;
+        if (signal)
+        {
+            if (no_split_test)
+                tree_name = "testSignal";
+            else
+                tree_name = "trainSignal";
+        }
+        else
+        {
+            if (no_split_test)
+                tree_name = "testSignal";
+            else
+                tree_name = "trainSignal";
+        }
 
-    // Write trees to file
-    std::string train_tree_name;
-    std::string test_tree_name;
-    signal ? train_tree_name = "trainSignal" : train_tree_name = "trainBackground";
-    signal ? test_tree_name = "testSignal" : test_tree_name = "testBackground";
+        _fr_preselected.Snapshot(
+            tree_name.c_str(),
+            expand_tt_output_path(output_file, 1).c_str(),
+            {"STK_bestTrack_npoints", "energy", "energy_corr", sumRms_leaf, fracLast_leaf,
+             "rmsLayer_1", "rmsLayer_2", "rmsLayer_3", "rmsLayer_4", "rmsLayer_5", "rmsLayer_6", "rmsLayer_7", "rmsLayer_8",
+             "rmsLayer_9", "rmsLayer_10", "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2",
+             "fracLayer_3", "fracLayer_4", "fracLayer_5", "fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10",
+             "fracLayer_11", "fracLayer_12", "fracLayer_13", "fracLayer_14", "lastBGOLayer", "nBGOentries",
+             "energy_1R_radius_1", "energy_1R_radius_2", "energy_1R_radius_3", "energy_1R_radius_4", "energy_1R_radius_5", "energy_1R_radius_6",
+             "energy_1R_radius_7", "energy_1R_radius_8", "energy_1R_radius_9", "energy_1R_radius_10", "energy_1R_radius_11", "energy_1R_radius_12",
+             "energy_1R_radius_13", "energy_1R_radius_14",
+             "energy_2R_radius_1", "energy_2R_radius_2", "energy_2R_radius_3", "energy_2R_radius_4", "energy_2R_radius_5", "energy_2R_radius_6",
+             "energy_2R_radius_7", "energy_2R_radius_8", "energy_2R_radius_9", "energy_2R_radius_10", "energy_2R_radius_11", "energy_2R_radius_12",
+             "energy_2R_radius_13", "energy_2R_radius_14",
+             "energy_3R_radius_1", "energy_3R_radius_2", "energy_3R_radius_3", "energy_3R_radius_4", "energy_3R_radius_5", "energy_3R_radius_6",
+             "energy_3R_radius_7", "energy_3R_radius_8", "energy_3R_radius_9", "energy_3R_radius_10", "energy_3R_radius_11", "energy_3R_radius_12",
+             "energy_3R_radius_13", "energy_3R_radius_14",
+             "energy_5R_radius_1", "energy_5R_radius_2", "energy_5R_radius_3", "energy_5R_radius_4", "energy_5R_radius_5", "energy_5R_radius_6",
+             "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
+             "energy_5R_radius_13", "energy_5R_radius_14",
+             "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc",
+             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
+    }
+    else
+    {
+        // Create Train/Test frames
+        auto _fr_train = _fr_preselected.Filter("tt_assign < 0.5");
+        auto _fr_test = _fr_preselected.Filter("tt_assign > 0.5");
 
-    _fr_train.Snapshot(
-        train_tree_name.c_str(),
-        expand_tt_output_path(output_file, 1).c_str(),
-        {"STK_bestTrack_npoints", "energy", "energy_corr", "sumRms", "sumRms_reg", "fracLast", "fracLast_reg",
-         "rmsLayer_1", "rmsLayer_2", "rmsLayer_3", "rmsLayer_4", "rmsLayer_5", "rmsLayer_6", "rmsLayer_7", "rmsLayer_8",
-         "rmsLayer_9", "rmsLayer_10", "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2",
-         "fracLayer_3", "fracLayer_4", "fracLayer_5", "fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10",
-         "fracLayer_11", "fracLayer_12", "fracLayer_13", "fracLayer_14", "lastBGOLayer", "nBGOentries",
-         "energy_1R_radius_1", "energy_1R_radius_2", "energy_1R_radius_3", "energy_1R_radius_4", "energy_1R_radius_5", "energy_1R_radius_6",
-         "energy_1R_radius_7", "energy_1R_radius_8", "energy_1R_radius_9", "energy_1R_radius_10", "energy_1R_radius_11", "energy_1R_radius_12",
-         "energy_1R_radius_13", "energy_1R_radius_14",
-         "energy_2R_radius_1", "energy_2R_radius_2", "energy_2R_radius_3", "energy_2R_radius_4", "energy_2R_radius_5", "energy_2R_radius_6",
-         "energy_2R_radius_7", "energy_2R_radius_8", "energy_2R_radius_9", "energy_2R_radius_10", "energy_2R_radius_11", "energy_2R_radius_12",
-         "energy_2R_radius_13", "energy_2R_radius_14",
-         "energy_3R_radius_1", "energy_3R_radius_2", "energy_3R_radius_3", "energy_3R_radius_4", "energy_3R_radius_5", "energy_3R_radius_6",
-         "energy_3R_radius_7", "energy_3R_radius_8", "energy_3R_radius_9", "energy_3R_radius_10", "energy_3R_radius_11", "energy_3R_radius_12",
-         "energy_3R_radius_13", "energy_3R_radius_14",
-         "energy_5R_radius_1", "energy_5R_radius_2", "energy_5R_radius_3", "energy_5R_radius_4", "energy_5R_radius_5", "energy_5R_radius_6",
-         "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
-         "energy_5R_radius_13", "energy_5R_radius_14",
-         "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc", 
-         "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
+        // Write trees to file
+        std::string train_tree_name;
+        std::string test_tree_name;
+        if (signal)
+        {
+            train_tree_name = "trainSignal";
+            test_tree_name = "testSignal";
+        }
+        else
+        {
+            train_tree_name = "trainBackground";
+            test_tree_name = "testBackground";
+        }
 
-    _fr_test.Snapshot(
-        test_tree_name.c_str(),
-        expand_tt_output_path(output_file, 0).c_str(),
-        {"STK_bestTrack_npoints", "energy", "energy_corr", "sumRms", "sumRms_reg", "fracLast", "fracLast_reg",
-         "rmsLayer_1", "rmsLayer_2", "rmsLayer_3", "rmsLayer_4", "rmsLayer_5", "rmsLayer_6", "rmsLayer_7", "rmsLayer_8",
-         "rmsLayer_9", "rmsLayer_10", "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2",
-         "fracLayer_3", "fracLayer_4", "fracLayer_5", "fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10",
-         "fracLayer_11", "fracLayer_12", "fracLayer_13", "fracLayer_14", "lastBGOLayer", "nBGOentries",
-         "energy_1R_radius_1", "energy_1R_radius_2", "energy_1R_radius_3", "energy_1R_radius_4", "energy_1R_radius_5", "energy_1R_radius_6",
-         "energy_1R_radius_7", "energy_1R_radius_8", "energy_1R_radius_9", "energy_1R_radius_10", "energy_1R_radius_11", "energy_1R_radius_12",
-         "energy_1R_radius_13", "energy_1R_radius_14",
-         "energy_2R_radius_1", "energy_2R_radius_2", "energy_2R_radius_3", "energy_2R_radius_4", "energy_2R_radius_5", "energy_2R_radius_6",
-         "energy_2R_radius_7", "energy_2R_radius_8", "energy_2R_radius_9", "energy_2R_radius_10", "energy_2R_radius_11", "energy_2R_radius_12",
-         "energy_2R_radius_13", "energy_2R_radius_14",
-         "energy_3R_radius_1", "energy_3R_radius_2", "energy_3R_radius_3", "energy_3R_radius_4", "energy_3R_radius_5", "energy_3R_radius_6",
-         "energy_3R_radius_7", "energy_3R_radius_8", "energy_3R_radius_9", "energy_3R_radius_10", "energy_3R_radius_11", "energy_3R_radius_12",
-         "energy_3R_radius_13", "energy_3R_radius_14",
-         "energy_5R_radius_1", "energy_5R_radius_2", "energy_5R_radius_3", "energy_5R_radius_4", "energy_5R_radius_5", "energy_5R_radius_6",
-         "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
-         "energy_5R_radius_13", "energy_5R_radius_14",
-         "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc", 
-         "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
+        _fr_train.Snapshot(
+            train_tree_name.c_str(),
+            expand_tt_output_path(output_file, 1).c_str(),
+            {"STK_bestTrack_npoints", "energy", "energy_corr", sumRms_leaf, fracLast_leaf,
+             "rmsLayer_1", "rmsLayer_2", "rmsLayer_3", "rmsLayer_4", "rmsLayer_5", "rmsLayer_6", "rmsLayer_7", "rmsLayer_8",
+             "rmsLayer_9", "rmsLayer_10", "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2",
+             "fracLayer_3", "fracLayer_4", "fracLayer_5", "fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10",
+             "fracLayer_11", "fracLayer_12", "fracLayer_13", "fracLayer_14", "lastBGOLayer", "nBGOentries",
+             "energy_1R_radius_1", "energy_1R_radius_2", "energy_1R_radius_3", "energy_1R_radius_4", "energy_1R_radius_5", "energy_1R_radius_6",
+             "energy_1R_radius_7", "energy_1R_radius_8", "energy_1R_radius_9", "energy_1R_radius_10", "energy_1R_radius_11", "energy_1R_radius_12",
+             "energy_1R_radius_13", "energy_1R_radius_14",
+             "energy_2R_radius_1", "energy_2R_radius_2", "energy_2R_radius_3", "energy_2R_radius_4", "energy_2R_radius_5", "energy_2R_radius_6",
+             "energy_2R_radius_7", "energy_2R_radius_8", "energy_2R_radius_9", "energy_2R_radius_10", "energy_2R_radius_11", "energy_2R_radius_12",
+             "energy_2R_radius_13", "energy_2R_radius_14",
+             "energy_3R_radius_1", "energy_3R_radius_2", "energy_3R_radius_3", "energy_3R_radius_4", "energy_3R_radius_5", "energy_3R_radius_6",
+             "energy_3R_radius_7", "energy_3R_radius_8", "energy_3R_radius_9", "energy_3R_radius_10", "energy_3R_radius_11", "energy_3R_radius_12",
+             "energy_3R_radius_13", "energy_3R_radius_14",
+             "energy_5R_radius_1", "energy_5R_radius_2", "energy_5R_radius_3", "energy_5R_radius_4", "energy_5R_radius_5", "energy_5R_radius_6",
+             "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
+             "energy_5R_radius_13", "energy_5R_radius_14",
+             "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc",
+             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
+
+        _fr_test.Snapshot(
+            test_tree_name.c_str(),
+            expand_tt_output_path(output_file, 0).c_str(),
+            {"STK_bestTrack_npoints", "energy", "energy_corr", sumRms_leaf, fracLast_leaf,
+             "rmsLayer_1", "rmsLayer_2", "rmsLayer_3", "rmsLayer_4", "rmsLayer_5", "rmsLayer_6", "rmsLayer_7", "rmsLayer_8",
+             "rmsLayer_9", "rmsLayer_10", "rmsLayer_11", "rmsLayer_12", "rmsLayer_13", "rmsLayer_14", "fracLayer_1", "fracLayer_2",
+             "fracLayer_3", "fracLayer_4", "fracLayer_5", "fracLayer_6", "fracLayer_7", "fracLayer_8", "fracLayer_9", "fracLayer_10",
+             "fracLayer_11", "fracLayer_12", "fracLayer_13", "fracLayer_14", "lastBGOLayer", "nBGOentries",
+             "energy_1R_radius_1", "energy_1R_radius_2", "energy_1R_radius_3", "energy_1R_radius_4", "energy_1R_radius_5", "energy_1R_radius_6",
+             "energy_1R_radius_7", "energy_1R_radius_8", "energy_1R_radius_9", "energy_1R_radius_10", "energy_1R_radius_11", "energy_1R_radius_12",
+             "energy_1R_radius_13", "energy_1R_radius_14",
+             "energy_2R_radius_1", "energy_2R_radius_2", "energy_2R_radius_3", "energy_2R_radius_4", "energy_2R_radius_5", "energy_2R_radius_6",
+             "energy_2R_radius_7", "energy_2R_radius_8", "energy_2R_radius_9", "energy_2R_radius_10", "energy_2R_radius_11", "energy_2R_radius_12",
+             "energy_2R_radius_13", "energy_2R_radius_14",
+             "energy_3R_radius_1", "energy_3R_radius_2", "energy_3R_radius_3", "energy_3R_radius_4", "energy_3R_radius_5", "energy_3R_radius_6",
+             "energy_3R_radius_7", "energy_3R_radius_8", "energy_3R_radius_9", "energy_3R_radius_10", "energy_3R_radius_11", "energy_3R_radius_12",
+             "energy_3R_radius_13", "energy_3R_radius_14",
+             "energy_5R_radius_1", "energy_5R_radius_2", "energy_5R_radius_3", "energy_5R_radius_4", "energy_5R_radius_5", "energy_5R_radius_6",
+             "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
+             "energy_5R_radius_13", "energy_5R_radius_14",
+             "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc",
+             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
+    }
 }
