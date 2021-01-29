@@ -243,7 +243,8 @@ void createTMVAset(
          "energy_5R_radius_1", "energy_5R_radius_2", "energy_5R_radius_3", "energy_5R_radius_4", "energy_5R_radius_5", "energy_5R_radius_6",
          "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
          "energy_5R_radius_13", "energy_5R_radius_14",
-         "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc"});
+         "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc", 
+         "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
 
     _fr_test.Snapshot(
         test_tree_name.c_str(),
@@ -265,5 +266,6 @@ void createTMVAset(
          "energy_5R_radius_1", "energy_5R_radius_2", "energy_5R_radius_3", "energy_5R_radius_4", "energy_5R_radius_5", "energy_5R_radius_6",
          "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
          "energy_5R_radius_13", "energy_5R_radius_14",
-         "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc"});
+         "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc", 
+         "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
 }
