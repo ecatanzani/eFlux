@@ -95,3 +95,18 @@ const train_vars config::GetVariableOptions()
 {
 	return vars;
 }
+
+void config::PrintVariableOptions()
+{
+	std::string all_vars = vars.all_vars ? "ON" : "OFF";
+	std::string no_nud = vars.no_nud ? "ON" : "OFF";
+	std::string nud_only = vars.nud_only ? "ON" : "OFF";
+
+	std::cout << "\n\n**** Variable Status ****\n";
+	std::cout << "***********************\n\n";
+	std::cout << "- all vars: " << all_vars << std::endl;
+	std::cout << "- no_nud: " << no_nud << std::endl;
+	std::cout << "- nud_only: " << nud_only << std::endl;
+	std::cout << "\n***********************\n";
+
+}

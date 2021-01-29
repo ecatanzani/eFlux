@@ -23,6 +23,8 @@ void Train(in_args input_args)
 
     // Parse config file
     std::unique_ptr<config> _config = std::make_unique<config>(input_args.config_dir);
+    if (input_args.verbose)
+        _config->PrintVariableOptions();        
 
     // Get TMVA methods
     auto methods_map = GetTMVAMethods(input_args.learning_method);
