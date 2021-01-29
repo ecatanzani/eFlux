@@ -37,6 +37,7 @@ public:
 	const unsigned int GetBackgroundTrainEvents();
 	const unsigned int GetBackgroundTestEvents();
 	const train_vars GetVariableOptions();
+	void PrintVariableOptions();
 
 private:
 	std::string parse_config_file(
