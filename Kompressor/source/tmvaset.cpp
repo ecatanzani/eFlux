@@ -237,9 +237,9 @@ void createTMVAset(
         else
         {
             if (no_split_test)
-                tree_name = "testSignal";
+                tree_name = "testBackground";
             else
-                tree_name = "trainSignal";
+                tree_name = "trainBackground";
         }
 
         _fr_preselected.Snapshot(
