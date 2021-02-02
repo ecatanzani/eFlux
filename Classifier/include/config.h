@@ -1,6 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <cstring>
@@ -8,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 
+#include "TChain.h"
 struct train_vars
 {
 	bool all_vars = false;
@@ -17,6 +19,7 @@ struct train_vars
 
 struct evt_stat
 {
+	bool auto_train_events = false;
 	unsigned int signal_train_events = 0;
 	unsigned int background_train_events = 0;
 	unsigned int signal_test_events = 0;
@@ -26,10 +29,10 @@ struct evt_stat
 class config
 {
 public:
-	config(const std::string working_dir)
-	{
-		get_config_info(parse_config_file(working_dir, config_file_name));
-	}
+	config(
+		const std::string working_dir,
+		std::shared_ptr<TChain> signal_train,
+		std::shared_ptr<TChain> background_train);
 	~config(){};
 	
 	const unsigned int GetSignalTrainEvents();

@@ -1,5 +1,19 @@
 #include "config.h"
 
+#include <algorithm>
+
+config::config(
+	const std::string working_dir,
+	std::shared_ptr<TChain> signal_train,
+	std::shared_ptr<TChain> background_train)
+{
+	// Parse config file
+	get_config_info(parse_config_file(working_dir, config_file_name));
+	// Auto-set training events
+	if (events.auto_train_events)
+		events.signal_train_events = events.background_train_events = std::min(signal_train->GetEntries(), background_train->GetEntries());
+}
+
 std::string config::parse_config_file(
 	std::string wd,
 	std::string config_file)
@@ -47,16 +61,26 @@ void config::get_config_info(std::string parsed_config)
 		}
 
 		// Load train events
-		if (!strcmp(tmp_str.c_str(), "signal_train_events"))
+		if (!strcmp(tmp_str.c_str(), "auto_train_events"))
 		{
 			input_stream >> tmp_str;
-			events.signal_train_events = stoul(tmp_str, &sz);
+			if (!strcmp(tmp_str.c_str(), "YES") || !strcmp(tmp_str.c_str(), "yes"))
+				events.auto_train_events = true;
 		}
-		if (!strcmp(tmp_str.c_str(), "background_train_events"))
+		if (!events.auto_train_events)
 		{
-			input_stream >> tmp_str;
-			events.background_train_events = stoul(tmp_str, &sz);
+			if (!strcmp(tmp_str.c_str(), "signal_train_events"))
+			{
+				input_stream >> tmp_str;
+				events.signal_train_events = stoul(tmp_str, &sz);
+			}
+			if (!strcmp(tmp_str.c_str(), "background_train_events"))
+			{
+				input_stream >> tmp_str;
+				events.background_train_events = stoul(tmp_str, &sz);
+			}
 		}
+		
 		// Load test events
 		if (!strcmp(tmp_str.c_str(), "signal_test_events"))
 		{
@@ -109,4 +133,9 @@ void config::PrintVariableOptions()
 	std::cout << "- nud_only: " << nud_only << std::endl;
 	std::cout << "\n***********************\n";
 
+	if (events.auto_train_events)
+	{
+		std::cout << "\n\n Auto train events ACTIVATED - signal training events: " << events.signal_train_events;
+		std::cout << "\n\n Auto train events ACTIVATED - background training events: " << events.background_train_events << std::endl << std::endl;
+	}
 }
