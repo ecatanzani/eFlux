@@ -18,17 +18,6 @@
 
 void Train(in_args input_args)
 {
-    // Loat TMVA library
-    TMVA::Tools::Instance();
-
-    // Parse config file
-    std::unique_ptr<config> _config = std::make_unique<config>(input_args.config_dir);
-    if (input_args.verbose)
-        _config->PrintVariableOptions();        
-
-    // Get TMVA methods
-    auto methods_map = GetTMVAMethods(input_args.learning_method);
-
     // Read input data sets
     if (input_args.verbose)
         std::cout << "\n==> Reading signal training data [" << input_args.train_signal_input_list << "]" << std::endl;
@@ -54,6 +43,22 @@ void Train(in_args input_args)
         std::cout << "\nBackgound TEST data set -> " << background_test_tree->GetEntries() << " entries";
         std::cout << "\n\n**************************\n";
     }
+
+    // Loat TMVA library
+    TMVA::Tools::Instance();
+
+    // Parse config file
+    std::unique_ptr<config> _config =
+        std::make_unique<config>(
+            input_args.config_dir,
+            signal_train_tree,
+            background_train_tree);
+
+    if (input_args.verbose)
+        _config->PrintVariableOptions();
+
+    // Get TMVA methods
+    auto methods_map = GetTMVAMethods(input_args.learning_method);
 
     // Create TMVA output file
     TFile *outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
@@ -83,6 +88,10 @@ void Train(in_args input_args)
     dataloader->AddBackgroundTree(background_train_tree.get(), backgroundWeight, TMVA::Types::kTraining);
     dataloader->AddBackgroundTree(background_test_tree.get(), backgroundWeight, TMVA::Types::kTesting);
 
+    // Add events weights
+    dataloader->SetSignalWeightExpression("simu_energy_w_corr");
+    dataloader->SetBackgroundWeightExpression("simu_energy_w_corr");
+
     // Apply additional cuts on the signal and background samples
     TCut signal_cuts = "";
     TCut background_cuts = "";
@@ -91,16 +100,16 @@ void Train(in_args input_args)
     SetTMVACuts(
         signal_cuts, 
         background_cuts, 
-        input_args.verbose);    
+        input_args.verbose);
 #endif
 
-    auto loader_str = 
-        std::string("nTrain_Signal=") + std::to_string(_config->GetSignalTrainEvents()) + 
+    auto loader_str =
+        std::string("nTrain_Signal=") + std::to_string(_config->GetSignalTrainEvents()) +
         std::string(":nTrain_Background=") + std::to_string(_config->GetBackgroundTrainEvents()) +
-        std::string(":nTest_Signal=") + std::to_string(_config->GetSignalTestEvents()) + 
+        std::string(":nTest_Signal=") + std::to_string(_config->GetSignalTestEvents()) +
         std::string(":nTest_Background=") + std::to_string(_config->GetBackgroundTestEvents()) +
         std::string(":SplitMode=Random:NormMode=None:!V");
-    dataloader->PrepareTrainingAndTestTree(signal_cuts, background_cuts,loader_str.c_str());
+    dataloader->PrepareTrainingAndTestTree(signal_cuts, background_cuts, loader_str.c_str());
 
     // Book methods
     BookMethods(factory, dataloader, methods_map);
