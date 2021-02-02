@@ -45,8 +45,9 @@ void createTMVAset(
                 break;
         return bin_idx+1; };
 
-    // Create the RDF with energy bin and Train/Test assignment variable
+    // Create the RDF with energy bin, energy weight and Train/Test assignment variable
     auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"})
+                             .Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"})
                              .Define("tt_assign", [] { return gRandom->Uniform(); });
 
     // Regularize RDF
@@ -92,7 +93,7 @@ void createTMVAset(
 
         _fr_bin_patch = _fr_bin_patch.Define("sumRms_reg", regularize_sumrms, {"sumRms", "energy_bin", "BGOrec_trajectoryDirection2D"})
                             .Define("fracLast_reg", regularize_flast, {"fracLast", "energy_bin", "BGOrec_trajectoryDirection2D"});
-        
+
         sumRms_leaf = "sumRms_reg";
         fracLast_leaf = "fracLast_reg";
     }
@@ -263,7 +264,7 @@ void createTMVAset(
              "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
              "energy_5R_radius_13", "energy_5R_radius_14",
              "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc",
-             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
+             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms", "simu_energy_w_corr"});
     }
     else
     {
@@ -306,7 +307,7 @@ void createTMVAset(
              "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
              "energy_5R_radius_13", "energy_5R_radius_14",
              "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc",
-             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
+             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms", "simu_energy_w_corr"});
 
         _fr_test.Snapshot(
             test_tree_name.c_str(),
@@ -329,6 +330,6 @@ void createTMVAset(
              "energy_5R_radius_7", "energy_5R_radius_8", "energy_5R_radius_9", "energy_5R_radius_10", "energy_5R_radius_11", "energy_5R_radius_12",
              "energy_5R_radius_13", "energy_5R_radius_14",
              "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC.nud_total_adc", "NUD_max_ADC.nud_max_adc",
-             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms"});
+             "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms", "simu_energy_w_corr"});
     }
 }
