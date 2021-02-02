@@ -23,8 +23,8 @@ def main(args=None):
 						action='store_true', help='get MC file list')
 	parser.add_argument("-v", "--verbose", dest='verbose', default=False,
 						action='store_true', help='run in high verbosity mode')
-	parser.add_argument("-s", "--spectrum", type=str,
-						dest='spectrum', help='Study of the energy spectrum of a given dataSet')
+	parser.add_argument("-s", "--single-sample", type=str,
+						dest='single_sample', help='Single MC sample file list')
 
 	opts = parser.parse_args(args)
 
@@ -42,7 +42,7 @@ def main(args=None):
 		createDATAlist(pars, opts)
 	if opts.mc:
 		createMClist(pars, opts)
-	if opts.spectrum:
+	if opts.single_sample:
 		listMCsample(pars, opts)
 
 
