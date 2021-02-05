@@ -8,8 +8,7 @@ from createFinalLists import createOutSimuFile
 def createMClist(pars, opts):
 	# Parse masks sets
 	maskInputFile = os.getcwd()
-	mask_sIdx = maskInputFile.find('/Crawler')
-	maskInputFile = maskInputFile[0:mask_sIdx+8] + "/setMask.txt"
+	maskInputFile = maskInputFile[0:maskInputFile.find('/Crawler')+8] + "/setMask.conf"
 	try:
 		dListMask = open(maskInputFile).read().splitlines()
 	except OSError:
