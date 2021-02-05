@@ -91,6 +91,14 @@
 	{
 		"geometry": "6r0p10",
 		"particle": "e",
+		"eMin": "1000",
+		"eMax": "10000",
+		"dSet": "allElectron-v6r0p10_1TeV_10TeV_FTFP_BERT_HP",
+		"pSpectrum": -1
+	},
+	{
+		"geometry": "6r0p10",
+		"particle": "e",
 		"eMin": "10000",
 		"eMax": "20000",
 		"dSet": "allElectron-v6r0p10_10TeV_20TeV_FTFP",
@@ -109,7 +117,7 @@
 		"particle": "p",
 		"eMin": "10",
 		"eMax": "100",
-		"dSet": "allProton-v6r0p10_10GeV_100GeV_FTFP",
+		"dSet": "allProton-v6r0p10_10GeV_100GeV_FTFP-p2",
 		"pSpectrum": -1
 	},
 	{
@@ -139,6 +147,14 @@
 	{
 		"geometry": "6r0p10",
 		"particle": "p",
+		"eMin": "100",
+		"eMax": "1000",
+		"dSet": "allProton-v6r0p10_100GeV_1TeV_FTFP-p3",
+		"pSpectrum": -1
+	},
+	{
+		"geometry": "6r0p10",
+		"particle": "p",
 		"eMin": "1000",
 		"eMax": "10000",
 		"dSet": "allProton-v6r0p10_1TeV_10TeV_FTFP",
@@ -155,9 +171,25 @@
 	{
 		"geometry": "6r0p10",
 		"particle": "p",
+		"eMin": "1000",
+		"eMax": "10000",
+		"dSet": "allProton-v6r0p10_1TeV_10TeV_QGSP_FTFP_BERT",
+		"pSpectrum": -1
+	},
+	{
+		"geometry": "6r0p10",
+		"particle": "p",
 		"eMin": "10000",
 		"eMax": "100000",
 		"dSet": "allProton-v6r0p10_10TeV_100TeV_FTFP",
+		"pSpectrum": -1
+	},
+	{
+		"geometry": "6r0p10",
+		"particle": "p",
+		"eMin": "10000",
+		"eMax": "100000",
+		"dSet": "allProton-v6r0p10_10TeV_100TeV_FTFP-p1",
 		"pSpectrum": -1
 	},
 	{
@@ -190,6 +222,22 @@
 		"eMin": "10000",
 		"eMax": "100000",
 		"dSet": "allProton-v6r0p10_10TeV_100TeV_FTFP-p7",
+		"pSpectrum": -1
+	},
+	{
+		"geometry": "6r0p10",
+		"particle": "p",
+		"eMin": "10000",
+		"eMax": "100000",
+		"dSet": "allProton-v6r0p10_10TeV_100TeV_FTFP-p8",
+		"pSpectrum": -1
+	},
+	{
+		"geometry": "6r0p10",
+		"particle": "p",
+		"eMin": "10000",
+		"eMax": "100000",
+		"dSet": "allProton-v6r0p10_10TeV_100TeV_QGSP_FTFP_BERT",
 		"pSpectrum": -1
 	}
 ]

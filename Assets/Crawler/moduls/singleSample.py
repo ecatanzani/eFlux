@@ -5,10 +5,8 @@ from createFinalLists import createOutSetSimuFile
 
 def listMCsample(pars, opts):
 	dSetName = opts.spectrum
-	dSetName_sIdx = dSetName.find('v')
-	dSetName_eIdx = dSetName.find('_')
 	_setPath = pars['simu_XRDFS_path'] + \
-		dSetName[dSetName_sIdx:dSetName_eIdx] + "/" + dSetName
+		dSetName[dSetName.find('v'):dSetName.find('_')] + "/" + dSetName
 	tmpCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], _setPath)
 	if opts.verbose:
 		print('Getting list of files... {}'.format(tmpCommand))

@@ -15,7 +15,7 @@ def parseConfigFile(opts):
 		custom_set = True
 	
 	
-	with open("crawlerConfig.txt", "r") as _config:
+	with open("crawlerConfig.conf", "r") as _config:
 		for line in _config:
 			for word in line.split():
 				config_params.append(word)
