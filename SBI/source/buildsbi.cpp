@@ -32,14 +32,25 @@ void buildSBI(const in_pars input_pars)
     std::unique_ptr<timing> evt_time = std::make_unique<timing>();
 
     if (input_pars.verbose)
+    {
         std::cout << "\n\nNumber of events: " << dmpch->GetEntries() << "\n\n";
+        std::cout << "\nAnalysis running...\n\n";
+    }
 
     for (unsigned int ev_idx=1; ev_idx<dmpch->GetEntries(); ++ev_idx)
     {
         auto pev = dmpch->GetDmpEvent(ev_idx);
         auto header = pev->pEvtHeader();
+        auto evtatt = pev->pEvtAttitude();
         evt_time->SetCurrSec(header->GetSecond());
         evt_time->CheckRepeated();
+
+        // Event check
+        if (!evt_sbi->SetSBIStatus(header, evtatt, ev_idx))
+            continue;
+
+        
+
     }
 
     outfile->Close();
