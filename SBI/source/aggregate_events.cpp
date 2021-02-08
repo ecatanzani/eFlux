@@ -7,18 +7,7 @@ void event_collector::use_chain()
 	std::string tmp_str;
 	while (input_stream >> tmp_str)
 	{
-		if (!simu_evt)
-		{
-			gIOSvc->Set("InData/Read", tmp_str.c_str());
-			if (_f_file)
-			{
-				auto yIdx = tmp_str.find("/2A/") + 4;
-				auto mIdx = yIdx + 4;
-				data_year = tmp_str.substr(yIdx, 4);
-				data_month = tmp_str.substr(mIdx, 2);
-				_f_file = false;
-			}
-		}
+		gIOSvc->Set("InData/Read", tmp_str.c_str());
 		evt_chain->Add(tmp_str.c_str());
 		if (verbosity)
 			std::cout << "\nAdding " << tmp_str << " to the chain ...";
@@ -38,12 +27,12 @@ std::string event_collector::parse_input_file()
 	return input_string;
 }
 
-std::shared_ptr<TChain> event_collector::GetChain()
+std::shared_ptr<DmpChain> event_collector::GetChain()
 {
 	if (evt_chain)
 		return evt_chain;
 	else
-		return std::shared_ptr<TChain>(nullptr);
+		return std::shared_ptr<DmpChain>(nullptr);
 }
 
 bool event_collector::GetChainStatus()

@@ -37,19 +37,4 @@ private:
 	std::shared_ptr<DmpChain> evt_chain;
 };
 
-extern std::shared_ptr<TChain> aggregateEventsTChain(
-	const std::string listInputPath,
-	const bool verbose);
-
-extern std::shared_ptr<TChain> aggregateDataEventsTChain(
-	const std::string listInputPath,
-	const bool verbose,
-	const bool skimmed);
-
-extern std::shared_ptr<TChain> aggregateTupleDataEventsTChain(
-	const std::string listInputPath,
-	std::string &year,
-	std::string &month,
-	const bool verbose);
-
 #endif

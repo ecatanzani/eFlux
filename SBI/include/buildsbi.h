@@ -3,7 +3,7 @@
 
 #include "main.h"
 
-void buildSBI(const in_pars input_pars);
+extern void buildSBI(const in_pars input_pars);
 
 #endif
 
