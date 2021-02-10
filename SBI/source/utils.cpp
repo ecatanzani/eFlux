@@ -19,11 +19,11 @@ const std::string uniqueOutFile(AnyOption &opt)
 	std::time_t ctime = std::time(0);
 	std::stringstream fPath;
 	if (opt.getValue("outputDir") || opt.getValue('d'))
-		fPath << opt.getValue('d') << "/analysisOutFile_" << ctime << ".root";
+		fPath << opt.getValue('d') << "/SBIOutFile_" << ctime << ".root";
 	else if (opt.getValue("output") || opt.getValue('o'))
 		fPath << opt.getValue('o');
 	else
-		fPath << "analysisOutFile_" << ctime << ".root";
+		fPath << "SBIOutFile_" << ctime << ".root";
 
 	return fPath.str();
 }

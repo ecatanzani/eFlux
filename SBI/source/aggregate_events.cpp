@@ -2,7 +2,7 @@
 
 void event_collector::use_chain()
 {
-	evt_chain = std::make_shared<DmpChain>(tree_name.c_str());
+	evt_chain = std::make_shared<TChain>(tree_name.c_str());
 	std::istringstream input_stream(parse_input_file());
 	std::string tmp_str;
 	while (input_stream >> tmp_str)
@@ -27,12 +27,12 @@ std::string event_collector::parse_input_file()
 	return input_string;
 }
 
-std::shared_ptr<DmpChain> event_collector::GetChain()
+std::shared_ptr<TChain> event_collector::GetChain()
 {
 	if (evt_chain)
 		return evt_chain;
 	else
-		return std::shared_ptr<DmpChain>(nullptr);
+		return std::shared_ptr<TChain>(nullptr);
 }
 
 bool event_collector::GetChainStatus()

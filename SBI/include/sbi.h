@@ -10,9 +10,12 @@
 #define _star_sensor_v_val 4
 
 #include "TTree.h"
+#include "TFile.h"
 
 #include "DmpEvtHeader.h"
 #include "DmpEvtAttitude.h"
+
+#include "container.h"
 
 class sbi
 {
@@ -28,13 +31,17 @@ public:
         const DmpEvtHeader* header,
         const DmpEvtAttitude* attitude,
         const unsigned int idx);
+    void Fill(
+        std::shared_ptr<container> sec_info,
+        std::shared_ptr<DmpEvtAttitude> attitude);
+    void Write(TFile& outfile);
 
 private:
     void sizer();
     void branch_tree();
 
     // Tree
-	std::unique_ptr<TTree> tree;
+	std::shared_ptr<TTree> tree;
 
     // SBI vars
     bool goodsbi = false;
@@ -82,21 +89,21 @@ private:
     std::vector<double> star_sensor_A;
     std::vector<double> star_sensor_B;
 
-    double dipoleMoment;
-    double L;
-    double bEast;
-    double bNorth;
-    double bDown;
-    double bAbs;
-    double bEquator;
-    double R;
-    double verticalRigidityCutoff;
-    double invariantLatitude;
+    double dipoleMoment = 0;
+    double L = 0;
+    double bEast = 0;
+    double bNorth = 0;
+    double bDown = 0;
+    double bAbs = 0;
+    double bEquator = 0;
+    double R = 0;
+    double verticalRigidityCutoff = 0;
+    double invariantLatitude = 0;
 
     std::vector<double> BVect;
-    double SunRa;
-    double SunDec;
-    bool insaa;
+    double SunRa = 0;
+    double SunDec = 0;
+    bool insaa = false;
 };
 
 #endif

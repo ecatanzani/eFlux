@@ -10,7 +10,7 @@
 #include "DmpCore.h"
 #include "DmpFilterOrbit.h"
 
-#include "DmpChain.h"
+#include "TChain.h"
 
 class event_collector
 {
@@ -24,7 +24,7 @@ public:
 		use_chain();
 	}
 	~event_collector(){};
-	std::shared_ptr<DmpChain> GetChain();
+	std::shared_ptr<TChain> GetChain();
 	bool GetChainStatus();
 
 private:
@@ -34,7 +34,7 @@ private:
 	std::string input_list;
 	std::string tree_name = "CollectionTree";
 	bool verbosity;
-	std::shared_ptr<DmpChain> evt_chain;
+	std::shared_ptr<TChain> evt_chain;
 };
 
 #endif
