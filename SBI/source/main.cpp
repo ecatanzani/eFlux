@@ -1,6 +1,5 @@
 #include "main.h"
 #include "utils.h"
-#include "sbicore.h"
 #include "buildsbi.h"
 
 int main(int argc, char **argv)
