@@ -287,7 +287,7 @@ struct container
         std::cout << "Total number of GOOD sbi events: " << evt_stat.good_sbi_events << std::endl;
         std::cout << "Total number of BAD sbi events: " << evt_stat.bad_sbi_events << std::endl;
         std::cout << "Total number of seconds: " << evt_stat.seconds << std::endl;
-        std::cout << "\n**********\n";
+        std::cout << "\n**********\n\n";
     }
 };
 
