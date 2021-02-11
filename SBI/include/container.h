@@ -26,15 +26,26 @@ struct timing
 
     std::map<unsigned int, bool> repeated_sec;
 
+    // Set the previous second
     void SetPrevSec(const unsigned int sec)
     {
         prev_sec = sec;
     }
+
+    /*
+        - Set current second 
+        - Checks if the second cnahges respect to the previous one
+        - Checks if the seconds has been repeated
+    */
     void SetCurrSec(const unsigned int sec)
-    {
+    {   
         curr_sec = sec;
         if (curr_sec != prev_sec)
             newsec = true;
+        else
+            newsec = false;
+        CheckRepeated();
+        
     }
     void CheckRepeated()
     {
@@ -48,6 +59,11 @@ struct timing
     bool CheckNewSec()
     {
         return newsec;
+    }
+    void ShowSecs()
+    {
+        std::cout << "\n\nPrevous sec: " << prev_sec;
+        std::cout << "\nCurrent sec: " << curr_sec;
     }
 };
 
@@ -170,12 +186,6 @@ struct container
         nbgohits += bgorec->GetTotalHits();
         npsdhits += psdhits->GetHittedBarNumber();
         nnudhits += (unsigned int)nudtotalhits(nudraw->fChannelID[0], nudraw->fChannelID[1], nudraw->fChannelID[2], nudraw->fChannelID[3]);
-
-        std::cout << "\nTracks: " << stktracks->GetLast() + 1;
-        std::cout << "\nBGO hits: " << bgorec->GetTotalHits();
-        std::cout << "\nPSD hits: " << psdhits->GetHittedBarNumber();
-        std::cout << "\nNUD hits: " << (unsigned int)nudtotalhits(nudraw->fChannelID[0], nudraw->fChannelID[1], nudraw->fChannelID[2], nudraw->fChannelID[3]);
-
     }
     void UpdateSubDetectorStatus(std::shared_ptr<DmpEvtHeader> header)
     {

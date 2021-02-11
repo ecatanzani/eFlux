@@ -79,7 +79,7 @@ void buildSBI(const in_pars input_pars)
     if (input_pars.verbose)
     {
         std::cout << "\n\nNumber of events: " << dmpch->GetEntries() << std::endl;
-        std::cout << "\nAnalysing RawData...\n\n";
+        std::cout << "\nAnalysing RawData...\n";
     }
     
     double acctime;
@@ -93,25 +93,32 @@ void buildSBI(const in_pars input_pars)
 
         // Read tree event
 		dmpch->GetEvent(ev_idx);
+        
+        // tmp second
+        auto tmp_second = header->GetSecond();
 
-        sbi_second_container->evt_time.SetCurrSec(header->GetSecond());
-        sbi_second_container->evt_time.CheckRepeated();
+        /*
+            - Set current second 
+            - Checks if the second cnahges respect to the previous one
+            - Checks if the seconds has been repeated
+        */
+        sbi_second_container->evt_time.SetCurrSec(tmp_second);
         
         // Event check
         if (!sbi_second_container->SetSBIStatus(header, attitude, ev_idx))
             continue;
         
-        // Update second
+        // Update SBI second
         sbi_second_container->SetSecond();
-        // Update event number
+        // Update SBI event number
         sbi_second_container->UpdateEventNumber();
 
         // First event
         if (ev_idx==1)
         {
             // Set lifetime for the first event
-            acctime = (header->GetMillisecond() + _msdeadtime)/1000.;
-            // Update run number
+            acctime = (header->GetMillisecond() + _msdeadtime)/(double)1000;
+            // Update SBI run number
             sbi_second_container->UpdateRunNumber();
         }
         // Other events
@@ -119,19 +126,19 @@ void buildSBI(const in_pars input_pars)
         {
             if (sbi_second_container->CheckRepeatedSeconds())
             {
-                // Compute livetime
+                // Compute SBI livetime
                 sbi_second_container->ComputeLiveTime();
                 // Fill SBI tree
                 evt_sbi->Fill(sbi_second_container, attitude);
                 // Reset SBI clasds
                 evt_sbi->Reset();
-                // Cleanup
+                // Cleanup SBI container
                 sbi_second_container->CleanUp(ev_idx);
             }
         }
-        else
+        else if (ev_idx!=1 && !sbi_second_container->evt_time.CheckNewSec())
         {
-            // Set last event number
+            // Set SBI last event number
             sbi_second_container->SetLastEventNumber(ev_idx);
             // Livetime
             sbi_second_container->UpdateDeadTime(header->GetMillisecond());
@@ -150,6 +157,9 @@ void buildSBI(const in_pars input_pars)
             // Check SAA
             sbi_second_container->CheckSAA(attitude);
         }
+        
+        // Set previous second
+        sbi_second_container->evt_time.SetPrevSec(tmp_second);
     }
 
     // Last fill before closing the file
