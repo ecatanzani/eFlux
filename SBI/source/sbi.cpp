@@ -97,10 +97,10 @@ void sbi::Reset()
     trigenable = std::vector<bool>(_trig, false);
     ntrigperiod = 0;
     trigperiodenable = false;
-    stkstatus = false;
-    bgostatus = false;
-    psdstatus = false;
-    nudstatus = false;
+    stkstatus = true;
+    bgostatus = true;
+    psdstatus = true;
+    nudstatus = true;
     ntracks = 0;
     nbgohits = 0;
     npsdhits = 0;

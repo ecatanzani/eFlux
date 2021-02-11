@@ -55,10 +55,10 @@ private:
     std::vector<bool> trigenable;
     unsigned int ntrigperiod = 0;
     bool trigperiodenable = false;
-    bool stkstatus = false;
-    bool bgostatus = false;
-    bool psdstatus = false;
-    bool nudstatus = false;
+    bool stkstatus = true;
+    bool bgostatus = true;
+    bool psdstatus = true;
+    bool nudstatus = true;
     unsigned int ntracks = 0;
     unsigned int nbgohits = 0;
     unsigned int npsdhits = 0;
