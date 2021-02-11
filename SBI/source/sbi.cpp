@@ -7,7 +7,7 @@ sbi::sbi()
     // Sizing
     sizer();
     // Create TTree
-    tree = std::make_shared<TTree>("SBItree", "SBI Tree");
+    tree = std::make_unique<TTree>("SBItree", "SBI Tree");
     // Branch TTree
     branch_tree();
 }
@@ -145,41 +145,6 @@ void sbi::Reset()
     SunRa = 0;
     SunDec = 0;
     insaa = false;
-}
-
-void sbi::Init(
-    const unsigned int _second,
-    const unsigned int _firstev)
-{
-    Reset();
-    second = _second;
-    firstev = _firstev;
-}
-
-bool sbi::SetSBIStatus(
-    const DmpEvtHeader *header,
-    const DmpEvtAttitude *attitude,
-    const unsigned int idx)
-{
-    bool status = true;
-
-    // Header check
-    if (!header)
-    {
-        std::cerr << "\nWARNING: Header obj not found at entry [" << idx << "] -- skipping\n";
-        status = false;
-    }
-    else
-        goodsbi = true;
-
-    // Attitude check
-    if (!attitude)
-    {
-        std::cerr << "\nWARNING: Attitude obj not found at entry [" << idx << "] -- skipping\n";
-        goodsbi = false;
-    }
-
-    return status;
 }
 
 void sbi::Fill(

@@ -1,5 +1,6 @@
 #include "main.h"
 #include "utils.h"
+#include "sbicore.h"
 #include "buildsbi.h"
 
 int main(int argc, char **argv)
@@ -50,7 +51,7 @@ int main(int argc, char **argv)
 		input_pars.pedantic = opt.getFlag('p');
 	
 	if (input_pars.CheckArgs())
-		buildSBI(input_pars);
+		SBIcore(input_pars);
 	else
 		return 100;
 	

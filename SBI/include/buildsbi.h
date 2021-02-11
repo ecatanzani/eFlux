@@ -3,7 +3,11 @@
 
 #include "main.h"
 
-extern void buildSBI(const in_pars input_pars);
+#include "TFile.h"
+
+extern void buildSBI(
+    const in_pars input_pars,
+    TFile &outfile);
 
 #endif
 

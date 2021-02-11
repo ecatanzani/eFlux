@@ -15,7 +15,45 @@
 #include "TChain.h"
 #include "TClonesArray.h"
 
-void buildSBI(const in_pars input_pars)
+inline void SBIEvalAndFill(
+    std::shared_ptr<container> sbi_second_container,
+    std::shared_ptr<sbi> evt_sbi,
+    std::shared_ptr<DmpEvtAttitude> attitude,
+    const unsigned int ev_idx)
+{
+    // Set proper SBI status for first second
+    if (!sbi_second_container->first_second_saved)
+    {
+        sbi_second_container->SetSBIStatus(false);
+        sbi_second_container->first_second_saved = true;
+    }
+
+    // Update the SBI status & statistics for the last fill
+    if (!ev_idx)
+    {
+        sbi_second_container->SetSBIStatus(false);
+        sbi_second_container->UpdateLastFillStats();
+    }
+
+    // Check if the second has been repeated
+    if (sbi_second_container->CheckRepeatedSeconds())
+    {
+        // Compute SBI livetime
+        sbi_second_container->ComputeLiveTime();
+        // Fill SBI tree
+        evt_sbi->Fill(sbi_second_container, attitude);
+        // Reset SBI clasds
+        evt_sbi->Reset();
+        // Cleanup SBI container
+        sbi_second_container->CleanUp(ev_idx);
+        // Update seconds stats
+        sbi_second_container->UpdateNewSecStats();
+    }
+}
+
+void buildSBI(
+    const in_pars input_pars,
+    TFile &outfile)
 {
     // Aggregate files
     std::shared_ptr<TChain> dmpch;
@@ -27,14 +65,6 @@ void buildSBI(const in_pars input_pars)
 		std::cerr << "\n\nERROR: Corrupted DmpChain object...";
 		exit(100);
 	}
-    
-    // Load output file
-    TFile outfile(input_pars.output_path.c_str(), "NEW", "SBI Output File");
-    if (!outfile.IsOpen())
-    {
-        std::cerr << "\n\nERROR: output file not created [" << input_pars.output_path << "]\n\n";
-        exit(100);
-    }
 
     // Register Header container
 	std::shared_ptr<DmpEvtHeader> header = std::make_shared<DmpEvtHeader>();
@@ -70,12 +100,14 @@ void buildSBI(const in_pars input_pars)
 	std::shared_ptr<DmpEvtAttitude> attitude = std::make_shared<DmpEvtAttitude>();
 	dmpch->SetBranchAddress("EvtAttitudeContainer", &attitude);
 
+    // Load output file
+    outfile.cd();
     // Create sbi container
     std::shared_ptr<sbi> evt_sbi = std::make_shared<sbi>();
     
     // Create timing container
     std::shared_ptr<container> sbi_second_container = std::make_shared<container>();
-    
+
     if (input_pars.verbose)
     {
         std::cout << "\n\nNumber of events: " << dmpch->GetEntries() << std::endl;
@@ -127,23 +159,14 @@ void buildSBI(const in_pars input_pars)
             // Update SBI run number
             sbi_second_container->UpdateRunNumber();
         }
-        // Other events
+        // If the second changed, first store the information of the previous second, then re-initialize
         else if (ev_idx!=1 && sbi_second_container->evt_time.CheckNewSec())
-        {
-            if (sbi_second_container->CheckRepeatedSeconds())
-            {
-                // Compute SBI livetime
-                sbi_second_container->ComputeLiveTime();
-                // Fill SBI tree
-                evt_sbi->Fill(sbi_second_container, attitude);
-                // Reset SBI clasds
-                evt_sbi->Reset();
-                // Cleanup SBI container
-                sbi_second_container->CleanUp(ev_idx);
-                // Update seconds stats
-                sbi_second_container->UpdateNewSecStats();
-            }
-        }
+            SBIEvalAndFill(
+                sbi_second_container,
+                evt_sbi,
+                attitude,
+                ev_idx);
+        // Other events
         else if (ev_idx!=1 && !sbi_second_container->evt_time.CheckNewSec())
         {
             // Set SBI last event number
@@ -171,17 +194,19 @@ void buildSBI(const in_pars input_pars)
     }
 
     // Last fill before closing the file
-    sbi_second_container->SetSBIStatus(false);
-    // Fill SBI tree
-    evt_sbi->Fill(sbi_second_container, attitude);
+    SBIEvalAndFill(
+        sbi_second_container,
+        evt_sbi,
+        attitude,
+        0);
 
     if (input_pars.verbose)
     {
-        std::cout << "\n\nLooping done...";
+        std::cout << "\n\nLooping done..." << std::endl;
         std::cout << "\nComputed lifetime: " << lifetime;
         sbi_second_container->PrintStats();
     }
 
     evt_sbi->Write(outfile);
-    outfile.Close();
+    //outfile.Close();
 }

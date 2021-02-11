@@ -24,13 +24,6 @@ public:
     ~sbi(){};
     
     void Reset();
-    void Init(
-        const unsigned int _second,
-        const unsigned int _firstev);
-    bool SetSBIStatus(
-        const DmpEvtHeader* header,
-        const DmpEvtAttitude* attitude,
-        const unsigned int idx);
     void Fill(
         std::shared_ptr<container> sec_info,
         std::shared_ptr<DmpEvtAttitude> attitude);
@@ -41,7 +34,7 @@ private:
     void branch_tree();
 
     // Tree
-	std::shared_ptr<TTree> tree;
+	std::unique_ptr<TTree> tree;
 
     // SBI vars
     bool goodsbi = false;

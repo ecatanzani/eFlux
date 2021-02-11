@@ -104,6 +104,8 @@ struct container
     double msdtime = 0; // deadtime to perform operations
     double msdtime_beginning = 0; //dead time to add at the beginning od the second, to recover events triggered at the end of the previous second
 
+    bool first_second_saved = false;
+
     bool insaa = false;
 
     container() :   ntrig (_trig, 0),
@@ -279,6 +281,11 @@ struct container
     {
         ++evt_stat.seconds;
     }
+    void UpdateLastFillStats()
+    {
+        --evt_stat.good_sbi_events;
+        ++evt_stat.bad_sbi_events;
+    }
     void PrintStats()
     {
         std::cout << "\n\n *** Stats ***\n\n";
@@ -287,7 +294,7 @@ struct container
         std::cout << "Total number of GOOD sbi events: " << evt_stat.good_sbi_events << std::endl;
         std::cout << "Total number of BAD sbi events: " << evt_stat.bad_sbi_events << std::endl;
         std::cout << "Total number of seconds: " << evt_stat.seconds << std::endl;
-        std::cout << "\n**********\n\n";
+        std::cout << "\n**************\n\n";
     }
 };
 
