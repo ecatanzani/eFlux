@@ -82,7 +82,7 @@ void buildSBI(const in_pars input_pars)
         std::cout << "\nAnalysing RawData...\n";
     }
     
-    double acctime;
+    double lifetime;
     int kStep = 10;
     auto nevents = dmpch->GetEntries();
 
@@ -106,8 +106,14 @@ void buildSBI(const in_pars input_pars)
         
         // Event check
         if (!sbi_second_container->SetSBIStatus(header, attitude, ev_idx))
+        {   
+            // Update SBI stats
+            sbi_second_container->UpdateStats(false);
             continue;
+        }
         
+        // Update SBI stats
+        sbi_second_container->UpdateStats();
         // Update SBI second
         sbi_second_container->SetSecond();
         // Update SBI event number
@@ -117,7 +123,7 @@ void buildSBI(const in_pars input_pars)
         if (ev_idx==1)
         {
             // Set lifetime for the first event
-            acctime = (header->GetMillisecond() + _msdeadtime)/(double)1000;
+            lifetime = (header->GetMillisecond() + _msdeadtime)/(double)1000;
             // Update SBI run number
             sbi_second_container->UpdateRunNumber();
         }
@@ -134,6 +140,8 @@ void buildSBI(const in_pars input_pars)
                 evt_sbi->Reset();
                 // Cleanup SBI container
                 sbi_second_container->CleanUp(ev_idx);
+                // Update seconds stats
+                sbi_second_container->UpdateNewSecStats();
             }
         }
         else if (ev_idx!=1 && !sbi_second_container->evt_time.CheckNewSec())
@@ -143,7 +151,7 @@ void buildSBI(const in_pars input_pars)
             // Livetime
             sbi_second_container->UpdateDeadTime(header->GetMillisecond());
             // Update lifetime
-            acctime += (header->GetDeltaTime())/(double)1000;
+            lifetime += (header->GetDeltaTime())/(double)1000;
             // Update trigger
             sbi_second_container->UpdateTrigger(header);
             // Update subdetectors occupancy
@@ -170,7 +178,8 @@ void buildSBI(const in_pars input_pars)
     if (input_pars.verbose)
     {
         std::cout << "\n\nLooping done...";
-        std::cout << "\nComputed lifetime: " << acctime << std::endl;
+        std::cout << "\nComputed lifetime: " << lifetime;
+        sbi_second_container->PrintStats();
     }
 
     evt_sbi->Write(outfile);

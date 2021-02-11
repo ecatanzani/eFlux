@@ -18,6 +18,15 @@
 #define _trig 5
 #define _msdeadtime 3.0725
 
+struct stats
+{
+    unsigned int processed_events = 0;
+    unsigned int total_events;
+    unsigned int seconds = 0;
+    unsigned int good_sbi_events = 0;
+    unsigned int bad_sbi_events = 0;
+};
+
 struct timing
 {
     unsigned int prev_sec = 0;
@@ -70,6 +79,7 @@ struct timing
 struct container
 {
     timing evt_time;
+    stats evt_stat;
 
     bool goodsbi = false;
     unsigned int run = 0;
@@ -112,11 +122,12 @@ struct container
         if (header == nullptr)
         {
             std::cerr << "\nWARNING: Header obj not found at entry [" << idx << "] -- skipping\n";
+            goodsbi = false;
             status = false;
         }
         else
         {
-            if (idx!=1) 
+            if (idx!=1)
                 goodsbi = true;
         }
 
@@ -253,6 +264,30 @@ struct container
     void SetSBIStatus(const bool status)
     {
         goodsbi = status;
+    }
+    void UpdateStats(const bool good_evt=true)
+    {
+        if (good_evt)
+            ++evt_stat.processed_events;
+        ++evt_stat.total_events;
+        if (goodsbi)
+            ++evt_stat.good_sbi_events;
+        else
+            ++evt_stat.bad_sbi_events;
+    }
+    void UpdateNewSecStats()
+    {
+        ++evt_stat.seconds;
+    }
+    void PrintStats()
+    {
+        std::cout << "\n\n *** Stats ***\n\n";
+        std::cout << "Total number of events: " << evt_stat.total_events << std::endl;
+        std::cout << "Total number of processed events: " << evt_stat.processed_events << std::endl;
+        std::cout << "Total number of GOOD sbi events: " << evt_stat.good_sbi_events << std::endl;
+        std::cout << "Total number of BAD sbi events: " << evt_stat.bad_sbi_events << std::endl;
+        std::cout << "Total number of seconds: " << evt_stat.seconds << std::endl;
+        std::cout << "\n**********\n";
     }
 };
 
