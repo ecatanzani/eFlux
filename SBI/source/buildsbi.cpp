@@ -27,12 +27,14 @@ inline void SBIEvalAndFill(
         sbi_second_container->SetSBIStatus(false);
         sbi_second_container->first_second_saved = true;
     }
-
-    // Update the SBI status & statistics for the last fill
+   
     if (!ev_idx)
-    {
+    {   
+        // Update the SBI status & statistics for the last fill
         sbi_second_container->SetSBIStatus(false);
         sbi_second_container->UpdateLastFillStats();
+        // Set header end times
+        sbi_second_container->evt_header.SetHeaderEndTimes(sbi_second_container->second);
     }
 
     // Check if the second has been repeated
@@ -114,9 +116,9 @@ void buildSBI(
         std::cout << "\nAnalysing RawData...\n";
     }
     
-    double lifetime;
     int kStep = 10;
     auto nevents = dmpch->GetEntries();
+    unsigned int tmp_second = 0;
 
     for (unsigned int ev_idx=1; ev_idx<nevents; ++ev_idx)
     {
@@ -127,7 +129,7 @@ void buildSBI(
 		dmpch->GetEvent(ev_idx);
         
         // tmp second
-        auto tmp_second = header->GetSecond();
+        tmp_second = header->GetSecond();
 
         /*
             - Set current second 
@@ -155,7 +157,9 @@ void buildSBI(
         if (ev_idx==1)
         {
             // Set lifetime for the first event
-            lifetime = (header->GetMillisecond() + _msdeadtime)/(double)1000;
+            sbi_second_container->evt_header.SetLifeTime(header->GetMillisecond());
+            // Set header start times
+            sbi_second_container->evt_header.SetHeaderStartTimes(tmp_second);
             // Update SBI run number
             sbi_second_container->UpdateRunNumber();
         }
@@ -174,7 +178,7 @@ void buildSBI(
             // Livetime
             sbi_second_container->UpdateDeadTime(header->GetMillisecond());
             // Update lifetime
-            lifetime += (header->GetDeltaTime())/(double)1000;
+            sbi_second_container->evt_header.UpdateLifeTime(header->GetDeltaTime());
             // Update trigger
             sbi_second_container->UpdateTrigger(header);
             // Update subdetectors occupancy
@@ -203,10 +207,13 @@ void buildSBI(
     if (input_pars.verbose)
     {
         std::cout << "\n\nLooping done..." << std::endl;
-        std::cout << "\nComputed lifetime: " << lifetime;
+        std::cout << "\nComputed lifetime: " << sbi_second_container->evt_header.GetLifeTime();
         sbi_second_container->PrintStats();
     }
 
+    // Fill Header tree
+    evt_sbi->FillHeader(sbi_second_container);
+
+    // Write SBI info
     evt_sbi->Write(outfile);
-    //outfile.Close();
 }

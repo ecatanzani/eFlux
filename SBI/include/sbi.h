@@ -27,14 +27,17 @@ public:
     void Fill(
         std::shared_ptr<container> sec_info,
         std::shared_ptr<DmpEvtAttitude> attitude);
+    void FillHeader(std::shared_ptr<container> sec_info);
     void Write(TFile& outfile);
 
 private:
     void sizer();
     void branch_tree();
+    void branch_header();
 
     // Tree
 	std::unique_ptr<TTree> tree;
+    std::unique_ptr<TTree> tree_header;
 
     // SBI vars
     bool goodsbi = false;
@@ -97,6 +100,13 @@ private:
     double SunRa = 0;
     double SunDec = 0;
     bool insaa = false;
+
+    // Header vars
+    unsigned int head_tstart = 0;
+    unsigned int head_tstart_good = 0;
+    unsigned int head_tend = 0;
+    unsigned int head_tend_good = 0;
+    double lifetime = 0;
 };
 
 #endif

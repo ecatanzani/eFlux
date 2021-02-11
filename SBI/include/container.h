@@ -27,6 +27,42 @@ struct stats
     unsigned int bad_sbi_events = 0;
 };
 
+struct header
+{
+    unsigned int head_tstart = 0;
+    unsigned int head_tstart_good = 0;
+    unsigned int head_tend = 0;
+    unsigned int head_tend_good = 0;
+    double lifetime = 0;
+
+    void SetLifeTime(const short millisecond)
+    {
+        lifetime = (millisecond + _msdeadtime)/(double)1000;
+    }
+
+    void UpdateLifeTime(const float deltatime)
+    {
+        lifetime += deltatime/(double)1000;
+    }
+
+    const double GetLifeTime()
+    {
+        return lifetime;
+    }
+
+    void SetHeaderStartTimes(const unsigned int second)
+    {
+        head_tstart = second;
+        head_tstart_good = second + 1;
+    }
+
+    void SetHeaderEndTimes(const unsigned int second)
+    {
+        head_tend = second;
+        head_tend_good = second - 1;
+    }
+};
+
 struct timing
 {
     unsigned int prev_sec = 0;
@@ -80,6 +116,7 @@ struct container
 {
     timing evt_time;
     stats evt_stat;
+    header evt_header;
 
     bool goodsbi = false;
     unsigned int run = 0;

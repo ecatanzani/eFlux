@@ -8,8 +8,12 @@ sbi::sbi()
     sizer();
     // Create TTree
     tree = std::make_unique<TTree>("SBItree", "SBI Tree");
+    // Create header TTree
+    tree_header = std::make_unique<TTree>("SBIheader", "SBI Header");
     // Branch TTree
     branch_tree();
+    // Branch header
+    branch_header();
 }
 
 void sbi::sizer()
@@ -82,6 +86,15 @@ void sbi::branch_tree()
     tree->Branch("SunRa", &SunRa, "SunRa/D");
     tree->Branch("SunDec", &SunDec, "SunDec/D");
     tree->Branch("insaa", &insaa, "insaa/O");
+}
+
+void sbi::branch_header()
+{
+    tree_header->Branch("tstart", &head_tstart, "tstart/i");
+    tree_header->Branch("tstart_good", &head_tstart_good, "tstart_good/i");
+    tree_header->Branch("tend", &head_tend, "tend/i");
+    tree_header->Branch("tend_good", &head_tend_good, "tend_good/i");
+    tree_header->Branch("lifetime", &lifetime, "lifetime/D");
 }
 
 void sbi::Reset()
@@ -216,8 +229,20 @@ void sbi::Fill(
     tree->Fill();
 }
 
+void sbi::FillHeader(std::shared_ptr<container> sec_info)
+{
+    head_tstart = sec_info->evt_header.head_tstart;
+    head_tstart_good = sec_info->evt_header.head_tstart_good;
+    head_tend = sec_info->evt_header.head_tend;
+    head_tend_good = sec_info->evt_header.head_tend_good;
+    lifetime = sec_info->evt_header.lifetime;
+    
+    tree_header->Fill();
+}
+
 void sbi::Write(TFile& outfile)
 {
     outfile.cd();
     tree->Write();
+    tree_header->Write();
 }
