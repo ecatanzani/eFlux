@@ -202,6 +202,7 @@ void rawDataLoop(
 			fillBGOTmpStruct(bgoVault),
 			fillDataEnergyTmpStruct(evt_energy),
 			attitude,
+			evt_header,
 			fillNUDTmpStruct(nudVault));
 	}
 

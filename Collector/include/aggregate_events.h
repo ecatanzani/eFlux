@@ -35,11 +35,8 @@ private:
 
 	std::string input_list;
 	std::string tree_name = "CollectionTree";
-	std::string data_year;
-	std::string data_month;
 	bool verbosity;
 	bool simu_evt;
-	bool _f_file = true;
 	std::shared_ptr<TChain> evt_chain;
 };
 

@@ -22,6 +22,7 @@ public:
 		const std::shared_ptr<_tmp_bgo> _bgo_res,
 		const std::shared_ptr<_tmp_energy_data> _energy_res,
 		const std::shared_ptr<DmpEvtAttitude> attitude,
+		const std::shared_ptr<DmpEvtHeader> header,
 		const std::shared_ptr<_tmp_nud> _nud_res);
 		
 	void Reset();

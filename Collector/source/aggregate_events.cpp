@@ -8,17 +8,7 @@ void event_collector::use_chain()
 	while (input_stream >> tmp_str)
 	{
 		if (!simu_evt)
-		{
 			gIOSvc->Set("InData/Read", tmp_str.c_str());
-			if (_f_file)
-			{
-				auto yIdx = tmp_str.find("/2A/") + 4;
-				auto mIdx = yIdx + 4;
-				data_year = tmp_str.substr(yIdx, 4);
-				data_month = tmp_str.substr(mIdx, 2);
-				_f_file = false;
-			}
-		}
 		evt_chain->Add(tmp_str.c_str());
 		if (verbosity)
 			std::cout << "\nAdding " << tmp_str << " to the chain ...";
