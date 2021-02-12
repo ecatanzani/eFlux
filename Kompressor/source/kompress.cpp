@@ -8,7 +8,7 @@
 #include "TVector3.h"
 #include <ROOT/RDataFrame.hxx>
 
-void mc_reader(
+void kompress(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
     std::shared_ptr<energy_config> _energy_config,
@@ -16,7 +16,8 @@ void mc_reader(
     const double _entries,
     const std::string outputPath,
     const bool _VERBOSE,
-    const unsigned int threads)
+    const unsigned int threads,
+    const bool _mc)
 {
     // Enable multithreading
     ROOT::EnableImplicitMT(threads);

@@ -13,7 +13,7 @@
 
 extern void reader(in_args input_args);
 
-extern void mc_reader(
+extern void kompress(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
     std::shared_ptr<energy_config> _energy_config,
@@ -21,6 +21,7 @@ extern void mc_reader(
     const double _entries,
     const std::string outputPath,
     const bool _VERBOSE,
-    const unsigned int threads);
+    const unsigned int threads,
+    const bool _mc);
 
 #endif

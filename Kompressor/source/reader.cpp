@@ -23,6 +23,8 @@ void reader(in_args input_args)
         _energy_config->PrintActiveFilters();
         std::cout << "Total number of events: " << _entries;
     }
+
+#if 0    
     if (input_args.mc_flag)
     {
         if (input_args.tmva_set)
@@ -52,4 +54,22 @@ void reader(in_args input_args)
                 input_args.threads);
         }
     }
+#endif
+
+    if (input_args.tmva_set)
+    {
+        std::cout << "\n\nStill builing\n\n";
+    }
+    else
+        kompress(
+            evt_parser->GetEvtTree(), 
+            _config,
+            _energy_config,
+            input_args.fit_tree_path,
+            _entries, 
+            input_args.output_path, 
+            input_args._VERBOSE,
+            input_args.threads,
+            input_args.mc_flag);
+
 }
