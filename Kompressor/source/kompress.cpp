@@ -42,9 +42,12 @@ void kompress(
         return bin_idx+1; };
 
     // Create the RDF with energy bin and correct energy weight
-    auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"})
-                             .Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"});
-
+    auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"});
+    if (_mc)
+        _fr_bin_patch = _fr_bin_patch.Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"});
+    else
+        _fr_bin_patch = _fr_bin_patch.Define("simu_energy_w_corr", "1.");
+    
     // Regularize RDF
     std::vector<TF1> sumrms_fitfunc(energy_nbins);
     std::vector<TF1> sumrms_fitfunc_err(energy_nbins);
@@ -128,7 +131,7 @@ void kompress(
     auto energy_ratio_bins = createLinearBinning(-1, 0.2, 1e+3);
     auto flast_zoom_binning = createLogBinning(1e-5, 1e-2, 1e+3);
     auto flast_cosine_binning = createLogBinning(1e-5, 3e-1, 1e+3);
-
+    
     // Extract BGO histos
     auto h_BGOrec_raw_energy = _fr_bgo_analysis.Define("raw_energy_gev", "energy * 0.001")
                                    .Histo1D<double, double>({"h_BGOrec_raw_energy", "BGO Raw energy", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
@@ -253,6 +256,7 @@ void kompress(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_stkclusters_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_stkclusters_bgohits_bin(energy_nbins);
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH2D>>> h_stkclusters_bgohits_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH2D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_rms_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_energy_ratio_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_energy_ratio_1R(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
@@ -275,6 +279,7 @@ void kompress(
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile_upto_09(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile_from_09(energy_nbins);
+
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
         h_BGOrec_bar_energy_bin[bin_idx - 1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 100, 0, 10000);
@@ -375,13 +380,12 @@ void kompress(
                                          .Histo1D<int, double>({(std::string("h_BGOrec_hits_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO hits - bin ") + std::to_string(bin_idx)).c_str(), 80, 0, 350}, "nBGOentries", "simu_energy_w_corr");
         h_xtrl_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                       .Histo1D<double, double>({(std::string("h_xtrl_bin_") + std::to_string(bin_idx)).c_str(), (std::string("XTRL - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 150}, "xtrl", "simu_energy_w_corr");
-
         h_stkclusters_bin[bin_idx - 1] = _fr_bgo_analysis.Define("stk_clusters",
                                                                  [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                             .Histo1D<int, double>({(std::string("h_stkclusters_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100});
+                                             .Histo1D<int, double>({(std::string("h_stkclusters_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100}, "stk_clusters", "simu_energy_w_corr");
         h_stkclusters_bgohits_bin[bin_idx - 1] = _fr_bgo_analysis.Define("stk_clusters",
                                                                          [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                     .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350});
+                                                     .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350}, "stk_clusters", "nBGOentries", "simu_energy_w_corr");
 
         _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
@@ -411,6 +415,11 @@ void kompress(
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
             auto GetLayerComponent = [=](std::vector<double> &value_layer) -> double { return value_layer[ly]; };
+            auto GetStkLayerComponent = [=](std::vector<int> &stk_clusters) -> int { return stk_clusters[ly]; };
+
+            h_stkclusters_bgohits_layer[bin_idx -1][ly] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                            .Define("stk_layer_clusters", GetStkLayerComponent, {"STK_plane_clusters"})
+                                                            .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohits_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350}, "stk_layer_clusters", "nBGOentries", "simu_energy_w_corr");
             h_BGOrec_rms_layer[bin_idx - 1][ly] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                       .Define("rms_layer", GetLayerComponent, {"rmsLayer"})
                                                       .Histo1D<double, double>({(std::string("h_BGOrec_rms_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("RMS layer ") + std::to_string(ly) + std::string(" - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 500}, "rms_layer", "simu_energy_w_corr");
@@ -440,97 +449,139 @@ void kompress(
         }
     }
 
-    // Extract Simu histos
-    auto h_simu_energy = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
-                             .Histo1D<double, double>({"h_simu_energy", "Simu energy", energy_nbins, &energy_binning[0]}, "simu_energy_gev", "simu_energy_w_corr");
-    auto h_simu_energy_w = _fr_bgo_analysis.Histo1D<double>({"h_simu_energy_w", "Simu energy weight", 100, 0, 1}, "simu_energy_w_corr");
-    auto h_energy_diff = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
-                             .Define("raw_energy_gev", "energy * 0.001")
-                             .Define("energy_diff", "simu_energy_gev - raw_energy_gev")
-                             .Histo1D<double, double>({"h_energy_diff", "Simu vs Raw Reco BGO energy: Simu Energy - Raw Energy (GeV); counts", 100, 0, 100}, "energy_diff", "simu_energy_w_corr");
-    auto h_energy_diff_corr = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
-                                  .Define("corr_energy_gev", "energy_corr * 0.001")
-                                  .Define("energy_diff", "simu_energy_gev - corr_energy_gev")
-                                  .Histo1D<double, double>({"h_energy_diff_corr", "Simu vs Corrected Reco BGO energy: Simu Energy - Corrected Energy (GeV); counts", 100, -100, 100}, "energy_diff", "simu_energy_w_corr");
-    auto h_energy_diff2D = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
-                               .Define("energy_ratio", "(energy - simu_energy)/simu_energy")
-                               .Histo2D<double, double, double>({"h_energy_diff2D", "Energy Ratio; Real Energy (GeV); (Raw - Simu)/Simu", energy_nbins, &energy_binning[0], (int)energy_ratio_bins.size() - 1, &(energy_ratio_bins[0])}, "simu_energy_gev", "energy_ratio", "simu_energy_w_corr");
-    auto h_energy_diff2D_corr = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
-                                    .Define("energy_ratio", "(energy_corr-simu_energy)/simu_energy")
-                                    .Histo2D<double, double, double>({"h_energy_diff2D_corr", "Energy Ratio; Real Energy (GeV); (Corr - Simu)/Simu", energy_nbins, &energy_binning[0], (int)energy_ratio_bins.size() - 1, &(energy_ratio_bins[0])}, "simu_energy_gev", "energy_ratio", "simu_energy_w_corr");
-    auto h_energy_unfold = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
-                               .Define("raw_energy_gev", "energy * 0.001")
-                               .Histo2D<double, double, double>({"h_energy_unfold", "Energy Unfolding Matrix; Real Energy (GeV); Raw Energy (GeV)", energy_nbins, &energy_binning[0], energy_nbins, &energy_binning[0]}, "simu_energy_gev", "raw_energy_gev", "simu_energy_w_corr");
-    auto h_energy_unfold_corr = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
+    ROOT::RDF::RResultPtr<TH1D> h_simu_energy;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_energy_w;
+    ROOT::RDF::RResultPtr<TH1D> h_energy_diff;
+    ROOT::RDF::RResultPtr<TH1D> h_energy_diff_corr;
+    ROOT::RDF::RResultPtr<TH2D> h_energy_diff2D;
+    ROOT::RDF::RResultPtr<TH2D> h_energy_diff2D_corr;
+    ROOT::RDF::RResultPtr<TH2D> h_energy_unfold;
+    ROOT::RDF::RResultPtr<TH2D> h_energy_unfold_corr;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_slopeX;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_slopeY;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_interceptX;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_interceptY;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_position_x;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_position_y;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_position_z;
+    ROOT::RDF::RResultPtr<TH3D> h_simu_position;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_flux_w;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_w;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_particle;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_theta;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_phi;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_charge;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_cosx;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_cosy;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_cosz;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_zenith;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_azimuth;
+
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_x;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_y;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_z;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_x;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_y;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_z;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_trackID;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_parentID;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_pdgID;
+    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_index;
+
+    if (_mc)
+    {
+        // Extract Simu histos
+        h_simu_energy = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
+                                .Histo1D<double, double>({"h_simu_energy", "Simu energy", energy_nbins, &energy_binning[0]}, "simu_energy_gev", "simu_energy_w_corr");
+        h_simu_energy_w = _fr_bgo_analysis.Histo1D<double>({"h_simu_energy_w", "Simu energy weight", 100, 0, 1}, "simu_energy_w_corr");
+        h_energy_diff = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
+                                .Define("raw_energy_gev", "energy * 0.001")
+                                .Define("energy_diff", "simu_energy_gev - raw_energy_gev")
+                                .Histo1D<double, double>({"h_energy_diff", "Simu vs Raw Reco BGO energy: Simu Energy - Raw Energy (GeV); counts", 100, 0, 100}, "energy_diff", "simu_energy_w_corr");
+        h_energy_diff_corr = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
                                     .Define("corr_energy_gev", "energy_corr * 0.001")
-                                    .Histo2D<double, double, double>({"h_energy_unfold_corr", "Energy Unfolding Matrix; Real Energy (GeV); Corr Energy (GeV)", energy_nbins, &energy_binning[0], energy_nbins, &energy_binning[0]}, "simu_energy_gev", "corr_energy_gev", "simu_energy_w_corr");
-    auto h_simu_slopeX = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_slopeX", "Simu Slope X", 100, -10, 10}, "simu_slope_x", "simu_energy_w_corr");
-    auto h_simu_slopeY = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_slopeY", "Simu Slope Y", 100, -10, 10}, "simu_slope_y", "simu_energy_w_corr");
-    auto h_simu_interceptX = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_interceptX", "Simu Intercept X", 100, -500, 500}, "simu_intercept_x", "simu_energy_w_corr");
-    auto h_simu_interceptY = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_interceptY", "Simu Intercept Y", 100, -500, 500}, "simu_intercept_y", "simu_energy_w_corr");
-    auto h_simu_position_x = _fr_bgo_analysis.Define("simu_position_comp", "simu_position.fX")
-                                 .Histo1D<double, double>({"h_simu_position_x", "Simu Position X; X [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
-    auto h_simu_position_y = _fr_bgo_analysis.Define("simu_position_comp", "simu_position.fY")
-                                 .Histo1D<double, double>({"h_simu_position_y", "Simu Position Y; Y [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
-    auto h_simu_position_z = _fr_bgo_analysis.Define("simu_position_comp", "simu_position.fZ")
-                                 .Histo1D<double, double>({"h_simu_position_z", "Simu Position Z; Z [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
-    auto h_simu_position = _fr_bgo_analysis.Define("simu_position_comp_x", "simu_position.fX")
-                               .Define("simu_position_comp_y", "simu_position.fY")
-                               .Define("simu_position_comp_z", "simu_position.fZ")
-                               .Histo3D<double, double, double, double>({"h_simu_position", "Simu Position; Y [mm]; X [mm]; Z [mm]", 100, -1500, 1500, 100, -1500, 1500, 100, -1500, 1500}, "simu_position_comp_y", "simu_position_comp_x", "simu_position_comp_z", "simu_energy_w_corr");
-    auto h_simu_flux_w = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_flux_w", "Simu F_{w}; F_{w}", 100, 0, 2}, "simu_flux_w", "simu_energy_w_corr");
-    auto h_simu_w = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_w", "Simu w; w", 100, 0, 2}, "simu_w", "simu_energy_w_corr");
-    auto h_simu_particle = _fr_bgo_analysis.Histo1D<int, double>({"h_simu_particle", "Simu particle", 3, 0, 3}, "simu_n_particle", "simu_energy_w_corr");
-    auto h_simu_theta = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_theta", "Simu #theta; #theta [deg]", 100, 0, 180}, "simu_theta", "simu_energy_w_corr");
-    auto h_simu_phi = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_phi", "Simu #phi; #phi [deg]", 200, -180, 180}, "simu_phi", "simu_energy_w_corr");
-    auto h_simu_charge = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_charge", "Simu charge;", 100, -2, 2}, "simu_charge", "simu_energy_w_corr");
-    auto h_simu_cosx = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_cosx", "Simu #cos(x);", 100, -1, 1}, "simu_cos_x", "simu_energy_w_corr");
-    auto h_simu_cosy = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_cosy", "Simu #cos(y);", 100, -1, 1}, "simu_cos_y", "simu_energy_w_corr");
-    auto h_simu_cosz = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_cosz", "Simu #cos(z);", 100, -1, 1}, "simu_cos_z", "simu_energy_w_corr");
-    auto h_simu_zenith = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_zenith", "Simu zenith; Zenith [deg]", 100, 0, 90}, "simu_zenith", "simu_energy_w_corr");
-    auto h_simu_azimuth = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_azimuth", "Simu azimuth; Azimuth [deg]", 200, -180, 180}, "simu_azimuth", "simu_energy_w_corr");
+                                    .Define("energy_diff", "simu_energy_gev - corr_energy_gev")
+                                    .Histo1D<double, double>({"h_energy_diff_corr", "Simu vs Corrected Reco BGO energy: Simu Energy - Corrected Energy (GeV); counts", 100, -100, 100}, "energy_diff", "simu_energy_w_corr");
+        h_energy_diff2D = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
+                                .Define("energy_ratio", "(energy - simu_energy)/simu_energy")
+                                .Histo2D<double, double, double>({"h_energy_diff2D", "Energy Ratio; Real Energy (GeV); (Raw - Simu)/Simu", energy_nbins, &energy_binning[0], (int)energy_ratio_bins.size() - 1, &(energy_ratio_bins[0])}, "simu_energy_gev", "energy_ratio", "simu_energy_w_corr");
+        h_energy_diff2D_corr = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
+                                        .Define("energy_ratio", "(energy_corr-simu_energy)/simu_energy")
+                                        .Histo2D<double, double, double>({"h_energy_diff2D_corr", "Energy Ratio; Real Energy (GeV); (Corr - Simu)/Simu", energy_nbins, &energy_binning[0], (int)energy_ratio_bins.size() - 1, &(energy_ratio_bins[0])}, "simu_energy_gev", "energy_ratio", "simu_energy_w_corr");
+        h_energy_unfold = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
+                                .Define("raw_energy_gev", "energy * 0.001")
+                                .Histo2D<double, double, double>({"h_energy_unfold", "Energy Unfolding Matrix; Real Energy (GeV); Raw Energy (GeV)", energy_nbins, &energy_binning[0], energy_nbins, &energy_binning[0]}, "simu_energy_gev", "raw_energy_gev", "simu_energy_w_corr");
+        h_energy_unfold_corr = _fr_bgo_analysis.Define("simu_energy_gev", "simu_energy * 0.001")
+                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                        .Histo2D<double, double, double>({"h_energy_unfold_corr", "Energy Unfolding Matrix; Real Energy (GeV); Corr Energy (GeV)", energy_nbins, &energy_binning[0], energy_nbins, &energy_binning[0]}, "simu_energy_gev", "corr_energy_gev", "simu_energy_w_corr");
+        h_simu_slopeX = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_slopeX", "Simu Slope X", 100, -10, 10}, "simu_slope_x", "simu_energy_w_corr");
+        h_simu_slopeY = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_slopeY", "Simu Slope Y", 100, -10, 10}, "simu_slope_y", "simu_energy_w_corr");
+        h_simu_interceptX = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_interceptX", "Simu Intercept X", 100, -500, 500}, "simu_intercept_x", "simu_energy_w_corr");
+        h_simu_interceptY = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_interceptY", "Simu Intercept Y", 100, -500, 500}, "simu_intercept_y", "simu_energy_w_corr");
+        h_simu_position_x = _fr_bgo_analysis.Define("simu_position_comp", "simu_position.fX")
+                                    .Histo1D<double, double>({"h_simu_position_x", "Simu Position X; X [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
+        h_simu_position_y = _fr_bgo_analysis.Define("simu_position_comp", "simu_position.fY")
+                                    .Histo1D<double, double>({"h_simu_position_y", "Simu Position Y; Y [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
+        h_simu_position_z = _fr_bgo_analysis.Define("simu_position_comp", "simu_position.fZ")
+                                    .Histo1D<double, double>({"h_simu_position_z", "Simu Position Z; Z [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
+        h_simu_position = _fr_bgo_analysis.Define("simu_position_comp_x", "simu_position.fX")
+                                .Define("simu_position_comp_y", "simu_position.fY")
+                                .Define("simu_position_comp_z", "simu_position.fZ")
+                                .Histo3D<double, double, double, double>({"h_simu_position", "Simu Position; Y [mm]; X [mm]; Z [mm]", 100, -1500, 1500, 100, -1500, 1500, 100, -1500, 1500}, "simu_position_comp_y", "simu_position_comp_x", "simu_position_comp_z", "simu_energy_w_corr");
+        h_simu_flux_w = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_flux_w", "Simu F_{w}; F_{w}", 100, 0, 2}, "simu_flux_w", "simu_energy_w_corr");
+        h_simu_w = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_w", "Simu w; w", 100, 0, 2}, "simu_w", "simu_energy_w_corr");
+        h_simu_particle = _fr_bgo_analysis.Histo1D<int, double>({"h_simu_particle", "Simu particle", 3, 0, 3}, "simu_n_particle", "simu_energy_w_corr");
+        h_simu_theta = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_theta", "Simu #theta; #theta [deg]", 100, 0, 180}, "simu_theta", "simu_energy_w_corr");
+        h_simu_phi = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_phi", "Simu #phi; #phi [deg]", 200, -180, 180}, "simu_phi", "simu_energy_w_corr");
+        h_simu_charge = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_charge", "Simu charge;", 100, -2, 2}, "simu_charge", "simu_energy_w_corr");
+        h_simu_cosx = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_cosx", "Simu #cos(x);", 100, -1, 1}, "simu_cos_x", "simu_energy_w_corr");
+        h_simu_cosy = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_cosy", "Simu #cos(y);", 100, -1, 1}, "simu_cos_y", "simu_energy_w_corr");
+        h_simu_cosz = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_cosz", "Simu #cos(z);", 100, -1, 1}, "simu_cos_z", "simu_energy_w_corr");
+        h_simu_zenith = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_zenith", "Simu zenith; Zenith [deg]", 100, 0, 90}, "simu_zenith", "simu_energy_w_corr");
+        h_simu_azimuth = _fr_bgo_analysis.Histo1D<double, double>({"h_simu_azimuth", "Simu azimuth; Azimuth [deg]", 200, -180, 180}, "simu_azimuth", "simu_energy_w_corr");
 
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_x = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_y = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_start_z = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_x = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_y = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_z = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_trackID = std::make_unique<TH1D>("h_simu_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_parentID = std::make_unique<TH1D>("h_simu_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_pdgID = std::make_unique<TH1D>("h_simu_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000);
-    std::unique_ptr<TH1D> h_simu_thruthtrajectory_stop_index = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10);
+        h_simu_thruthtrajectory_start_x = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500);
+        h_simu_thruthtrajectory_start_y = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500);
+        h_simu_thruthtrajectory_start_z = std::make_unique<TH1D>("h_simu_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500);
+        h_simu_thruthtrajectory_stop_x = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000);
+        h_simu_thruthtrajectory_stop_y = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000);
+        h_simu_thruthtrajectory_stop_z = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000);
+        h_simu_thruthtrajectory_trackID = std::make_unique<TH1D>("h_simu_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200);
+        h_simu_thruthtrajectory_parentID = std::make_unique<TH1D>("h_simu_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1);
+        h_simu_thruthtrajectory_pdgID = std::make_unique<TH1D>("h_simu_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000);
+        h_simu_thruthtrajectory_stop_index = std::make_unique<TH1D>("h_simu_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10);
 
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_x](std::vector<double> thruthtrajectory, double energy_w) { 
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_x](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_start_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_x", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_y](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_start_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_y", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_z](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_start_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_z", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_x](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_stop_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_x", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_y](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_stop_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_y", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_z](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_stop_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_z", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_trackID](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_trackID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_trackID", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_parentID](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_parentID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_parentID", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_pdgID](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_thruthtrajectory_pdgID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_PDG", "simu_energy_w_corr"});
+        _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_index](std::vector<double> thruthtrajectory, double energy_w) { 
             for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_start_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_x", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_y](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_start_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_y", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_start_z](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_start_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_z", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_x](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_stop_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_x", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_y](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_stop_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_y", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_z](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_stop_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_z", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_trackID](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_trackID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_trackID", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_parentID](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_parentID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_parentID", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_pdgID](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_thruthtrajectory_pdgID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_PDG", "simu_energy_w_corr"});
-    _fr_bgo_analysis.Foreach([&h_simu_thruthtrajectory_stop_index](std::vector<double> thruthtrajectory, double energy_w) { 
-        for (auto& _elm : thruthtrajectory)
-            h_simu_thruthtrajectory_stop_index->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_index", "simu_energy_w_corr"});
+                h_simu_thruthtrajectory_stop_index->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_index", "simu_energy_w_corr"});
+    }
 
     // Extract STK histos
     auto h_stk_cosine = _fr_stk_analysis.Histo1D({"h_stk_cosine", "h_stk_cosine", 100, 0, 1}, "STK_bestTrack_costheta");
@@ -584,48 +635,51 @@ void kompress(
     auto h_NUD_max_channel = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w_corr");
 
     // Extract filter histos
-    auto h_geo_before_trigger_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
-                                    .Filter("evtfilter_geometric_before_trigger==true")
-                                    .Histo1D<int, double>({"h_geo_before_trigger_cut", "Geometric factor pre trigger", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_trigger_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+
+    ROOT::RDF::RResultPtr<TH1D> h_geo_before_trigger_cut;
+    if (_mc)
+        h_geo_before_trigger_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+                                        .Filter("evtfilter_geometric_before_trigger==true")
+                                        .Histo1D<int, double>({"h_geo_before_trigger_cut", "Geometric factor pre trigger", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_trigger_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                          .Filter("evtfilter_evt_triggered==true")
-                         .Histo1D<int, double>({"h_trigger_cut", "Trigger", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_geometric_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                         .Histo1D<double, double>({"h_trigger_cut", "Trigger", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_geometric_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                            .Filter("evtfilter_geometric==true")
-                           .Histo1D<int, double>({"h_geometric_cut", "Geometric", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_maxElayer_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                           .Histo1D<double, double>({"h_geometric_cut", "Geometric", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_maxElayer_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_BGO_fiducial_maxElayer_cut==true")
-                              .Histo1D<int, double>({"h_maxElayer_cut", "maxElayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_maxBarlayer_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                              .Histo1D<double, double>({"h_maxElayer_cut", "maxElayer cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_maxBarlayer_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_BGO_fiducial_maxBarLayer_cut==true")
-                              .Histo1D<int, double>({"h_maxBarlayer_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_BGOTrackContainment_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                              .Histo1D<double, double>({"h_maxBarlayer_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_BGOTrackContainment_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_BGO_fiducial_BGOTrackContainment_cut==true")
-                              .Histo1D<int, double>({"h_BGOTrackContainment_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_bgo_fiducial_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                              .Histo1D<double, double>({"h_BGOTrackContainment_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_bgo_fiducial_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_BGO_fiducial==true")
-                              .Histo1D<int, double>({"h_bgo_fiducial_cut", "BGO fiducial", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_nbarlayer13_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                              .Histo1D<double, double>({"h_bgo_fiducial_cut", "BGO fiducial", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_nbarlayer13_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_nBarLayer13_cut==true")
-                              .Histo1D<int, double>({"h_nbarlayer13_cut", "nBar layer 13 cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_maxrms_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                              .Histo1D<double, double>({"h_nbarlayer13_cut", "nBar layer 13 cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_maxrms_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_maxRms_cut==true")
-                              .Histo1D<int, double>({"h_maxrms_cut", "max RMS cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_track_selection_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                              .Histo1D<double, double>({"h_maxrms_cut", "max RMS cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_track_selection_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_track_selection_cut==true")
-                                .Histo1D<int, double>({"h_track_selection_cut", "Track selection cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_psd_stk_match_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                                .Histo1D<double, double>({"h_track_selection_cut", "Track selection cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_psd_stk_match_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_psd_stk_match_cut==true")
-                                .Histo1D<int, double>({"h_psd_stk_match_cut", "PSD-STK match cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_psd_charge_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                                .Histo1D<double, double>({"h_psd_stk_match_cut", "PSD-STK match cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_psd_charge_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_psd_charge_cut==true")
-                                .Histo1D<int, double>({"h_psd_charge_cut", "PSD charge cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_stk_charge_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                                .Histo1D<double, double>({"h_psd_charge_cut", "PSD charge cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_stk_charge_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_stk_charge_cut==true")
-                                .Histo1D<int, double>({"h_stk_charge_cut", "STK charge cut", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
-    auto h_all_cuts_cut = _fr_bin_patch.Define("raw_energy_gev", "energy * 0.001")
+                                .Histo1D<double, double>({"h_stk_charge_cut", "STK charge cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+    auto h_all_cuts_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_all_cut==true")
-                                .Histo1D<int, double>({"h_all_cuts_cut", "All cuts", energy_nbins, &energy_binning[0]}, "raw_energy_gev", "simu_energy_w_corr");
+                                .Histo1D<double, double>({"h_all_cuts_cut", "All cuts", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
 
     // Preselected events based histos
 
@@ -752,6 +806,7 @@ void kompress(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_ps_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_stkclusters_ps_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_stkclusters_bgohits_ps_bin(energy_nbins);
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH2D>>> h_stkclusters_ps_bgohits_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH2D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_ps_rms_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_ps_energy_ratio_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_ps_energy_ratio_1R(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
@@ -857,10 +912,10 @@ void kompress(
 
         h_stkclusters_ps_bin[bin_idx - 1] = _fr_preselected.Define("stk_clusters",
                                                                    [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                .Histo1D<int, double>({(std::string("h_stkclusters_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100});
+                                                .Histo1D<int, double>({(std::string("h_stkclusters_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100}, "stk_clusters", "simu_energy_w_corr");
         h_stkclusters_bgohits_ps_bin[bin_idx - 1] = _fr_preselected.Define("stk_clusters",
                                                                            [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                        .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350});
+                                                        .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350}, "stk_clusters", "nBGOentries", "simu_energy_w_corr");
 
         _fr_preselected.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_ps_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
@@ -890,6 +945,11 @@ void kompress(
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
             auto GetLayerComponent = [=](std::vector<double> &value_layer) -> double { return value_layer[ly]; };
+            auto GetStkLayerComponent = [=](std::vector<int> &stk_clusters) -> int { return stk_clusters[ly]; };
+
+            h_stkclusters_ps_bgohits_layer[bin_idx -1][ly] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                            .Define("stk_layer_clusters", GetStkLayerComponent, {"STK_plane_clusters"})
+                                                            .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohits_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350}, "stk_layer_clusters", "nBGOentries", "simu_energy_w_corr");
             h_BGOrec_ps_rms_layer[bin_idx - 1][ly] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                                          .Define("rms_layer", GetLayerComponent, {"rmsLayer"})
                                                          .Histo1D<double, double>({(std::string("h_BGOrec_ps_rms_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("RMS layer ") + std::to_string(ly) + std::string(" - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 500}, "rms_layer", "simu_energy_w_corr");
@@ -919,97 +979,139 @@ void kompress(
         }
     }
 
-    // Extract Simu histos
-    auto h_simu_ps_energy = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
-                                .Histo1D<double, double>({"h_simu_ps_energy", "Simu energy", energy_nbins, &energy_binning[0]}, "simu_energy_gev", "simu_energy_w_corr");
-    auto h_simu_ps_energy_w = _fr_preselected.Histo1D<double>({"h_simu_ps_energy_w", "Simu energy weight", 100, 0, 1}, "simu_energy_w_corr");
-    auto h_energy_ps_diff = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
-                                .Define("raw_energy_gev", "energy * 0.001")
-                                .Define("energy_diff", "simu_energy_gev - raw_energy_gev")
-                                .Histo1D<double, double>({"h_energy_ps_diff", "Simu vs Raw Reco BGO energy: Simu Energy - Raw Energy (GeV); counts", 100, 0, 100}, "energy_diff", "simu_energy_w_corr");
-    auto h_energy_ps_diff_corr = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
-                                     .Define("corr_energy_gev", "energy_corr * 0.001")
-                                     .Define("energy_diff", "simu_energy_gev - corr_energy_gev")
-                                     .Histo1D<double, double>({"h_energy_ps_diff_corr", "Simu vs Corrected Reco BGO energy: Simu Energy - Corrected Energy (GeV); counts", 100, -100, 100}, "energy_diff", "simu_energy_w_corr");
-    auto h_energy_ps_diff2D = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
-                                  .Define("energy_ratio", "(energy - simu_energy)/simu_energy")
-                                  .Histo2D<double, double, double>({"h_energy_ps_diff2D", "Energy Ratio; Real Energy (GeV); (Raw - Simu)/Simu", energy_nbins, &energy_binning[0], (int)energy_ratio_bins.size() - 1, &(energy_ratio_bins[0])}, "simu_energy_gev", "energy_ratio", "simu_energy_w_corr");
-    auto h_energy_ps_diff2D_corr = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
-                                       .Define("energy_ratio", "(energy_corr-simu_energy)/simu_energy")
-                                       .Histo2D<double, double, double>({"h_energy_ps_diff2D_corr", "Energy Ratio; Real Energy (GeV); (Corr - Simu)/Simu", energy_nbins, &energy_binning[0], (int)energy_ratio_bins.size() - 1, &(energy_ratio_bins[0])}, "simu_energy_gev", "energy_ratio", "simu_energy_w_corr");
-    auto h_energy_ps_unfold = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
-                                  .Define("raw_energy_gev", "energy * 0.001")
-                                  .Histo2D<double, double, double>({"h_energy_ps_unfold", "Energy Unfolding Matrix; Real Energy (GeV); Raw Energy (GeV)", energy_nbins, &energy_binning[0], energy_nbins, &energy_binning[0]}, "simu_energy_gev", "raw_energy_gev", "simu_energy_w_corr");
-    auto h_energy_ps_unfold_corr = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
-                                       .Define("corr_energy_gev", "energy_corr * 0.001")
-                                       .Histo2D<double, double, double>({"h_energy_ps_unfold_corr", "Energy Unfolding Matrix; Real Energy (GeV); Corr Energy (GeV)", energy_nbins, &energy_binning[0], energy_nbins, &energy_binning[0]}, "simu_energy_gev", "corr_energy_gev", "simu_energy_w_corr");
-    auto h_simu_ps_slopeX = _fr_preselected.Histo1D<double, double>({"h_simu_ps_slopeX", "Simu Slope X", 100, -10, 10}, "simu_slope_x", "simu_energy_w_corr");
-    auto h_simu_ps_slopeY = _fr_preselected.Histo1D<double, double>({"h_simu_ps_slopeY", "Simu Slope Y", 100, -10, 10}, "simu_slope_y", "simu_energy_w_corr");
-    auto h_simu_ps_interceptX = _fr_preselected.Histo1D<double, double>({"h_simu_ps_interceptX", "Simu Intercept X", 100, -500, 500}, "simu_intercept_x", "simu_energy_w_corr");
-    auto h_simu_ps_interceptY = _fr_preselected.Histo1D<double, double>({"h_simu_ps_interceptY", "Simu Intercept Y", 100, -500, 500}, "simu_intercept_y", "simu_energy_w_corr");
-    auto h_simu_ps_position_x = _fr_preselected.Define("simu_position_comp", "simu_position.fX")
-                                    .Histo1D<double, double>({"h_simu_ps_position_x", "Simu Position X; X [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
-    auto h_simu_ps_position_y = _fr_preselected.Define("simu_position_comp", "simu_position.fY")
-                                    .Histo1D<double, double>({"h_simu_ps_position_y", "Simu Position Y; Y [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
-    auto h_simu_ps_position_z = _fr_preselected.Define("simu_position_comp", "simu_position.fZ")
-                                    .Histo1D<double, double>({"h_simu_ps_position_z", "Simu Position Z; Z [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
-    auto h_simu_ps_position = _fr_preselected.Define("simu_position_comp_x", "simu_position.fX")
-                                  .Define("simu_position_comp_y", "simu_position.fY")
-                                  .Define("simu_position_comp_z", "simu_position.fZ")
-                                  .Histo3D<double, double, double, double>({"h_simu_ps_position", "Simu Position; Y [mm]; X [mm]; Z [mm]", 100, -1500, 1500, 100, -1500, 1500, 100, -1500, 1500}, "simu_position_comp_y", "simu_position_comp_x", "simu_position_comp_z", "simu_energy_w_corr");
-    auto h_simu_ps_flux_w = _fr_preselected.Histo1D<double, double>({"h_simu_ps_flux_w", "Simu F_{w}; F_{w}", 100, 0, 2}, "simu_flux_w", "simu_energy_w_corr");
-    auto h_simu_ps_w = _fr_preselected.Histo1D<double, double>({"h_simu_ps_w", "Simu w; w", 100, 0, 2}, "simu_w", "simu_energy_w_corr");
-    auto h_simu_ps_particle = _fr_preselected.Histo1D<int, double>({"h_simu_ps_particle", "Simu particle", 3, 0, 3}, "simu_n_particle", "simu_energy_w_corr");
-    auto h_simu_ps_theta = _fr_preselected.Histo1D<double, double>({"h_simu_ps_theta", "Simu #theta; #theta [deg]", 100, 0, 180}, "simu_theta", "simu_energy_w_corr");
-    auto h_simu_ps_phi = _fr_preselected.Histo1D<double, double>({"h_simu_ps_phi", "Simu #phi; #phi [deg]", 200, -180, 180}, "simu_phi", "simu_energy_w_corr");
-    auto h_simu_ps_charge = _fr_preselected.Histo1D<double, double>({"h_simu_ps_charge", "Simu charge;", 100, -2, 2}, "simu_charge", "simu_energy_w_corr");
-    auto h_simu_ps_cosx = _fr_preselected.Histo1D<double, double>({"h_simu_ps_cosx", "Simu #cos(x);", 100, -1, 1}, "simu_cos_x", "simu_energy_w_corr");
-    auto h_simu_ps_cosy = _fr_preselected.Histo1D<double, double>({"h_simu_ps_cosy", "Simu #cos(y);", 100, -1, 1}, "simu_cos_y", "simu_energy_w_corr");
-    auto h_simu_ps_cosz = _fr_preselected.Histo1D<double, double>({"h_simu_ps_cosz", "Simu #cos(z);", 100, -1, 1}, "simu_cos_z", "simu_energy_w_corr");
-    auto h_simu_ps_zenith = _fr_preselected.Histo1D<double, double>({"h_simu_ps_zenith", "Simu zenith; Zenith [deg]", 100, 0, 90}, "simu_zenith", "simu_energy_w_corr");
-    auto h_simu_ps_azimuth = _fr_preselected.Histo1D<double, double>({"h_simu_ps_azimuth", "Simu azimuth; Azimuth [deg]", 200, -180, 180}, "simu_azimuth", "simu_energy_w_corr");
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_energy;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_energy_w;
+    ROOT::RDF::RResultPtr<TH1D> h_energy_ps_diff;
+    ROOT::RDF::RResultPtr<TH1D> h_energy_ps_diff_corr;
+    ROOT::RDF::RResultPtr<TH2D> h_energy_ps_diff2D;
+    ROOT::RDF::RResultPtr<TH2D> h_energy_ps_diff2D_corr;
+    ROOT::RDF::RResultPtr<TH2D> h_energy_ps_unfold;
+    ROOT::RDF::RResultPtr<TH2D> h_energy_ps_unfold_corr;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_slopeX;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_slopeY;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_interceptX;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_interceptY;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_position_x;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_position_y;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_position_z;
+    ROOT::RDF::RResultPtr<TH3D> h_simu_ps_position;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_flux_w;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_w;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_particle;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_theta;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_phi;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_charge;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_cosx;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_cosy;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_cosz;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_zenith;
+    ROOT::RDF::RResultPtr<TH1D> h_simu_ps_azimuth;
 
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_x = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_y = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_z = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_x = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_y = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_z = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_trackID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_parentID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_pdgID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000);
-    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_index = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10);
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_x;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_y;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_start_z;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_x;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_y;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_z;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_trackID;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_parentID;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_pdgID;
+    std::unique_ptr<TH1D> h_simu_ps_thruthtrajectory_stop_index;
 
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_x](std::vector<double> thruthtrajectory, double energy_w) { 
+    if (_mc)
+    {
+        // Extract Simu histos
+        h_simu_ps_energy = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                    .Histo1D<double, double>({"h_simu_ps_energy", "Simu energy", energy_nbins, &energy_binning[0]}, "simu_energy_gev", "simu_energy_w_corr");
+        h_simu_ps_energy_w = _fr_preselected.Histo1D<double>({"h_simu_ps_energy_w", "Simu energy weight", 100, 0, 1}, "simu_energy_w_corr");
+        h_energy_ps_diff = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                    .Define("raw_energy_gev", "energy * 0.001")
+                                    .Define("energy_diff", "simu_energy_gev - raw_energy_gev")
+                                    .Histo1D<double, double>({"h_energy_ps_diff", "Simu vs Raw Reco BGO energy: Simu Energy - Raw Energy (GeV); counts", 100, 0, 100}, "energy_diff", "simu_energy_w_corr");
+        h_energy_ps_diff_corr = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                        .Define("energy_diff", "simu_energy_gev - corr_energy_gev")
+                                        .Histo1D<double, double>({"h_energy_ps_diff_corr", "Simu vs Corrected Reco BGO energy: Simu Energy - Corrected Energy (GeV); counts", 100, -100, 100}, "energy_diff", "simu_energy_w_corr");
+        h_energy_ps_diff2D = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                    .Define("energy_ratio", "(energy - simu_energy)/simu_energy")
+                                    .Histo2D<double, double, double>({"h_energy_ps_diff2D", "Energy Ratio; Real Energy (GeV); (Raw - Simu)/Simu", energy_nbins, &energy_binning[0], (int)energy_ratio_bins.size() - 1, &(energy_ratio_bins[0])}, "simu_energy_gev", "energy_ratio", "simu_energy_w_corr");
+        h_energy_ps_diff2D_corr = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                        .Define("energy_ratio", "(energy_corr-simu_energy)/simu_energy")
+                                        .Histo2D<double, double, double>({"h_energy_ps_diff2D_corr", "Energy Ratio; Real Energy (GeV); (Corr - Simu)/Simu", energy_nbins, &energy_binning[0], (int)energy_ratio_bins.size() - 1, &(energy_ratio_bins[0])}, "simu_energy_gev", "energy_ratio", "simu_energy_w_corr");
+        h_energy_ps_unfold = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                    .Define("raw_energy_gev", "energy * 0.001")
+                                    .Histo2D<double, double, double>({"h_energy_ps_unfold", "Energy Unfolding Matrix; Real Energy (GeV); Raw Energy (GeV)", energy_nbins, &energy_binning[0], energy_nbins, &energy_binning[0]}, "simu_energy_gev", "raw_energy_gev", "simu_energy_w_corr");
+        h_energy_ps_unfold_corr = _fr_preselected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                        .Histo2D<double, double, double>({"h_energy_ps_unfold_corr", "Energy Unfolding Matrix; Real Energy (GeV); Corr Energy (GeV)", energy_nbins, &energy_binning[0], energy_nbins, &energy_binning[0]}, "simu_energy_gev", "corr_energy_gev", "simu_energy_w_corr");
+        h_simu_ps_slopeX = _fr_preselected.Histo1D<double, double>({"h_simu_ps_slopeX", "Simu Slope X", 100, -10, 10}, "simu_slope_x", "simu_energy_w_corr");
+        h_simu_ps_slopeY = _fr_preselected.Histo1D<double, double>({"h_simu_ps_slopeY", "Simu Slope Y", 100, -10, 10}, "simu_slope_y", "simu_energy_w_corr");
+        h_simu_ps_interceptX = _fr_preselected.Histo1D<double, double>({"h_simu_ps_interceptX", "Simu Intercept X", 100, -500, 500}, "simu_intercept_x", "simu_energy_w_corr");
+        h_simu_ps_interceptY = _fr_preselected.Histo1D<double, double>({"h_simu_ps_interceptY", "Simu Intercept Y", 100, -500, 500}, "simu_intercept_y", "simu_energy_w_corr");
+        h_simu_ps_position_x = _fr_preselected.Define("simu_position_comp", "simu_position.fX")
+                                        .Histo1D<double, double>({"h_simu_ps_position_x", "Simu Position X; X [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
+        h_simu_ps_position_y = _fr_preselected.Define("simu_position_comp", "simu_position.fY")
+                                        .Histo1D<double, double>({"h_simu_ps_position_y", "Simu Position Y; Y [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
+        h_simu_ps_position_z = _fr_preselected.Define("simu_position_comp", "simu_position.fZ")
+                                        .Histo1D<double, double>({"h_simu_ps_position_z", "Simu Position Z; Z [mm]", 100, -1500, 1500}, "simu_position_comp", "simu_energy_w_corr");
+        h_simu_ps_position = _fr_preselected.Define("simu_position_comp_x", "simu_position.fX")
+                                    .Define("simu_position_comp_y", "simu_position.fY")
+                                    .Define("simu_position_comp_z", "simu_position.fZ")
+                                    .Histo3D<double, double, double, double>({"h_simu_ps_position", "Simu Position; Y [mm]; X [mm]; Z [mm]", 100, -1500, 1500, 100, -1500, 1500, 100, -1500, 1500}, "simu_position_comp_y", "simu_position_comp_x", "simu_position_comp_z", "simu_energy_w_corr");
+        h_simu_ps_flux_w = _fr_preselected.Histo1D<double, double>({"h_simu_ps_flux_w", "Simu F_{w}; F_{w}", 100, 0, 2}, "simu_flux_w", "simu_energy_w_corr");
+        h_simu_ps_w = _fr_preselected.Histo1D<double, double>({"h_simu_ps_w", "Simu w; w", 100, 0, 2}, "simu_w", "simu_energy_w_corr");
+        h_simu_ps_particle = _fr_preselected.Histo1D<int, double>({"h_simu_ps_particle", "Simu particle", 3, 0, 3}, "simu_n_particle", "simu_energy_w_corr");
+        h_simu_ps_theta = _fr_preselected.Histo1D<double, double>({"h_simu_ps_theta", "Simu #theta; #theta [deg]", 100, 0, 180}, "simu_theta", "simu_energy_w_corr");
+        h_simu_ps_phi = _fr_preselected.Histo1D<double, double>({"h_simu_ps_phi", "Simu #phi; #phi [deg]", 200, -180, 180}, "simu_phi", "simu_energy_w_corr");
+        h_simu_ps_charge = _fr_preselected.Histo1D<double, double>({"h_simu_ps_charge", "Simu charge;", 100, -2, 2}, "simu_charge", "simu_energy_w_corr");
+        h_simu_ps_cosx = _fr_preselected.Histo1D<double, double>({"h_simu_ps_cosx", "Simu #cos(x);", 100, -1, 1}, "simu_cos_x", "simu_energy_w_corr");
+        h_simu_ps_cosy = _fr_preselected.Histo1D<double, double>({"h_simu_ps_cosy", "Simu #cos(y);", 100, -1, 1}, "simu_cos_y", "simu_energy_w_corr");
+        h_simu_ps_cosz = _fr_preselected.Histo1D<double, double>({"h_simu_ps_cosz", "Simu #cos(z);", 100, -1, 1}, "simu_cos_z", "simu_energy_w_corr");
+        h_simu_ps_zenith = _fr_preselected.Histo1D<double, double>({"h_simu_ps_zenith", "Simu zenith; Zenith [deg]", 100, 0, 90}, "simu_zenith", "simu_energy_w_corr");
+        h_simu_ps_azimuth = _fr_preselected.Histo1D<double, double>({"h_simu_ps_azimuth", "Simu azimuth; Azimuth [deg]", 200, -180, 180}, "simu_azimuth", "simu_energy_w_corr");
+
+        h_simu_ps_thruthtrajectory_start_x = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_x", "Truth Trajectory Start X; X [mm]", 100, -1500, 1500);
+        h_simu_ps_thruthtrajectory_start_y = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_y", "Truth Trajectory Start Y; Y [mm]", 100, -1500, 1500);
+        h_simu_ps_thruthtrajectory_start_z = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_start_z", "Truth Trajectory Start Z; Z [mm]", 100, -1500, 1500);
+        h_simu_ps_thruthtrajectory_stop_x = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_x", "Truth Trajectory Stop X; X [mm]", 100, -3000, 3000);
+        h_simu_ps_thruthtrajectory_stop_y = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_y", "Truth Trajectory Stop Y; Y [mm]", 100, -3000, 3000);
+        h_simu_ps_thruthtrajectory_stop_z = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_z", "Truth Trajectory Stop Z; Z [mm]", 100, -3000, 3000);
+        h_simu_ps_thruthtrajectory_trackID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_trackID", "Truth Trajectory Track ID", 100, 0, 200);
+        h_simu_ps_thruthtrajectory_parentID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_parentID", "Truth Trajectory Parent ID", 2, 0, 1);
+        h_simu_ps_thruthtrajectory_pdgID = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_pdgID", "Truth Trajectory PDG ID", 200, -2000, 3000);
+        h_simu_ps_thruthtrajectory_stop_index = std::make_unique<TH1D>("h_simu_ps_thruthtrajectory_stop_index", "Truth Trajectory Stop Index", 100, -10, 10);
+
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_x](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_start_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_x", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_y](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_start_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_y", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_z](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_start_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_z", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_x](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_stop_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_x", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_y](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_stop_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_y", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_z](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_stop_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_z", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_trackID](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_trackID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_trackID", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_parentID](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_parentID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_parentID", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_pdgID](std::vector<double> thruthtrajectory, double energy_w) { 
+                for (auto& _elm : thruthtrajectory)
+                    h_simu_ps_thruthtrajectory_pdgID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_PDG", "simu_energy_w_corr"});
+        _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_index](std::vector<double> thruthtrajectory, double energy_w) { 
             for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_start_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_x", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_y](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_start_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_y", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_start_z](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_start_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_start_z", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_x](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_stop_x->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_x", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_y](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_stop_y->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_y", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_z](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_stop_z->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_z", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_trackID](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_trackID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_trackID", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_parentID](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_parentID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_parentID", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_pdgID](std::vector<double> thruthtrajectory, double energy_w) { 
-            for (auto& _elm : thruthtrajectory)
-                h_simu_ps_thruthtrajectory_pdgID->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_PDG", "simu_energy_w_corr"});
-    _fr_preselected.Foreach([&h_simu_ps_thruthtrajectory_stop_index](std::vector<double> thruthtrajectory, double energy_w) { 
-        for (auto& _elm : thruthtrajectory)
-            h_simu_ps_thruthtrajectory_stop_index->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_index", "simu_energy_w_corr"});
+                h_simu_ps_thruthtrajectory_stop_index->Fill(_elm, energy_w); }, {"simu_thruthtrajectory_stop_index", "simu_energy_w_corr"});
+    }
 
     // Extract STK histos
     auto h_stk_ps_cosine = _fr_preselected.Histo1D({"h_stk_ps_cosine", "h_stk_cosine", 100, 0, 1}, "STK_bestTrack_costheta");
@@ -1067,46 +1169,49 @@ void kompress(
 
     TFile *outfile = TFile::Open(outputPath.c_str(), "RECREATE");
 
-    outfile->mkdir("Simu");
-    outfile->cd("Simu");
+    if (_mc)
+    {
+        outfile->mkdir("Simu");
+        outfile->cd("Simu");
 
-    h_simu_energy->Write();
-    h_simu_energy_w->Write();
-    h_energy_diff->Write();
-    h_energy_diff_corr->Write();
-    h_energy_diff2D->Write();
-    h_energy_diff2D_corr->Write();
-    h_energy_unfold->Write();
-    h_energy_unfold_corr->Write();
-    h_simu_slopeX->Write();
-    h_simu_slopeY->Write();
-    h_simu_interceptX->Write();
-    h_simu_interceptY->Write();
-    h_simu_position_x->Write();
-    h_simu_position_y->Write();
-    h_simu_position_z->Write();
-    h_simu_position->Write();
-    h_simu_flux_w->Write();
-    h_simu_w->Write();
-    h_simu_particle->Write();
-    h_simu_theta->Write();
-    h_simu_phi->Write();
-    h_simu_charge->Write();
-    h_simu_cosx->Write();
-    h_simu_cosy->Write();
-    h_simu_cosz->Write();
-    h_simu_zenith->Write();
-    h_simu_azimuth->Write();
-    h_simu_thruthtrajectory_start_x->Write();
-    h_simu_thruthtrajectory_start_y->Write();
-    h_simu_thruthtrajectory_start_z->Write();
-    h_simu_thruthtrajectory_stop_x->Write();
-    h_simu_thruthtrajectory_stop_y->Write();
-    h_simu_thruthtrajectory_stop_z->Write();
-    h_simu_thruthtrajectory_trackID->Write();
-    h_simu_thruthtrajectory_parentID->Write();
-    h_simu_thruthtrajectory_pdgID->Write();
-    h_simu_thruthtrajectory_stop_index->Write();
+        h_simu_energy->Write();
+        h_simu_energy_w->Write();
+        h_energy_diff->Write();
+        h_energy_diff_corr->Write();
+        h_energy_diff2D->Write();
+        h_energy_diff2D_corr->Write();
+        h_energy_unfold->Write();
+        h_energy_unfold_corr->Write();
+        h_simu_slopeX->Write();
+        h_simu_slopeY->Write();
+        h_simu_interceptX->Write();
+        h_simu_interceptY->Write();
+        h_simu_position_x->Write();
+        h_simu_position_y->Write();
+        h_simu_position_z->Write();
+        h_simu_position->Write();
+        h_simu_flux_w->Write();
+        h_simu_w->Write();
+        h_simu_particle->Write();
+        h_simu_theta->Write();
+        h_simu_phi->Write();
+        h_simu_charge->Write();
+        h_simu_cosx->Write();
+        h_simu_cosy->Write();
+        h_simu_cosz->Write();
+        h_simu_zenith->Write();
+        h_simu_azimuth->Write();
+        h_simu_thruthtrajectory_start_x->Write();
+        h_simu_thruthtrajectory_start_y->Write();
+        h_simu_thruthtrajectory_start_z->Write();
+        h_simu_thruthtrajectory_stop_x->Write();
+        h_simu_thruthtrajectory_stop_y->Write();
+        h_simu_thruthtrajectory_stop_z->Write();
+        h_simu_thruthtrajectory_trackID->Write();
+        h_simu_thruthtrajectory_parentID->Write();
+        h_simu_thruthtrajectory_pdgID->Write();
+        h_simu_thruthtrajectory_stop_index->Write();
+    }
 
     outfile->mkdir("STK");
     outfile->cd("STK");
@@ -1132,6 +1237,9 @@ void kompress(
         outfile->mkdir(tmp_dir_name.c_str());
         outfile->cd(tmp_dir_name.c_str());
         h_stkclusters_bin[bidx]->Write();
+
+        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+            h_stkclusters_bgohits_layer[bidx][ly]->Write();
     }
 
     outfile->mkdir("PSD");
@@ -1246,7 +1354,8 @@ void kompress(
     outfile->mkdir("Cuts");
     outfile->cd("Cuts");
 
-    h_geo_before_trigger_cut->Write();
+    if (_mc)
+        h_geo_before_trigger_cut->Write();
     h_trigger_cut->Write();
     h_geometric_cut->Write();
     h_maxElayer_cut->Write();
@@ -1264,46 +1373,49 @@ void kompress(
     outfile->mkdir("Preselection");
     outfile->cd("Preselection");
 
-    outfile->mkdir("Preselection/Simu");
-    outfile->cd("Preselection/Simu");
+    if (_mc)
+    {
+        outfile->mkdir("Preselection/Simu");
+        outfile->cd("Preselection/Simu");
 
-    h_simu_ps_energy->Write();
-    h_simu_ps_energy_w->Write();
-    h_energy_ps_diff->Write();
-    h_energy_ps_diff_corr->Write();
-    h_energy_ps_diff2D->Write();
-    h_energy_ps_diff2D_corr->Write();
-    h_energy_ps_unfold->Write();
-    h_energy_ps_unfold_corr->Write();
-    h_simu_ps_slopeX->Write();
-    h_simu_ps_slopeY->Write();
-    h_simu_ps_interceptX->Write();
-    h_simu_ps_interceptY->Write();
-    h_simu_ps_position_x->Write();
-    h_simu_ps_position_y->Write();
-    h_simu_ps_position_z->Write();
-    h_simu_ps_position->Write();
-    h_simu_ps_flux_w->Write();
-    h_simu_ps_w->Write();
-    h_simu_ps_particle->Write();
-    h_simu_ps_theta->Write();
-    h_simu_ps_phi->Write();
-    h_simu_ps_charge->Write();
-    h_simu_ps_cosx->Write();
-    h_simu_ps_cosy->Write();
-    h_simu_ps_cosz->Write();
-    h_simu_ps_zenith->Write();
-    h_simu_ps_azimuth->Write();
-    h_simu_ps_thruthtrajectory_start_x->Write();
-    h_simu_ps_thruthtrajectory_start_y->Write();
-    h_simu_ps_thruthtrajectory_start_z->Write();
-    h_simu_ps_thruthtrajectory_stop_x->Write();
-    h_simu_ps_thruthtrajectory_stop_y->Write();
-    h_simu_ps_thruthtrajectory_stop_z->Write();
-    h_simu_ps_thruthtrajectory_trackID->Write();
-    h_simu_ps_thruthtrajectory_parentID->Write();
-    h_simu_ps_thruthtrajectory_pdgID->Write();
-    h_simu_ps_thruthtrajectory_stop_index->Write();
+        h_simu_ps_energy->Write();
+        h_simu_ps_energy_w->Write();
+        h_energy_ps_diff->Write();
+        h_energy_ps_diff_corr->Write();
+        h_energy_ps_diff2D->Write();
+        h_energy_ps_diff2D_corr->Write();
+        h_energy_ps_unfold->Write();
+        h_energy_ps_unfold_corr->Write();
+        h_simu_ps_slopeX->Write();
+        h_simu_ps_slopeY->Write();
+        h_simu_ps_interceptX->Write();
+        h_simu_ps_interceptY->Write();
+        h_simu_ps_position_x->Write();
+        h_simu_ps_position_y->Write();
+        h_simu_ps_position_z->Write();
+        h_simu_ps_position->Write();
+        h_simu_ps_flux_w->Write();
+        h_simu_ps_w->Write();
+        h_simu_ps_particle->Write();
+        h_simu_ps_theta->Write();
+        h_simu_ps_phi->Write();
+        h_simu_ps_charge->Write();
+        h_simu_ps_cosx->Write();
+        h_simu_ps_cosy->Write();
+        h_simu_ps_cosz->Write();
+        h_simu_ps_zenith->Write();
+        h_simu_ps_azimuth->Write();
+        h_simu_ps_thruthtrajectory_start_x->Write();
+        h_simu_ps_thruthtrajectory_start_y->Write();
+        h_simu_ps_thruthtrajectory_start_z->Write();
+        h_simu_ps_thruthtrajectory_stop_x->Write();
+        h_simu_ps_thruthtrajectory_stop_y->Write();
+        h_simu_ps_thruthtrajectory_stop_z->Write();
+        h_simu_ps_thruthtrajectory_trackID->Write();
+        h_simu_ps_thruthtrajectory_parentID->Write();
+        h_simu_ps_thruthtrajectory_pdgID->Write();
+        h_simu_ps_thruthtrajectory_stop_index->Write();
+    }
 
     outfile->mkdir("Preselection/STK");
     outfile->cd("Preselection/STK");
@@ -1329,6 +1441,9 @@ void kompress(
         outfile->mkdir(tmp_dir_name.c_str());
         outfile->cd(tmp_dir_name.c_str());
         h_stkclusters_ps_bin[bidx]->Write();
+
+        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+            h_stkclusters_ps_bgohits_layer[bidx][ly]->Write();
     }
 
     outfile->mkdir("Preselection/PSD");
