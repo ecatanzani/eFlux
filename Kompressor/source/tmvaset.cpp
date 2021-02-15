@@ -22,7 +22,8 @@ void createTMVAset(
     const bool _VERBOSE,
     const bool no_split,
     const bool no_split_test,
-    const unsigned int threads)
+    const unsigned int threads,
+    const bool _mc)
 {
     // Enable multithreading
     ROOT::EnableImplicitMT(threads);
@@ -46,9 +47,11 @@ void createTMVAset(
         return bin_idx+1; };
 
     // Create the RDF with energy bin, energy weight and Train/Test assignment variable
-    auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"})
-                             .Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"})
-                             .Define("tt_assign", [] { return gRandom->Uniform(); });
+    auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"});
+    if (_mc)
+        _fr_bin_patch = _fr_bin_patch.Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"});
+    else
+        _fr_bin_patch = _fr_bin_patch.Define("simu_energy_w_corr", "1.");
 
     // Regularize RDF
     std::vector<TF1> sumrms_fitfunc(energy_nbins);

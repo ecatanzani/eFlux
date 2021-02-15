@@ -19,6 +19,7 @@ extern void createTMVAset(
     const bool _VERBOSE,
     const bool no_split,
     const bool no_split_test,
-    const unsigned int threads);
+    const unsigned int threads,
+    const bool _mc);
 
 #endif
