@@ -256,7 +256,7 @@ void kompress(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_stkclusters_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_stkclusters_bgohits_bin(energy_nbins);
-    std::vector<std::vector<ROOT::RDF::RResultPtr<TH2D>>> h_stkclusters_bgohits_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH2D>>(DAMPE_bgo_nLayers));
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH2D>>> h_stkclusters_bgohits_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH2D>>(DAMPE_stk_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_rms_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_energy_ratio_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_energy_ratio_1R(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
@@ -380,12 +380,14 @@ void kompress(
                                          .Histo1D<int, double>({(std::string("h_BGOrec_hits_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO hits - bin ") + std::to_string(bin_idx)).c_str(), 80, 0, 350}, "nBGOentries", "simu_energy_w_corr");
         h_xtrl_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                       .Histo1D<double, double>({(std::string("h_xtrl_bin_") + std::to_string(bin_idx)).c_str(), (std::string("XTRL - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 150}, "xtrl", "simu_energy_w_corr");
-        h_stkclusters_bin[bin_idx - 1] = _fr_bgo_analysis.Define("stk_clusters",
+        h_stkclusters_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                        .Define("stk_clusters",
                                                                  [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                             .Histo1D<int, double>({(std::string("h_stkclusters_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100}, "stk_clusters", "simu_energy_w_corr");
-        h_stkclusters_bgohits_bin[bin_idx - 1] = _fr_bgo_analysis.Define("stk_clusters",
+                                             .Histo1D<int, double>({(std::string("h_stkclusters_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 100, 0, 1500}, "stk_clusters", "simu_energy_w_corr");
+        h_stkclusters_bgohits_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                                .Define("stk_clusters",
                                                                          [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                     .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350}, "stk_clusters", "nBGOentries", "simu_energy_w_corr");
+                                                     .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 100, 0, 500, 80, 0, 350}, "stk_clusters", "nBGOentries", "simu_energy_w_corr");
 
         _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
@@ -417,9 +419,10 @@ void kompress(
             auto GetLayerComponent = [=](std::vector<double> &value_layer) -> double { return value_layer[ly]; };
             auto GetStkLayerComponent = [=](std::vector<int> &stk_clusters) -> int { return stk_clusters[ly]; };
 
-            h_stkclusters_bgohits_layer[bin_idx -1][ly] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
-                                                            .Define("stk_layer_clusters", GetStkLayerComponent, {"STK_plane_clusters"})
-                                                            .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohits_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350}, "stk_layer_clusters", "nBGOentries", "simu_energy_w_corr");
+            if (ly < DAMPE_stk_nLayers)
+                h_stkclusters_bgohits_layer[bin_idx -1][ly] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                                                .Define("stk_layer_clusters", GetStkLayerComponent, {"STK_plane_clusters"})
+                                                                .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohits_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 100, 0, 500, 80, 0, 350}, "stk_layer_clusters", "nBGOentries", "simu_energy_w_corr");
             h_BGOrec_rms_layer[bin_idx - 1][ly] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                       .Define("rms_layer", GetLayerComponent, {"rmsLayer"})
                                                       .Histo1D<double, double>({(std::string("h_BGOrec_rms_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("RMS layer ") + std::to_string(ly) + std::string(" - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 500}, "rms_layer", "simu_energy_w_corr");
@@ -806,7 +809,7 @@ void kompress(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_ps_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_stkclusters_ps_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_stkclusters_bgohits_ps_bin(energy_nbins);
-    std::vector<std::vector<ROOT::RDF::RResultPtr<TH2D>>> h_stkclusters_ps_bgohits_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH2D>>(DAMPE_bgo_nLayers));
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH2D>>> h_stkclusters_ps_bgohits_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH2D>>(DAMPE_stk_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_ps_rms_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_ps_energy_ratio_layer(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_ps_energy_ratio_1R(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
@@ -910,12 +913,12 @@ void kompress(
         h_xtrl_ps_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                          .Histo1D<double, double>({(std::string("h_xtrl_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("XTRL - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 150}, "xtrl", "simu_energy_w_corr");
 
-        h_stkclusters_ps_bin[bin_idx - 1] = _fr_preselected.Define("stk_clusters",
-                                                                   [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                .Histo1D<int, double>({(std::string("h_stkclusters_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 50, 0, 100}, "stk_clusters", "simu_energy_w_corr");
-        h_stkclusters_bgohits_ps_bin[bin_idx - 1] = _fr_preselected.Define("stk_clusters",
-                                                                           [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
-                                                        .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350}, "stk_clusters", "nBGOentries", "simu_energy_w_corr");
+        h_stkclusters_ps_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                        .Define("stk_clusters", [&bin_idx](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
+                                                .Histo1D<int, double>({(std::string("h_stkclusters_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Total STK clusters - bin ") + std::to_string(bin_idx) + std::string(" ; total STK clusters; entries")).c_str(), 100, 0, 1500}, "stk_clusters", "simu_energy_w_corr");
+        h_stkclusters_bgohits_ps_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                                .Define("stk_clusters", [](const std::vector<int> plane_clusters) -> int { return std::accumulate(plane_clusters.begin(), plane_clusters.end(), 0); }, {"STK_plane_clusters"})
+                                                        .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 100, 0, 500, 80, 0, 350}, "stk_clusters", "nBGOentries", "simu_energy_w_corr");
 
         _fr_preselected.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_ps_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
@@ -947,9 +950,10 @@ void kompress(
             auto GetLayerComponent = [=](std::vector<double> &value_layer) -> double { return value_layer[ly]; };
             auto GetStkLayerComponent = [=](std::vector<int> &stk_clusters) -> int { return stk_clusters[ly]; };
 
-            h_stkclusters_ps_bgohits_layer[bin_idx -1][ly] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                            .Define("stk_layer_clusters", GetStkLayerComponent, {"STK_plane_clusters"})
-                                                            .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohits_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 50, 0, 100, 80, 0, 350}, "stk_layer_clusters", "nBGOentries", "simu_energy_w_corr");
+            if (ly < DAMPE_stk_nLayers)
+                h_stkclusters_ps_bgohits_layer[bin_idx -1][ly] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+                                                                .Define("stk_layer_clusters", GetStkLayerComponent, {"STK_plane_clusters"})
+                                                                .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohits_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 100, 0, 500, 80, 0, 350}, "stk_layer_clusters", "nBGOentries", "simu_energy_w_corr");
             h_BGOrec_ps_rms_layer[bin_idx - 1][ly] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                                          .Define("rms_layer", GetLayerComponent, {"rmsLayer"})
                                                          .Histo1D<double, double>({(std::string("h_BGOrec_ps_rms_layer_") + std::to_string(ly) + std::string("_bin_") + std::to_string(bin_idx)).c_str(), (std::string("RMS layer ") + std::to_string(ly) + std::string(" - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 500}, "rms_layer", "simu_energy_w_corr");
@@ -1238,7 +1242,7 @@ void kompress(
         outfile->cd(tmp_dir_name.c_str());
         h_stkclusters_bin[bidx]->Write();
 
-        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+        for (int ly = 0; ly < DAMPE_stk_nLayers; ++ly)
             h_stkclusters_bgohits_layer[bidx][ly]->Write();
     }
 
@@ -1442,7 +1446,7 @@ void kompress(
         outfile->cd(tmp_dir_name.c_str());
         h_stkclusters_ps_bin[bidx]->Write();
 
-        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+        for (int ly = 0; ly < DAMPE_stk_nLayers; ++ly)
             h_stkclusters_ps_bgohits_layer[bidx][ly]->Write();
     }
 
