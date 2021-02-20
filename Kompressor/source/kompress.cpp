@@ -114,7 +114,7 @@ void kompress(
     std::cout << "\nPSD charge analysis events: " << *(_fr_psd_charge_analysis.Count());
     std::cout << "\nSTK charge analysis events: " << *(_fr_stk_charge_analysis.Count());
     std::cout << "\nPreselected events: " << *(_fr_preselected.Count());
-    std::cout << "\n\n********************";
+    std::cout << "\n\n***************************";
 
     if (_VERBOSE)
         std::cout << "\n\nAnlysis running..." << std::endl;
@@ -640,7 +640,7 @@ void kompress(
     if (_mc)
         h_geo_before_trigger_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                                         .Filter("evtfilter_geometric_before_trigger==true")
-                                        .Histo1D<int, double>({"h_geo_before_trigger_cut", "Geometric factor pre trigger", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
+                                        .Histo1D<double, double>({"h_geo_before_trigger_cut", "Geometric factor pre trigger", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
     auto h_trigger_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
                          .Filter("evtfilter_evt_triggered==true")
                          .Histo1D<double, double>({"h_trigger_cut", "Trigger", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
