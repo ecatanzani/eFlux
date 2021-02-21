@@ -78,6 +78,9 @@ void Train(in_args input_args)
     // Define the input variables that shall be methods_mapd for the MVA training
     SetTMVAVariables(dataloader, _config->GetVariableOptions());
 
+    // Remove nans from vars
+    
+
     // Set global event weights per tree
     double signalWeight = 1.0;
     double backgroundWeight = 1.0;
