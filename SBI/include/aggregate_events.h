@@ -17,12 +17,10 @@ class event_collector
 public:
 	event_collector(
 		const std::string listInputPath,
-		const bool verbose = true,
-		const bool mc = false)
+		const bool verbose = true)
 	{
 		input_list = listInputPath;
 		verbosity = verbose;
-		simu_evt = mc;
 		use_chain();
 	}
 	~event_collector(){};
@@ -36,23 +34,7 @@ private:
 	std::string input_list;
 	std::string tree_name = "CollectionTree";
 	bool verbosity;
-	bool simu_evt;
 	std::shared_ptr<TChain> evt_chain;
 };
-
-extern std::shared_ptr<TChain> aggregateEventsTChain(
-	const std::string listInputPath,
-	const bool verbose);
-
-extern std::shared_ptr<TChain> aggregateDataEventsTChain(
-	const std::string listInputPath,
-	const bool verbose,
-	const bool skimmed);
-
-extern std::shared_ptr<TChain> aggregateTupleDataEventsTChain(
-	const std::string listInputPath,
-	std::string &year,
-	std::string &month,
-	const bool verbose);
 
 #endif

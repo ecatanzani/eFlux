@@ -399,6 +399,7 @@ void data_tuple::Fill(
 	const std::shared_ptr<_tmp_bgo> _bgo_res,
 	const std::shared_ptr<_tmp_energy_data> _energy_res,
 	const std::shared_ptr<DmpEvtAttitude> attitude,
+	const std::shared_ptr<DmpEvtHeader> header,
 	const std::shared_ptr<_tmp_nud> _nud_res)
 {
 	fill_trigger_info(_filter_res->evt_trigger_info);
@@ -434,6 +435,7 @@ void data_tuple::Fill(
 		_nud_res->total_adc,
 		_nud_res->max_adc,
 		_nud_res->max_channel_ID);
+	second = (unsigned int)header->GetSecond();
 	DmpNtupTree->Fill();
 }
 

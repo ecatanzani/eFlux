@@ -1064,11 +1064,7 @@ void DmpFilterContainer::PrintDataInfo(
 	const bool mc)
 {
 	std::cout << "INFO: \tTotal number of events: " << dmpch->GetEntries() << std::endl;
-	if (mc)
-	{
-		std::cout << std::endl;
-	}
-	else
+	if (!mc)
 	{
 		std::cout << "INFO: \tStart Time (second): " << time.start_second << std::endl;
 		std::cout << "INFO: \tStart Time (millisecond): " << time.start_msecond << std::endl;

@@ -7,8 +7,7 @@ void event_collector::use_chain()
 	std::string tmp_str;
 	while (input_stream >> tmp_str)
 	{
-		if (!simu_evt)
-			gIOSvc->Set("InData/Read", tmp_str.c_str());
+		gIOSvc->Set("InData/Read", tmp_str.c_str());
 		evt_chain->Add(tmp_str.c_str());
 		if (verbosity)
 			std::cout << "\nAdding " << tmp_str << " to the chain ...";
