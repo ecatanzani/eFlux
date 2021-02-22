@@ -4,7 +4,10 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
-void buildEfficiency(const char* input_file_path, const char* output_file_path)
+void BuildEfficiency(
+    const char* input_file_path, 
+    const char* output_file_path="efficiencyout.root",
+    const bool mc=false)
 {
     TFile *input_file = TFile::Open(input_file_path, "READ");
     if (!input_file->IsOpen())
@@ -14,23 +17,26 @@ void buildEfficiency(const char* input_file_path, const char* output_file_path)
     }
 
     // Read histos
-    auto h_geo_before_trigger_cut = static_cast<TH1D*>(input_file->Get("h_geo_before_trigger_cut"));
-    auto h_trigger_cut = static_cast<TH1D*>(input_file->Get("h_trigger_cut"));
-    auto h_geometric_cut = static_cast<TH1D*>(input_file->Get("h_geometric_cut"));
-    auto h_maxElayer_cut = static_cast<TH1D*>(input_file->Get("h_maxElayer_cut"));
-    auto h_maxBarlayer_cut = static_cast<TH1D*>(input_file->Get("h_maxBarlayer_cut"));
-    auto h_BGOTrackContainment_cut = static_cast<TH1D*>(input_file->Get("h_BGOTrackContainment_cut"));
-    auto h_bgo_fiducial_cut = static_cast<TH1D*>(input_file->Get("h_bgo_fiducial_cut"));
-    auto h_nbarlayer13_cut = static_cast<TH1D*>(input_file->Get("h_nbarlayer13_cut"));
-    auto h_maxrms_cut = static_cast<TH1D*>(input_file->Get("h_maxrms_cut"));
-    auto h_track_selection_cut = static_cast<TH1D*>(input_file->Get("h_track_selection_cut"));
-    auto h_psd_stk_match_cut = static_cast<TH1D*>(input_file->Get("h_psd_stk_match_cut"));
-    auto h_psd_charge_cut = static_cast<TH1D*>(input_file->Get("h_psd_charge_cut"));
-    auto h_stk_charge_cut = static_cast<TH1D*>(input_file->Get("h_stk_charge_cut"));
-    auto h_all_cuts_cut = static_cast<TH1D*>(input_file->Get("h_all_cuts_cut"));
+    TH1D* h_geo_before_trigger_cut = nullptr;
+    if (mc)
+        h_geo_before_trigger_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_geo_before_trigger_cut"));
+    auto h_trigger_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_trigger_cut"));
+    auto h_geometric_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_geometric_cut"));
+    auto h_maxElayer_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_maxElayer_cut"));
+    auto h_maxBarlayer_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_maxBarlayer_cut"));
+    auto h_BGOTrackContainment_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_BGOTrackContainment_cut"));
+    auto h_bgo_fiducial_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_bgo_fiducial_cut"));
+    auto h_nbarlayer13_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_nbarlayer13_cut"));
+    auto h_maxrms_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_maxrms_cut"));
+    auto h_track_selection_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_track_selection_cut"));
+    auto h_psd_stk_match_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_psd_stk_match_cut"));
+    auto h_psd_charge_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_psd_charge_cut"));
+    auto h_stk_charge_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_stk_charge_cut"));
+    auto h_all_cuts_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_all_cuts_cut"));
     
     // Unlink histos
-    h_geo_before_trigger_cut->SetDirectory(0);
+    if (mc)
+        h_geo_before_trigger_cut->SetDirectory(0);
     h_trigger_cut->SetDirectory(0);
     h_geometric_cut->SetDirectory(0);
     h_maxElayer_cut->SetDirectory(0);
@@ -62,8 +68,11 @@ void buildEfficiency(const char* input_file_path, const char* output_file_path)
     std::unique_ptr<TEfficiency> stk_charge_eff;
     std::unique_ptr<TEfficiency> all_cuts_eff;
 
-    if (TEfficiency::CheckConsistency(*h_trigger_cut, *h_geo_before_trigger_cut))
-        trigger_eff = std::make_unique<TEfficiency>(*h_trigger_cut, *h_geo_before_trigger_cut);
+    if (mc)
+    {
+        if (TEfficiency::CheckConsistency(*h_trigger_cut, *h_geo_before_trigger_cut))
+            trigger_eff = std::make_unique<TEfficiency>(*h_trigger_cut, *h_geo_before_trigger_cut);
+    }
     if (TEfficiency::CheckConsistency(*h_geometric_cut, *h_trigger_cut))
         geometric_factor_eff = std::make_unique<TEfficiency>(*h_geometric_cut, *h_trigger_cut);
     if (TEfficiency::CheckConsistency(*h_maxElayer_cut, *h_trigger_cut))
@@ -89,7 +98,8 @@ void buildEfficiency(const char* input_file_path, const char* output_file_path)
     if (TEfficiency::CheckConsistency(*h_all_cuts_cut, *h_trigger_cut))
         all_cuts_eff = std::make_unique<TEfficiency>(*h_all_cuts_cut, *h_trigger_cut);
 
-    trigger_eff->SetStatisticOption(TEfficiency::kBUniform);
+    if (mc)
+        trigger_eff->SetStatisticOption(TEfficiency::kBUniform);
     geometric_factor_eff->SetStatisticOption(TEfficiency::kBUniform);
     maxElayer_cut_eff->SetStatisticOption(TEfficiency::kBUniform);
     maxBarLayer_cut_eff->SetStatisticOption(TEfficiency::kBUniform);
@@ -103,7 +113,8 @@ void buildEfficiency(const char* input_file_path, const char* output_file_path)
     stk_charge_eff->SetStatisticOption(TEfficiency::kBUniform);
     all_cuts_eff->SetStatisticOption(TEfficiency::kBUniform);
 
-    trigger_eff->SetName("trigger_eff");
+    if (mc)
+        trigger_eff->SetName("trigger_eff");
     geometric_factor_eff->SetName("geometric_factor_eff");
     maxElayer_cut_eff->SetName("maxElayer_cut_eff");
     maxBarLayer_cut_eff->SetName("maxBarLayer_cut_eff");
@@ -117,7 +128,8 @@ void buildEfficiency(const char* input_file_path, const char* output_file_path)
     stk_charge_eff->SetName("stk_charge_eff");
     all_cuts_eff->SetName("all_cuts_eff");
 
-    trigger_eff->SetTitle("Trigger efficiency");
+    if (mc)
+        trigger_eff->SetTitle("Trigger efficiency");
     geometric_factor_eff->SetTitle("Geometric factor efficiency");
     maxElayer_cut_eff->SetTitle("maxElayer cut efficiency");
     maxBarLayer_cut_eff->SetTitle("maxBarLayer cut efficiency");
@@ -139,7 +151,8 @@ void buildEfficiency(const char* input_file_path, const char* output_file_path)
         exit(100);
     }
 
-    trigger_eff->Write();
+    if (mc)
+        trigger_eff->Write();
     geometric_factor_eff->Write();
     maxElayer_cut_eff->Write();
     maxBarLayer_cut_eff->Write();
