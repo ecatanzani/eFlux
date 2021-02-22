@@ -17,9 +17,11 @@ void BuildEfficiency(
     }
 
     // Read histos
+    /*
     TH1D* h_geo_before_trigger_cut = nullptr;
     if (mc)
         h_geo_before_trigger_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_geo_before_trigger_cut"));
+    */
     auto h_trigger_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_trigger_cut"));
     auto h_geometric_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_geometric_cut"));
     auto h_maxElayer_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_maxElayer_cut"));
@@ -35,8 +37,10 @@ void BuildEfficiency(
     auto h_all_cuts_cut = static_cast<TH1D*>(input_file->Get("Cuts/h_all_cuts_cut"));
     
     // Unlink histos
+    /*
     if (mc)
         h_geo_before_trigger_cut->SetDirectory(0);
+    */
     h_trigger_cut->SetDirectory(0);
     h_geometric_cut->SetDirectory(0);
     h_maxElayer_cut->SetDirectory(0);
@@ -54,7 +58,7 @@ void BuildEfficiency(
     input_file->Close();
 
     // Build efficiencies
-    std::unique_ptr<TEfficiency> trigger_eff;
+    //std::unique_ptr<TEfficiency> trigger_eff;
     std::unique_ptr<TEfficiency> geometric_factor_eff;
     std::unique_ptr<TEfficiency> maxElayer_cut_eff;
     std::unique_ptr<TEfficiency> maxBarLayer_cut_eff;
@@ -68,11 +72,13 @@ void BuildEfficiency(
     std::unique_ptr<TEfficiency> stk_charge_eff;
     std::unique_ptr<TEfficiency> all_cuts_eff;
 
+    /*
     if (mc)
     {
         if (TEfficiency::CheckConsistency(*h_trigger_cut, *h_geo_before_trigger_cut))
             trigger_eff = std::make_unique<TEfficiency>(*h_trigger_cut, *h_geo_before_trigger_cut);
     }
+    */
     if (TEfficiency::CheckConsistency(*h_geometric_cut, *h_trigger_cut))
         geometric_factor_eff = std::make_unique<TEfficiency>(*h_geometric_cut, *h_trigger_cut);
     if (TEfficiency::CheckConsistency(*h_maxElayer_cut, *h_trigger_cut))
@@ -98,8 +104,10 @@ void BuildEfficiency(
     if (TEfficiency::CheckConsistency(*h_all_cuts_cut, *h_trigger_cut))
         all_cuts_eff = std::make_unique<TEfficiency>(*h_all_cuts_cut, *h_trigger_cut);
 
+    /*
     if (mc)
         trigger_eff->SetStatisticOption(TEfficiency::kBUniform);
+    */
     geometric_factor_eff->SetStatisticOption(TEfficiency::kBUniform);
     maxElayer_cut_eff->SetStatisticOption(TEfficiency::kBUniform);
     maxBarLayer_cut_eff->SetStatisticOption(TEfficiency::kBUniform);
@@ -113,8 +121,10 @@ void BuildEfficiency(
     stk_charge_eff->SetStatisticOption(TEfficiency::kBUniform);
     all_cuts_eff->SetStatisticOption(TEfficiency::kBUniform);
 
+    /*
     if (mc)
         trigger_eff->SetName("trigger_eff");
+    */
     geometric_factor_eff->SetName("geometric_factor_eff");
     maxElayer_cut_eff->SetName("maxElayer_cut_eff");
     maxBarLayer_cut_eff->SetName("maxBarLayer_cut_eff");
@@ -128,8 +138,10 @@ void BuildEfficiency(
     stk_charge_eff->SetName("stk_charge_eff");
     all_cuts_eff->SetName("all_cuts_eff");
 
+    /*
     if (mc)
         trigger_eff->SetTitle("Trigger efficiency");
+    */
     geometric_factor_eff->SetTitle("Geometric factor efficiency");
     maxElayer_cut_eff->SetTitle("maxElayer cut efficiency");
     maxBarLayer_cut_eff->SetTitle("maxBarLayer cut efficiency");
@@ -151,8 +163,10 @@ void BuildEfficiency(
         exit(100);
     }
 
+    /*
     if (mc)
         trigger_eff->Write();
+    */
     geometric_factor_eff->Write();
     maxElayer_cut_eff->Write();
     maxBarLayer_cut_eff->Write();
