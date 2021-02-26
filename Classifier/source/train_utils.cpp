@@ -123,7 +123,7 @@ void SetAllTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
     dataloader->AddVariable("fracLayer_14", "fracLayer_14", "units", 'D');
 
     // dataloader->AddVariable("lastBGOLayer", "lastBGOLayer", "units", 'I');
-    dataloader->AddVariable("nBGOentries", "nBGOentries", "units", 'I');
+    //dataloader->AddVariable("nBGOentries", "nBGOentries", "units", 'I');
 
     /*
     dataloader->AddVariable("energy_1R_radius_1", "energy_1R_radius_1", "units", 'D');
@@ -140,7 +140,8 @@ void SetAllTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
     dataloader->AddVariable("energy_1R_radius_12", "energy_1R_radius_12", "units", 'D');
     dataloader->AddVariable("energy_1R_radius_13", "energy_1R_radius_13", "units", 'D');
     */
-    dataloader->AddVariable("energy_1R_radius_14", "energy_1R_radius_14", "units", 'D');
+    
+    //dataloader->AddVariable("energy_1R_radius_14", "energy_1R_radius_14", "units", 'D');
 
     /*
     dataloader->AddVariable("energy_2R_radius_1", "energy_2R_radius_1", "units", 'D');
@@ -157,7 +158,8 @@ void SetAllTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
     dataloader->AddVariable("energy_2R_radius_12", "energy_2R_radius_12", "units", 'D');
     dataloader->AddVariable("energy_2R_radius_13", "energy_2R_radius_13", "units", 'D');
     */
-    dataloader->AddVariable("energy_2R_radius_14", "energy_2R_radius_14", "units", 'D');
+
+    //dataloader->AddVariable("energy_2R_radius_14", "energy_2R_radius_14", "units", 'D');
 
     /*
     dataloader->AddVariable("energy_3R_radius_1", "energy_3R_radius_1", "units", 'D');
@@ -174,7 +176,8 @@ void SetAllTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
     dataloader->AddVariable("energy_3R_radius_12", "energy_3R_radius_12", "units", 'D');
     dataloader->AddVariable("energy_3R_radius_13", "energy_3R_radius_13", "units", 'D');
     */
-    dataloader->AddVariable("energy_3R_radius_14", "energy_3R_radius_14", "units", 'D');
+    
+    //dataloader->AddVariable("energy_3R_radius_14", "energy_3R_radius_14", "units", 'D');
 
     /*
     dataloader->AddVariable("energy_5R_radius_1", "energy_5R_radius_1", "units", 'D');
@@ -191,12 +194,13 @@ void SetAllTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
     dataloader->AddVariable("energy_5R_radius_12", "energy_5R_radius_12", "units", 'D');
     dataloader->AddVariable("energy_5R_radius_13", "energy_5R_radius_13", "units", 'D');
     */
-    dataloader->AddVariable("energy_5R_radius_14", "energy_5R_radius_14", "units", 'D');
+    
+    //dataloader->AddVariable("energy_5R_radius_14", "energy_5R_radius_14", "units", 'D');
 
     dataloader->AddVariable("xtrl", "xtrl", "units", 'D');
 
-    dataloader->AddVariable("NUD_total_ADC_nud_total_adc", "NUD_total_ADC_nud_total_adc", "units", 'I');
-    dataloader->AddVariable("NUD_max_ADC_nud_max_adc", "NUD_max_ADC_nud_max_adc", "units", 'I');
+    //dataloader->AddVariable("NUD_total_ADC_nud_total_adc", "NUD_total_ADC_nud_total_adc", "units", 'I');
+    //dataloader->AddVariable("NUD_max_ADC_nud_max_adc", "NUD_max_ADC_nud_max_adc", "units", 'I');
 }
 
 extern void SetNoNUDTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)

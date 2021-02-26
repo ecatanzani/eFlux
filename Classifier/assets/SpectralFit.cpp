@@ -72,7 +72,7 @@ void SpectralFit(
    auto hspectrum_norm = static_cast<TH1D*>(hspectrum->DrawNormalized());
    hspectrum_norm->SetName("hspectrum_norm");
 
-    std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "TMath::Power(10, [0] + [1]*log10(x) + [2]*TMath::Power(log10(x),2))", emin_gev, emax_gev);
+    std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "TMath::Power(10, [0] + [1]*log10(x) + [2]*pow(log10(x),2) +[3]*pow(log10(x),3) + [4]*pow(log10(x),4))", emin_gev, emax_gev);
     
     fitfunc->SetNpx(10000);
 
