@@ -5,7 +5,7 @@ config::config(
 	const bool mc)
 {
 	std::string config_file_name;
-	mc ? config_file_name = "mc_config.txt" : config_file_name = "data_config.txt";
+	mc ? config_file_name = "mc_config.conf" : config_file_name = "data_config.conf";
 	get_config_info(parse_config_file(working_dir, config_file_name));
 }
 
