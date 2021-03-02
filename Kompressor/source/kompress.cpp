@@ -117,7 +117,7 @@ void kompress(
     std::cout << "\n\n***************************";
 
     if (_VERBOSE)
-        std::cout << "\n\nAnlysis running..." << std::endl;
+        std::cout << "\n\nAnlysis running...\n\n";
 
     // Get binning
     std::vector<float> sumRms_binning;
@@ -215,6 +215,8 @@ void kompress(
     auto h_BGOrec_last_layer = _fr_bgo_analysis.Histo1D<int, double>({"h_BGOrec_last_layer", "Last BGO layer; Last Energy Layer; entries", 14, 0, 14}, "lastBGOLayer", "simu_energy_w_corr");
 
     std::shared_ptr<TH1D> h_BGOrec_bar_energy = std::make_shared<TH1D>("h_BGOrec_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 1e+3, 0, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_bar_energy_zoom = std::make_shared<TH1D>("h_BGOrec_bar_energy_zoom", "BGO Bar Energy; Bar Energy [MeV]", 1e+3, 0, 1e+2);
+
     std::shared_ptr<TH1D> h_BGOrec_bar_energy_10MeV = std::make_shared<TH1D>("h_BGOrec_bar_energy_10MeV", "BGO Bar Energy - 10 MeV filter; Bar Energy [MeV]", 1e+3, 10, 1e+4);
     std::shared_ptr<TH1D> h_BGOrec_bar_energy_20MeV = std::make_shared<TH1D>("h_BGOrec_bar_energy_20MeV", "BGO Bar Energy - 20 MeV filter; Bar Energy [MeV]", 1e+3, 20, 1e+4);
     std::shared_ptr<TH1D> h_BGOrec_bar_energy_30MeV = std::make_shared<TH1D>("h_BGOrec_bar_energy_30MeV", "BGO Bar Energy - 30 MeV filter; Bar Energy [MeV]", 1e+3, 30, 1e+4);
@@ -229,7 +231,8 @@ void kompress(
     std::shared_ptr<TH1D> h_BGOrec_hits_100MeV = std::make_shared<TH1D>("h_BGOrec_hits_100MeV", "BGO Hits - 100 MeV filter", 1e+2, 0, 4e+2);
 
     _fr_bgo_analysis.Foreach([
-        &h_BGOrec_bar_energy, 
+        &h_BGOrec_bar_energy,
+        &h_BGOrec_bar_energy_zoom, 
         &h_BGOrec_bar_energy_10MeV, 
         &h_BGOrec_bar_energy_20MeV, 
         &h_BGOrec_bar_energy_30MeV, 
@@ -252,6 +255,8 @@ void kompress(
                 for(auto& energy : bgo_ly)
                 { 
                     h_BGOrec_bar_energy->Fill(energy, energy_w);
+                    if (energy <= 100)
+                        h_BGOrec_bar_energy_zoom->Fill(energy, energy_w);
                     if (energy>=10)
                     {
                         h_BGOrec_bar_energy_10MeV->Fill(energy, energy_w);
@@ -918,13 +923,14 @@ void kompress(
     auto h_BGOrec_ps_last_layer = _fr_preselected.Histo1D<int, double>({"h_BGOrec_ps_last_layer", "Last BGO layer; Last Energy Layer; entries", 14, 0, 14}, "lastBGOLayer", "simu_energy_w_corr");
 
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 1e+3, 0, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_zoom = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_zoom", "BGO Bar Energy; Bar Energy [MeV]", 1e+3, 0, 1e+2);
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_10MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_10MeV", "BGO Bar Energy - 10 MeV filter; Bar Energy [MeV]", 1e+3, 10, 1e+4);
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_20MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_20MeV", "BGO Bar Energy - 20 MeV filter; Bar Energy [MeV]", 1e+3, 20, 1e+4);
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_30MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_30MeV", "BGO Bar Energy - 30 MeV filter; Bar Energy [MeV]", 1e+3, 30, 1e+4);
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_50MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_50MeV", "BGO Bar Energy - 50 MeV filter; Bar Energy [MeV]", 1e+3, 50, 1e+4);
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_100MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_100MeV", "BGO Bar Energy - 100 MeV filter; Bar Energy [MeV]", 1e+3, 100, 1e+4);
 
-    std::shared_ptr<TH1D> h_BGOrec_ps_hits = _fr_preselected.Histo1D<int, double>({"h_BGOrec_ps_hits", "BGO Hits", 100, 0, 400}, "nBGOentries", "simu_energy_w_corr");
+    auto h_BGOrec_ps_hits = _fr_preselected.Histo1D<int, double>({"h_BGOrec_ps_hits", "BGO Hits", 100, 0, 400}, "nBGOentries", "simu_energy_w_corr");
     std::shared_ptr<TH1D> h_BGOrec_ps_hits_10MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_10MeV", "BGO Hits - 10 MeV filter", 1e+2, 0, 4e+2);
     std::shared_ptr<TH1D> h_BGOrec_ps_hits_20MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_20MeV", "BGO Hits - 20 MeV filter", 1e+2, 0, 4e+2);
     std::shared_ptr<TH1D> h_BGOrec_ps_hits_30MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_30MeV", "BGO Hits - 30 MeV filter", 1e+2, 0, 4e+2);
@@ -932,7 +938,8 @@ void kompress(
     std::shared_ptr<TH1D> h_BGOrec_ps_hits_100MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_100MeV", "BGO Hits - 100 MeV filter", 1e+2, 0, 4e+2);
 
     _fr_preselected.Foreach([
-        &h_BGOrec_ps_bar_energy, 
+        &h_BGOrec_ps_bar_energy,
+        &h_BGOrec_ps_bar_energy_zoom,
         &h_BGOrec_ps_bar_energy_10MeV, 
         &h_BGOrec_ps_bar_energy_20MeV, 
         &h_BGOrec_ps_bar_energy_30MeV, 
@@ -954,7 +961,8 @@ void kompress(
                 for(auto& energy : bgo_ly)
                 { 
                     h_BGOrec_ps_bar_energy->Fill(energy, energy_w);
-                    ++hits;
+                    if (energy <= 100)
+                        h_BGOrec_ps_bar_energy_zoom->Fill(energy, energy_w);
                     if (energy>=10)
                     {
                         h_BGOrec_ps_bar_energy_10MeV->Fill(energy, energy_w);
@@ -1591,6 +1599,7 @@ void kompress(
     h_xtrl_energy_int->Write();
     h_xtrl->Write();
     h_BGOrec_bar_energy->Write();
+    h_BGOrec_bar_energy_zoom->Write();
     h_BGOrec_bar_energy_10MeV->Write();
     h_BGOrec_bar_energy_20MeV->Write();
     h_BGOrec_bar_energy_30MeV->Write();
@@ -1816,6 +1825,7 @@ void kompress(
     h_xtrl_ps_energy_int->Write();
     h_xtrl_ps->Write();
     h_BGOrec_ps_bar_energy->Write();
+    h_BGOrec_ps_bar_energy_zoom->Write();
     h_BGOrec_bar_energy_10MeV->Write();
     h_BGOrec_bar_energy_20MeV->Write();
     h_BGOrec_bar_energy_30MeV->Write();
