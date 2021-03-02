@@ -214,11 +214,79 @@ void kompress(
                                                     .Histo2D<double, double, double>({"h_BGOrec_sumRms_flast_13_10000_20000", "sumRms vs F_{13} correlation - 10 TeV - 20 TeV ;sumRms [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast13_binning.size() - 1, &flast13_binning[0]}, sumRms_leaf.c_str(), "fracLast_13", "simu_energy_w_corr");
     auto h_BGOrec_last_layer = _fr_bgo_analysis.Histo1D<int, double>({"h_BGOrec_last_layer", "Last BGO layer; Last Energy Layer; entries", 14, 0, 14}, "lastBGOLayer", "simu_energy_w_corr");
 
-    std::shared_ptr<TH1D> h_BGOrec_bar_energy = std::make_shared<TH1D>("h_BGOrec_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 100, 0, 10000);
-    _fr_bgo_analysis.Foreach([&h_BGOrec_bar_energy](std::vector<std::vector<double>> bar_energy, double energy_w) { 
+    std::shared_ptr<TH1D> h_BGOrec_bar_energy = std::make_shared<TH1D>("h_BGOrec_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 1e+3, 0, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_bar_energy_10MeV = std::make_shared<TH1D>("h_BGOrec_bar_energy_10MeV", "BGO Bar Energy - 10 MeV filter; Bar Energy [MeV]", 1e+3, 10, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_bar_energy_20MeV = std::make_shared<TH1D>("h_BGOrec_bar_energy_20MeV", "BGO Bar Energy - 20 MeV filter; Bar Energy [MeV]", 1e+3, 20, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_bar_energy_30MeV = std::make_shared<TH1D>("h_BGOrec_bar_energy_30MeV", "BGO Bar Energy - 30 MeV filter; Bar Energy [MeV]", 1e+3, 30, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_bar_energy_50MeV = std::make_shared<TH1D>("h_BGOrec_bar_energy_50MeV", "BGO Bar Energy - 50 MeV filter; Bar Energy [MeV]", 1e+3, 50, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_bar_energy_100MeV = std::make_shared<TH1D>("h_BGOrec_bar_energy_100MeV", "BGO Bar Energy - 100 MeV filter; Bar Energy [MeV]", 1e+3, 100, 1e+4);
+
+    auto h_BGOrec_hits = _fr_bgo_analysis.Histo1D<int, double>({"h_BGOrec_hits", "BGO Hits", 100, 0, 400}, "nBGOentries", "simu_energy_w_corr");
+    std::shared_ptr<TH1D> h_BGOrec_hits_10MeV = std::make_shared<TH1D>("h_BGOrec_hits_10MeV", "BGO Hits - 10 MeV filter", 1e+2, 0, 4e+2);
+    std::shared_ptr<TH1D> h_BGOrec_hits_20MeV = std::make_shared<TH1D>("h_BGOrec_hits_20MeV", "BGO Hits - 20 MeV filter", 1e+2, 0, 4e+2);
+    std::shared_ptr<TH1D> h_BGOrec_hits_30MeV = std::make_shared<TH1D>("h_BGOrec_hits_30MeV", "BGO Hits - 30 MeV filter", 1e+2, 0, 4e+2);
+    std::shared_ptr<TH1D> h_BGOrec_hits_50MeV = std::make_shared<TH1D>("h_BGOrec_hits_50MeV", "BGO Hits - 50 MeV filter", 1e+2, 0, 4e+2);
+    std::shared_ptr<TH1D> h_BGOrec_hits_100MeV = std::make_shared<TH1D>("h_BGOrec_hits_100MeV", "BGO Hits - 100 MeV filter", 1e+2, 0, 4e+2);
+
+    _fr_bgo_analysis.Foreach([
+        &h_BGOrec_bar_energy, 
+        &h_BGOrec_bar_energy_10MeV, 
+        &h_BGOrec_bar_energy_20MeV, 
+        &h_BGOrec_bar_energy_30MeV, 
+        &h_BGOrec_bar_energy_50MeV, 
+        &h_BGOrec_bar_energy_100MeV,
+        &h_BGOrec_hits_10MeV,
+        &h_BGOrec_hits_20MeV,
+        &h_BGOrec_hits_30MeV,
+        &h_BGOrec_hits_50MeV,
+        &h_BGOrec_hits_100MeV]
+        (std::vector<std::vector<double>> bar_energy, double energy_w)
+        {
+            unsigned int hits_10=0;
+            unsigned int hits_20=0;
+            unsigned int hits_30=0;
+            unsigned int hits_50=0;
+            unsigned int hits_100=0;
+
             for (auto& bgo_ly : bar_energy)
-                for(auto& energy : bgo_ly) 
-                    h_BGOrec_bar_energy->Fill(energy, energy_w); }, {"layerBarEnergy", "simu_energy_w_corr"});
+                for(auto& energy : bgo_ly)
+                { 
+                    h_BGOrec_bar_energy->Fill(energy, energy_w);
+                    if (energy>=10)
+                    {
+                        h_BGOrec_bar_energy_10MeV->Fill(energy, energy_w);
+                        ++hits_10;
+                    }
+                    if (energy>=20)
+                    {
+                        h_BGOrec_bar_energy_20MeV->Fill(energy, energy_w);
+                        ++hits_20;
+                    }
+                    if (energy>=30)
+                    {
+                        h_BGOrec_bar_energy_30MeV->Fill(energy, energy_w);
+                        ++hits_30;
+                    }
+                    if (energy>=50)
+                    {
+                        h_BGOrec_bar_energy_50MeV->Fill(energy, energy_w);
+                        ++hits_50;
+                    }
+                    if (energy>=100)
+                    {
+                        h_BGOrec_bar_energy_100MeV->Fill(energy, energy_w);
+                        ++hits_100;
+                    }
+                }
+            
+            h_BGOrec_hits_10MeV->Fill(hits_10, energy_w);
+            h_BGOrec_hits_20MeV->Fill(hits_20, energy_w);
+            h_BGOrec_hits_30MeV->Fill(hits_30, energy_w);
+            h_BGOrec_hits_50MeV->Fill(hits_50, energy_w);
+            h_BGOrec_hits_100MeV->Fill(hits_100, energy_w);
+
+        } , {"layerBarEnergy", "simu_energy_w_corr"});
+
 
     auto h_BGOrec_slopeX = _fr_bgo_analysis.Histo1D<double, double>({"h_BGOrec_slopeX", "BGOrec Slope X", 200, -10, 10}, "BGOrec_slopeX", "simu_energy_w_corr");
     auto h_BGOrec_slopeY = _fr_bgo_analysis.Histo1D<double, double>({"h_BGOrec_slopeY", "BGOrec Slope Y", 200, -10, 10}, "BGOrec_slopeY", "simu_energy_w_corr");
@@ -252,7 +320,14 @@ void kompress(
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D_fdr(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ratio_last_cosine2D_fdr_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_last_layer_bin(energy_nbins);
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_hits(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_hits_bin(energy_nbins);
+
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_hits_bin_10MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_hits_bin_20MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_hits_bin_30MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_hits_bin_50MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_hits_bin_100MeV(energy_nbins);
+
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_stkclusters_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_stkclusters_bgohits_bin(energy_nbins);
@@ -276,16 +351,35 @@ void kompress(
     regularize_vars ? flast_bin_rvalue = 10 : flast_bin_rvalue = 1e-2;
 
     std::vector<std::shared_ptr<TH1D>> h_BGOrec_bar_energy_bin(energy_nbins);
+    
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_bar_energy_bin_10_MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_bar_energy_bin_20_MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_bar_energy_bin_30_MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_bar_energy_bin_50_MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_bar_energy_bin_100_MeV(energy_nbins);
+
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile_upto_09(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_shower_profile_from_09(energy_nbins);
 
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
-        h_BGOrec_bar_energy_bin[bin_idx - 1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 100, 0, 10000);
+        h_BGOrec_bar_energy_bin[bin_idx - 1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 0, 1e+4);
         h_BGOrec_shower_profile[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_shower_profile_upto_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_upto_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) < 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_shower_profile_from_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_shower_profile_from_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) > 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
+    
+        h_BGOrec_hits_bin_10MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_hits_10MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 10 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+        h_BGOrec_hits_bin_20MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_hits_20MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 20 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+        h_BGOrec_hits_bin_30MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_hits_30MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 30 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+        h_BGOrec_hits_bin_50MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_hits_50MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 50 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+        h_BGOrec_hits_bin_100MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_hits_100MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 100 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+
+        h_BGOrec_bar_energy_bin_10_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_10_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 10 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 10, 1e+4);
+        h_BGOrec_bar_energy_bin_20_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_20_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 20 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 20, 1e+4);
+        h_BGOrec_bar_energy_bin_30_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_30_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 30 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 30, 1e+4);
+        h_BGOrec_bar_energy_bin_50_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_50_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 50 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 50, 1e+4);
+        h_BGOrec_bar_energy_bin_100_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_bar_energy_100_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 100 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 100, 1e+4);
     }
 
     auto computeSumRmsWeight = [=](std::vector<double> &energy_layer, std::vector<double> &rms_layer, double raw_energy) {
@@ -376,8 +470,8 @@ void kompress(
         }
         h_BGOrec_last_layer_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                                    .Histo1D<int, double>({(std::string("h_BGOrec_last_layer_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Last BGO layer - bin ") + std::to_string(bin_idx) + std::string("; Last Energy Layer; entries")).c_str(), 14, 0, 14}, "lastBGOLayer", "simu_energy_w_corr");
-        h_BGOrec_hits[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
-                                         .Histo1D<int, double>({(std::string("h_BGOrec_hits_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO hits - bin ") + std::to_string(bin_idx)).c_str(), 80, 0, 350}, "nBGOentries", "simu_energy_w_corr");
+        h_BGOrec_hits_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+                                         .Histo1D<int, double>({(std::string("h_BGOrec_hits_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO hits - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 400}, "nBGOentries", "simu_energy_w_corr");
         h_xtrl_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
                                       .Histo1D<double, double>({(std::string("h_xtrl_bin_") + std::to_string(bin_idx)).c_str(), (std::string("XTRL - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 150}, "xtrl", "simu_energy_w_corr");
         h_stkclusters_bin[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
@@ -390,10 +484,66 @@ void kompress(
                                                      .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 100, 0, 500, 80, 0, 350}, "stk_clusters", "nBGOentries", "simu_energy_w_corr");
 
         _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
-            .Foreach([&h_BGOrec_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
-            for (auto& bgo_ly : bar_energy)
-                for(auto& energy : bgo_ly) 
-                    h_BGOrec_bar_energy_bin[bin_idx -1]->Fill(energy, energy_w); }, {"layerBarEnergy", "simu_energy_w_corr"});
+            .Foreach([
+                &h_BGOrec_bar_energy_bin,
+                &h_BGOrec_bar_energy_bin_10_MeV,
+                &h_BGOrec_bar_energy_bin_20_MeV,
+                &h_BGOrec_bar_energy_bin_30_MeV,
+                &h_BGOrec_bar_energy_bin_50_MeV,
+                &h_BGOrec_bar_energy_bin_100_MeV,
+                &h_BGOrec_hits_bin_10MeV,
+                &h_BGOrec_hits_bin_20MeV,
+                &h_BGOrec_hits_bin_30MeV,
+                &h_BGOrec_hits_bin_50MeV,
+                &h_BGOrec_hits_bin_100MeV,
+                bin_idx]
+                (std::vector<std::vector<double>> bar_energy, double energy_w) 
+                { 
+                    unsigned int hits_10=0;
+                    unsigned int hits_20=0;
+                    unsigned int hits_30=0;
+                    unsigned int hits_50=0;
+                    unsigned int hits_100=0;
+
+                    for (auto& bgo_ly : bar_energy)
+                        for(auto& energy : bgo_ly)
+                        {
+                            h_BGOrec_bar_energy_bin[bin_idx -1]->Fill(energy, energy_w); 
+
+                            if (energy>=10)
+                            {
+                                h_BGOrec_bar_energy_bin_10_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_10;
+                            }
+                            if (energy>=20)
+                            {
+                                h_BGOrec_bar_energy_bin_20_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_20;
+                            }
+                            if (energy>=30)
+                            {
+                                h_BGOrec_bar_energy_bin_30_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_30;
+                            }
+                            if (energy>=50)
+                            {
+                                h_BGOrec_bar_energy_bin_50_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_50;
+                            }
+                            if (energy>=100)
+                            {
+                                h_BGOrec_bar_energy_bin_100_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_50;
+                            }
+                        }
+                    
+                    h_BGOrec_hits_bin_10MeV[bin_idx -1]->Fill(hits_10, energy_w);
+                    h_BGOrec_hits_bin_20MeV[bin_idx -1]->Fill(hits_20, energy_w);
+                    h_BGOrec_hits_bin_30MeV[bin_idx -1]->Fill(hits_30, energy_w);
+                    h_BGOrec_hits_bin_50MeV[bin_idx -1]->Fill(hits_50, energy_w);
+                    h_BGOrec_hits_bin_100MeV[bin_idx -1]->Fill(hits_100, energy_w);
+
+                }, {"layerBarEnergy", "simu_energy_w_corr"});
 
         _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_shower_profile, bin_idx](std::vector<double> &energy_frac, double energy_w) { 
@@ -767,11 +917,78 @@ void kompress(
                                                        .Histo2D<double, double, double>({"h_BGOrec_ps_sumRms_flast_13_10000_20000", "sumRms vs F_{13} correlation - 10 TeV - 20 TeV ;sumRms [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast13_binning.size() - 1, &flast13_binning[0]}, sumRms_leaf.c_str(), "fracLast_13", "simu_energy_w_corr");
     auto h_BGOrec_ps_last_layer = _fr_preselected.Histo1D<int, double>({"h_BGOrec_ps_last_layer", "Last BGO layer; Last Energy Layer; entries", 14, 0, 14}, "lastBGOLayer", "simu_energy_w_corr");
 
-    std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 100, 0, 10000);
-    _fr_preselected.Foreach([&h_BGOrec_ps_bar_energy](std::vector<std::vector<double>> bar_energy, double energy_w) { 
+    std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 1e+3, 0, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_10MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_10MeV", "BGO Bar Energy - 10 MeV filter; Bar Energy [MeV]", 1e+3, 10, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_20MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_20MeV", "BGO Bar Energy - 20 MeV filter; Bar Energy [MeV]", 1e+3, 20, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_30MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_30MeV", "BGO Bar Energy - 30 MeV filter; Bar Energy [MeV]", 1e+3, 30, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_50MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_50MeV", "BGO Bar Energy - 50 MeV filter; Bar Energy [MeV]", 1e+3, 50, 1e+4);
+    std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_100MeV = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_100MeV", "BGO Bar Energy - 100 MeV filter; Bar Energy [MeV]", 1e+3, 100, 1e+4);
+
+    std::shared_ptr<TH1D> h_BGOrec_ps_hits = _fr_preselected.Histo1D<int, double>({"h_BGOrec_ps_hits", "BGO Hits", 100, 0, 400}, "nBGOentries", "simu_energy_w_corr");
+    std::shared_ptr<TH1D> h_BGOrec_ps_hits_10MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_10MeV", "BGO Hits - 10 MeV filter", 1e+2, 0, 4e+2);
+    std::shared_ptr<TH1D> h_BGOrec_ps_hits_20MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_20MeV", "BGO Hits - 20 MeV filter", 1e+2, 0, 4e+2);
+    std::shared_ptr<TH1D> h_BGOrec_ps_hits_30MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_30MeV", "BGO Hits - 30 MeV filter", 1e+2, 0, 4e+2);
+    std::shared_ptr<TH1D> h_BGOrec_ps_hits_50MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_50MeV", "BGO Hits - 50 MeV filter", 1e+2, 0, 4e+2);
+    std::shared_ptr<TH1D> h_BGOrec_ps_hits_100MeV = std::make_shared<TH1D>("h_BGOrec_ps_hits_100MeV", "BGO Hits - 100 MeV filter", 1e+2, 0, 4e+2);
+
+    _fr_preselected.Foreach([
+        &h_BGOrec_ps_bar_energy, 
+        &h_BGOrec_ps_bar_energy_10MeV, 
+        &h_BGOrec_ps_bar_energy_20MeV, 
+        &h_BGOrec_ps_bar_energy_30MeV, 
+        &h_BGOrec_ps_bar_energy_50MeV, 
+        &h_BGOrec_ps_bar_energy_100MeV,
+        &h_BGOrec_ps_hits_10MeV,
+        &h_BGOrec_ps_hits_20MeV,
+        &h_BGOrec_ps_hits_30MeV,
+        &h_BGOrec_ps_hits_50MeV,
+        &h_BGOrec_ps_hits_100MeV]
+        (std::vector<std::vector<double>> bar_energy, double energy_w) {
+            unsigned int hits_10=0;
+            unsigned int hits_20=0;
+            unsigned int hits_30=0;
+            unsigned int hits_50=0;
+            unsigned int hits_100=0;
+
             for (auto& bgo_ly : bar_energy)
-                for(auto& energy : bgo_ly) 
-                    h_BGOrec_ps_bar_energy->Fill(energy, energy_w); }, {"layerBarEnergy", "simu_energy_w_corr"});
+                for(auto& energy : bgo_ly)
+                { 
+                    h_BGOrec_ps_bar_energy->Fill(energy, energy_w);
+                    ++hits;
+                    if (energy>=10)
+                    {
+                        h_BGOrec_ps_bar_energy_10MeV->Fill(energy, energy_w);
+                        ++hits_10;
+                    }
+                    if (energy>=20)
+                    {
+                        h_BGOrec_ps_bar_energy_20MeV->Fill(energy, energy_w);
+                        ++hits_20;
+                    }
+                    if (energy>=30)
+                    {
+                        h_BGOrec_ps_bar_energy_30MeV->Fill(energy, energy_w);
+                        ++hits_30;
+                    }
+                    if (energy>=50)
+                    {
+                        h_BGOrec_ps_bar_energy_50MeV->Fill(energy, energy_w);
+                        ++hits_50;
+                    }
+                    if (energy>=100)
+                    {
+                        h_BGOrec_ps_bar_energy_100MeV->Fill(energy, energy_w);
+                        ++hits_100;
+                    }
+                }
+            
+            h_BGOrec_ps_hits_10MeV->Fill(hits_10, energy_w);
+            h_BGOrec_ps_hits_20MeV->Fill(hits_20, energy_w);
+            h_BGOrec_ps_hits_30MeV->Fill(hits_30, energy_w);
+            h_BGOrec_ps_hits_50MeV->Fill(hits_50, energy_w);
+            h_BGOrec_ps_hits_100MeV->Fill(hits_100, energy_w);
+
+        }, {"layerBarEnergy", "simu_energy_w_corr"});
 
     auto h_BGOrec_ps_slopeX = _fr_preselected.Histo1D<double, double>({"h_BGOrec_ps_slopeX", "BGOrec Slope X", 200, -10, 10}, "BGOrec_slopeX", "simu_energy_w_corr");
     auto h_BGOrec_ps_slopeY = _fr_preselected.Histo1D<double, double>({"h_BGOrec_ps_slopeY", "BGOrec Slope Y", 200, -10, 10}, "BGOrec_slopeY", "simu_energy_w_corr");
@@ -805,7 +1022,14 @@ void kompress(
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D_fdr(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_ratio_last_cosine2D_fdr_log(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_last_layer_bin(energy_nbins);
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_hits(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_BGOrec_ps_hits_bin(energy_nbins);
+
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_hits_bin_10MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_hits_bin_20MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_hits_bin_30MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_hits_bin_50MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_hits_bin_100MeV(energy_nbins);
+
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_ps_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_stkclusters_ps_bin(energy_nbins);
     std::vector<ROOT::RDF::RResultPtr<TH2D>> h_stkclusters_bgohits_ps_bin(energy_nbins);
@@ -818,6 +1042,13 @@ void kompress(
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_BGOrec_ps_energy_ratio_5R(energy_nbins, std::vector<ROOT::RDF::RResultPtr<TH1D>>(DAMPE_bgo_nLayers));
 
     std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_bar_energy_bin(energy_nbins);
+
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_bar_energy_bin_10_MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_bar_energy_bin_20_MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_bar_energy_bin_30_MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_bar_energy_bin_50_MeV(energy_nbins);
+    std::vector<std::shared_ptr<TH1D>> h_BGOrec_ps_bar_energy_bin_100_MeV(energy_nbins);
+
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_ps_shower_profile(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_ps_shower_profile_upto_09(energy_nbins);
     std::vector<std::shared_ptr<TH2D>> h_BGOrec_ps_shower_profile_from_09(energy_nbins);
@@ -827,6 +1058,18 @@ void kompress(
         h_BGOrec_ps_shower_profile[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_ps_shower_profile_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_ps_shower_profile_upto_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_ps_shower_profile_upto_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) < 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
         h_BGOrec_ps_shower_profile_from_09[bin_idx - 1] = std::make_shared<TH2D>((std::string("h_BGOrec_ps_shower_profile_from_09_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Shower Profile cos(#theta) > 0.9 - bin ") + std::to_string(bin_idx)).c_str(), 13, 0, 13, 100, 0, 1);
+
+        h_BGOrec_ps_hits_bin_10MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_hits_10MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 10 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+        h_BGOrec_ps_hits_bin_20MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_hits_20MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 20 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+        h_BGOrec_ps_hits_bin_30MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_hits_30MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 30 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+        h_BGOrec_ps_hits_bin_50MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_hits_50MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 50 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+        h_BGOrec_ps_hits_bin_100MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_hits_100MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Hits - 100 MeV filter - bin ") + std::to_string(bin_idx)).c_str(), 1e+2, 0, 4e+2);
+
+        h_BGOrec_ps_bar_energy_bin_10_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_bar_energy_10_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 10 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 10, 1e+4);
+        h_BGOrec_ps_bar_energy_bin_20_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_bar_energy_20_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 20 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 20, 1e+4);
+        h_BGOrec_ps_bar_energy_bin_30_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_bar_energy_30_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 30 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 30, 1e+4);
+        h_BGOrec_ps_bar_energy_bin_50_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_bar_energy_50_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 50 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 50, 1e+4);
+        h_BGOrec_ps_bar_energy_bin_100_MeV[bin_idx -1] = std::make_shared<TH1D>((std::string("h_BGOrec_ps_bar_energy_100_MeV_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO Bar Energy - 100 MeV filter - bin ") + std::to_string(bin_idx) + std::string("; Bar Energy [MeV]")).c_str(), 1e+3, 100, 1e+4);
     }
 
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
@@ -908,7 +1151,7 @@ void kompress(
         }
         h_BGOrec_ps_last_layer_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                                       .Histo1D<int, double>({(std::string("h_BGOrec_ps_last_layer_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Last BGO layer - bin ") + std::to_string(bin_idx) + std::string("; Last Energy Layer; entries")).c_str(), 14, 0, 14}, "lastBGOLayer", "simu_energy_w_corr");
-        h_BGOrec_ps_hits[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
+        h_BGOrec_ps_hits_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                             .Histo1D<int, double>({(std::string("h_BGOrec_ps_hits_bin_") + std::to_string(bin_idx)).c_str(), (std::string("BGO hits - bin ") + std::to_string(bin_idx)).c_str(), 80, 0, 350}, "nBGOentries", "simu_energy_w_corr");
         h_xtrl_ps_bin[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                          .Histo1D<double, double>({(std::string("h_xtrl_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("XTRL - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 150}, "xtrl", "simu_energy_w_corr");
@@ -921,10 +1164,66 @@ void kompress(
                                                         .Histo2D<int, int, double>({(std::string("h_stkclusters_bgohist_ps_bin_") + std::to_string(bin_idx)).c_str(), (std::string("STK clusters vs BGO hits - bin ") + std::to_string(bin_idx) + std::string(" ; STK clusters; BGO hits")).c_str(), 100, 0, 500, 80, 0, 350}, "stk_clusters", "nBGOentries", "simu_energy_w_corr");
 
         _fr_preselected.Filter(bin_filter, {"energy_bin"})
-            .Foreach([&h_BGOrec_ps_bar_energy_bin, bin_idx](std::vector<std::vector<double>> bar_energy, double energy_w) { 
-            for (auto& bgo_ly : bar_energy)
-                for(auto& energy : bgo_ly) 
-                    h_BGOrec_ps_bar_energy_bin[bin_idx -1]->Fill(energy, energy_w); }, {"layerBarEnergy", "simu_energy_w_corr"});
+            .Foreach([
+                &h_BGOrec_ps_bar_energy_bin,
+                &h_BGOrec_ps_bar_energy_bin_10_MeV,
+                &h_BGOrec_ps_bar_energy_bin_20_MeV,
+                &h_BGOrec_ps_bar_energy_bin_30_MeV,
+                &h_BGOrec_ps_bar_energy_bin_50_MeV,
+                &h_BGOrec_ps_bar_energy_bin_100_MeV,
+                &h_BGOrec_ps_hits_bin_10MeV,
+                &h_BGOrec_ps_hits_bin_20MeV,
+                &h_BGOrec_ps_hits_bin_30MeV,
+                &h_BGOrec_ps_hits_bin_50MeV,
+                &h_BGOrec_ps_hits_bin_100MeV,
+                bin_idx]
+                (std::vector<std::vector<double>> bar_energy, double energy_w) 
+                {
+                    unsigned int hits_10=0;
+                    unsigned int hits_20=0;
+                    unsigned int hits_30=0;
+                    unsigned int hits_50=0;
+                    unsigned int hits_100=0;
+
+                    for (auto& bgo_ly : bar_energy)
+                        for(auto& energy : bgo_ly)
+                        {
+                            h_BGOrec_ps_bar_energy_bin[bin_idx -1]->Fill(energy, energy_w); 
+
+                            if (energy>=10)
+                            {
+                                h_BGOrec_ps_bar_energy_bin_10_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_10;
+                            }
+                            if (energy>=20)
+                            {
+                                h_BGOrec_ps_bar_energy_bin_20_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_20;
+                            }
+                            if (energy>=30)
+                            {
+                                h_BGOrec_ps_bar_energy_bin_30_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_30;
+                            }
+                            if (energy>=50)
+                            {
+                                h_BGOrec_ps_bar_energy_bin_50_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_50;
+                            }
+                            if (energy>=100)
+                            {
+                                h_BGOrec_ps_bar_energy_bin_100_MeV[bin_idx -1]->Fill(energy, energy_w);
+                                ++hits_50;
+                            } 
+                        }
+
+                    h_BGOrec_ps_hits_bin_10MeV[bin_idx -1]->Fill(hits_10, energy_w);
+                    h_BGOrec_ps_hits_bin_20MeV[bin_idx -1]->Fill(hits_20, energy_w);
+                    h_BGOrec_ps_hits_bin_30MeV[bin_idx -1]->Fill(hits_30, energy_w);
+                    h_BGOrec_ps_hits_bin_50MeV[bin_idx -1]->Fill(hits_50, energy_w);
+                    h_BGOrec_ps_hits_bin_100MeV[bin_idx -1]->Fill(hits_100, energy_w);
+
+                }, {"layerBarEnergy", "simu_energy_w_corr"});
 
         _fr_preselected.Filter(bin_filter, {"energy_bin"})
             .Foreach([&h_BGOrec_ps_shower_profile, bin_idx](std::vector<double> &energy_frac, double energy_w) { 
@@ -1292,6 +1591,17 @@ void kompress(
     h_xtrl_energy_int->Write();
     h_xtrl->Write();
     h_BGOrec_bar_energy->Write();
+    h_BGOrec_bar_energy_10MeV->Write();
+    h_BGOrec_bar_energy_20MeV->Write();
+    h_BGOrec_bar_energy_30MeV->Write();
+    h_BGOrec_bar_energy_50MeV->Write();
+    h_BGOrec_bar_energy_100MeV->Write();
+    h_BGOrec_hits->Write();
+    h_BGOrec_hits_10MeV->Write();
+    h_BGOrec_hits_20MeV->Write();
+    h_BGOrec_hits_30MeV->Write();
+    h_BGOrec_hits_50MeV->Write();
+    h_BGOrec_hits_100MeV->Write();
     h_BGOrec_last_layer->Write();
 
     for (int bidx = 0; bidx < energy_nbins; ++bidx)
@@ -1327,10 +1637,20 @@ void kompress(
             h_BGOrec_ratio_last_cosine2D_fdr_log[bidx]->Write();
         }
         h_BGOrec_last_layer_bin[bidx]->Write();
-        h_BGOrec_hits[bidx]->Write();
+        h_BGOrec_hits_bin[bidx]->Write();
+        h_BGOrec_hits_bin_10MeV[bidx]->Write();
+        h_BGOrec_hits_bin_20MeV[bidx]->Write();
+        h_BGOrec_hits_bin_30MeV[bidx]->Write();
+        h_BGOrec_hits_bin_50MeV[bidx]->Write();
+        h_BGOrec_hits_bin_100MeV[bidx]->Write();
         h_xtrl_bin[bidx]->Write();
         h_stkclusters_bgohits_bin[bidx]->Write();
         h_BGOrec_bar_energy_bin[bidx]->Write();
+        h_BGOrec_bar_energy_bin_10_MeV[bidx]->Write();
+        h_BGOrec_bar_energy_bin_20_MeV[bidx]->Write();
+        h_BGOrec_bar_energy_bin_30_MeV[bidx]->Write();
+        h_BGOrec_bar_energy_bin_50_MeV[bidx]->Write();
+        h_BGOrec_bar_energy_bin_100_MeV[bidx]->Write();
         h_BGOrec_shower_profile[bidx]->Write();
         h_BGOrec_shower_profile_upto_09[bidx]->Write();
         h_BGOrec_shower_profile_from_09[bidx]->Write();
@@ -1496,6 +1816,17 @@ void kompress(
     h_xtrl_ps_energy_int->Write();
     h_xtrl_ps->Write();
     h_BGOrec_ps_bar_energy->Write();
+    h_BGOrec_bar_energy_10MeV->Write();
+    h_BGOrec_bar_energy_20MeV->Write();
+    h_BGOrec_bar_energy_30MeV->Write();
+    h_BGOrec_bar_energy_50MeV->Write();
+    h_BGOrec_bar_energy_100MeV->Write();
+    h_BGOrec_ps_hits->Write();
+    h_BGOrec_ps_hits_10MeV->Write();
+    h_BGOrec_ps_hits_20MeV->Write();
+    h_BGOrec_ps_hits_30MeV->Write();
+    h_BGOrec_ps_hits_50MeV->Write();
+    h_BGOrec_ps_hits_100MeV->Write();
     h_BGOrec_ps_last_layer->Write();
 
     for (int bidx = 0; bidx < energy_nbins; ++bidx)
@@ -1531,10 +1862,20 @@ void kompress(
             h_BGOrec_ps_ratio_last_cosine2D_fdr_log[bidx]->Write();
         }
         h_BGOrec_ps_last_layer_bin[bidx]->Write();
-        h_BGOrec_ps_hits[bidx]->Write();
+        h_BGOrec_ps_hits_bin[bidx]->Write();
+        h_BGOrec_ps_hits_bin_10MeV[bidx]->Write();
+        h_BGOrec_ps_hits_bin_20MeV[bidx]->Write();
+        h_BGOrec_ps_hits_bin_30MeV[bidx]->Write();
+        h_BGOrec_ps_hits_bin_50MeV[bidx]->Write();
+        h_BGOrec_ps_hits_bin_100MeV[bidx]->Write();
         h_xtrl_ps_bin[bidx]->Write();
         h_stkclusters_bgohits_ps_bin[bidx]->Write();
         h_BGOrec_ps_bar_energy_bin[bidx]->Write();
+        h_BGOrec_ps_bar_energy_bin_10_MeV[bidx]->Write();
+        h_BGOrec_ps_bar_energy_bin_20_MeV[bidx]->Write();
+        h_BGOrec_ps_bar_energy_bin_30_MeV[bidx]->Write();
+        h_BGOrec_ps_bar_energy_bin_50_MeV[bidx]->Write();
+        h_BGOrec_ps_bar_energy_bin_100_MeV[bidx]->Write();
         h_BGOrec_ps_shower_profile[bidx]->Write();
         h_BGOrec_ps_shower_profile_upto_09[bidx]->Write();
         h_BGOrec_ps_shower_profile_from_09[bidx]->Write();
