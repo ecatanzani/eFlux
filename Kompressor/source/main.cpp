@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 	if (opt.getValue("no-split") || opt.getValue('n'))
 		input_args.SetNSeType(opt.getValue('n'));
 	if (opt.getValue("parallel") || opt.getValue('p'))
-		input_args.threads =  std::stoul(opt.getValue('p'),nullptr, 0);
+		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 
 	if (!input_args.output_path.empty())
 		reader(input_args);
