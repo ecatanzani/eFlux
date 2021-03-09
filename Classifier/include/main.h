@@ -19,7 +19,6 @@ struct in_args
 	std::string config_dir;
 	std::vector<std::string> learning_method;
 	bool verbose = false;
-	bool test_with_data = false;
 
 	bool test_input_lists()
 	{

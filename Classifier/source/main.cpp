@@ -24,7 +24,6 @@ int main(int argc, char **argv)
 	opt.addUsage("");
 
 	opt.addUsage(" -m  --method           .......... <TMVA_learning_method_1:method_2...>   .......... TMVA learning/classifying method");
-	opt.addUsage(" -t  --data-test        .......... Test with data");
 
 	opt.addUsage("");
 
@@ -38,7 +37,7 @@ int main(int argc, char **argv)
 	opt.setOption("outputDir", 'd');
 	opt.setFlag("verbose", 'v');
 	opt.setOption("method", 'm');
-	opt.setFlag("data-test", 't');
+	opt.setFlag("transform", 't');
 	
 	opt.processCommandArgs(argc, argv);
 	
@@ -73,8 +72,6 @@ int main(int argc, char **argv)
 		input_args.verbose = opt.getFlag('v');
 	if (opt.getValue("method") || opt.getValue('m'))
 		input_args.ParseLearningMethods(opt.getValue('m'));
-	if (opt.getFlag("data-test") || opt.getFlag('t'))
-		input_args.test_with_data = opt.getFlag('t');
 	
 	if (input_args.test_input_lists())
 	{
@@ -123,6 +120,5 @@ void PrintArgs(in_args input_args)
 	std::cout << "\nOutput path: [" << input_args.output_path << "]";
 	std::cout << "\nConfig directory: [" << input_args.config_dir << "]";
 	std::cout << "\n\nLearning method: [" << print_methods(input_args.learning_method) << "]";
-	input_args.test_with_data ? std::cout << "\nTest with data: [True]" : std::cout << "\nTest with data: [False]";
 	std::cout << "\n\n******************************\n\n";
 }
