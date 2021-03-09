@@ -43,6 +43,7 @@ void DmpBgoContainer::scanBGOHits(
 	
 	// Get the number of BGO hits
 	nBgoHits = bgohits->GetHittedBarNumber();
+
 	// Vector of BGO Z values
 	std::vector<double> bgolayersZ(DAMPE_bgo_nLayers, -999);
 	// Scan BGO hits
@@ -64,9 +65,12 @@ void DmpBgoContainer::scanBGOHits(
 		int imax = -1;
 		double maxE = 0;
 
+		/*
 		// Extrapolate the shower axis on that plane
 		const double showeraxisX = slope[0] * bgolayersZ[lay] + intercept[0];
 		const double showeraxisY = slope[1] * bgolayersZ[lay] + intercept[1];
+		*/
+	
 		// Find the maximum of the nergy release in a certain layer, together with the bar ID
 		for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
 		{
@@ -79,9 +83,28 @@ void DmpBgoContainer::scanBGOHits(
 				maxE = hitE;
 				imax = ihit;
 			}
+			
+			#if 0
+			std::cout << "\nLayer: " << lay;
+			std::cout << "\nHit: " << ihit;
+			std::cout << "\nHitE: " << hitE;
+			std::cout << "\nHitMeasuresX: " << bgohits->IsHitMeasuringX(ihit);
+			std::cout << "\nHitMeasuresY: " << bgohits->IsHitMeasuringY(ihit);
+			std::cout << "\nTmphitX: " << tmphitX;
+			std::cout << "\nTmphitY: " << tmphitY;
+			std::cout << "\nshoweraxisX: " << showeraxisX;
+			std::cout << "\nshoweraxisY: " << showeraxisY;
+			std::cout << "\n1MR: " << compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 1);
+			std::cout << "\n2MR: " << compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 2);
+			std::cout << "\n3MR: " << compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 3);
+			std::cout << "\n5MR: " << compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 5) << std::endl;
+			#endif
+
+			/*
 			// Compute the energy in 1 moliere radius
 			const double tmphitX = bgohits->GetHitX(ihit);
 			const double tmphitY = bgohits->GetHitY(ihit);
+			
 			if (compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 1))
 				energy_1R_radius[lay] += hitE;
 			if (compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 2))
@@ -90,6 +113,7 @@ void DmpBgoContainer::scanBGOHits(
 				energy_3R_radius[lay] += hitE;
 			if (compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 5))
 				energy_5R_radius[lay] += hitE;
+			*/
 		}
 
 		iMaxLayer[lay] = imax;
