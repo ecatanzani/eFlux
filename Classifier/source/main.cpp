@@ -9,22 +9,22 @@ int main(int argc, char **argv)
 	opt.addUsage("Usage: ");
 	opt.addUsage("");
 
-	opt.addUsage(" -h  --help																Prints this help");
-	opt.addUsage(" -S  --train-signal			<path_to_input_signal_TTree_list>		(*)	Input signal train list");
-	opt.addUsage(" -B  --train-background		<path_to_input_background_TTree_list>	(*) Input background train list");
-	opt.addUsage(" -s  --test-signal			<path_to_input_signal_TTree_list>		(*)	Input signal test list");
-	opt.addUsage(" -b  --test-background		<path_to_input_background_TTree_list>	(*) Input background test list");
-	opt.addUsage(" -c  --config					<path_to_config_dir>						Config directory");
-	opt.addUsage(" -o  --output					<path_to_output_TFile>						Output ROOT TFile");
-	opt.addUsage(" -d  --outputDir				<path_to_output_TFile_dir>					Output ROOT TFile directory");
-	opt.addUsage(" -v  --verbose															Verbose output");
+	opt.addUsage(" -h  --help             .......... Prints this help");
+	opt.addUsage(" -S  --train-signal     .......... <path_to_input_signal_TTree_list>      .......... (*) Input signal train list");
+	opt.addUsage(" -B  --train-background .......... <path_to_input_background_TTree_list>  .......... (*) Input background train list");
+	opt.addUsage(" -s  --test-signal      .......... <path_to_input_signal_TTree_list>      .......... (*) Input signal test list");
+	opt.addUsage(" -b  --test-background  .......... <path_to_input_background_TTree_list>  .......... (*) Input background test list");
+	opt.addUsage(" -c  --config           .......... <path_to_config_dir>                   .......... Config directory");
+	opt.addUsage(" -o  --output           .......... <path_to_output_TFile>                 .......... Output ROOT TFile");
+	opt.addUsage(" -d  --outputDir        .......... <path_to_output_TFile_dir>             .......... Output ROOT TFile directory");
+	opt.addUsage(" -v  --verbose          .......... Verbose output");
 
 	opt.addUsage("");
 	opt.addUsage("TMVA learning method: ");
 	opt.addUsage("");
 
-	opt.addUsage(" -m  --method					<TMVA_learning_method_1:method_2...>					TMVA learning/classifying method");
-	opt.addUsage(" -t  --data-test														Test with data");
+	opt.addUsage(" -m  --method           .......... <TMVA_learning_method_1:method_2...>   .......... TMVA learning/classifying method");
+	opt.addUsage(" -t  --data-test        .......... Test with data");
 
 	opt.addUsage("");
 
