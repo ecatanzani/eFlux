@@ -202,18 +202,18 @@ void data_tuple::branch_tree()
 		"PSD_charge/D");
 	// NUD
 	DmpNtupTree->Branch(
-		"NUD_ADC",
+		"nud_adc",
 		&nud_adc);
 	DmpNtupTree->Branch(
-		"NUD_total_ADC",
+		"nud_total_adc",
 		&nud_total_adc,
 		"nud_total_adc/I");
 	DmpNtupTree->Branch(
-		"NUD_max_ADC",
+		"nud_max_adc",
 		&nud_max_adc,
 		"nud_max_adc/I");
 	DmpNtupTree->Branch(
-		"NUD_max_channel_ID",
+		"nud_max_channel_id",
 		&nud_max_channel_id,
 		"nud_max_channel_id/I");
 	// Classifiers
