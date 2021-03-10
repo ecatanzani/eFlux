@@ -1,6 +1,12 @@
 #include "reader.h"
 #include "tmvaset.h"
+#include "kompress.h"
 #include "list_parser.h"
+#include "gaussianize.h"
+
+#include "config.h"
+#include "energy_config.h"
+#include "lambda_config.h"
 
 void reader(in_args input_args)
 {
@@ -37,6 +43,20 @@ void reader(in_args input_args)
             input_args.no_split_test,
             input_args.threads,
             input_args.mc_flag);
+    else if (input_args.gaussianize)
+    {
+        std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
+        gaussianizeTMVAvars(
+            evt_parser->GetEvtTree(),
+            _config,
+            _energy_config,
+            _lambda_config,
+            _entries,
+            input_args.output_path, 
+            input_args._VERBOSE,
+            input_args.threads,
+            input_args.mc_flag);
+    }
     else
         kompress(
             evt_parser->GetEvtTree(), 
