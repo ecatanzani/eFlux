@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -r  --regularize  .......... <path_to_summary_fit_TTree>     .......... Regularize variables behaviour");
 	opt.addUsage(" -t  --tmva-set    .......... <s(signal)/b(background)>       .......... Create TMVA Test/Training sets");
 	opt.addUsage(" -n  --no-split    .......... <t(train)/T(test)>              .......... Create a single Test/Training TMVA set");
+	opt.addUsage(" -g  --gaussianize .......... Gaussianize input TMVA variables");
 	opt.addUsage(" -p  --parallel    .......... <number_of_threads>             .......... Multithreading option");
 	
 
@@ -40,6 +41,7 @@ int main(int argc, char **argv)
 	opt.setOption("regularize", 'r');
 	opt.setOption("tmva-set", 't');
 	opt.setOption("no-split", 'n');
+	opt.setFlag("gaussianize", 'g');
 	opt.setOption("parallel", 'p');
 
 	opt.processCommandArgs(argc, argv);
@@ -78,6 +80,8 @@ int main(int argc, char **argv)
 	}
 	if (opt.getValue("no-split") || opt.getValue('n'))
 		input_args.SetNSeType(opt.getValue('n'));
+	if (opt.getValue("gaussianize") || opt.getValue('g'))
+		input_args.gaussianize = 	opt.getValue('g');
 	if (opt.getValue("parallel") || opt.getValue('p'))
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 

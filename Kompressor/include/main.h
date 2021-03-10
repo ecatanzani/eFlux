@@ -24,6 +24,7 @@ struct in_args
 	bool signal;
 	bool no_split = false;
 	bool no_split_test;
+	bool gaussianize = false;
 	unsigned int threads = 1;
 
 	void SetSeType(std::string set_name)
