@@ -8,12 +8,6 @@
 
 #include <ROOT/RDataFrame.hxx>
 
-struct best_lambda
-{
-    double lambda;
-    double goodness;
-};
-
 void gaussianizeTMVAvars(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
