@@ -3,10 +3,12 @@
 parser::parser(
     const std::string input_list,
     const bool mc,
-    const bool _VERBOSE)
+    const bool _VERBOSE,
+    const bool gaussianized)
 {
     std::string tree_name;
     mc ? tree_name = mc_tree_name : tree_name = data_tree_name;
+    if (gaussianized) tree_name += std::string("_gauss");
     evtch = std::make_shared<TChain> (tree_name.c_str(), "DAMPE event tree");
     std::istringstream input_stream(parse_input_file(input_list));
     std::string tmp_str;
