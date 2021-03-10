@@ -14,7 +14,8 @@ void reader(in_args input_args)
     std::unique_ptr<parser> evt_parser = std::make_unique<parser>(
         input_args.input_list, 
         input_args.mc_flag, 
-        input_args._VERBOSE);
+        input_args._VERBOSE,
+        input_args.show_gaussianized);
     // Parse 'Collector' config file
     std::shared_ptr<config> _config = std::make_shared<config>(
         input_args.wd, 
@@ -47,6 +48,20 @@ void reader(in_args input_args)
     {
         std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
         gaussianizeTMVAvars(
+            evt_parser->GetEvtTree(),
+            _config,
+            _energy_config,
+            _lambda_config,
+            _entries,
+            input_args.output_path, 
+            input_args._VERBOSE,
+            input_args.threads,
+            input_args.mc_flag);
+    }
+    else if (input_args.show_gaussianized)
+    {
+        std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
+        showGaussianizedTMVAvars(
             evt_parser->GetEvtTree(),
             _config,
             _energy_config,
