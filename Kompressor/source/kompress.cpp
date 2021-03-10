@@ -1,5 +1,6 @@
 #include "reader.h"
 #include "binning.h"
+#include "kompress.h"
 #include "regularize.h"
 #include "DAMPE_geo_structure.h"
 
