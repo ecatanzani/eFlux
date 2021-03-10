@@ -70,6 +70,8 @@ void gaussianizeTMVAvars(
     if (_VERBOSE)
         _lambda_config->PrintLambdaSettings();
     
+    if (_VERBOSE)
+        std::cout << "\nAnalysis running...\n";
 
     auto gaussianize_rmslayer = [&lambda_values](const std::vector<double> input_rmslayer) -> std::map<std::vector<double>, double>
     {
@@ -88,8 +90,9 @@ void gaussianizeTMVAvars(
     };
 
     auto _fr_preselected_gauss = _fr_preselected.Define("rmsLayer_gauss", gaussianize_rmslayer, {"rmsLayer"});
-
-
-    auto colNames = _fr_preselected_gauss.GetColumnNames(); 
+    
     _fr_preselected_gauss.Snapshot((std::string(evtch->GetName()) + std::string("_gauss")).c_str(), outputPath);
+    
+    if (_VERBOSE)
+        std::cout << "\nOutput TFile has been written [" << outputPath << "]\n";
 }
