@@ -2,10 +2,17 @@
 
 #include <vector>
 #include <cmath>
+#include <map>
 
 #include "DAMPE_geo_structure.h"
 
 #include <ROOT/RDataFrame.hxx>
+
+struct best_lambda
+{
+    double lambda;
+    double goodness;
+};
 
 void gaussianizeTMVAvars(
     std::shared_ptr<TChain> evtch,
@@ -63,90 +70,26 @@ void gaussianizeTMVAvars(
     if (_VERBOSE)
         _lambda_config->PrintLambdaSettings();
     
-    for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
+
+    auto gaussianize_rmslayer = [&lambda_values](const std::vector<double> input_rmslayer) -> std::map<std::vector<double>, double>
     {
+        std::map<std::vector<double>, double> rmsLayer_gauss;
         auto lambda = lambda_values.start;
+        auto gaussianize_elm = [&lambda](const std::vector<double> elm) -> std::vector<double> 
+        { 
+            std::vector<double> elm_cp = elm;
+            for (unsigned int idx=0; idx<elm_cp.size(); ++idx)
+                elm_cp[idx] = lambda ? (exp(lambda*elm[idx])-1)/lambda : elm[idx];
+            return elm_cp;
+        };
         for (; lambda<=lambda_values.end; lambda+=lambda_values.step)
-        {
-            auto gaussianize = [&lambda](const std::vector<double> x) -> std::vector<double> 
-            { 
-                std::vector<double> x2 = x;
-                for (unsigned int idx=0; idx<x2.size(); ++idx)
-                    x2[idx] = lambda ? (exp(lambda*x[idx])-1)/lambda : x[idx];
-                return x2;
-            };
-            std::string str_lambda = lambda<0 ? std::string("neg_") + std::to_string(abs(lambda)) : std::to_string(lambda);
-            std::string leaf_name = std::string("rmsLayer_energybin_") + std::to_string(bin_idx) + std::string("_lambda_") + str_lambda;
-            leaf_name.erase(leaf_name.find_last_not_of('0'), std::string::npos);
-            _fr_preselected = _fr_preselected.Define(leaf_name, gaussianize, {"rmsLayer"});
-        }
-    }    
-    
-    // Create histos
-    if (_VERBOSE)
-        std::cout << "\nGaussianizing TMVA variables...\n";
+            rmsLayer_gauss.insert(std::pair<std::vector<double>, double>(gaussianize_elm(input_rmslayer), lambda));
+        return rmsLayer_gauss;
+    };
 
-    std::vector<std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>> h_rmsLayer_lambda (energy_nbins);
+    auto _fr_preselected_gauss = _fr_preselected.Define("rmsLayer_gauss", gaussianize_rmslayer, {"rmsLayer"});
 
-    for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
-    {
-        if (_VERBOSE)
-            std::cout << "\n[INFO] Building histos - energy bin [" << bin_idx << "]";
-        auto bin_filter = [&bin_idx](int energy_bin) -> bool { return energy_bin == bin_idx; };
-        h_rmsLayer_lambda[bin_idx-1] = std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> (lambda_values.num);
-        auto lambda = lambda_values.start;
-        for (int lambda_idx=0; lambda_idx<lambda_values.num; ++lambda_idx)
-        {
-            if (lambda_idx)
-                lambda += lambda_values.step;
-            h_rmsLayer_lambda[bin_idx-1][lambda_idx] = std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers);
-            std::string str_lambda = lambda<0 ? std::string("neg_") + std::to_string(abs(lambda)) : std::to_string(lambda);
-            std::string leaf_name = std::string("rmsLayer_energybin_") + std::to_string(bin_idx) + std::string("_lambda_") + str_lambda;
-            leaf_name.erase(leaf_name.find_last_not_of('0'), std::string::npos);
-            for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-            {
-                auto get_layer_info = [&ly](std::vector<double> rms_layer) -> double { return rms_layer[ly]; };
-                h_rmsLayer_lambda[bin_idx-1][lambda_idx][ly] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                                                .Define("rms_layer", get_layer_info, {leaf_name})
-                                                                                .Histo1D<double, double>("rms_layer", "simu_energy_w_corr");
-                h_rmsLayer_lambda[bin_idx-1][lambda_idx][ly]->SetName(
-                    (std::string("h_rmsLayer_energybin_") + std::to_string(bin_idx) + std::string("_lambda_") + std::to_string(lambda) + "_layer_" + std::to_string(ly)).c_str());
-                h_rmsLayer_lambda[bin_idx-1][lambda_idx][ly]->SetTitle((std::string("rmsLayer - energybin ") + std::to_string(bin_idx) + std::string(" - lambda ") + std::to_string(lambda) + " - layer " + std::to_string(ly)).c_str());
-            }
-        }
-    }
 
-    //ComputeGoodness(h_rms);
-
-    if (_VERBOSE)
-        std::cout << "\n\nWriting output file...\n";
-    TFile* output_file = TFile::Open(outputPath.c_str(), "RECREATE");
-    if (output_file->IsZombie())
-    {
-        std::cerr << "\n\nError writing output file [" << outputPath << "]\n\n";
-        exit(100);
-    }
-
-    for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
-    {
-        auto lambda_idx = 0;
-        auto lambda = lambda_values.start;
-        for (; lambda<=lambda_values.end; lambda+=lambda_values.step)
-        {
-            for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-            {
-                h_rmsLayer_lambda[bin_idx-1][lambda_idx][ly]->Write();
-            }
-            ++lambda_idx;
-        }
-    }
-
-    output_file->Close();
-
-}
-
-void ComputeGoodness(std::vector<std::shared_ptr<TH1D>> h_rms)
-{
-    std::vector<double> goodness_rms (h_rms.size(), 999);
-
+    auto colNames = _fr_preselected_gauss.GetColumnNames(); 
+    _fr_preselected_gauss.Snapshot((std::string(evtch->GetName()) + std::string("_gauss")).c_str(), outputPath);
 }
