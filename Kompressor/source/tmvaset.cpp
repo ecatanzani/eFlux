@@ -39,12 +39,14 @@ void createTMVAset(
     std::string fracLast_leaf = "fracLast";
     fit_tree_path.empty() ? regularize_vars = false : regularize_vars = true;
     // Create the RDFs
-    auto GetEnergyBin = [=](double energy) -> int { 
+    auto GetEnergyBin = [=](double energy) -> int 
+    { 
         int bin_idx=0;
         for (; bin_idx<energy_nbins-1; ++bin_idx)
             if (energy * _gev >= energy_binning[bin_idx] && energy * _gev < energy_binning[bin_idx+1])
                 break;
-        return bin_idx+1; };
+        return bin_idx+1; 
+    };
 
     // Create the RDF with energy bin, energy weight and Train/Test assignment variable
     auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"})
