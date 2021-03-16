@@ -6,7 +6,7 @@ source /ROOT6/bin/thisroot.sh
 DYPATH="dylib"
 echo "Creating dynamic library folder"
 mkdir $DYPATH
-echo "Generating dictionary for std::map<std::vector<double>, double> class"
+echo "Generating dictionary for std::map<double, std::vector<double>> class"
 rootcling -f $DYPATH/mapdict.cpp  -rmf $DYPATH/libmapdict.rootmap -rml $DYPATH/libmapdict.so  include/LinkDef.h
 echo "Compile the dictionary as a shared library"
 g++ -shared -fPIC -o $DYPATH/libmapdict.so $DYPATH/mapdict.cpp `root-config --cflags --libs`
