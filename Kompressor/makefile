@@ -15,12 +15,13 @@ endif
 #dependencie
 DIPS_INCLUDE = $(shell root-config --incdir)
 DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) 
+DYLIB = $(TOP)/dylib
 
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
 
-ANYOPT_SRC = $(TOP)/../../deps/AnyOption/anyoption.cpp
-ANYOPT_INC = $(TOP)/../../deps/AnyOption
+ANYOPT_SRC = $(TOP)/../deps/AnyOption/anyoption.cpp
+ANYOPT_INC = $(TOP)/../deps/AnyOption
 
 DEBUG_DIR    = Debug/obj
 RELEASE_DIR  = Release/obj
@@ -49,7 +50,7 @@ LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
 	CC_FLAGS += -I$(DIPS_INCLUDE) -I$(ANYOPT_INC)
-	LDFLAGS += $(DIPS_LIBS)
+	LDFLAGS += $(DIPS_LIBS) -L$(DYLIB) -lmapdict
 endif
 
 ####################################################

@@ -15,7 +15,8 @@ public:
     parser(
         const std::string input_list,
         const bool mc = false,
-        const bool _VERBOSE = true);
+        const bool _VERBOSE = true,
+        const bool gaussianized = false);
     ~parser(){};
     std::shared_ptr<TChain> GetEvtTree();
 private:

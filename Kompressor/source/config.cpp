@@ -1,17 +1,12 @@
 #include "config.h"
-#include "binning.h"
 
 config::config(
 	const std::string working_dir,
 	const bool mc)
 {
 	std::string config_file_name;
-	mc ? config_file_name = "mc_config.txt" : config_file_name = "data_config.txt";
+	mc ? config_file_name = "mc_config.conf" : config_file_name = "data_config.conf";
 	get_config_info(parse_config_file(working_dir, config_file_name));
-	energy_binning = createLogBinning(
-		cuts.min_event_energy,
-		cuts.max_event_energy,
-		n_bins);
 }
 
 std::string config::parse_config_file(
@@ -40,10 +35,6 @@ void config::get_config_info(std::string parsed_config)
 
 	while (input_stream >> tmp_str)
 	{
-		// Load acceptance params
-		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
-			input_stream >> n_bins;
-
 		// Load cuts variables
 		if (!strcmp(tmp_str.c_str(), "min_event_energy"))
 		{
@@ -194,11 +185,6 @@ void config::get_config_info(std::string parsed_config)
 	}
 }
 
-std::vector<float> config::GetEnergyBinning()
-{
-	return energy_binning;
-}
-
 void config::PrintActiveFilters()
 {
 	std::string status_BarLayer13 = a_cuts.nBarLayer13 ? "ON" : "OFF";
@@ -216,7 +202,7 @@ void config::PrintActiveFilters()
 	std::cout << "PSD-STK match cut: " << status_psd_stk_match << std::endl;
 	std::cout << "PSD charge cut: " << status_psd_charge << std::endl;
 	std::cout << "STK charge cut: " << status_stk_charge << std::endl;
-	std::cout << "\n***********************\n\n";
+	std::cout << "\n***********************\n";
 }
 
 const double config::GetMinEnergyRange()
