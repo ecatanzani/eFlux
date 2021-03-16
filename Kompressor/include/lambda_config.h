@@ -13,7 +13,7 @@ struct lambdas
     double start = 0;
     double end = 0;
     int num = 1;
-    int step = (end-start)/num;
+    double step = 1;
 };
 
 class lambda_config

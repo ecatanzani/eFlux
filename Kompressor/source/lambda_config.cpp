@@ -6,7 +6,7 @@ lambda_config::lambda_config(const std::string working_dir)
     const std::string config_file_name = "lambda_config.conf";
     const auto tmp_config = working_dir.substr(0, working_dir.find("/Collector/config")) + local_path;
     get_config_info(parse_config_file(tmp_config, config_file_name));
-    UpdateLambdaSteps();
+    //UpdateLambdaSteps();
 }
 
 std::string lambda_config::parse_config_file(
@@ -50,6 +50,11 @@ void lambda_config::get_config_info(const std::string parsed_config)
 			input_stream >> tmp_str;
 			lambda_info.num = stoi(tmp_str, &sz);
 		}
+		if (!strcmp(tmp_str.c_str(), "step"))
+		{
+			input_stream >> tmp_str;
+			lambda_info.step = stod(tmp_str, &sz);
+		}
 	}
 }
 
@@ -69,5 +74,6 @@ void lambda_config::PrintLambdaSettings()
     std::cout << "\nLambda START value: [" << lambda_info.start << "]";
     std::cout << "\nLambda END value: [" << lambda_info.end << "]";
     std::cout << "\nLambda number of values: [" << lambda_info.num << "]";
+	std::cout << "\nLambda step: [" << lambda_info.step << "]";
     std::cout << "\n\n******************************\n\n";
 }

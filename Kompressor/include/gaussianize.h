@@ -8,9 +8,11 @@
 #include "config.h"
 #include "energy_config.h"
 #include "lambda_config.h"
+#include "DAMPE_geo_structure.h"
 
-#include "TChain.h"
 #include "TH1D.h"
+#include "TChain.h"
+#include <ROOT/RDataFrame.hxx>
 
 extern void gaussianizeTMVAvars(
     std::shared_ptr<TChain> evtch,
@@ -35,6 +37,11 @@ extern void showGaussianizedTMVAvars(
     const bool _mc);
 
 extern std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetRMSLayerHistos(
+    const int energy_nbins, 
+    const lambdas lambda_values,
+    const int DAMPE_bgo_nLayers);
+
+extern std::vector<std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>> GetAutoRMSLayerHistos(
     const int energy_nbins, 
     const lambdas lambda_values,
     const int DAMPE_bgo_nLayers);

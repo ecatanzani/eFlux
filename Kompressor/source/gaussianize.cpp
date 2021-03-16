@@ -67,19 +67,19 @@ void gaussianizeTMVAvars(
     if (_VERBOSE)
         std::cout << "\nAnalysis running...\n";
 
-    auto gaussianize_rmslayer = [&lambda_values](const std::vector<double> input_rmslayer) -> std::map<std::vector<double>, double>
+    auto gaussianize_rmslayer = [&lambda_values](const std::vector<double> input_rmslayer) -> std::map<double, std::vector<double>>
     {
-        std::map<std::vector<double>, double> rmsLayer_gauss;
+        std::map<double, std::vector<double>> rmsLayer_gauss;
         auto lambda = lambda_values.start;
         auto gaussianize_elm = [&lambda](const std::vector<double> elm) -> std::vector<double> 
-        { 
+        {
             std::vector<double> elm_cp = elm;
-            for (unsigned int idx=0; idx<elm_cp.size(); ++idx)
+            for (unsigned int idx=0; idx<elm.size(); ++idx)
                 elm_cp[idx] = lambda ? (exp(lambda*elm[idx])-1)/lambda : elm[idx];
             return elm_cp;
         };
         for (; lambda<=lambda_values.end; lambda+=lambda_values.step)
-            rmsLayer_gauss.insert(std::pair<std::vector<double>, double>(gaussianize_elm(input_rmslayer), lambda));
+            rmsLayer_gauss.insert(std::pair<double, std::vector<double>>(lambda, gaussianize_elm(input_rmslayer)));
         return rmsLayer_gauss;
     };
 
