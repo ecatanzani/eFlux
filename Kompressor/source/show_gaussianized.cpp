@@ -1,7 +1,11 @@
 #include "gaussianize.h"
 
 #include <map>
+#include <stdio.h>
 #include <cmath>
+#include <stdlib.h>
+
+#include "TF1.h"
 
 void showGaussianizedTMVAvars(
     std::shared_ptr<TChain> evtch,
@@ -104,6 +108,32 @@ void showGaussianizedTMVAvars(
     }
 
 #endif
+
+    
+    // Compute the goodness
+    std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "gaus", 0, 10);
+    for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
+    {
+        std::vector<std::vector<double>> goodness_rms_layer (DAMPE_bgo_nLayers, std::vector<double> (lambda_values.num +1, 999));
+        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+        {
+            for (int lambda_idx=0; lambda_idx<lambda_values.num; ++lambda_idx)
+            {
+                h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->Fit(fitfunc.get(), "Q");
+                double skew = h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetSkewness();
+                if ((h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetRMS()/skew)>0.01 && 
+                    (h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetRMS()/skew)<100.0 && 
+                    skew<1.0)
+                        if (fitfunc->GetNDF())
+                            goodness_rms_layer[ly][lambda_idx] = abs(fitfunc->GetChisquare()/fitfunc->GetNDF() -1);
+            }
+            std::vector<double>::iterator result = std::min_element(goodness_rms_layer[ly].begin(), goodness_rms_layer[ly].end());
+            auto best_goodness_idx = std::distance(goodness_rms_layer[ly].begin(), result);
+            auto best_lambda = lambda_values.start + lambda_values.step*best_goodness_idx;
+            auto best_goodness = goodness_rms_layer[ly][best_goodness_idx];
+            std::cout << "\n[ENERGY BIN " << bin_idx << "]\t - BGO Layer " << ly+1 << "\t - best lambda value: " << best_lambda << "\t - goodness: " << best_goodness;
+        }
+    }
 
     TFile* output_file = TFile::Open(outputPath.c_str(), "RECREATE");
     if (output_file->IsZombie())
