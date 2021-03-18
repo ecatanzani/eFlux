@@ -120,8 +120,8 @@ void mc_tuple::branch_tree()
 		"energy_corr/D");
 	DmpNtupTree->Branch(
 		"energy_corr_w",
-		&corr_energy_w,
-		"corr_energy_w/D");	
+		&energy_corr_w,
+		"energy_corr_w/D");	
 	DmpNtupTree->Branch(
 		"eLayer",
 		&eLayer);
@@ -551,7 +551,7 @@ void mc_tuple::fill_simu_info(
 	const std::shared_ptr<_tmp_simu> _simu_res,
 	const std::shared_ptr<_tmp_energy> _energy_res)
 {
-	corr_energy_w = _energy_res->correct_w;
+	energy_corr_w = _energy_res->correct_w;
 	simu_energy_w = _energy_res->simu_w;
 	simu_position = _simu_res->position;
 	simu_momentum = _simu_res->momentum;
@@ -601,7 +601,7 @@ void mc_tuple::reset_simu_info()
 {
 	simu_energy = -999;
 	simu_energy_w = -999;
-	corr_energy_w = -999;
+	energy_corr_w = -999;
 	simu_position.SetXYZ(-999, -999, -999);
 	simu_momentum.SetXYZ(-999, -999, -999);
 	simu_slope_x = -999;

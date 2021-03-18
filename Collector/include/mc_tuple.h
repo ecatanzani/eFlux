@@ -39,7 +39,7 @@ private:
 	// Simu
 	double simu_energy = -999;
 	double simu_energy_w = -999;
-	double corr_energy_w = -999;
+	double energy_corr_w = -999;
 	TVector3 simu_position{-999, -999, -999};
 	TVector3 simu_momentum{-999, -999, -999};
 	double simu_slope_x = -999;
