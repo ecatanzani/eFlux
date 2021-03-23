@@ -39,7 +39,8 @@ extern void showGaussianizedTMVAvars(
 extern std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetRMSLayerHistos(
     const int energy_nbins, 
     const lambdas lambda_values,
-    const int DAMPE_bgo_nLayers);
+    const int DAMPE_bgo_nLayers,
+    const std::vector<std::vector<std::vector<double>>> &rms_boundaries);
 
 extern std::vector<std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>> GetAutoRMSLayerHistos(
     const int energy_nbins, 
