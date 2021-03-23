@@ -167,15 +167,8 @@ dmypy.json
 Debug
 Release
 
-# Local data dir
-data
-condorJob/outFiles
-
 # AnyOption object file
 deps/AnyOption/anyoption.o
-
-# ROOT out and in files
-*.root
 
 # Kompressor
 Kompressor/dylib
