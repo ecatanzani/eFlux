@@ -69,22 +69,25 @@ void gaussianizeTMVAvars(
 
     auto gaussianize_rmslayer = [&lambda_values](const std::vector<double> input_rmslayer) -> std::map<double, std::vector<double>>
     {
-        std::map<double, std::vector<double>> rmsLayer_gauss;
-        auto lambda = lambda_values.start;
-        auto gaussianize_elm = [&lambda](const std::vector<double> elm) -> std::vector<double> 
+        auto gaussianize_elm = [](const std::vector<double> elm, const double lambda) -> std::vector<double> 
         {
             std::vector<double> elm_cp = elm;
             for (unsigned int idx=0; idx<elm.size(); ++idx)
                 elm_cp[idx] = lambda ? (exp(lambda*elm[idx])-1)/lambda : elm[idx];
             return elm_cp;
         };
-        for (; lambda<=lambda_values.end; lambda+=lambda_values.step)
-            rmsLayer_gauss.insert(std::pair<double, std::vector<double>>(lambda, gaussianize_elm(input_rmslayer)));
+
+        std::map<double, std::vector<double>> rmsLayer_gauss;
+        for (int lambda_idx=0; lambda_idx<=lambda_values.num; ++lambda_idx)
+        {
+            double lambda = lambda_values.start + lambda_idx*lambda_values.step;
+            rmsLayer_gauss.insert(std::pair<double, std::vector<double>>(lambda, gaussianize_elm(input_rmslayer, lambda)));
+        }
         return rmsLayer_gauss;
     };
 
     auto _fr_preselected_gauss = _fr_preselected.Define("rmsLayer_gauss", gaussianize_rmslayer, {"rmsLayer"});
-    
+
     _fr_preselected_gauss.Snapshot((std::string(evtch->GetName()) + std::string("_gauss")).c_str(), outputPath);
     
     if (_VERBOSE)
