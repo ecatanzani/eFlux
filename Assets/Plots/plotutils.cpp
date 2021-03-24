@@ -34,10 +34,21 @@ const double phi_max = 1e+6;
 const char* multigraph_name = "flux_mg_E3";
 
 void add_to_mg(const char* path, TColor* mycolor, std::shared_ptr<TMultiGraph> mgE3);
-void buildflux(const char* outfile);
+std::shared_ptr<TMultiGraph> buildflux();
+void write(const char* outfile, std::shared_ptr<TMultiGraph> mgE3);
+void drawflux(std::shared_ptr<TMultiGraph> mgr);
 void drawflux(const char* infile);
 
-void buildflux(const char* outfile)
+void draw(
+    const char* outfile = "flux.root",
+    const bool plot = true)
+{
+    auto mgE3 = buildflux();
+    write(outfile, mgE3);
+    if (plot) drawflux(mgE3);
+}
+
+std::shared_ptr<TMultiGraph> buildflux()
 {
     std::shared_ptr<TMultiGraph> mgE3 = std::make_shared<TMultiGraph>();
     mgE3->SetName(multigraph_name);
@@ -53,16 +64,7 @@ void buildflux(const char* outfile)
     mgE3->GetXaxis()->SetTitle("Energy (GeV)");
     mgE3->GetYaxis()->SetTitle("E^{3} #times #Phi (GeV [m^{2} sr s]^{-1})");
     
-    TFile* myoutfile = TFile::Open(outfile, "RECREATE");
-    if (myoutfile->IsZombie())
-    {
-        std::cerr << "\n\nError writing output file [" << outfile << "]\n";
-        exit(100);
-    }
-
-    mgE3->Write();
-
-    myoutfile->Close();
+    return mgE3;
 }
 
 void add_to_mg(const char* path, TColor* mycolor, std::shared_ptr<TMultiGraph> mgE3)
@@ -87,6 +89,21 @@ void add_to_mg(const char* path, TColor* mycolor, std::shared_ptr<TMultiGraph> m
     }
 }
 
+void write(
+    const char* outfile, 
+    std::shared_ptr<TMultiGraph> mgE3)
+{
+    TFile* myoutfile = TFile::Open(outfile, "RECREATE");
+    if (myoutfile->IsZombie())
+    {
+        std::cerr << "\n\nError writing output file [" << outfile << "]\n";
+        exit(100);
+    }
+
+    mgE3->Write();
+    myoutfile->Close();
+}
+
 void drawflux(const char* infile)
 {
     TApplication theApp("App", 0, 0);
@@ -99,6 +116,26 @@ void drawflux(const char* infile)
     }
 
     std::unique_ptr<TMultiGraph> mgr = std::unique_ptr<TMultiGraph>(static_cast<TMultiGraph*>(inFile->Get(multigraph_name)));
+    TCanvas cflux("Flux", "Flux");
+    cflux.cd();
+    mgr->Draw("AP");
+    gPad->Modified(); 
+    gPad->Update();
+    mgr->GetXaxis()->SetLimits(emin, emax);
+    mgr->GetYaxis()->SetLimits(phi_min, phi_max);
+    mgr->SetMinimum(phi_min);
+    mgr->SetMaximum(phi_max);
+    gPad->Modified(); 
+    gPad->Update();
+
+    theApp.Run(); 
+    gSystem->ProcessEvents();
+}
+
+void drawflux(std::shared_ptr<TMultiGraph> mgr)
+{
+    TApplication theApp("App", 0, 0);
+    
     TCanvas cflux("Flux", "Flux");
     cflux.cd();
     mgr->Draw("AP");
