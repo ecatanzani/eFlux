@@ -109,8 +109,8 @@ std::shared_ptr<TMultiGraph> buildflux()
     
     if (AMS02_proton) add_to_mg(ams02_proton_path, kAMS02_proton, ams02_marker_style, 1, ams02_proton_legendentry, mgE3);
     if (CALET_proton) add_to_mg(calet_proton_path, kCALET_proton, calet_marker_style, 1.3, calet_proton_legendentry, mgE3);
-    if (DAMPE_proton) add_to_mg(dampe_proton_path, kDAMPE_proton, dampe_marker_style, 1, dampe_proton_legendentry, mgE3);
     if (ATIC2_proton) add_to_mg(atic2_proton_path, kATIC2_proton, atic2_marker_style, 1.3, atic2_proton_legendentry, mgE3);
+    if (DAMPE_proton) add_to_mg(dampe_proton_path, kDAMPE_proton, dampe_marker_style, 1, dampe_proton_legendentry, mgE3);
     if (AMS02_electron) add_to_mg(ams02_electron_path, kAMS02_electron, ams02_marker_style, 1, ams02_allele_legendentry, mgE3);
     if (CALET_electron) add_to_mg(calet_electron_path, kCALET_electron, calet_marker_style, 1.3, calet_allele_legendentry, mgE3);
     if (FERMILAT_electron) add_to_mg(fermilat_electron_path, kFERMILAT_electron, fermi_marker_style, 1, fermilat_allele_legendentry, mgE3);
