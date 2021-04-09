@@ -45,8 +45,8 @@ const char* fermilat_electron_path = "data/ssdc_FERMILAT_e_E3.root";
 
 const double emin = 1;
 const double emax = 1e+4;
-const double phi_min = 1;
-const double phi_max = 1e+3;
+const double phi_min = 0;
+const double phi_max = 300;
 
 const char* multigraph_name = "flux_mg_E3";
 
@@ -197,7 +197,7 @@ void drawflux(std::shared_ptr<TMultiGraph> mgr)
     gPad->Modified(); 
     gPad->Update();
     cflux.SetLogx();
-    cflux.SetLogy();
+    //cflux.SetLogy();
     cflux.SetTicks();
     gPad->Modified(); 
     gPad->Update();
@@ -206,7 +206,7 @@ void drawflux(std::shared_ptr<TMultiGraph> mgr)
     mgr->GetXaxis()->SetTitleOffset(1.3);
     mgr->GetYaxis()->SetLabelSize(0.045);
     mgr->GetYaxis()->SetTitleSize(0.045);
-    mgr->GetYaxis()->SetTitleOffset(1.3);
+    mgr->GetYaxis()->SetTitleOffset(1.6);
     gPad->Modified(); 
     gPad->Update();
 

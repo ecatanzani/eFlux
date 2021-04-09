@@ -28,6 +28,7 @@ const bool FERMILAT_electron = true;
 const bool AUGER_allparticle = true;
 const bool KASCADEgrande_allparticle = true;
 const bool ATIC2_proton = true;
+const bool AMS02_helium = true;
 
 TColor *kAMS02_proton = gROOT->GetColor(kRed+3);
 TColor *kCALET_proton = gROOT->GetColor(kOrange+1);
@@ -39,6 +40,7 @@ TColor *kFERMILAT_electron = gROOT->GetColor(kAzure-4);
 TColor *kAUGER_allparticle = gROOT->GetColor(kBlack);
 TColor *kKASCADEgrande_allparticle = gROOT->GetColor(kGray+2);
 TColor *kATIC2_proton = gROOT->GetColor(kMagenta+2);
+TColor *kAMS02_helium = gROOT->GetColor(kGreen+2);
 
 int ams02_marker_style = 21;
 int dampe_marker_style = 20;
@@ -58,6 +60,7 @@ const char* dampe_allele_legendentry = "e^{-}+e^{+} (DAMPE)";
 const char* auger_allparticle_legendentry = "All Particles (AUGER)";
 const char* kascadegrande_allparticle_legendentry = "All Particles (KASCADE-Grande)";
 const char* atic2_proton_legendentry = "Protons (ATIC-2)";
+const char* ams02_helium_legendentry = "Helium (AMS02)";
 
 const char* ams02_proton_path = "data/ssdc_AMS02_p_E3.root";
 const char* ams02_electron_path = "data/ssdc_AMS02_e_E3.root";
@@ -69,6 +72,7 @@ const char* fermilat_electron_path = "data/ssdc_FERMILAT_e_E3.root";
 const char* auger_allparticle_path = "data/in2p3_crdb_AUGER_allparticle_E3.root";
 const char* kascadegrande_allparticle_path = "data/in2p3_crdb_KASCADEgrande_allparticle_E3.root";
 const char* atic2_proton_path = "data/ssdc_ATIC2_p_E3.root";
+const char* ams02_helium_path = "data/ssdc_AMS02_He_E3.root";
 
 std::vector<std::string> auger_filter = {"gr_exp1_errtot", "gr_exp1_upper_limit"};
 std::vector<std::string> kascadegrande_filter = {"gr_exp1_errtot"};
@@ -107,6 +111,7 @@ std::shared_ptr<TMultiGraph> buildflux()
     std::shared_ptr<TMultiGraph> mgE3 = std::make_shared<TMultiGraph>();
     mgE3->SetName(multigraph_name);
     
+    if (AMS02_helium) add_to_mg(ams02_helium_path, kAMS02_helium, ams02_marker_style, 1, ams02_helium_legendentry, mgE3);
     if (AMS02_proton) add_to_mg(ams02_proton_path, kAMS02_proton, ams02_marker_style, 1, ams02_proton_legendentry, mgE3);
     if (CALET_proton) add_to_mg(calet_proton_path, kCALET_proton, calet_marker_style, 1.3, calet_proton_legendentry, mgE3);
     if (ATIC2_proton) add_to_mg(atic2_proton_path, kATIC2_proton, atic2_marker_style, 1.3, atic2_proton_legendentry, mgE3);
