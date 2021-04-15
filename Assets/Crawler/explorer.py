@@ -19,6 +19,11 @@ def main(args=None):
 						dest='output', help='output file list')
 	parser.add_argument("-d", "--data", dest='data', default=False,
 						action='store_true', help='get DATA file list')
+	
+	parser.add_argument("-k", "--skimmed_data", dest='skimmed_data', default=False,
+						action='store_true', help='get DATA file list')
+
+						
 	parser.add_argument("-m", "--mc", dest='mc', default=False,
 						action='store_true', help='get MC file list')
 	parser.add_argument("-v", "--verbose", dest='verbose', default=False,
@@ -31,7 +36,7 @@ def main(args=None):
 	# Load analysis functions
 	sys.path.append("moduls")
 	from configParser import parseConfigFile
-	from DATA_list import createDATAlist
+	from DATA_list import createDATAlist, createSkimmedDATAlist
 	from MC_list import createMClist
 	from singleSample import listMCsample
 
@@ -40,6 +45,8 @@ def main(args=None):
 
 	if opts.data:
 		createDATAlist(pars, opts)
+	if opts.skimmed_data:
+		createSkimmedDATAlist(pars, opts)
 	if opts.mc:
 		createMClist(pars, opts)
 	if opts.single_sample:

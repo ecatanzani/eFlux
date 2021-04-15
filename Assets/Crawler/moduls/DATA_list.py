@@ -72,3 +72,73 @@ def createDATAlist(pars, opts):
 	with open(data_list_path, "w") as outList:
 		for elm in dList:
 			outList.write(pars['farmAddress'] + elm + "\n")
+
+
+def createSkimmedDATAlist(pars, opts):
+	if pars['data_sYear'] > pars['data_eYear']:
+		print("ERROR: Start year could not be bigger respect to end year")
+		sys.exit()
+	
+	# Crate output data file list
+	dList = []
+	years = []
+	counters = []
+
+	# Get stage 0 dirs --> /FM/skim/6.0.0/v2/
+	getDataDirsCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], pars['data_XRDFS_skimmed_path'])
+	if opts.verbose:
+		print('Executing XRDFS command: {}'.format(getDataDirsCommand))
+	dataDirsOut = subprocess.run(getDataDirsCommand, shell=True, check=True, stdout=subprocess.PIPE)
+	dataDirs = str.split(dataDirsOut.stdout.decode('utf-8').rstrip(), '\n')
+
+	if opts.verbose:
+		print('Collecting data from {} to {}'.format(pars['data_sYear'], pars['data_eYear']))
+
+	# Get stage 1 dirs --> /FM/FlightData/2A/YearOfAcquisition/
+	for dir_st1 in dataDirs:
+		
+		if "20" in dir_st1 and "statistics" not in dir_st1:
+
+			# Extract year
+			year = int(dir_st1[dir_st1.rfind('/')+1:])
+
+			if year < pars['data_sYear'] or year > pars['data_eYear']:
+				continue
+
+			if year not in years:
+				years.append(year)
+				year_data_idx = len(years)-1
+				counters.append(0)
+
+			getDataDirsCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], dir_st1)
+			if opts.verbose:
+				print('Executing XRDFS command: {}'.format(getDataDirsCommand))
+			dataDirsOut = subprocess.run(getDataDirsCommand, shell=True, check=True, stdout=subprocess.PIPE)
+			dataDirs_st1 = str.split(dataDirsOut.stdout.decode('utf-8').rstrip(), '\n')
+
+			# Get stage 2 dirs --> /FM/FlightData/2A/YearOfAcquisition/MonthOfAcquisition
+			for dir_st2 in dataDirs_st1:
+				getDataDirsCommand = 'xrdfs {} ls {}'.format(pars['farmAddress'], dir_st2)
+				if opts.verbose:
+					print('Executing XRDFS command: {}'.format(getDataDirsCommand))
+				dataDirsOut = subprocess.run(getDataDirsCommand, shell=True, check=True, stdout=subprocess.PIPE)
+				dataDirs_st2 = str.split(dataDirsOut.stdout.decode('utf-8').rstrip(), '\n')
+
+				# Get ROOT data file
+				for data_elm in dataDirs_st2:
+					if data_elm.endswith('.root') and "data_photon" not in data_elm:
+						dList.append(data_elm)
+						counters[year_data_idx] += 1
+
+	if opts.verbose:
+		print('{} data files have been read...'.format(sum(counters)))
+		for year_idx, year in enumerate(years):
+			print('{} data files found in {} folder'.format(counters[year_idx], year))
+
+	if opts.output:
+		data_list_path = opts.output
+	else:
+		data_list_path =  "dataFileList.txt"
+	with open(data_list_path, "w") as outList:
+		for elm in dList:
+			outList.write(pars['farmAddress'] + elm + "\n")

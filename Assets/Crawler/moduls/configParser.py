@@ -1,5 +1,5 @@
 def parseConfigFile(opts):
-	dConfig = {'farmAddress': "", 'simu_XRDFS_path': "", 'data_XRDFS_path': "", 'geometry': "", 'simu_eMin': 0, 'simu_eMax': 0, 'particle': "", 'data_sYear': 0, 'data_eYear': 0, 'jSet': ""}
+	dConfig = {'farmAddress': "", 'simu_XRDFS_path': "", 'data_XRDFS_path': "", 'data_XRDFS_skimmed_path': "", 'geometry': "", 'simu_eMin': 0, 'simu_eMax': 0, 'particle': "", 'data_sYear': 0, 'data_eYear': 0, 'jSet': ""}
 	
 	config_params = []
 	custom_farm = False
@@ -28,6 +28,8 @@ def parseConfigFile(opts):
 			dConfig['simu_XRDFS_path'] = config_params[idx+1]
 		if word == "data_XRDFS_path":
 			dConfig['data_XRDFS_path'] = config_params[idx+1]
+		if word == "data_XRDFS_skimmed_path":
+			dConfig['data_XRDFS_skimmed_path'] = config_params[idx+1]
 		if word == "geometry":
 			dConfig['geometry'] = config_params[idx+1]
 		if word == "simu_eMin":
