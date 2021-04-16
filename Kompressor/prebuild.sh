@@ -11,3 +11,4 @@ rootcling -f $DYPATH/mapdict.cpp  -rmf $DYPATH/libmapdict.rootmap -rml $DYPATH/l
 echo "Compile the dictionary as a shared library"
 g++ -shared -fPIC -o $DYPATH/libmapdict.so $DYPATH/mapdict.cpp `root-config --cflags --libs`
 export LD_LIBRARY_PATH=$(pwd)/$DYPATH:$LD_LIBRARY_PATH
+echo "Exporting LD_LIBRARY_PATH --> $LD_LIBRARY_PATH"
