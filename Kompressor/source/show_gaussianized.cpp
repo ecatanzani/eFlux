@@ -61,7 +61,6 @@ void showGaussianizedTMVAvars(
 
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {   
-        //std::cout << "\nBin idx: " << bin_idx;
         auto bin_filter = [&bin_idx](int energy_bin) -> bool { return energy_bin == bin_idx; };
         _data_fr.Filter(bin_filter, {"energy_bin"})
                 .Foreach([&h_rmsLayer_gauss, &bin_idx, &lambda_values](const std::map<double, std::vector<double>> rmslayer_gauss, const double energy_w)
@@ -73,10 +72,7 @@ void showGaussianizedTMVAvars(
                         for (const auto &map_elm : rmslayer_gauss)
                         {
                             for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-                            {
-                                //std::cout << "\nBin idx: " << bin_idx << "\t lambda_idx: " << lambda_idx << "\t layer: " << ly;
                                 h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->Fill(map_elm.second[ly], energy_w);
-                            }
                             ++lambda_idx;
                         }
                     }
