@@ -33,9 +33,10 @@ void showGaussianizedTMVAvars(
         std::cout << "\nAnalysis running..." << std::endl;
     }
 
+#if 0
     if (_VERBOSE)
         std::cout << "\nRading histos boundaries from data frame...";
-
+    
     std::vector<std::vector<std::vector<double>>> rms_boundaries (energy_nbins);
 
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
@@ -52,25 +53,36 @@ void showGaussianizedTMVAvars(
                             .Max<double>("rms_single_layer"));
         }
     }
-    
-    auto h_rmsLayer_gauss = GetRMSLayerHistos(energy_nbins, lambda_values, DAMPE_bgo_nLayers, rms_boundaries);
+#endif
+
+    //auto h_rmsLayer_gauss = GetRMSLayerHistos(energy_nbins, lambda_values, DAMPE_bgo_nLayers, rms_boundaries);
+
+    auto h_rmsLayer_gauss = GetRMSLayerHistos(energy_nbins, lambda_values, DAMPE_bgo_nLayers);
 
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {   
+        //std::cout << "\nBin idx: " << bin_idx;
         auto bin_filter = [&bin_idx](int energy_bin) -> bool { return energy_bin == bin_idx; };
         _data_fr.Filter(bin_filter, {"energy_bin"})
                 .Foreach([&h_rmsLayer_gauss, &bin_idx, &lambda_values](const std::map<double, std::vector<double>> rmslayer_gauss, const double energy_w)
                 {
-                    int lambda_idx = 0;
-                    for (const auto &map_elm : rmslayer_gauss)
+                    if (rmslayer_gauss.size()!=lambda_values.num+1) exit(100);
+                    else
                     {
-                        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-                            h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->Fill(map_elm.second[ly], energy_w);
-                        ++lambda_idx;
+                        int lambda_idx = 0;
+                        for (const auto &map_elm : rmslayer_gauss)
+                        {
+                            for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+                            {
+                                //std::cout << "\nBin idx: " << bin_idx << "\t lambda_idx: " << lambda_idx << "\t layer: " << ly;
+                                h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->Fill(map_elm.second[ly], energy_w);
+                            }
+                            ++lambda_idx;
+                        }
                     }
                 }, {"rmsLayer_gauss", "simu_energy_w_corr"});
     }
-    
+
     // Compute the goodness
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
@@ -127,7 +139,7 @@ void showGaussianizedTMVAvars(
         std::cout << "\n\nOutput file has been written... [" << outputPath << "]\n";
 }
 
-std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetRMSLayerHistos(
+std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetAutoRMSLayerHistos(
     const int energy_nbins, 
     const lambdas lambda_values,
     const int DAMPE_bgo_nLayers,
@@ -151,6 +163,35 @@ std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetRMSLayerHistos(
                 std::string str_lambda = lambda<0 ? std::string("neg_") + std::to_string(abs(lambda)) : std::to_string(lambda);
                 std::string h_name = std::string("h_rms_energybin_") + std::to_string(bin_idx) + std::string("_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);
                 h_rms_layer[bin_idx-1][lambda_idx][ly] = std::make_shared<TH1D>(h_name.c_str(), h_name.c_str(), nbins, gaussianize_elm(rms_boundaries[bin_idx-1][ly][0])/kScale, gaussianize_elm(rms_boundaries[bin_idx-1][ly][1])*kScale);
+            }
+        }
+    }
+    return h_rms_layer;
+}
+
+std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetRMSLayerHistos(
+    const int energy_nbins, 
+    const lambdas lambda_values,
+    const int DAMPE_bgo_nLayers)
+{
+    int nbins = 200;
+    double hmin = 0;
+    double hmax = 40;
+    std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> h_rms_layer (energy_nbins);
+    for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
+    {
+        h_rms_layer[bin_idx-1] = std::vector<std::vector<std::shared_ptr<TH1D>>> (lambda_values.num+1);
+        auto lambda = lambda_values.start;
+        for (int lambda_idx=0; lambda_idx<=lambda_values.num; ++lambda_idx)
+        {
+            if (lambda_idx)
+                lambda += lambda_values.step;
+            h_rms_layer[bin_idx-1][lambda_idx] = std::vector<std::shared_ptr<TH1D>> (DAMPE_bgo_nLayers);
+            for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+            {
+                std::string str_lambda = lambda<0 ? std::string("neg_") + std::to_string(abs(lambda)) : std::to_string(lambda);
+                std::string h_name = std::string("h_rms_energybin_") + std::to_string(bin_idx) + std::string("_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);
+                h_rms_layer[bin_idx-1][lambda_idx][ly] = std::make_shared<TH1D>(h_name.c_str(), h_name.c_str(), nbins, hmin, hmax);
             }
         }
     }
