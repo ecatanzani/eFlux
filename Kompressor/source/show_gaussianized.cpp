@@ -66,7 +66,7 @@ void showGaussianizedTMVAvars(
         _data_fr.Filter(bin_filter, {"energy_bin"})
                 .Foreach([&h_rmsLayer_gauss, &bin_idx, &lambda_values](const std::map<double, std::vector<double>> rmslayer_gauss, const double energy_w)
                 {
-                    if (rmslayer_gauss.size()!=lambda_values.num+1) exit(100);
+                    if (rmslayer_gauss.size()!=(unsigned int)(lambda_values.num+1)) exit(100);
                     else
                     {
                         int lambda_idx = 0;
