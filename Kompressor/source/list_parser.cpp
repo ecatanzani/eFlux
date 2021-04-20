@@ -20,6 +20,12 @@ parser::parser(
     }
 }
 
+parser::parser(const std::string input_list)
+{
+    std::istringstream input_stream(parse_input_file(input_list));
+    input_stream >> single_data_file;
+}
+
 std::string parser::parse_input_file(const std::string input_list)
 {
 	std::ifstream input_file(input_list.c_str());
@@ -40,4 +46,9 @@ std::shared_ptr<TChain> parser::GetEvtTree()
     else
         return std::shared_ptr<TChain> (nullptr);
     
+}
+
+const std::string parser::GetSingleDataFile()
+{
+    return single_data_file;
 }

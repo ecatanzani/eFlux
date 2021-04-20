@@ -14,15 +14,18 @@ class parser
 public:
     parser(
         const std::string input_list,
-        const bool mc = false,
-        const bool _VERBOSE = true,
-        const bool gaussianized = false);
+        const bool mc,
+        const bool _VERBOSE,
+        const bool gaussianized);
+    parser(const std::string input_list);
     ~parser(){};
     std::shared_ptr<TChain> GetEvtTree();
+    const std::string GetSingleDataFile();
 private:
     std::string parse_input_file(const std::string input_list);
     std::string mc_tree_name = "DmpMCEvtNtup";
     std::string data_tree_name = "DmpEvtNtup";
+    std::string single_data_file;
     std::shared_ptr<TChain> evtch;
 };
 
