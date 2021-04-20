@@ -82,7 +82,10 @@ void showGaussianizedTMVAvars(
     // Compute the goodness
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
-        std::vector<std::vector<double>> goodness_rms_layer (DAMPE_bgo_nLayers, std::vector<double> (lambda_values.num +1, 999));
+        std::vector<double> goodness_rms_layer (DAMPE_bgo_nLayers, 999);
+        std::vector<double> best_lambda (DAMPE_bgo_nLayers, lambda_values.start);
+        int statistics = h_rmsLayer_gauss[bin_idx-1][0][0]->GetEntries();
+
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
             for (int lambda_idx=0; lambda_idx<=lambda_values.num; ++lambda_idx)
@@ -96,23 +99,37 @@ void showGaussianizedTMVAvars(
                     auto chi2 = fitfunc->GetChisquare();
                     auto dof = fitfunc->GetNDF();
                     double skew = h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetSkewness();
+                    
                     if ((h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetRMS()/skew)>0.01 && 
                         (h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetRMS()/skew)<100.0 && 
                         skew<1.0 && dof)
-                            goodness_rms_layer[ly][lambda_idx] = abs(chi2/dof -1);    
+                    {
+                        double tmp_goodness = chi2/dof;
+                        if (goodness_rms_layer[ly]==999)
+                        {
+                            goodness_rms_layer[ly] = tmp_goodness;
+                            best_lambda[ly] = lambda_values.start + lambda_values.step*lambda_idx;
+                        }
+                        else
+                        {
+                            if (abs(tmp_goodness-1) < abs(goodness_rms_layer[ly]-1))
+                            {
+                                goodness_rms_layer[ly] = tmp_goodness;
+                                best_lambda[ly] = lambda_values.start + lambda_values.step*lambda_idx;
+                            }
+                        }   
+                    }
                 }
             }
             
-            std::vector<double>::iterator result = std::min_element(goodness_rms_layer[ly].begin(), goodness_rms_layer[ly].end());
-            auto best_goodness_idx = std::distance(goodness_rms_layer[ly].begin(), result);
-            auto best_lambda = lambda_values.start + lambda_values.step*best_goodness_idx;
-            auto best_goodness = goodness_rms_layer[ly][best_goodness_idx];
-            auto statistics = h_rmsLayer_gauss[bin_idx-1][best_goodness_idx][ly]->GetEntries();
-            std::cout << "\n[ENERGY BIN " << bin_idx << "]\t - BGO Layer " << ly+1 << "\t - best lambda value: " << best_lambda << "\t - goodness: " << best_goodness << "\t Stat (#events) [" << statistics << "]";
-
+            std::cout << "\n[ENERGY BIN " << bin_idx << "]\t - BGO Layer " << ly+1 << "\t - best lambda value: " << best_lambda[ly] << "\t - goodness: " << 
+            goodness_rms_layer[ly] << "\t Stat (#events) [" << statistics << "]";
+            _log << "\n[ENERGY BIN " << bin_idx << "]\t - BGO Layer " << ly+1 << "\t - best lambda value: " << best_lambda[ly] << "\t - goodness: " << 
+            goodness_rms_layer[ly] << "\t Stat (#events) [" << statistics << "]";
         }
     }
 
+    // Write output file
     TFile* output_file = TFile::Open(outputPath.c_str(), "RECREATE");
     if (output_file->IsZombie())
     {
