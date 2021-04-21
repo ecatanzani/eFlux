@@ -8,6 +8,7 @@
 
 #include "TF1.h"
 #include "TFile.h"
+#include "TCanvas.h"
 
 void fitGaussianizedTMVAvars(
     const std::string input_file,
@@ -59,12 +60,14 @@ void fitGaussianizedTMVAvars(
 
     // Create output log file
     std::ofstream _log("lambdafit_boxcox.log");
+    std::vector<std::vector<std::shared_ptr<TH1D>>> best_rmshist (energy_nbins, std::vector<std::shared_ptr<TH1D>> (DAMPE_bgo_nLayers));
 
     // Compute the goodness
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
         std::vector<double> goodness_rms_layer (DAMPE_bgo_nLayers, 999);
         std::vector<double> best_lambda (DAMPE_bgo_nLayers, lambda_values.start);
+        std::vector<double> best_lambda_idx (DAMPE_bgo_nLayers, 0);
         int statistics = h_rmsLayer_gauss[bin_idx-1][0][0]->GetEntries();
 
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
@@ -79,8 +82,29 @@ void fitGaussianizedTMVAvars(
                     h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->Fit("fitfunc", "Q");
                     auto chi2 = fitfunc->GetChisquare();
                     auto dof = fitfunc->GetNDF();
-                    double skew = h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetSkewness();
+                    //double skew = h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetSkewness();
                     
+                    if (dof)
+                    {
+                        double tmp_goodness = chi2/dof;
+                        if (goodness_rms_layer[ly]==999)
+                        {
+                            goodness_rms_layer[ly] = tmp_goodness;
+                            best_lambda[ly] = lambda_values.start + lambda_values.step*lambda_idx;
+                            best_lambda_idx[ly] = lambda_idx;
+                        }
+                        else
+                        {
+                            if (abs(tmp_goodness-1) < abs(goodness_rms_layer[ly]-1))
+                            {
+                                goodness_rms_layer[ly] = tmp_goodness;
+                                best_lambda[ly] = lambda_values.start + lambda_values.step*lambda_idx;
+                                best_lambda_idx[ly] = lambda_idx;
+                            }
+                        } 
+                    }
+
+                    /*
                     if ((h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetRMS()/skew)>0.01 && 
                         (h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetRMS()/skew)<100.0 && 
                         skew<1.0 && dof)
@@ -100,13 +124,14 @@ void fitGaussianizedTMVAvars(
                             }
                         }   
                     }
+                    */
                 }
             }
             
             std::cout << "\n[ENERGY BIN " << bin_idx << "]\t - BGO Layer " << ly+1 << "\t - best lambda value: " << best_lambda[ly] << "\t - goodness: " << 
-            goodness_rms_layer[ly] << "\t Stat (#events) [" << statistics << "]";
-            _log << "\n[ENERGY BIN " << bin_idx << "]\t - BGO Layer " << ly+1 << "\t - best lambda value: " << best_lambda[ly] << "\t - goodness: " << 
-            goodness_rms_layer[ly] << "\t Stat (#events) [" << statistics << "]";
+            goodness_rms_layer[ly] << "\t Stat (#events) [" << statistics << "]" << "\t best lambda idx: " << best_lambda_idx[ly];
+            _log << "\n[ENERGY BIN " << bin_idx << "]\t - BGO Layer " << ly+1 << "\t - best lambda value: " << best_lambda[ly] << "\t - goodness: " << goodness_rms_layer[ly] << "\t Stat (#events) [" << statistics << "]" << "\t best lambda idx: " << best_lambda_idx[ly];
+            best_rmshist[bin_idx-1][ly] = h_rmsLayer_gauss[bin_idx-1][best_lambda_idx[ly]][ly];
         }
     }
 
@@ -125,6 +150,23 @@ void fitGaussianizedTMVAvars(
         for (int lambda_idx=0; lambda_idx<=lambda_values.num; ++lambda_idx)
             for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
                 h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->Write();
+    }
+
+    // Create final canvases
+    std::vector<std::shared_ptr<TCanvas>> c_bestfit (energy_nbins);
+
+    for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
+    {
+        c_bestfit[bin_idx-1] = std::make_shared<TCanvas> ((std::string("energybin_") + std::to_string(bin_idx)).c_str(), (std::string("energybin_") + std::to_string(bin_idx)).c_str());
+        c_bestfit[bin_idx-1]->Divide(7,2);
+        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+        {
+            c_bestfit[bin_idx-1]->cd(ly+1);
+            best_rmshist[bin_idx-1][ly]->Draw();
+        }
+        output_file->cd((std::string("energybin_") + std::to_string(bin_idx)).c_str());
+        c_bestfit[bin_idx-1]->cd(0);
+        c_bestfit[bin_idx-1]->Write();
     }
 
     output_file->Close();
