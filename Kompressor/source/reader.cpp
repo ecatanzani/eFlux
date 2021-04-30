@@ -17,7 +17,7 @@ void reader(in_args input_args)
             input_args.input_list, 
             input_args.mc_flag, 
             input_args._VERBOSE,
-            input_args.show_gaussianized);
+            input_args.study_gaussianized);
     else
         evt_parser = std::make_unique<parser>(input_args.input_list);
     // Parse 'Collector' config file
@@ -62,10 +62,10 @@ void reader(in_args input_args)
             input_args.threads,
             input_args.mc_flag);
     }
-    else if (input_args.show_gaussianized)
+    else if (input_args.study_gaussianized)
     {
         std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
-        showGaussianizedTMVAvars(
+        studyGaussianizedTMVAvars(
             evt_parser->GetEvtTree(),
             _config,
             _energy_config,
@@ -101,5 +101,4 @@ void reader(in_args input_args)
             input_args._VERBOSE,
             input_args.threads,
             input_args.mc_flag);
-
 }

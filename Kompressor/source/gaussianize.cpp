@@ -60,14 +60,15 @@ void gaussianizeTMVAvars(
     std::cout << "\n\n********************";
 
     // Gaussianize TMVA variables
-    auto lambda_values = _lambda_config->GetLambdaStruct();
+    auto rms_lambda_values = _lambda_config->GetRMSLambdaStruct();
+    auto elf_lambda_values = _lambda_config->GetELFLambdaStruct();
     if (_VERBOSE)
         _lambda_config->PrintLambdaSettings();
     
     if (_VERBOSE)
         std::cout << "\nAnalysis running...\n";
 
-    auto gaussianize_rmslayer = [&lambda_values](const std::vector<double> input_rmslayer) -> std::map<double, std::vector<double>>
+    auto gaussianize_rmslayer = [&rms_lambda_values](const std::vector<double> input_rmslayer) -> std::map<double, std::vector<double>>
     {
         auto gaussianize_elm = [](const std::vector<double> elm, const double lambda) -> std::vector<double> 
         {
@@ -78,15 +79,35 @@ void gaussianizeTMVAvars(
         };
 
         std::map<double, std::vector<double>> rmsLayer_gauss;
-        for (int lambda_idx=0; lambda_idx<=lambda_values.num; ++lambda_idx)
+        for (int lambda_idx=0; lambda_idx<=rms_lambda_values.num; ++lambda_idx)
         {
-            double lambda = lambda_values.start + lambda_idx*lambda_values.step;
+            double lambda = rms_lambda_values.start + lambda_idx*rms_lambda_values.step;
             rmsLayer_gauss.insert(std::pair<double, std::vector<double>>(lambda, gaussianize_elm(input_rmslayer, lambda)));
         }
         return rmsLayer_gauss;
     };
 
-    auto _fr_preselected_gauss = _fr_preselected.Define("rmsLayer_gauss", gaussianize_rmslayer, {"rmsLayer"});
+    auto gaussianize_fraclayer = [&elf_lambda_values](const std::vector<double> input_fraclayer) -> std::map<double, std::vector<double>>
+    {
+        auto gaussianize_elm = [](const std::vector<double> elm, const double lambda) -> std::vector<double> 
+        {
+            std::vector<double> elm_cp = elm;
+            for (unsigned int idx=0; idx<elm.size(); ++idx)
+                elm_cp[idx] = lambda ? (exp(lambda*elm[idx])-1)/lambda : elm[idx];
+            return elm_cp;
+        };
+
+        std::map<double, std::vector<double>> fracLayer_gauss;
+        for (int lambda_idx=0; lambda_idx<=elf_lambda_values.num; ++lambda_idx)
+        {
+            double lambda = elf_lambda_values.start + lambda_idx*elf_lambda_values.step;
+            fracLayer_gauss.insert(std::pair<double, std::vector<double>>(lambda, gaussianize_elm(input_fraclayer, lambda)));
+        }
+        return fracLayer_gauss;
+    };
+
+    auto _fr_preselected_gauss = _fr_preselected.Define("rmsLayer_gauss", gaussianize_rmslayer, {"rmsLayer"})
+                                                .Define("fracLayer_gauss", gaussianize_fraclayer, {"fracLayer"});
 
     _fr_preselected_gauss.Snapshot((std::string(evtch->GetName()) + std::string("_gauss")).c_str(), outputPath);
     

@@ -11,10 +11,10 @@ int main(int argc, char **argv)
 	opt.addUsage("");
 
 	opt.addUsage(" -h  --help                  .......... Prints this help");
-	opt.addUsage(" -i  --input                 .......... <path_to_input_list>                      .......... (*) Input file list");
-	opt.addUsage(" -w  --workdir               .......... <path_to_software_config_dir>             .......... (*) Collector config directory");
-	opt.addUsage(" -o  --output                .......... <path_to_output_TFile>                    .......... Output ROOT TFile");
-	opt.addUsage(" -d  --outputdir             .......... <path_to_output_TFile_dir>                .......... Output ROOT TFile directory");
+	opt.addUsage(" -i  --input                 .......... <path_to_input_list>                                 .......... (*) Input file list");
+	opt.addUsage(" -w  --workdir               .......... <path_to_software_config_dir>                        .......... (*) Collector config directory");
+	opt.addUsage(" -o  --output                .......... <path_to_output_TFile>                               .......... Output ROOT TFile");
+	opt.addUsage(" -d  --outputdir             .......... <path_to_output_TFile_dir>                           .......... Output ROOT TFile directory");
 	opt.addUsage(" -v  --verbose               .......... Verbose output");
 	
 	opt.addUsage("");
@@ -22,13 +22,13 @@ int main(int argc, char **argv)
 	opt.addUsage("");
 
 	opt.addUsage(" -m  --mc                    .......... MC event loop");
-	opt.addUsage(" -r  --regularize            .......... <path_to_summary_fit_TTree>               .......... Regularize variables behaviour");
-	opt.addUsage(" -t  --tmva-set              .......... <s(signal)/b(background)>                 .......... Create TMVA Test/Training sets");
-	opt.addUsage(" -n  --no-split              .......... <t(train)/T(test)>                        .......... Create a single Test/Training TMVA set");
+	opt.addUsage(" -r  --regularize            .......... <path_to_summary_fit_TTree>                          .......... Regularize variables behaviour");
+	opt.addUsage(" -t  --tmva-set              .......... <s(signal)/b(background)>                            .......... Create TMVA Test/Training sets");
+	opt.addUsage(" -n  --no-split              .......... <t(train)/T(test)>                                   .......... Create a single Test/Training TMVA set");
 	opt.addUsage(" -g  --gaussianize           .......... Gaussianize input TMVA variables");
-	opt.addUsage(" -s  --show-gaussianized     .......... Gaussianize input TMVA variables");
+	opt.addUsage(" -s  --study-gaussianized    .......... Produce histos on input gaussianized TMVA variables");
 	opt.addUsage(" -f  --fit-gaussianized      .......... Fit gaussianized input TMVA variables");
-	opt.addUsage(" -p  --parallel              .......... <number_of_threads>                       .......... Multithreading option");
+	opt.addUsage(" -p  --parallel              .......... <number_of_threads>                                  .......... Multithreading option");
 	
 
 	opt.addUsage("");
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	opt.setOption("tmva-set", 't');
 	opt.setOption("no-split", 'n');
 	opt.setFlag("gaussianize", 'g');
-	opt.setFlag("show-gaussianized", 's');
+	opt.setFlag("study-gaussianized", 's');
 	opt.setFlag("fit-gaussianized", 'f');
 	opt.setOption("parallel", 'p');
 
@@ -86,8 +86,8 @@ int main(int argc, char **argv)
 		input_args.SetNSeType(opt.getValue('n'));
 	if (opt.getValue("gaussianize") || opt.getValue('g'))
 		input_args.gaussianize = opt.getValue('g');
-	if (opt.getValue("show-gaussianized") || opt.getValue('s'))
-		input_args.show_gaussianized = 	opt.getValue('s');
+	if (opt.getValue("study-gaussianized") || opt.getValue('s'))
+		input_args.study_gaussianized = 	opt.getValue('s');
 	if (opt.getValue("fit-gaussianized") || opt.getValue('f'))
 		input_args.fit_gaussianized = 	opt.getValue('f');
 	if (opt.getValue("parallel") || opt.getValue('p'))

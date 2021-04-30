@@ -35,45 +35,74 @@ void lambda_config::get_config_info(const std::string parsed_config)
 
 	while (input_stream >> tmp_str)
 	{
-		if (!strcmp(tmp_str.c_str(), "start_value"))
+		if (!strcmp(tmp_str.c_str(), "RMS_lambdas"))
 		{
+			while(strcmp(tmp_str.c_str(), "start_value"))
+				input_stream >> tmp_str;
 			input_stream >> tmp_str;
-			lambda_info.start = stod(tmp_str, &sz);
+			rms_lambda_info.start = stod(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "end_value"))
+				input_stream >> tmp_str;
+			input_stream >> tmp_str;
+			rms_lambda_info.end = stod(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "number_of_elements"))
+				input_stream >> tmp_str;
+			input_stream >> tmp_str;
+			rms_lambda_info.num = stoi(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "step"))
+				input_stream >> tmp_str;
+			input_stream >> tmp_str;
+			rms_lambda_info.step = stod(tmp_str, &sz);
 		}
-		if (!strcmp(tmp_str.c_str(), "end_value"))
+
+		if (!strcmp(tmp_str.c_str(), "EnergyLastFraction_lambdas"))
 		{
+			while(strcmp(tmp_str.c_str(), "start_value"))
+				input_stream >> tmp_str;
 			input_stream >> tmp_str;
-			lambda_info.end = stod(tmp_str, &sz);
-		}
-		if (!strcmp(tmp_str.c_str(), "number_of_elements"))
-		{
+			elf_lambda_info.start = stod(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "end_value"))
+				input_stream >> tmp_str;
 			input_stream >> tmp_str;
-			lambda_info.num = stoi(tmp_str, &sz);
-		}
-		if (!strcmp(tmp_str.c_str(), "step"))
-		{
+			elf_lambda_info.end = stod(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "number_of_elements"))
+				input_stream >> tmp_str;
 			input_stream >> tmp_str;
-			lambda_info.step = stod(tmp_str, &sz);
+			elf_lambda_info.num = stoi(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "step"))
+				input_stream >> tmp_str;
+			input_stream >> tmp_str;
+			elf_lambda_info.step = stod(tmp_str, &sz);
 		}
+		
 	}
 }
 
-void lambda_config::UpdateLambdaSteps()
+const rms_lambdas lambda_config::GetRMSLambdaStruct()
 {
-    lambda_info.step = (lambda_info.end-lambda_info.start)/lambda_info.num;
+    return rms_lambda_info;
 }
 
-const lambdas lambda_config::GetLambdaStruct()
+const energylastfraction_lambdas lambda_config::GetELFLambdaStruct()
 {
-    return lambda_info;
+    return elf_lambda_info;
 }
 
 void lambda_config::PrintLambdaSettings()
 {
     std::cout << "\n***** Input lambdas settings *****\n";
-    std::cout << "\nLambda START value: [" << lambda_info.start << "]";
-    std::cout << "\nLambda END value: [" << lambda_info.end << "]";
-    std::cout << "\nLambda number of values: [" << lambda_info.num << "]";
-	std::cout << "\nLambda step: [" << lambda_info.step << "]";
+
+	std::cout << "\n*** RMS ***\n";
+    std::cout << "\nLambda START value: [" << rms_lambda_info.start << "]";
+    std::cout << "\nLambda END value: [" << rms_lambda_info.end << "]";
+    std::cout << "\nLambda number of values: [" << rms_lambda_info.num << "]";
+	std::cout << "\nLambda step: [" << rms_lambda_info.step << "]\n";
+
+	std::cout << "\n*** ELF ***\n";
+    std::cout << "\nLambda START value: [" << elf_lambda_info.start << "]";
+    std::cout << "\nLambda END value: [" << elf_lambda_info.end << "]";
+    std::cout << "\nLambda number of values: [" << elf_lambda_info.num << "]";
+	std::cout << "\nLambda step: [" << elf_lambda_info.step << "]";
+	
     std::cout << "\n\n******************************\n\n";
 }

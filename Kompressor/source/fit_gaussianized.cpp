@@ -2,12 +2,15 @@
 
 #include <map>
 #include <cmath>
+#include <numeric>
 #include <stdio.h>
 #include <fstream>
 #include <stdlib.h>
 
 #include "TF1.h"
+#include "TTree.h"
 #include "TFile.h"
+#include "TGraph.h"
 #include "TCanvas.h"
 
 void fitGaussianizedTMVAvars(
@@ -21,6 +24,7 @@ void fitGaussianizedTMVAvars(
     const unsigned int threads,
     const bool _mc)
 {
+    /*
     // Extract the energy binning
     auto energy_binning = _energy_config->GetEnergyBinning();
     auto energy_nbins = (int)energy_binning.size() - 1;
@@ -57,18 +61,27 @@ void fitGaussianizedTMVAvars(
     }
 
     infile->Close();
-
+    */
+   
+    #if 0
     // Create output log file
     std::ofstream _log("lambdafit_boxcox.log");
     std::vector<std::vector<std::shared_ptr<TH1D>>> best_rmshist (energy_nbins, std::vector<std::shared_ptr<TH1D>> (DAMPE_bgo_nLayers));
+    std::vector<std::vector<double>> rms_lambda_corrections (energy_nbins);
 
     // Compute the goodness
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
         std::vector<double> goodness_rms_layer (DAMPE_bgo_nLayers, 999);
-        std::vector<double> best_lambda (DAMPE_bgo_nLayers, lambda_values.start);
-        std::vector<double> best_lambda_idx (DAMPE_bgo_nLayers, 0);
-        int statistics = h_rmsLayer_gauss[bin_idx-1][0][0]->GetEntries();
+        std::vector<double> goodness_frac_layer (DAMPE_bgo_nLayers, 999);
+
+        std::vector<double> rms_best_lambda (DAMPE_bgo_nLayers, lambda_values.start);
+        std::vector<double> fraclayer_best_lambda (DAMPE_bgo_nLayers, lambda_values.start);
+        std::vector<int> rms_best_lambda_idx (DAMPE_bgo_nLayers, 0);
+        std::vector<int> fraclayer_best_lambda_idx (DAMPE_bgo_nLayers, 0);
+
+        int rms_statistics = h_rmsLayer_gauss[bin_idx-1][0][0]->GetEntries();
+        //int fraclast_statistics = h_rmsLayer_gauss[bin_idx-1][0][0]->GetEntries();
 
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
@@ -82,7 +95,6 @@ void fitGaussianizedTMVAvars(
                     h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->Fit("fitfunc", "Q");
                     auto chi2 = fitfunc->GetChisquare();
                     auto dof = fitfunc->GetNDF();
-                    //double skew = h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetSkewness();
                     
                     if (dof)
                     {
@@ -103,29 +115,8 @@ void fitGaussianizedTMVAvars(
                             }
                         } 
                     }
-
-                    /*
-                    if ((h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetRMS()/skew)>0.01 && 
-                        (h_rmsLayer_gauss[bin_idx-1][lambda_idx][ly]->GetRMS()/skew)<100.0 && 
-                        skew<1.0 && dof)
-                    {
-                        double tmp_goodness = chi2/dof;
-                        if (goodness_rms_layer[ly]==999)
-                        {
-                            goodness_rms_layer[ly] = tmp_goodness;
-                            best_lambda[ly] = lambda_values.start + lambda_values.step*lambda_idx;
-                        }
-                        else
-                        {
-                            if (abs(tmp_goodness-1) < abs(goodness_rms_layer[ly]-1))
-                            {
-                                goodness_rms_layer[ly] = tmp_goodness;
-                                best_lambda[ly] = lambda_values.start + lambda_values.step*lambda_idx;
-                            }
-                        }   
-                    }
-                    */
                 }
+                rms_lambda_corrections[bin_idx-1] = best_lambda;
             }
             
             std::cout << "\n[ENERGY BIN " << bin_idx << "]\t - BGO Layer " << ly+1 << "\t - best lambda value: " << best_lambda[ly] << "\t - goodness: " << 
@@ -141,6 +132,35 @@ void fitGaussianizedTMVAvars(
     {
         std::cerr << "\n\nError writing output file [" << outputPath << "]\n\n";
         exit(100);
+    }
+
+    // Write histos and graphs
+    // Building lambda vs energy plots for each BGO layers
+    std::vector<double> ebins (energy_nbins);
+    std::vector<std::unique_ptr<TGraph>> lambda_rms_gr (DAMPE_bgo_nLayers);
+    std::iota (std::begin(ebins), std::end(ebins), 1);
+
+    auto get_lambda_per_layer = [&lambda_values](const std::vector<std::vector<double>> in_lambda, const int layer) -> const std::vector<double>
+    {
+        std::vector<double> out_lambda (in_lambda.size());
+        if (layer<DAMPE_bgo_nLayers)
+            for (unsigned int idx=0; idx<in_lambda.size(); ++idx)
+                out_lambda[idx] = in_lambda[idx][layer] != lambda_values.start ? in_lambda[idx][layer] : 0;
+        else
+            for (auto&& elm:out_lambda)
+                elm = 0;
+        return out_lambda;
+    };
+
+    for (int ly=0; ly<DAMPE_bgo_nLayers; ++ly)
+    {
+        lambda_rms_gr[ly] = std::make_unique<TGraph> (energy_nbins, &ebins[0], &(get_lambda_per_layer(rms_lambda_corrections, ly))[0]);
+        lambda_rms_gr[ly]->SetName((std::string("rms_lambda_energyevolution_layer_") + std::to_string(ly+1)).c_str());
+        lambda_rms_gr[ly]->SetTitle((std::string("RMS #lambda - layer ") + std::to_string(ly+1)).c_str());
+        lambda_rms_gr[ly]->GetXaxis()->SetTitle("energy layer");
+        lambda_rms_gr[ly]->GetYaxis()->SetTitle("#lambda");
+        lambda_rms_gr[ly]->Fit("pol1", "Q");
+        lambda_rms_gr[ly]->Write();
     }
 
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
@@ -171,13 +191,45 @@ void fitGaussianizedTMVAvars(
 
     output_file->Close();
 
+    // Writing TTree lambda correction file
+    std::string tree_vars_file = outputPath.substr(0, outputPath.find_last_of("/")) + std::string("/lambda_corrections.root");
+    TFile* corrections_file = TFile::Open(tree_vars_file.c_str(), "RECREATE");
+    if (corrections_file->IsZombie())
+    {
+        std::cerr << "\n\nError writing output file [" << tree_vars_file << "]\n\n";
+        exit(100);
+    }
+
+    TTree corrections_tree("corrections_tree", "Lambda corrections");
+    
+    int energy_bin_idx = 0;
+    std::vector<double> rms_lambda (DAMPE_bgo_nLayers);
+
+    corrections_tree.Branch("energy_bin_idx", &energy_bin_idx, "energy_bin_idx/I");
+    corrections_tree.Branch("rms_lambda", &rms_lambda);
+
+    for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
+    {
+        energy_bin_idx = bin_idx;
+        rms_lambda = rms_lambda_corrections[bin_idx-1];
+        corrections_tree.Fill();
+    }
+
+    corrections_tree.Write();
+    corrections_file->Close();
+
     if (_VERBOSE)
+    {
         std::cout << "\n\nOutput file has been written... [" << outputPath << "]\n";
+        std::cout << "Output corrections file has been written... [" << tree_vars_file << "]\n";
+    }
+
+    #endif
 }
 
 std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetRMSLayerHistosPointers(
     const int energy_nbins, 
-    const lambdas lambda_values,
+    const rms_lambdas lambda_values,
     const int DAMPE_bgo_nLayers)
 {
     std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> h_rms_layer (energy_nbins);

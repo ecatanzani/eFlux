@@ -25,7 +25,7 @@ struct in_args
 	bool no_split = false;
 	bool no_split_test;
 	bool gaussianize = false;
-	bool show_gaussianized = false;
+	bool study_gaussianized = false;
 	bool fit_gaussianized = false;
 	unsigned int threads = 1;
 
