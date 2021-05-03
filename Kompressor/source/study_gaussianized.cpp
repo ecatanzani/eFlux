@@ -25,7 +25,6 @@ void studyGaussianizedTMVAvars(
     // Extract the energy binning
     auto energy_binning = _energy_config->GetEnergyBinning();
     auto energy_nbins = (int)energy_binning.size() - 1;
-
     auto rms_lambda_values = _lambda_config->GetRMSLambdaStruct();
     auto elf_lambda_values = _lambda_config->GetELFLambdaStruct();
     if (_VERBOSE)

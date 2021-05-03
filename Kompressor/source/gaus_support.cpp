@@ -25,7 +25,7 @@ void extract_lamda_info(
         if (dof)
         {
             double tmp_goodness = chi2/dof;
-            if (goodness[layer]==999)
+            if (goodness[layer] == 999)
             {
                 goodness[layer] = tmp_goodness;
                 best_lambda[layer] = lambda_start + lambda_step*lambda_idx;
