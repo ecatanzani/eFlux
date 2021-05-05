@@ -91,7 +91,7 @@ def fillStats(files: list, pars: dict, opts: argparse.Namespace) -> dict:
                 evts_1_5.append(tmpstats['1_5'])
                 evts_5.append(tmpstats['g5'])
                 totevents = evts_20_100[-1]+evts_100_250[-1]+evts_250_500[-1]+evts_500_1[-1]+evts_1_5[-1]+evts_5[-1]
-                evts_20_100.append(totevents)
+                evts.append(totevents)
             else:
                 evts_20_100.append(0)
                 evts_100_250.append(0)
