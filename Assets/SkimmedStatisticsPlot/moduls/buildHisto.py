@@ -111,16 +111,16 @@ def fillStats(files: list, pars: dict, opts: argparse.Namespace) -> dict:
 def buildHisto(opts: argparse.Namespace, files: list, pars: dict):
     
     stats = fillStats(files, pars, opts)
-    
+
     # Plot
     plt.style.use('seaborn-whitegrid')
-    plt.plot(stats['timebins'], stats['evts'], marker='p', label="all energy", color="dimgray", linestyle='dashed', linewidth=2, markersize=12)
-    plt.plot(stats['timebins'], stats['evts_20_100'], marker='o', label="20 - 100 GeV", color="cornflowerblue", linestyle='dashed', linewidth=2, markersize=12)
-    plt.plot(stats['timebins'], stats['evts_100_250'], marker='^', label="100 - 250 GeV", color="darkorange", linestyle='dashed', linewidth=2, markersize=12)
-    plt.plot(stats['timebins'], stats['evts_250_500'], marker='*', label="250 - 500 GeV", color="forestgreen", linestyle='dashed', linewidth=2, markersize=12)
-    plt.plot(stats['timebins'], stats['evts_500_1'], marker='|', label="0.5 - 1 TeV", color="crimson", linestyle='dashed', linewidth=2, markersize=12)
-    plt.plot(stats['timebins'], stats['evts_1_5'], marker='d', label="1 - 5 TeV", color="blueviolet", linestyle='dashed', linewidth=2, markersize=12)
-    plt.plot(stats['timebins'], stats['evts_5'], marker='s', label="> 5 TeV", color="saddlebrown", linestyle='dashed', linewidth=2, markersize=12)
+    plt.plot(stats['timebins'], stats['evts'], marker='p', label="all energy", color="dimgray", linestyle='dashed', linewidth=2, markersize=2)
+    plt.plot(stats['timebins'], stats['evts_20_100'], marker='o', label="20 - 100 GeV", color="cornflowerblue", linestyle='dashed', linewidth=2, markersize=2)
+    plt.plot(stats['timebins'], stats['evts_100_250'], marker='^', label="100 - 250 GeV", color="darkorange", linestyle='dashed', linewidth=2, markersize=2)
+    plt.plot(stats['timebins'], stats['evts_250_500'], marker='*', label="250 - 500 GeV", color="forestgreen", linestyle='dashed', linewidth=2, markersize=2)
+    plt.plot(stats['timebins'], stats['evts_500_1'], marker='|', label="0.5 - 1 TeV", color="crimson", linestyle='dashed', linewidth=2, markersize=2)
+    plt.plot(stats['timebins'], stats['evts_1_5'], marker='d', label="1 - 5 TeV", color="blueviolet", linestyle='dashed', linewidth=2, markersize=2)
+    plt.plot(stats['timebins'], stats['evts_5'], marker='s', label="> 5 TeV", color="saddlebrown", linestyle='dashed', linewidth=2, markersize=2)
 
     #plt.legend(numpoints=1)
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0., numpoints=1)
