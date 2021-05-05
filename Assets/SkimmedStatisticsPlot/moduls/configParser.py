@@ -1,5 +1,5 @@
 def parseConfigFile():
-	dConfig = {'farmAddress': "", 'data_XRDFS_skimmed_path': ""}
+	dConfig = {'farmAddress': "", 'data_XRDFS_skimmed_path': "", 'start_year': 0, 'end_year': 0}
 	
 	config_params = []
 	with open("skim_xrootd.conf", "r") as _config:
@@ -12,5 +12,9 @@ def parseConfigFile():
 			dConfig['farmAddress'] = config_params[idx+1]
 		if word == "data_XRDFS_skimmed_path":
 			dConfig['data_XRDFS_skimmed_path'] = config_params[idx+1]
-	
+		if word == "start_year":
+			dConfig['start_year'] = int(config_params[idx+1])
+		if word == "end_year":
+			dConfig['end_year'] = int(config_params[idx+1])
+
 	return dConfig

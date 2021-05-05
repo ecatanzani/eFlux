@@ -26,6 +26,8 @@ def getStatisticFiles(config: dict, opts: argparse.Namespace) -> list:
 
             # Extract year
             year = int(dir_st1[dir_st1.rfind('/')+1:])
+            if year < config['start_year'] or year > config['end_year']:
+                continue
             if year not in years:
                 years.append(year)
                 year_data_idx = len(years)-1
