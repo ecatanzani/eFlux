@@ -234,7 +234,7 @@ std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetFracLayerHistos(
     const int DAMPE_bgo_nLayers)
 {
     int nbins = 1000;
-    double hmin = -50;
+    double hmin = 0;
     double hmax = 50;
     std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> h_frac_layer (energy_nbins);
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
