@@ -1,21 +1,5 @@
-#include "TTreeReader.h"
-#include "TTreeReaderValue.h"
-#include "TFile.h"
-#include "TH1D.h"
-#include "TChain.h"
-#include "TCanvas.h"
-#include <ROOT/RDataFrame.hxx>
-
-#include <string>
-#include <vector>
-#include <iostream>
-#include <memory>
-#include <fstream>
-#include <sstream>
-
-#define bgolayers 14
-#define nenergybin 50
-
+#include "main.h"
+#include "showgaus.h"
 
 std::string parse_input_file(const std::string input_list)
 {
@@ -32,8 +16,8 @@ std::string parse_input_file(const std::string input_list)
 
 std::shared_ptr<TChain> getchain(
     const std::string filelist, 
-    const bool mc = false,
-    const bool verbose = true)
+    const bool mc,
+    const bool verbose)
 {
     std::string tree_name = !mc ? "DmpEvtNtup_gauss" : "DmpMCEvtNtup_gauss";
     std::shared_ptr<TChain> evtch = std::make_shared<TChain>(tree_name.c_str(), "DAMPE event tree");
@@ -64,23 +48,20 @@ std::vector<std::vector<std::shared_ptr<TH1D>>> getrmslayerhistos()
     return rmslayer;
 }
 
-
-void showgaus(
-    const std::string filelist,
-    const std::string outfile, 
-    const bool mc = false,
-    const bool verbose = true,
-    const unsigned int threads = 1)
+void showgaus(in_args input_args)
 {
-    auto evtch = getchain(filelist, mc, verbose);
-    ROOT::EnableImplicitMT(threads);
+    auto evtch = getchain(
+        input_args.input_list, 
+        input_args.mc_flag, 
+        input_args.verbose);
+    ROOT::EnableImplicitMT(input_args.threads);
     ROOT::RDataFrame _data_fr(*evtch);
-    if (verbose) std::cout << "\n\nTotal number of events: " << *(_data_fr.Count());
+    if (input_args.verbose) std::cout << "\n\nTotal number of events: " << *(_data_fr.Count());
     auto hrmslayer = getrmslayerhistos();
 
-    for (unsigned int bidx=0; bidx<nenergybin; ++bidx)
+    for (int bidx=0; bidx<nenergybin; ++bidx)
     {
-        auto bin_filter = [&bidx](const unsigned int energy_bin) -> bool { return energy_bin == bidx; };
+        auto bin_filter = [&bidx](const int energy_bin) -> bool { return energy_bin == bidx; };
         _data_fr.Filter(bin_filter, {"energy_bin"})
                 .Foreach([&hrmslayer, &bidx](const std::vector<double> rms, const double energyw)
                 {
@@ -89,10 +70,10 @@ void showgaus(
                 }, {"rmsLayer_gauss", "simu_energy_w_corr"});       
     }
 
-    TFile* out = TFile::Open(outfile.c_str(), "RECREATE");
+    TFile* out = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (out->IsZombie())
     {
-        std::cerr << "\n\nError writing output ROOT file: [" << outfile << "]\n\n";
+        std::cerr << "\n\nError writing output ROOT file: [" << input_args.output_path << "]\n\n";
         exit(100);
     }
 
