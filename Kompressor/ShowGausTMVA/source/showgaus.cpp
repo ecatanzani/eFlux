@@ -1,68 +1,7 @@
 #include "main.h"
-#include "showgaus.h"
-
-std::string parse_input_file(const std::string input_list)
-{
-	std::ifstream input_file(input_list.c_str());
-	if (!input_file.is_open())
-	{
-		std::cerr << "\n\nError (100) reading input file list...[" << input_list << "]" << std::endl;
-		exit(100);
-	}
-	std::string input_string((std::istreambuf_iterator<char>(input_file)), (std::istreambuf_iterator<char>()));
-	input_file.close();
-	return input_string;
-}
-
-std::shared_ptr<TChain> getchain(
-    const std::string filelist, 
-    const bool mc,
-    const bool verbose)
-{
-    std::string tree_name = !mc ? "DmpEvtNtup_gauss" : "DmpMCEvtNtup_gauss";
-    std::shared_ptr<TChain> evtch = std::make_shared<TChain>(tree_name.c_str(), "DAMPE event tree");
-    std::istringstream input_stream(parse_input_file(filelist));
-    std::string tmp_str;
-    while (input_stream >> tmp_str)
-    {
-        evtch->Add(tmp_str.c_str());
-        if (verbose)
-            std::cout << "\nAdding " << tmp_str << " to the chain ...";
-    }
-    return evtch;
-}
-
-std::vector<std::vector<std::shared_ptr<TH1D>>> getrmslayerhistos()
-{
-    std::vector<std::vector<std::shared_ptr<TH1D>>> rmslayer (nenergybin);
-    for (unsigned int bidx=0; bidx<nenergybin; ++bidx)
-    {
-        rmslayer[bidx] = std::vector<std::shared_ptr<TH1D>> (bgolayers);
-        for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
-        {
-            std::string tmphistoname = std::string("h_rms_energybin_") + std::to_string(bidx+1) + std::string("_layer_") + std::to_string(lidx+1);
-            std::string tmphistotitle = std::string("RMS - energybin ") + std::to_string(bidx+1) + std::string(" - BGO layer ") + std::to_string(lidx+1);
-            rmslayer[bidx][lidx] = std::make_shared<TH1D>(tmphistoname.c_str(), tmphistotitle.c_str(), 100, -5, 5);
-        }
-    }
-    return rmslayer;
-}
-
-std::vector<std::vector<std::shared_ptr<TH1D>>> getenergyfractionlayerhistos()
-{
-    std::vector<std::vector<std::shared_ptr<TH1D>>> energyfractionlayer (nenergybin);
-    for (unsigned int bidx=0; bidx<nenergybin; ++bidx)
-    {
-        energyfractionlayer[bidx] = std::vector<std::shared_ptr<TH1D>> (bgolayers);
-        for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
-        {
-            std::string tmphistoname = std::string("h_energyfraction_energybin_") + std::to_string(bidx+1) + std::string("_layer_") + std::to_string(lidx+1);
-            std::string tmphistotitle = std::string("Energy Fraction - energybin ") + std::to_string(bidx+1) + std::string(" - BGO layer ") + std::to_string(lidx+1);
-            energyfractionlayer[bidx][lidx] = std::make_shared<TH1D>(tmphistoname.c_str(), tmphistotitle.c_str(), 100, -5, 5);
-        }
-    }
-    return energyfractionlayer;
-}
+#include "gaus.h"
+#include "parser.h"
+#include "histos.h"
 
 void showgaus(in_args input_args)
 {

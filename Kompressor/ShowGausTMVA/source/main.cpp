@@ -1,6 +1,6 @@
 #include "main.h"
 #include "utils.h"
-#include "showgaus.h"
+#include "gaus.h"
 
 int main(int argc, char** argv)
 {
@@ -21,6 +21,7 @@ int main(int argc, char** argv)
 	opt.addUsage("");
 
 	opt.addUsage(" -m  --mc                    .......... MC event loop");
+	opt.addUsage(" -r  --resume                .......... Resume TMVA gaus variables");
 	opt.addUsage(" -p  --parallel              .......... <number_of_threads>                                  .......... Multithreading option");
 
     opt.addUsage("");
@@ -31,6 +32,7 @@ int main(int argc, char** argv)
 	opt.setOption("outputdir", 'd');
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("mc", 'm');
+	opt.setFlag("resume", 'r');
 	opt.setOption("parallel", 'p');
 
 	opt.processCommandArgs(argc, argv);
@@ -58,11 +60,18 @@ int main(int argc, char** argv)
 		input_args.verbose = opt.getFlag('v');
 	if (opt.getFlag("mc") || opt.getFlag('m'))
 		input_args.mc_flag = true;
+	if (opt.getFlag("resume") || opt.getFlag('r'))
+		input_args.resume_flag = true;
 	if (opt.getValue("parallel") || opt.getValue('p'))
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
     
     if (!input_args.output_path.empty())
-		showgaus(input_args);
+	{
+		if (!input_args.resume_flag)
+			showgaus(input_args);
+		else
+			resumegaus(input_args);
+	}
 	else
 	{
 		std::cerr << "\n\nError ! No output path has been specified...\n\n";

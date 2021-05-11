@@ -15,6 +15,7 @@ struct in_args
 
 	// Tasks
 	bool mc_flag = false;
+	bool resume_flag = false;
 	unsigned int threads = 1;
 };
 
