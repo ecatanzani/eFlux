@@ -97,33 +97,15 @@ void showgaus(in_args input_args)
         exit(100);
     }
 
-    /*
-    std::vector<std::unique_ptr<TCanvas>> c_rms (nenergybin);
     for (unsigned int bidx=0; bidx<nenergybin; ++bidx)
     {
-        std::string c_name = std::string("rms_canvas_energybin_") + std::to_string(bidx);
-        std::string c_title = std::string("RMS distributions - energy bin ") + std::to_string(bidx);
-        c_rms[bidx] = std::make_unique<TCanvas>(c_name.c_str(), c_title.c_str());
-        c_rms[bidx]->Divide(7,2);
-        for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
-        {
-            c_rms[bidx]->cd(lidx+1);
-            hrmslayer[bidx][lidx]->Draw();
-        }
-        c_rms[bidx]->cd(0);
-        c_rms[bidx]->Write();
-    }
-    */
-    
-    for (unsigned int bidx=0; bidx<nenergybin; ++bidx)
-    {
-        out->mkdir((std::string("RMS/energybin_") + std::to_string(bidx)).c_str());
-        out->cd((std::string("RMS/energybin_") + std::to_string(bidx)).c_str());
+        out->mkdir((std::string("RMS/energybin_") + std::to_string(bidx+1)).c_str());
+        out->cd((std::string("RMS/energybin_") + std::to_string(bidx+1)).c_str());
         for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
             hrmslayer[bidx][lidx]->Write();
     
-        out->mkdir((std::string("ELF/energybin_") + std::to_string(bidx)).c_str());
-        out->cd((std::string("ELF/energybin_") + std::to_string(bidx)).c_str());
+        out->mkdir((std::string("ELF/energybin_") + std::to_string(bidx+1)).c_str());
+        out->cd((std::string("ELF/energybin_") + std::to_string(bidx+1)).c_str());
         for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
             hefraclayer[bidx][lidx]->Write();
     }
