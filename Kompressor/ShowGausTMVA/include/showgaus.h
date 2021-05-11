@@ -27,6 +27,7 @@ extern std::shared_ptr<TChain> getchain(
     const bool mc = false,
     const bool verbose = true);
 extern std::vector<std::vector<std::shared_ptr<TH1D>>> getrmslayerhistos();
+extern std::vector<std::vector<std::shared_ptr<TH1D>>> getenergyfractionlayerhistos();
 extern void showgaus(in_args input_args);
 
 #endif

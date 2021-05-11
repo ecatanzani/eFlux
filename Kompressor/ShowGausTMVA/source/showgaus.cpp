@@ -48,6 +48,22 @@ std::vector<std::vector<std::shared_ptr<TH1D>>> getrmslayerhistos()
     return rmslayer;
 }
 
+std::vector<std::vector<std::shared_ptr<TH1D>>> getenergyfractionlayerhistos()
+{
+    std::vector<std::vector<std::shared_ptr<TH1D>>> energyfractionlayer (nenergybin);
+    for (unsigned int bidx=0; bidx<nenergybin; ++bidx)
+    {
+        energyfractionlayer[bidx] = std::vector<std::shared_ptr<TH1D>> (bgolayers);
+        for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
+        {
+            std::string tmphistoname = std::string("h_energyfraction_energybin_") + std::to_string(bidx+1) + std::string("_layer_") + std::to_string(lidx+1);
+            std::string tmphistotitle = std::string("Energy Fraction - energybin ") + std::to_string(bidx+1) + std::string(" - BGO layer ") + std::to_string(lidx+1);
+            energyfractionlayer[bidx][lidx] = std::make_shared<TH1D>(tmphistoname.c_str(), tmphistotitle.c_str(), 100, -5, 5);
+        }
+    }
+    return energyfractionlayer;
+}
+
 void showgaus(in_args input_args)
 {
     auto evtch = getchain(
@@ -58,16 +74,20 @@ void showgaus(in_args input_args)
     ROOT::RDataFrame _data_fr(*evtch);
     if (input_args.verbose) std::cout << "\n\nTotal number of events: " << *(_data_fr.Count());
     auto hrmslayer = getrmslayerhistos();
+    auto hefraclayer = getenergyfractionlayerhistos();
 
     for (int bidx=0; bidx<nenergybin; ++bidx)
     {
         auto bin_filter = [&bidx](const int energy_bin) -> bool { return energy_bin == bidx; };
         _data_fr.Filter(bin_filter, {"energy_bin"})
-                .Foreach([&hrmslayer, &bidx](const std::vector<double> rms, const double energyw)
+                .Foreach([&hrmslayer, &hefraclayer, &bidx](const std::vector<double> rms, const std::vector<double> efrac, const double energyw)
                 {
                     for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
+                    {
                         hrmslayer[bidx][lidx]->Fill(rms[lidx], energyw);
-                }, {"rmsLayer_gauss", "simu_energy_w_corr"});       
+                        hefraclayer[bidx][lidx]->Fill(efrac[lidx], energyw);
+                    }
+                }, {"rmsLayer_gauss", "fracLayer_gauss", "simu_energy_w_corr"});
     }
 
     TFile* out = TFile::Open(input_args.output_path.c_str(), "RECREATE");
@@ -77,6 +97,7 @@ void showgaus(in_args input_args)
         exit(100);
     }
 
+    /*
     std::vector<std::unique_ptr<TCanvas>> c_rms (nenergybin);
     for (unsigned int bidx=0; bidx<nenergybin; ++bidx)
     {
@@ -92,7 +113,21 @@ void showgaus(in_args input_args)
         c_rms[bidx]->cd(0);
         c_rms[bidx]->Write();
     }
-
+    */
+    
+    for (unsigned int bidx=0; bidx<nenergybin; ++bidx)
+    {
+        out->mkdir((std::string("RMS/energybin_") + std::to_string(bidx)).c_str());
+        out->cd((std::string("RMS/energybin_") + std::to_string(bidx)).c_str());
+        for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
+            hrmslayer[bidx][lidx]->Write();
+    
+        out->mkdir((std::string("ELF/energybin_") + std::to_string(bidx)).c_str());
+        out->cd((std::string("ELF/energybin_") + std::to_string(bidx)).c_str());
+        for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
+            hefraclayer[bidx][lidx]->Write();
+    }
+    
     out->Close();
 }
 
