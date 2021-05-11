@@ -35,11 +35,11 @@ std::vector<std::vector<std::shared_ptr<TH1D>>> getrmslayerhistos_ff(const std::
         rmslayer[bidx] = std::vector<std::shared_ptr<TH1D>> (bgolayers);
         for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
         {
-            std::string tmphistoname = std::string("RMS/h_rms_energybin_") + std::to_string(bidx+1) + std::string("_layer_") + std::to_string(lidx+1);
+            std::string tmphistoname = std::string("RMS/energybin_") + std::to_string(bidx+1) + std::string("/h_rms_energybin_") + std::to_string(bidx+1) + std::string("_layer_") + std::to_string(lidx+1);
             // Read histo from file
             rmslayer[bidx][lidx] = std::shared_ptr<TH1D>(static_cast<TH1D*>(infile->Get(tmphistoname.c_str())));
             // Fit histo with gaus normalized distribution
-            rmslayer[bidx][lidx]->Fit("gaus", "QW");
+            if (rmslayer[bidx][lidx]->GetEntries()) rmslayer[bidx][lidx]->Fit("gaus", "QW");
             // Set histo ownership
             rmslayer[bidx][lidx]->SetDirectory(0);
         }
@@ -78,11 +78,11 @@ std::vector<std::vector<std::shared_ptr<TH1D>>> getenergyfractionlayerhistos_ff(
         energyfractionlayer[bidx] = std::vector<std::shared_ptr<TH1D>> (bgolayers);
         for (unsigned int lidx=0; lidx<bgolayers; ++lidx)
         {
-            std::string tmphistoname = std::string("ELF/h_energyfraction_energybin_") + std::to_string(bidx+1) + std::string("_layer_") + std::to_string(lidx+1);
+            std::string tmphistoname = std::string("ELF/energybin_") + std::to_string(bidx+1) + std::string("/h_energyfraction_energybin_") + std::to_string(bidx+1) + std::string("_layer_") + std::to_string(lidx+1);
             // Read histo from file
             energyfractionlayer[bidx][lidx] = std::shared_ptr<TH1D>(static_cast<TH1D*>(infile->Get(tmphistoname.c_str())));
             // Fit histo with gaus normalized distribution
-            energyfractionlayer[bidx][lidx]->Fit("gaus", "QW");
+            if (energyfractionlayer[bidx][lidx]->GetEntries()) energyfractionlayer[bidx][lidx]->Fit("gaus", "QW");
             // Set histo ownership
             energyfractionlayer[bidx][lidx]->SetDirectory(0);
         }
