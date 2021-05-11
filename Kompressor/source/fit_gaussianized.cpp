@@ -65,7 +65,11 @@ void fitGaussianizedTMVAvars(
     std::vector<std::vector<std::shared_ptr<TH1D>>> best_rmshist (energy_nbins, std::vector<std::shared_ptr<TH1D>> (DAMPE_bgo_nLayers));
     std::vector<std::vector<std::shared_ptr<TH1D>>> best_fraclasthist (energy_nbins, std::vector<std::shared_ptr<TH1D>> (DAMPE_bgo_nLayers));
     std::vector<std::vector<double>> rms_lambda_corrections (energy_nbins);
+    std::vector<std::vector<double>> rms_lambda_corrections_mean (energy_nbins);
+    std::vector<std::vector<double>> rms_lambda_corrections_sigma (energy_nbins);
     std::vector<std::vector<double>> fraclast_lambda_corrections (energy_nbins);
+    std::vector<std::vector<double>> fraclast_lambda_corrections_mean (energy_nbins);
+    std::vector<std::vector<double>> fraclast_lambda_corrections_sigma (energy_nbins);
 
     // Compute the goodness
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
@@ -77,6 +81,10 @@ void fitGaussianizedTMVAvars(
         std::vector<double> fraclayer_best_lambda (DAMPE_bgo_nLayers, elf_lambda_values.start);
         std::vector<int> rms_best_lambda_idx (DAMPE_bgo_nLayers, 0);
         std::vector<int> fraclayer_best_lambda_idx (DAMPE_bgo_nLayers, 0);
+        std::vector<double> rms_best_lambda_gmean (DAMPE_bgo_nLayers, 0);
+        std::vector<double> rms_best_lambda_gsigma (DAMPE_bgo_nLayers, 0);
+        std::vector<double> fraclayer_best_lambda_gmean (DAMPE_bgo_nLayers, 0);
+        std::vector<double> fraclayer_best_lambda_gsigma (DAMPE_bgo_nLayers, 0);
 
         int rms_statistics = h_rmsLayer_gauss[bin_idx-1][0][0]->GetEntries();
         int fraclast_statistics = h_fracLayer_gauss[bin_idx-1][0][0]->GetEntries();
@@ -88,7 +96,9 @@ void fitGaussianizedTMVAvars(
                     h_rmsLayer_gauss, 
                     goodness_rms_layer, 
                     rms_best_lambda, 
-                    rms_best_lambda_idx, 
+                    rms_best_lambda_idx,
+                    rms_best_lambda_gmean,
+                    rms_best_lambda_gsigma,
                     rms_lambda_values.start,
                     rms_lambda_values.step, 
                     bin_idx, 
@@ -103,6 +113,8 @@ void fitGaussianizedTMVAvars(
                     goodness_frac_layer, 
                     fraclayer_best_lambda, 
                     fraclayer_best_lambda_idx,
+                    fraclayer_best_lambda_gmean,
+                    fraclayer_best_lambda_gsigma,
                     elf_lambda_values.start,
                     elf_lambda_values.step,
                     bin_idx, 
@@ -111,6 +123,10 @@ void fitGaussianizedTMVAvars(
         
         rms_lambda_corrections[bin_idx-1] = rms_best_lambda;
         fraclast_lambda_corrections[bin_idx-1] = fraclayer_best_lambda;
+        rms_lambda_corrections_mean[bin_idx-1] = rms_best_lambda_gmean;
+        rms_lambda_corrections_sigma[bin_idx-1] = rms_best_lambda_gsigma;
+        fraclast_lambda_corrections_mean[bin_idx-1] = fraclayer_best_lambda_gmean;
+        fraclast_lambda_corrections_sigma[bin_idx-1] = fraclayer_best_lambda_gsigma;
 
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
@@ -121,6 +137,7 @@ void fitGaussianizedTMVAvars(
         if (_VERBOSE)
         {
             std::cout << "\n\nEnergy bin [" << bin_idx << "]\n";
+            _log << "\n\nEnergy bin [" << bin_idx << "]\n";
             for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
             {
                 std::cout << "\n(RMS) - BGO Layer " << ly+1 << "\t - best lambda value: " << rms_best_lambda[ly] << "\t - goodness: " << 
@@ -129,6 +146,7 @@ void fitGaussianizedTMVAvars(
             goodness_rms_layer[ly] << "\t Stat (#events) [" << rms_statistics << "]" << "\t best lambda idx: " << rms_best_lambda_idx[ly];
             }
             std::cout << std::endl;
+            _log << std::endl;
             for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
             {
                 std::cout << "\n(EnergyLastLayerFraction) - BGO Layer " << ly+1 << "\t - best lambda value: " << fraclayer_best_lambda[ly] << "\t - goodness: " << 
@@ -247,17 +265,29 @@ void fitGaussianizedTMVAvars(
     
     int energy_bin_idx = 0;
     std::vector<double> rms_lambda (DAMPE_bgo_nLayers);
-    std::vector<double> energyfractionll_lambda (DAMPE_bgo_nLayers);
+    std::vector<double> rms_lambda_mean (DAMPE_bgo_nLayers);
+    std::vector<double> rms_lambda_sigma (DAMPE_bgo_nLayers);
+    std::vector<double> energyfraction_lambda (DAMPE_bgo_nLayers);
+    std::vector<double> energyfraction_lambda_mean (DAMPE_bgo_nLayers);
+    std::vector<double> energyfraction_lambda_sigma (DAMPE_bgo_nLayers);
 
     corrections_tree.Branch("energy_bin_idx", &energy_bin_idx, "energy_bin_idx/I");
     corrections_tree.Branch("rms_lambda", &rms_lambda);
-    corrections_tree.Branch("energyfractionll_lambda", &energyfractionll_lambda);
+    corrections_tree.Branch("rms_lambda_mean", &rms_lambda_mean);
+    corrections_tree.Branch("rms_lambda_sigma", &rms_lambda_sigma);
+    corrections_tree.Branch("energyfraction_lambda", &energyfraction_lambda);
+    corrections_tree.Branch("energyfraction_lambda_mean", &energyfraction_lambda_mean);
+    corrections_tree.Branch("energyfraction_lambda_sigma", &energyfraction_lambda_sigma);
 
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
         energy_bin_idx = bin_idx;
         rms_lambda = rms_lambda_corrections[bin_idx-1];
-        energyfractionll_lambda = fraclast_lambda_corrections[bin_idx-1];
+        rms_lambda_mean = rms_lambda_corrections_mean[bin_idx-1];
+        rms_lambda_sigma = rms_lambda_corrections_sigma[bin_idx-1];
+        energyfraction_lambda = fraclast_lambda_corrections[bin_idx-1];
+        energyfraction_lambda_mean = fraclast_lambda_corrections_mean[bin_idx-1];
+        energyfraction_lambda_sigma = fraclast_lambda_corrections_sigma[bin_idx-1];
         corrections_tree.Fill();
     }
 

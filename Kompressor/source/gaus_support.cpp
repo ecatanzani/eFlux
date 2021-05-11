@@ -7,6 +7,8 @@ void extract_lamda_info(
     std::vector<double> &goodness,
     std::vector<double> &best_lambda,
     std::vector<int> &best_lambda_idx,
+    std::vector<double> &best_lambda_gmean,
+    std::vector<double> &best_lambda_gsigma,
     const double lambda_start,
     const double lambda_step,
     const int bin_idx,
@@ -30,6 +32,8 @@ void extract_lamda_info(
                 goodness[layer] = tmp_goodness;
                 best_lambda[layer] = lambda_start + lambda_step*lambda_idx;
                 best_lambda_idx[layer] = lambda_idx;
+                best_lambda_gmean[layer] = fitfunc->GetParameter(1);
+                best_lambda_gsigma[layer] = fitfunc->GetParameter(2);
             }
             else
             {
@@ -38,6 +42,8 @@ void extract_lamda_info(
                     goodness[layer] = tmp_goodness;
                     best_lambda[layer] = lambda_start + lambda_step*lambda_idx;
                     best_lambda_idx[layer] = lambda_idx;
+                    best_lambda_gmean[layer] = fitfunc->GetParameter(1);
+                    best_lambda_gsigma[layer] = fitfunc->GetParameter(2);   
                 }
             }
         }

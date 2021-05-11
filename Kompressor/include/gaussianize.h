@@ -23,7 +23,8 @@ extern void gaussianizeTMVAvars(
     const std::string outputPath,
     const bool _VERBOSE,
     const unsigned int threads,
-    const bool _mc);
+    const bool _mc,
+    const std::string tree_reg_path);
 
 extern void studyGaussianizedTMVAvars(
     std::shared_ptr<TChain> evtch,
@@ -79,6 +80,8 @@ extern void extract_lamda_info(
     std::vector<double> &goodness,
     std::vector<double> &best_lambda,
     std::vector<int> &best_lambda_idx,
+    std::vector<double> &best_lambda_gmean,
+    std::vector<double> &best_lambda_gsigma,
     const double lambda_start,
     const double lambda_step,
     const int bin_idx,

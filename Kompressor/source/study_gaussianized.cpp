@@ -95,6 +95,10 @@ void studyGaussianizedTMVAvars(
         std::vector<double> fraclayer_best_lambda (DAMPE_bgo_nLayers, elf_lambda_values.start);
         std::vector<int> rms_best_lambda_idx (DAMPE_bgo_nLayers, 0);
         std::vector<int> fraclayer_best_lambda_idx (DAMPE_bgo_nLayers, 0);
+        std::vector<double> rms_best_lambda_gmean (DAMPE_bgo_nLayers, 0);
+        std::vector<double> rms_best_lambda_gsigma (DAMPE_bgo_nLayers, 0);
+        std::vector<double> fraclayer_best_lambda_gmean (DAMPE_bgo_nLayers, 0);
+        std::vector<double> fraclayer_best_lambda_gsigma (DAMPE_bgo_nLayers, 0);
 
         int rms_statistics = h_rmsLayer_gauss[bin_idx-1][0][0]->GetEntries();
         int fraclast_statistics = h_fracLayer_gauss[bin_idx-1][0][0]->GetEntries();
@@ -106,7 +110,9 @@ void studyGaussianizedTMVAvars(
                     h_rmsLayer_gauss, 
                     goodness_rms_layer, 
                     rms_best_lambda, 
-                    rms_best_lambda_idx, 
+                    rms_best_lambda_idx,
+                    rms_best_lambda_gmean,
+                    rms_best_lambda_gsigma, 
                     rms_lambda_values.start,
                     rms_lambda_values.step, 
                     bin_idx, 
@@ -121,6 +127,8 @@ void studyGaussianizedTMVAvars(
                     goodness_frac_layer, 
                     fraclayer_best_lambda, 
                     fraclayer_best_lambda_idx,
+                    fraclayer_best_lambda_gmean,
+                    fraclayer_best_lambda_gsigma,
                     elf_lambda_values.start,
                     elf_lambda_values.step,
                     bin_idx, 
