@@ -140,7 +140,7 @@ def buildHisto(opts: argparse.Namespace, files: list, pars: dict):
     '''
     
     rcParams.update({'figure.autolayout': True})
-    plt.plot(stats['timebins'], stats['evts'], label="all energy", color="dimgray")
+    plt.plot(stats['timebins'], stats['evts'], label="all energies", color="dimgray")
     plt.plot(stats['timebins'], stats['evts_20_100'], label="20 - 100 GeV", color="cornflowerblue")
     plt.plot(stats['timebins'], stats['evts_100_250'], label="100 - 250 GeV", color="darkorange")
     plt.plot(stats['timebins'], stats['evts_250_500'], label="250 - 500 GeV", color="forestgreen")
@@ -151,5 +151,5 @@ def buildHisto(opts: argparse.Namespace, files: list, pars: dict):
     plt.legend(bbox_to_anchor=(1.05, 0.5), loc='center left')
     plt.yscale('log')
     plt.ylim(10, 1e+6)
-    plt.ylabel("counts")
+    plt.ylabel("counts/day")
     plt.savefig(opts.output)
