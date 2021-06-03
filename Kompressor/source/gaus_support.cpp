@@ -20,6 +20,7 @@ void extract_lamda_info(
         auto xmin = input_histo[bin_idx-1][lambda_idx][layer]->GetXaxis()->GetXmin();
         auto xmax = input_histo[bin_idx-1][lambda_idx][layer]->GetXaxis()->GetXmax();
         std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "gaus", xmin, xmax);
+        fitfunc->SetNpx(10000);
         input_histo[bin_idx-1][lambda_idx][layer]->Fit("fitfunc", "QW");
         auto chi2 = fitfunc->GetChisquare();
         auto dof = fitfunc->GetNDF();
