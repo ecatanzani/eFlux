@@ -213,8 +213,8 @@ std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetRMSLayerHistos(
     const int DAMPE_bgo_nLayers)
 {
     int nbins = 1000;
-    double hmin = -100;
-    double hmax = 100;
+    double hmin = 0;
+    double hmax = 200;
     std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> h_rms_layer (energy_nbins);
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
@@ -242,7 +242,7 @@ std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetFracLayerHistos(
     const int DAMPE_bgo_nLayers)
 {
     int nbins = 1000;
-    double hmin = -100;
+    double hmin = 0;
     double hmax = 100;
     std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> h_frac_layer (energy_nbins);
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
