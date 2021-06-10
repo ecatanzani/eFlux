@@ -12,7 +12,6 @@
 
 #include "TH1D.h"
 #include "TChain.h"
-#include <ROOT/RDataFrame.hxx>
 
 extern void gaussianizeTMVAvars(
     std::shared_ptr<TChain> evtch,
@@ -47,31 +46,6 @@ extern void fitGaussianizedTMVAvars(
     const bool _VERBOSE,
     const unsigned int threads,
     const bool _mc);
-
-extern std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetRMSLayerHistos(
-    const int energy_nbins, 
-    const rms_lambdas lambda_values,
-    const int DAMPE_bgo_nLayers);
-
-extern std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetAutoRMSLayerHistos(
-    const int energy_nbins, 
-    const rms_lambdas lambda_values,
-    const int DAMPE_bgo_nLayers,
-    const std::vector<std::vector<std::vector<double>>> &rms_boundaries);
-
-extern std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetFracLayerHistos(
-    const int energy_nbins, 
-    const energylastfraction_lambdas lambda_values,
-    const int DAMPE_bgo_nLayers);
-
-extern std::vector<std::vector<std::vector<std::shared_ptr<TH1D>>>> GetHistos(
-    TFile* infile,
-    const int energy_nbins, 
-    const int lambda_values_num,
-    const double lambda_values_start,
-    const double lambda_values_step,
-    const int DAMPE_bgo_nLayers,
-    const std::string abs_path);
 
 extern void ComputeGoodness(std::vector<std::shared_ptr<TH1D>> h_rms);
 

@@ -1,4 +1,5 @@
 #include "gaussianize.h"
+#include "histos.h"
 
 #include <map>
 #include <cmath>

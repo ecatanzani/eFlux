@@ -28,6 +28,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -g  --gaussianize           .......... Gaussianize input TMVA variables");
 	opt.addUsage(" -s  --study-gaussianized    .......... Produce histos on input gaussianized TMVA variables");
 	opt.addUsage(" -f  --fit-gaussianized      .......... Fit gaussianized input TMVA variables");
+	opt.addUsage(" -l  --likelihood            .......... Build LogLikelihood profile");
 	opt.addUsage(" -p  --parallel              .......... <number_of_threads>                                  .......... Multithreading option");
 	
 
@@ -46,6 +47,7 @@ int main(int argc, char **argv)
 	opt.setFlag("gaussianize", 'g');
 	opt.setFlag("study-gaussianized", 's');
 	opt.setFlag("fit-gaussianized", 'f');
+	opt.setFlag("likelihood", 'l');
 	opt.setOption("parallel", 'p');
 
 	opt.processCommandArgs(argc, argv);
@@ -84,12 +86,14 @@ int main(int argc, char **argv)
 	}
 	if (opt.getValue("no-split") || opt.getValue('n'))
 		input_args.SetNSeType(opt.getValue('n'));
-	if (opt.getValue("gaussianize") || opt.getValue('g'))
-		input_args.gaussianize = opt.getValue('g');
-	if (opt.getValue("study-gaussianized") || opt.getValue('s'))
-		input_args.study_gaussianized = 	opt.getValue('s');
-	if (opt.getValue("fit-gaussianized") || opt.getValue('f'))
-		input_args.fit_gaussianized = 	opt.getValue('f');
+	if (opt.getFlag("gaussianize") || opt.getFlag('g'))
+		input_args.gaussianize = opt.getFlag('g');
+	if (opt.getFlag("study-gaussianized") || opt.getFlag('s'))
+		input_args.study_gaussianized = 	opt.getFlag('s');
+	if (opt.getFlag("fit-gaussianized") || opt.getFlag('f'))
+		input_args.fit_gaussianized = 	opt.getFlag('f');
+	if (opt.getFlag("likelihood") || opt.getFlag('l'))
+		input_args.loglikelihood = opt.getFlag('l');
 	if (opt.getValue("parallel") || opt.getValue('p'))
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 

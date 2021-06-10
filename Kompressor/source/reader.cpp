@@ -3,6 +3,7 @@
 #include "kompress.h"
 #include "list_parser.h"
 #include "gaussianize.h"
+#include "loglikelihood.h"
 
 #include "config.h"
 #include "energy_config.h"
@@ -11,13 +12,14 @@
 void reader(in_args input_args)
 {
     // Parse input file list
+    bool gaussianized = input_args.study_gaussianized || input_args.loglikelihood ? true : false;
     std::shared_ptr<parser> evt_parser;
     if (!input_args.fit_gaussianized)
         evt_parser = std::make_unique<parser>(
             input_args.input_list, 
             input_args.mc_flag, 
             input_args._VERBOSE,
-            input_args.study_gaussianized);
+            gaussianized);
     else
         evt_parser = std::make_unique<parser>(input_args.input_list);
     // Parse 'Collector' config file
@@ -82,6 +84,20 @@ void reader(in_args input_args)
         std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
         fitGaussianizedTMVAvars(
             evt_parser->GetSingleDataFile(),
+            _config,
+            _energy_config,
+            _lambda_config,
+            _entries,
+            input_args.output_path, 
+            input_args._VERBOSE,
+            input_args.threads,
+            input_args.mc_flag);
+    }
+    else if (input_args.loglikelihood)
+    {
+        std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
+        buildLogLikelihoodProfile(
+            evt_parser->GetEvtTree(),
             _config,
             _energy_config,
             _lambda_config,
