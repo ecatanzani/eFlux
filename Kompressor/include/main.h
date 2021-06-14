@@ -28,6 +28,7 @@ struct in_args
 	bool study_gaussianized = false;
 	bool fit_gaussianized = false;
 	bool loglikelihood = false;
+	unsigned int likelihood_energybin = 0;
 	unsigned int threads = 1;
 
 	void SetSeType(std::string set_name)

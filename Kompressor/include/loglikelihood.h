@@ -15,6 +15,7 @@ extern void buildLogLikelihoodProfile(
     std::shared_ptr<energy_config> _energy_config,
     std::shared_ptr<lambda_config> _lambda_config,
     const double _entries,
+    unsigned int focus_energybin,
     const std::string outputPath,
     const bool _VERBOSE,
     const unsigned int threads,

@@ -93,7 +93,10 @@ int main(int argc, char **argv)
 	if (opt.getFlag("fit-gaussianized") || opt.getFlag('f'))
 		input_args.fit_gaussianized = 	opt.getFlag('f');
 	if (opt.getFlag("likelihood") || opt.getFlag('l'))
+	{
 		input_args.loglikelihood = opt.getFlag('l');
+		input_args.likelihood_energybin = std::stoul(input_args.input_list.substr(input_args.input_list.find_last_of("_")+1, input_args.input_list.find_last_of(".txt")), nullptr, 0);
+	}
 	if (opt.getValue("parallel") || opt.getValue('p'))
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 

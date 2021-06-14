@@ -102,6 +102,7 @@ void reader(in_args input_args)
             _energy_config,
             _lambda_config,
             _entries,
+            input_args.likelihood_energybin,
             input_args.output_path, 
             input_args._VERBOSE,
             input_args.threads,
