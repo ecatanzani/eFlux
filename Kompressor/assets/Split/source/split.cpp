@@ -32,7 +32,7 @@ void split(in_args input_args)
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
         auto bin_filter = [bin_idx](int energy_bin) -> bool { return energy_bin == bin_idx; };
-        auto fname = input_args.output_path + std::string("energybin_") + std::to_string(bin_idx);
+        auto fname = input_args.output_path + std::string("energybin_") + std::to_string(bin_idx) + std::string(".root");
         _data_fr.Filter(bin_filter, {"energy_bin"}).Snapshot(evt_parser->GetEvtTree()->GetName(), fname.c_str());
     }
 }
