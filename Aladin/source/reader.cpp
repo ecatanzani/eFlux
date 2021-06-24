@@ -1,5 +1,5 @@
 #include "reader.h"
-
+#include "fit.h"
 #include "list_parser.h"
 #include "gaussianize.h"
 #include "loglikelihood.h"
@@ -11,9 +11,9 @@
 void reader(in_args input_args)
 {
     // Parse input file list
-    bool gaussianized = input_args.study_gaussianized || input_args.loglikelihood ? true : false;
+    bool gaussianized = input_args.loglikelihood ? true : false;
     std::shared_ptr<parser> evt_parser;
-    if (!input_args.fit_gaussianized)
+    if (!input_args.fit)
         evt_parser = std::make_unique<parser>(
             input_args.input_list, 
             input_args.mc_flag, 
@@ -53,91 +53,26 @@ void reader(in_args input_args)
             _energy_config,
             _lambda_config,
             evt_parser->GetEvtTree()->GetEntries(),
-            input_args.likelihood_energybin,
+            input_args.energybin,
             input_args.output_path, 
             input_args.regularize_tree_path,
             input_args.verbose,
             input_args.threads,
             input_args.mc_flag);
 
+    else if (input_args.fit)
+        fit(evt_parser->GetEvtTree(),
+            _config,
+            _energy_config,
+            _lambda_config,
+            evt_parser->GetEvtTree()->GetEntries(),
+            input_args.energybin,
+            input_args.output_path, 
+            input_args.regularize_tree_path,
+            input_args.verbose,
+            input_args.threads,
+            input_args.mc_flag);
 
-
-
-
-
-
-
-#if 0
     
-    
-    // Get chain entries
-    const double _entries = input_args.fit_gaussianized ? -999 : evt_parser->GetEvtTree()->GetEntries();
-    if (input_args.verbose)
-    {
-        _config->PrintActiveFilters();
-        _energy_config->PrintActiveFilters();
-        if (!input_args.fit_gaussianized) std::cout << "Total number of events: " << _entries;
-    }
-
-   
-    else if (input_args.gaussianize)
-    {
-        std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
-        gaussianizeTMVAvars(
-            evt_parser->GetEvtTree(),
-            _config,
-            _energy_config,
-            _lambda_config,
-            _entries,
-            input_args.output_path, 
-            input_args.verbose,
-            input_args.threads,
-            input_args.mc_flag,
-            input_args.fit_tree_path);
-    }
-    else if (input_args.study_gaussianized)
-    {
-        std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
-        studyGaussianizedTMVAvars(
-            evt_parser->GetEvtTree(),
-            _config,
-            _energy_config,
-            _lambda_config,
-            _entries,
-            input_args.output_path, 
-            input_args.verbose,
-            input_args.threads,
-            input_args.mc_flag);
-    }
-    else if (input_args.fit_gaussianized)
-    {
-        std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
-        fitGaussianizedTMVAvars(
-            evt_parser->GetSingleDataFile(),
-            _config,
-            _energy_config,
-            _lambda_config,
-            _entries,
-            input_args.output_path, 
-            input_args.verbose,
-            input_args.threads,
-            input_args.mc_flag);
-    }
-    else if (input_args.loglikelihood)
-    {
-        std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
-        buildLogLikelihoodProfile(
-            evt_parser->GetEvtTree(),
-            _config,
-            _energy_config,
-            _lambda_config,
-            _entries,
-            input_args.likelihood_energybin,
-            input_args.output_path, 
-            input_args.verbose,
-            input_args.threads,
-            input_args.mc_flag);
-    }
-#endif
 
 }

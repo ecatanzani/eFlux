@@ -21,24 +21,22 @@ struct in_args
 	// Tasks
 	bool mc_flag = false;
 	bool gaussianize = false;
-	bool study_gaussianized = false;
-	bool fit_gaussianized = false;
+	//bool study_gaussianized = false;
+	bool fit = false;
 	bool loglikelihood = false;
-	unsigned int likelihood_energybin = 0;
+	unsigned int energybin = 0;
 	unsigned int threads = 1;
 
 	const bool check_paths()
 	{	
-		if (loglikelihood)
-		{
-			if (!wd.empty() && !input_list.empty() && !output_path.empty()) return true;
-			else return false;
-		}
-		else
-		{
-			if (!wd.empty() && !input_list.empty() && !output_path.empty() && !regularize_tree_path.empty()) return true;
-			else return false;
-		}
+		bool status = false;
+		if (loglikelihood || fit)
+			if (!wd.empty() && !input_list.empty() && !output_path.empty()) 
+				status = true;
+		if (gaussianize)
+			if (!wd.empty() && !input_list.empty() && !output_path.empty() && !regularize_tree_path.empty()) 
+				status = true;
+		return status;
 	}
 };
 

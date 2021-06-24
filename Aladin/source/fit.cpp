@@ -1,5 +1,5 @@
 #include "DAMPE_geo_structure.h"
-#include "loglikelihood.h"
+#include "fit.h"
 
 #include <map>
 #include <vector>
@@ -8,9 +8,107 @@
 #include "TF1.h"
 #include "TMath.h"
 #include "TGraph.h"
+#include "TCanvas.h"
 #include <ROOT/RDataFrame.hxx>
 
-void buildLogLikelihoodProfile(
+inline void extract_layer_lambda(
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> &best_histos, 
+    std::vector<double> &best_lambda, 
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> in_gaus_histos,
+    const double lambda_start,
+    const double lambda_step,
+    const int lambda_num)
+{
+    int min_stats = 5;
+    std::vector<double> goodness (DAMPE_bgo_nLayers, 999);
+    for (int lambda_idx=0; lambda_idx<=lambda_num; ++lambda_idx)
+    {
+        for (unsigned int ly_idx=0; ly_idx<DAMPE_bgo_nLayers; ++ly_idx)
+        {
+            if (in_gaus_histos[lambda_idx][ly_idx]->GetEntries()>min_stats)
+            {
+                auto xmin = in_gaus_histos[lambda_idx][ly_idx]->GetXaxis()->GetXmin();
+                auto xmax = in_gaus_histos[lambda_idx][ly_idx]->GetXaxis()->GetXmax();
+                std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "gaus", xmin, xmax);
+                fitfunc->SetNpx(10000);
+                in_gaus_histos[lambda_idx][ly_idx]->Fit("fitfunc", "QW");
+                auto chi2 = fitfunc->GetChisquare();
+                auto dof = fitfunc->GetNDF();
+
+                if (dof)
+                {
+                    double tmp_goodness = chi2/dof;
+                    if (goodness[ly_idx]==999)
+                    {
+                        best_lambda[ly_idx] = lambda_start + lambda_idx*lambda_step;
+                        best_histos[ly_idx] = in_gaus_histos[lambda_idx][ly_idx];
+                        goodness[ly_idx] = tmp_goodness;
+                    }
+                    else
+                    {
+                        if (abs(tmp_goodness-1) < abs(goodness[ly_idx]-1))
+                        {
+                            best_lambda[ly_idx] = lambda_start + lambda_idx*lambda_step;
+                            best_histos[ly_idx] = in_gaus_histos[lambda_idx][ly_idx];
+                            goodness[ly_idx] = tmp_goodness;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+    
+}
+
+inline void extract_lambda(
+    ROOT::RDF::RResultPtr<TH1D> &best_histo, 
+    double &best_lambda, 
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> in_gaus_histos,
+    const double lambda_start,
+    const double lambda_step,
+    const int lambda_num)
+{
+    int min_stats = 5;
+    double goodness = 999;
+    for (int lambda_idx=0; lambda_idx<=lambda_num; ++lambda_idx)
+    {
+        if (in_gaus_histos[lambda_idx]->GetEntries()>min_stats)
+        {
+            auto xmin = in_gaus_histos[lambda_idx]->GetXaxis()->GetXmin();
+            auto xmax = in_gaus_histos[lambda_idx]->GetXaxis()->GetXmax();
+            std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "gaus", xmin, xmax);
+            fitfunc->SetNpx(10000);
+            in_gaus_histos[lambda_idx]->Fit("fitfunc", "QW");
+            auto chi2 = fitfunc->GetChisquare();
+            auto dof = fitfunc->GetNDF();
+
+            if (dof)
+            {
+                double tmp_goodness = chi2/dof;
+                if (goodness==999)
+                {
+                    best_lambda = lambda_start + lambda_idx*lambda_step;
+                    best_histo = in_gaus_histos[lambda_idx];
+                    goodness = tmp_goodness;
+                }
+                else
+                {
+                    if (abs(tmp_goodness-1) < abs(goodness-1))
+                    {
+                        best_lambda = lambda_start + lambda_idx*lambda_step;
+                        best_histo = in_gaus_histos[lambda_idx];
+                        goodness = tmp_goodness;
+                    }
+                }
+            }
+
+        } 
+    }
+    
+}
+
+void fit(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
     std::shared_ptr<energy_config> _energy_config,
@@ -23,6 +121,7 @@ void buildLogLikelihoodProfile(
     const unsigned int threads,
     const bool _mc)
 {
+
     ROOT::EnableImplicitMT(threads);
     ROOT::RDataFrame _data_fr(*evtch);
 
@@ -271,176 +370,80 @@ void buildLogLikelihoodProfile(
         h_fracLayer_ang_gauss_norm[l_idx]->GetXaxis()->SetTitle("ELFang_{#lambda}");
     }
 
-    if (verbose) std::cout << "\nBuilding RMS and ELF likelihood profiles...\n";
-    std::vector<std::vector<ROOT::RDF::RResultPtr<double>>> likeprofile_rms (DAMPE_bgo_nLayers, std::vector<ROOT::RDF::RResultPtr<double>> (rms_lambda_values.num+1));
-    std::vector<ROOT::RDF::RResultPtr<double>> likeprofile_sumrms (sumrms_lambda_values.num+1);
-    std::vector<std::vector<ROOT::RDF::RResultPtr<double>>> likeprofile_elf (DAMPE_bgo_nLayers, std::vector<ROOT::RDF::RResultPtr<double>> (elf_lambda_values.num+1));
-    std::vector<ROOT::RDF::RResultPtr<double>> likeprofile_elf_ang (elf_ang_lambda_values.num+1);
+    // Find best lambda values
+
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> best_rms_hist (DAMPE_bgo_nLayers);
+    ROOT::RDF::RResultPtr<TH1D> best_sumrmshist;
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> best_fraclayer_hist (DAMPE_bgo_nLayers);
+    ROOT::RDF::RResultPtr<TH1D> best_fraclast_ang_hist;
+
+    std::vector<double> best_rms_lambda (DAMPE_bgo_nLayers, 999);
+    double best_sumrms_lambda;
+    std::vector<double> best_fraclayer_lambda (DAMPE_bgo_nLayers, 999);
+    double best_fraclast_lambda;
     
-    for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
-    {   
-        lambda = rms_lambda_values.start + rms_lambda_values.step*l_idx; 
-        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-        {
-            auto map_filter = [lambda, l_idx, ly, &h_rmsLayer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
-            { 
-                auto new_val = map_gauss[lambda][ly];
-                auto hmean = h_rmsLayer_gauss[l_idx][ly]->GetMean();
-                auto hsigma = h_rmsLayer_gauss[l_idx][ly]->GetRMS();
-                new_val -= hmean>0 ? hmean : -hmean;
-                if (hsigma) new_val /= hsigma;
-                return new_val;
-            };
-            auto loglike = [l_idx, ly, &h_rmsLayer_gauss_norm](double value) -> double 
-            {
-                double pdf = TMath::Gaus(value, h_rmsLayer_gauss_norm[l_idx][ly]->GetMean(), h_rmsLayer_gauss_norm[l_idx][ly]->GetRMS(), true);
-                double loolikelihood = pdf>0 ? std::log(pdf) : 0;
-                return loolikelihood;
-            };
-            likeprofile_rms[ly][l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"rmsLayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
-        }
-    }
-
-    for (int l_idx=0; l_idx<=sumrms_lambda_values.num; ++l_idx)
-    {   
-        lambda = sumrms_lambda_values.start + sumrms_lambda_values.step*l_idx; 
-        auto map_filter = [lambda, l_idx, &h_sumrmsLayer_gauss](std::map<double, double> map_gauss) -> double 
-        { 
-            auto new_val = map_gauss[lambda];
-            auto hmean = h_sumrmsLayer_gauss[l_idx]->GetMean();
-            auto hsigma = h_sumrmsLayer_gauss[l_idx]->GetRMS();
-            new_val -= hmean>0 ? hmean : -hmean;
-            if (hsigma) new_val /= hsigma;
-            return new_val;
-        };
-        auto loglike = [l_idx, &h_sumrmsLayer_gauss_norm](double value) -> double 
-        {
-            double pdf = TMath::Gaus(value, h_sumrmsLayer_gauss_norm[l_idx]->GetMean(), h_sumrmsLayer_gauss_norm[l_idx]->GetRMS(), true);
-            double loolikelihood = pdf>0 ? std::log(pdf) : 0;
-            return loolikelihood;
-        };
-        likeprofile_sumrms[l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"sumrmsLayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
-    }
-
-    for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
-    {   
-        lambda = elf_lambda_values.start + elf_lambda_values.step*l_idx; 
-        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-        {
-            auto map_filter = [lambda, l_idx, ly, &h_fracLayer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
-            { 
-                auto new_val = map_gauss[lambda][ly];
-                auto hmean = h_fracLayer_gauss[l_idx][ly]->GetMean();
-                auto hsigma = h_fracLayer_gauss[l_idx][ly]->GetRMS();
-                new_val -= hmean>0 ? hmean : -hmean;
-                if (hsigma) new_val /= hsigma;
-                return new_val;
-            };
-            auto loglike = [l_idx, ly, &h_fracLayer_gauss_norm](double value) -> double 
-            {
-                double pdf = TMath::Gaus(value, h_fracLayer_gauss_norm[l_idx][ly]->GetMean(), h_fracLayer_gauss_norm[l_idx][ly]->GetRMS(), true);
-                double loolikelihood = pdf>0 ? std::log(pdf) : 0;
-                return loolikelihood;
-            };
-            likeprofile_elf[ly][l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
-        }
-    }
-
-    for (int l_idx=0; l_idx<=elf_ang_lambda_values.num; ++l_idx)
-    {   
-        lambda = elf_ang_lambda_values.start + elf_ang_lambda_values.step*l_idx; 
-        auto map_filter = [lambda, l_idx, &h_fracLayer_ang_gauss](std::map<double, double> map_gauss) -> double 
-        { 
-            auto new_val = map_gauss[lambda];
-            auto hmean = h_fracLayer_ang_gauss[l_idx]->GetMean();
-            auto hsigma = h_fracLayer_ang_gauss[l_idx]->GetRMS();
-            new_val -= hmean>0 ? hmean : -hmean;
-            if (hsigma) new_val /= hsigma;
-            return new_val;
-        };
-        auto loglike = [l_idx, &h_fracLayer_ang_gauss_norm](double value) -> double 
-        {
-            double pdf = TMath::Gaus(value, h_fracLayer_ang_gauss_norm[l_idx]->GetMean(), h_fracLayer_ang_gauss_norm[l_idx]->GetRMS(), true);
-            double loolikelihood = pdf>0 ? std::log(pdf) : 0;
-            return loolikelihood;
-        };
-        likeprofile_elf_ang[l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_ang_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
-    }
-
-    std::vector<std::vector<double>> flikeprofile_rms (DAMPE_bgo_nLayers, std::vector<double> (rms_lambda_values.num+1));
-    std::vector<double> flikeprofile_sumrms (rms_lambda_values.num+1);
-    std::vector<std::vector<double>> flikeprofile_elf (DAMPE_bgo_nLayers, std::vector<double> (elf_lambda_values.num+1));
-    std::vector<double> flikeprofile_elf_ang (elf_lambda_values.num+1);
-
-    for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
-        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-            flikeprofile_rms[ly][l_idx] = *likeprofile_rms[ly][l_idx];
+    extract_layer_lambda(
+        best_rms_hist, 
+        best_rms_lambda, 
+        h_rmsLayer_gauss_norm, 
+        rms_lambda_values.start, 
+        rms_lambda_values.step, 
+        rms_lambda_values.num);
     
-    for (int l_idx=0; l_idx<=sumrms_lambda_values.num; ++l_idx)
-        flikeprofile_sumrms[l_idx] = *likeprofile_sumrms[l_idx];
-        
-    for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
-        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-            flikeprofile_elf[ly][l_idx] = *likeprofile_elf[ly][l_idx];
+    extract_layer_lambda(
+        best_fraclayer_hist, 
+        best_fraclayer_lambda, 
+        h_fracLayer_gauss_norm, 
+        elf_lambda_values.start, 
+        elf_lambda_values.step, 
+        elf_lambda_values.num);
+
+    extract_lambda(
+        best_sumrmshist,
+        best_sumrms_lambda,
+        h_sumrmsLayer_gauss_norm,
+        sumrms_lambda_values.start,
+        sumrms_lambda_values.step,
+        sumrms_lambda_values.num);
+
+    extract_lambda(
+        best_fraclast_ang_hist,
+        best_fraclast_lambda,
+        h_fracLayer_ang_gauss_norm,
+        elf_ang_lambda_values.start,
+        elf_ang_lambda_values.step,
+        elf_ang_lambda_values.num);
+
+    std::unique_ptr<TCanvas> rms_bestfit = std::make_unique<TCanvas>("rms_bestfit", "RMS bestfit");
+    std::unique_ptr<TCanvas> sumrms_bestfit = std::make_unique<TCanvas>("sumrms_bestfit", "SumRMS bestfit");
+    std::unique_ptr<TCanvas> elf_bestfit = std::make_unique<TCanvas>("elf_bestfit", "ELF bestfit");
+    std::unique_ptr<TCanvas> ell_bestfit = std::make_unique<TCanvas>("ell_bestfit", "ELL bestfit");
+
+    output_file->mkdir("Canvas");
+    output_file->cd("Canvas");
     
-    for (int l_idx=0; l_idx<=elf_ang_lambda_values.num; ++l_idx)
-        flikeprofile_elf_ang[l_idx] = *likeprofile_elf_ang[l_idx];
-
-    // Build lambda vectors
-    std::vector<double> rms_lambdas (rms_lambda_values.num+1);
-    std::vector<double> sumrms_lambdas (rms_lambda_values.num+1);
-    std::vector<double> elf_lambdas (elf_lambda_values.num+1);
-    std::vector<double> elf_lambdas_ang (elf_lambda_values.num+1);
-
-    for (int lidx=0; lidx<=rms_lambda_values.num; ++lidx)
-        rms_lambdas[lidx] = rms_lambda_values.start + rms_lambda_values.step*lidx;
-    for (int lidx=0; lidx<=sumrms_lambda_values.num; ++lidx)
-        sumrms_lambdas[lidx] = sumrms_lambda_values.start + sumrms_lambda_values.step*lidx;
-    for (int lidx=0; lidx<=elf_lambda_values.num; ++lidx)
-        elf_lambdas[lidx] = elf_lambda_values.start + elf_lambda_values.step*lidx;
-    for (int lidx=0; lidx<=elf_ang_lambda_values.num; ++lidx)
-        elf_lambdas_ang[lidx] = elf_ang_lambda_values.start + elf_ang_lambda_values.step*lidx;
-
-    // Build TGraphs
-    std::vector<std::shared_ptr<TGraph>> rms_lambda_likelihood_profile (DAMPE_bgo_nLayers);
-    std::shared_ptr<TGraph> sumrms_lambda_likelihood_profile;
-    std::vector<std::shared_ptr<TGraph>> elf_lambda_likelihood_profile (DAMPE_bgo_nLayers);
-    std::shared_ptr<TGraph> elf_ang_lambda_likelihood_profile;
-
+    rms_bestfit->Divide(7,2);
     for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
     {
-        rms_lambda_likelihood_profile[ly] = std::make_shared<TGraph>(rms_lambda_values.num+1, &rms_lambdas[0], &flikeprofile_rms[ly][0]);
-        elf_lambda_likelihood_profile[ly] = std::make_shared<TGraph>(elf_lambda_values.num+1, &elf_lambdas[0], &flikeprofile_elf[ly][0]);
-        std::string rms_graph_name = std::string("gr_rms_layer_") + std::to_string(ly);
-        std::string elf_graph_name = std::string("gr_elf_layer_") + std::to_string(ly);
-        rms_lambda_likelihood_profile[ly]->SetName(rms_graph_name.c_str());
-        elf_lambda_likelihood_profile[ly]->SetName(elf_graph_name.c_str());
+        rms_bestfit->cd(ly+1);
+        best_rms_hist[ly]->Draw();
     }
+    rms_bestfit->cd(0);
+    rms_bestfit->Write();
 
-    sumrms_lambda_likelihood_profile = std::make_shared<TGraph>(sumrms_lambda_values.num+1, &sumrms_lambdas[0], &flikeprofile_sumrms[0]);
-    elf_ang_lambda_likelihood_profile = std::make_shared<TGraph>(elf_ang_lambda_values.num+1, &elf_lambdas_ang[0], &flikeprofile_elf_ang[0]);
-    sumrms_lambda_likelihood_profile->SetName("gr_sumrms");
-    elf_ang_lambda_likelihood_profile->SetName("gr_elf_ang");
+    sumrms_bestfit->cd();
+    best_sumrmshist->Write();
 
-    output_file->mkdir("LProfiles/RMS");
-    output_file->cd("LProfiles/RMS");
+    elf_bestfit->Divide(7,2);
     for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-        rms_lambda_likelihood_profile[ly]->Write();
-    
-    output_file->mkdir("LProfiles/SumRMS");
-    output_file->cd("LProfiles/SumRMS");
-    sumrms_lambda_likelihood_profile->Write();
+    {
+        elf_bestfit->cd(ly+1);
+        best_fraclayer_hist[ly]->Draw();
+    }
+    elf_bestfit->cd(0);
+    elf_bestfit->Write();
 
-    output_file->mkdir("LProfiles/ELF");
-    output_file->cd("LProfiles/ELF");
-    for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-        elf_lambda_likelihood_profile[ly]->Write();
-    
-    output_file->mkdir("LProfiles/ELFang");
-    output_file->cd("LProfiles/ELFang");
-    elf_ang_lambda_likelihood_profile->Write();
+    ell_bestfit->cd();
+    best_fraclast_ang_hist->Write();
 
-    output_file->Close();   
-
-    if (verbose)  std::cout << "\n\nOutput file has been written... [" << outputPath << "]\n";
 }
