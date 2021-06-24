@@ -169,7 +169,7 @@ void fit(
         for (int ly=0; ly < DAMPE_bgo_nLayers; ++ly)
         {   
             auto map_filter = [lambda, ly](std::map<double, std::vector<double>> map_gauss) -> double { return map_gauss[lambda][ly]; };
-            h_rmslayer_gauss[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"rmsLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+            h_rmslayer_gauss[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"rmslayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
         }
     }
 
@@ -177,7 +177,7 @@ void fit(
     {   
         lambda = sumrms_lambda_values.start + sumrms_lambda_values.step*l_idx;   
         auto map_filter = [lambda](std::map<double, double> map_gauss) -> double { return map_gauss[lambda]; };
-        h_sumrmslayer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"sumrmsLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+        h_sumrmslayer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"sumrmslayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
     }
 
     for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
@@ -186,7 +186,7 @@ void fit(
         for (int ly=0; ly < DAMPE_bgo_nLayers; ++ly)
         {
             auto map_filter = [lambda, ly](std::map<double, std::vector<double>> map_gauss) -> double { return map_gauss[lambda][ly]; };
-            h_energyfrac_layer_gauss[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+            h_energyfrac_layer_gauss[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fraclayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
         }
     }
 
@@ -194,7 +194,7 @@ void fit(
     {   
         lambda = ell_lambda_values.start + ell_lambda_values.step*l_idx; 
         auto map_filter = [lambda](std::map<double, double> map_gauss) -> double { return map_gauss[lambda]; };
-        h_energyfrac_last_layer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_ang_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+        h_energyfrac_last_layer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fraclastlayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
     }
     
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/RMS")).c_str());
@@ -269,7 +269,7 @@ void fit(
             auto h_name = std::string("h_rms_norm_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);
             auto h_title = std::string("Normalized RMS - #lambda ") + str_lambda + std::string(" - layer ") + std::to_string(ly);
             h_rmslayer_gauss_norm[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"})
-                                                        .Define("mapval", map_filter, {"rmsLayer_gauss"})
+                                                        .Define("mapval", map_filter, {"rmslayer_gauss"})
                                                         .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
         }
     }
@@ -290,7 +290,7 @@ void fit(
         auto h_name = std::string("h_sumrms_norm_lambda_") + str_lambda;
         auto h_title = std::string("Normalized SumRMS - #lambda ") + str_lambda;
         h_sumrmslayer_gauss_norm[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"})
-                                                    .Define("mapval", map_filter, {"sumrmsLayer_gauss"})
+                                                    .Define("mapval", map_filter, {"sumrmslayer_gauss"})
                                                     .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
     }
 
@@ -312,7 +312,7 @@ void fit(
             auto h_name = std::string("h_fraclayer_norm_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);
             auto h_title = std::string("Normalized ELF - #lambda ") + str_lambda + std::string(" - layer ") + std::to_string(ly);
             h_energyfrac_layer_gauss_norm[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"})
-                                                        .Define("mapval", map_filter, {"fracLayer_gauss"})
+                                                        .Define("mapval", map_filter, {"fraclayer_gauss"})
                                                         .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
         }
     }
@@ -333,7 +333,7 @@ void fit(
         auto h_name = std::string("h_fraclayer_ang_norm_lambda_") + str_lambda;
         auto h_title = std::string("Normalized ELFang - #lambda ") + str_lambda;
         h_energyfrac_last_layer_gauss_norm[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"})
-                                                    .Define("mapval", map_filter, {"fracLayer_ang_gauss"})
+                                                    .Define("mapval", map_filter, {"fraclastlayer_gauss"})
                                                     .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
     }
     
