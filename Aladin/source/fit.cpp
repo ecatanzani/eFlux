@@ -131,7 +131,7 @@ void fit(
     auto rms_lambda_values = _lambda_config->GetRMSLambdaStruct();
     auto sumrms_lambda_values = _lambda_config->GetSumRMSLambdaStruct();
     auto elf_lambda_values = _lambda_config->GetELFLambdaStruct();
-    auto elf_ang_lambda_values = _lambda_config->GetELFAngLambdaStruct();
+    auto ell_lambda_values = _lambda_config->GetELFAngLambdaStruct();
 
     if (verbose)
     {   
@@ -153,12 +153,12 @@ void fit(
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>  h_rmslayer_gauss (rms_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_sumrmslayer_gauss (sumrms_lambda_values.num+1);
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>  h_energyfrac_layer_gauss (elf_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_energyfrac_last_layer_gauss (elf_ang_lambda_values.num+1);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_energyfrac_last_layer_gauss (ell_lambda_values.num+1);
 
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_rmslayer_gauss_norm (rms_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_sumrmslayer_gauss_norm (sumrms_lambda_values.num+1);
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_energyfrac_layer_gauss_norm (elf_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_energyfrac_last_layer_gauss_norm (elf_ang_lambda_values.num+1);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_energyfrac_last_layer_gauss_norm (ell_lambda_values.num+1);
     
     double lambda;
     auto bin_filter = [focus_energybin](int energy_bin) -> bool { return energy_bin == (int)focus_energybin; };
@@ -190,9 +190,9 @@ void fit(
         }
     }
 
-    for (int l_idx=0; l_idx<=elf_ang_lambda_values.num; ++l_idx)
+    for (int l_idx=0; l_idx<=ell_lambda_values.num; ++l_idx)
     {   
-        lambda = elf_ang_lambda_values.start + elf_ang_lambda_values.step*l_idx; 
+        lambda = ell_lambda_values.start + ell_lambda_values.step*l_idx; 
         auto map_filter = [lambda](std::map<double, double> map_gauss) -> double { return map_gauss[lambda]; };
         h_energyfrac_last_layer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_ang_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
     }
@@ -241,9 +241,9 @@ void fit(
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELL")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELL")).c_str());
-    for (int l_idx=0; l_idx<=elf_ang_lambda_values.num; ++l_idx)
+    for (int l_idx=0; l_idx<=ell_lambda_values.num; ++l_idx)
     {
-        lambda = elf_ang_lambda_values.start + elf_ang_lambda_values.step*l_idx;
+        lambda = ell_lambda_values.start + ell_lambda_values.step*l_idx;
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
         auto h_name = std::string("h_fraclayer_ang_lambda_") + str_lambda; 
         h_energyfrac_last_layer_gauss[l_idx]->SetName(h_name.c_str());
@@ -317,9 +317,9 @@ void fit(
         }
     }
 
-    for (int l_idx=0; l_idx<=elf_ang_lambda_values.num; ++l_idx)
+    for (int l_idx=0; l_idx<=ell_lambda_values.num; ++l_idx)
     {
-        lambda = elf_ang_lambda_values.start + elf_ang_lambda_values.step*l_idx;
+        lambda = ell_lambda_values.start + ell_lambda_values.step*l_idx;
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
         auto map_filter = [lambda, l_idx, &h_energyfrac_last_layer_gauss](std::map<double, double> map_gauss) -> double 
         { 
@@ -365,7 +365,7 @@ void fit(
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELL_norm")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELL_norm")).c_str());
-    for (int l_idx=0; l_idx<=elf_ang_lambda_values.num; ++l_idx)
+    for (int l_idx=0; l_idx<=ell_lambda_values.num; ++l_idx)
     {
         h_energyfrac_last_layer_gauss_norm[l_idx]->Write();
         h_energyfrac_last_layer_gauss_norm[l_idx]->GetXaxis()->SetTitle("ELL_{#lambda}");
@@ -410,9 +410,9 @@ void fit(
         best_fraclast_ang_hist,
         best_fraclast_lambda,
         h_energyfrac_last_layer_gauss_norm,
-        elf_ang_lambda_values.start,
-        elf_ang_lambda_values.step,
-        elf_ang_lambda_values.num);
+        ell_lambda_values.start,
+        ell_lambda_values.step,
+        ell_lambda_values.num);
 
     std::unique_ptr<TCanvas> rms_bestfit = std::make_unique<TCanvas>("rms_bestfit", "RMS bestfit");
     std::unique_ptr<TCanvas> sumrms_bestfit = std::make_unique<TCanvas>("sumrms_bestfit", "SumRMS bestfit");
