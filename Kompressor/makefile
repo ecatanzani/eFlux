@@ -14,8 +14,7 @@ endif
 
 #dependencie
 DIPS_INCLUDE = $(shell root-config --incdir)
-DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs) 
-DYLIB = $(TOP)/dylib
+DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
 
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
@@ -50,7 +49,7 @@ LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
 	CC_FLAGS += -I$(DIPS_INCLUDE) -I$(ANYOPT_INC)
-	LDFLAGS += $(DIPS_LIBS) -L$(DYLIB) -lmapdict
+	LDFLAGS += $(DIPS_LIBS)
 endif
 
 ####################################################
