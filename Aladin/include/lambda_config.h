@@ -16,7 +16,7 @@ struct rms_lambdas
     double step = 1;
 };
 
-struct energylastfraction_lambdas
+struct elf_lambdas
 {
     double start = 0;
     double end = 0;
@@ -32,7 +32,7 @@ struct sumrms_lambdas
     double step = 1;
 };
 
-struct energylastfraction_ang_lambdas
+struct ell_lambdas
 {
     double start = 0;
     double end = 0;
@@ -48,8 +48,8 @@ class lambda_config
         void PrintLambdaSettings();
         const rms_lambdas GetRMSLambdaStruct();
         const sumrms_lambdas GetSumRMSLambdaStruct();
-        const energylastfraction_lambdas GetELFLambdaStruct();
-        const energylastfraction_ang_lambdas GetELFAngLambdaStruct();
+        const elf_lambdas GetELFLambdaStruct();
+        const ell_lambdas GetELFAngLambdaStruct();
     private:
         std::string parse_config_file(
             const std::string wd,
@@ -57,8 +57,8 @@ class lambda_config
         void get_config_info(const std::string parsed_config);
         rms_lambdas rms_lambda_info;
         sumrms_lambdas sumrms_lambda_info;
-        energylastfraction_lambdas elf_lambda_info;
-        energylastfraction_ang_lambdas elf_ang_lambda_info;
+        elf_lambdas elf_lambda_info;
+        ell_lambdas ell_lambda_info;
 };
 
 #endif

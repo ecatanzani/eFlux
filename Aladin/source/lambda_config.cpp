@@ -74,7 +74,7 @@ void lambda_config::get_config_info(const std::string parsed_config)
 			sumrms_lambda_info.step = stod(tmp_str, &sz);
 		}
 
-		if (!strcmp(tmp_str.c_str(), "EnergyLastFraction_lambdas"))
+		if (!strcmp(tmp_str.c_str(), "ELF_lambdas"))
 		{
 			while(strcmp(tmp_str.c_str(), "start_value"))
 				input_stream >> tmp_str;
@@ -94,24 +94,24 @@ void lambda_config::get_config_info(const std::string parsed_config)
 			elf_lambda_info.step = stod(tmp_str, &sz);
 		}
 
-		if (!strcmp(tmp_str.c_str(), "EnergyLastFraction_ang_lambdas"))
+		if (!strcmp(tmp_str.c_str(), "ELL_lambdas"))
 		{
 			while(strcmp(tmp_str.c_str(), "start_value"))
 				input_stream >> tmp_str;
 			input_stream >> tmp_str;
-			elf_ang_lambda_info.start = stod(tmp_str, &sz);
+			ell_lambda_info.start = stod(tmp_str, &sz);
 			while(strcmp(tmp_str.c_str(), "end_value"))
 				input_stream >> tmp_str;
 			input_stream >> tmp_str;
-			elf_ang_lambda_info.end = stod(tmp_str, &sz);
+			ell_lambda_info.end = stod(tmp_str, &sz);
 			while(strcmp(tmp_str.c_str(), "number_of_elements"))
 				input_stream >> tmp_str;
 			input_stream >> tmp_str;
-			elf_ang_lambda_info.num = stoi(tmp_str, &sz);
+			ell_lambda_info.num = stoi(tmp_str, &sz);
 			while(strcmp(tmp_str.c_str(), "step"))
 				input_stream >> tmp_str;
 			input_stream >> tmp_str;
-			elf_ang_lambda_info.step = stod(tmp_str, &sz);
+			ell_lambda_info.step = stod(tmp_str, &sz);
 		}
 		
 	}
@@ -127,14 +127,14 @@ const sumrms_lambdas lambda_config::GetSumRMSLambdaStruct()
 	return sumrms_lambda_info;
 }
 
-const energylastfraction_lambdas lambda_config::GetELFLambdaStruct()
+const elf_lambdas lambda_config::GetELFLambdaStruct()
 {
     return elf_lambda_info;
 }
 
-const energylastfraction_ang_lambdas lambda_config::GetELFAngLambdaStruct()
+const ell_lambdas lambda_config::GetELFAngLambdaStruct()
 {
-	return elf_ang_lambda_info;
+	return ell_lambda_info;
 }
 
 void lambda_config::PrintLambdaSettings()
@@ -160,10 +160,10 @@ void lambda_config::PrintLambdaSettings()
 	std::cout << "\nLambda step: [" << elf_lambda_info.step << "]\n";
 
 	std::cout << "\n*** ELF-ANG ***\n";
-    std::cout << "\nLambda START value: [" << elf_ang_lambda_info.start << "]";
-    std::cout << "\nLambda END value: [" << elf_ang_lambda_info.end << "]";
-    std::cout << "\nLambda number of values: [" << elf_ang_lambda_info.num << "]";
-	std::cout << "\nLambda step: [" << elf_ang_lambda_info.step << "]";
+    std::cout << "\nLambda START value: [" << ell_lambda_info.start << "]";
+    std::cout << "\nLambda END value: [" << ell_lambda_info.end << "]";
+    std::cout << "\nLambda number of values: [" << ell_lambda_info.num << "]";
+	std::cout << "\nLambda step: [" << ell_lambda_info.step << "]";
 	
     std::cout << "\n\n******************************\n\n";
 }
