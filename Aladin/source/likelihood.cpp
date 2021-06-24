@@ -50,15 +50,15 @@ void buildLogLikelihoodProfile(
     }
 
     if (verbose) std::cout << "\nBuilding RMS and LFS distributions..." << std::endl;
-    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>  h_rmsLayer_gauss (rms_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_sumrmsLayer_gauss (sumrms_lambda_values.num+1);
-    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>  h_fracLayer_gauss (elf_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_fracLayer_ang_gauss (elf_ang_lambda_values.num+1);
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>  h_rmslayer_gauss (rms_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_sumrmslayer_gauss (sumrms_lambda_values.num+1);
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>  h_energyfrac_layer_gauss (elf_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_energyfrac_last_layer_gauss (elf_ang_lambda_values.num+1);
 
-    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_rmsLayer_gauss_norm (rms_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_sumrmsLayer_gauss_norm (sumrms_lambda_values.num+1);
-    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_fracLayer_gauss_norm (elf_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_fracLayer_ang_gauss_norm (elf_ang_lambda_values.num+1);
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_rmslayer_gauss_norm (rms_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_sumrmslayer_gauss_norm (sumrms_lambda_values.num+1);
+    std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_energyfrac_layer_gauss_norm (elf_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_energyfrac_last_layer_gauss_norm (elf_ang_lambda_values.num+1);
     
     double lambda;
     auto bin_filter = [focus_energybin](int energy_bin) -> bool { return energy_bin == (int)focus_energybin; };
@@ -69,7 +69,7 @@ void buildLogLikelihoodProfile(
         for (int ly=0; ly < DAMPE_bgo_nLayers; ++ly)
         {   
             auto map_filter = [lambda, ly](std::map<double, std::vector<double>> map_gauss) -> double { return map_gauss[lambda][ly]; };
-            h_rmsLayer_gauss[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"rmsLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+            h_rmslayer_gauss[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"rmsLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
         }
     }
 
@@ -77,7 +77,7 @@ void buildLogLikelihoodProfile(
     {   
         lambda = sumrms_lambda_values.start + sumrms_lambda_values.step*l_idx;   
         auto map_filter = [lambda](std::map<double, double> map_gauss) -> double { return map_gauss[lambda]; };
-        h_sumrmsLayer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"sumrmsLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+        h_sumrmslayer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"sumrmsLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
     }
 
     for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
@@ -86,7 +86,7 @@ void buildLogLikelihoodProfile(
         for (int ly=0; ly < DAMPE_bgo_nLayers; ++ly)
         {
             auto map_filter = [lambda, ly](std::map<double, std::vector<double>> map_gauss) -> double { return map_gauss[lambda][ly]; };
-            h_fracLayer_gauss[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+            h_energyfrac_layer_gauss[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
         }
     }
 
@@ -94,7 +94,7 @@ void buildLogLikelihoodProfile(
     {   
         lambda = elf_ang_lambda_values.start + elf_ang_lambda_values.step*l_idx; 
         auto map_filter = [lambda](std::map<double, double> map_gauss) -> double { return map_gauss[lambda]; };
-        h_fracLayer_ang_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_ang_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+        h_energyfrac_last_layer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fracLayer_ang_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
     }
     
     output_file->mkdir("RMS");
@@ -106,9 +106,9 @@ void buildLogLikelihoodProfile(
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
             auto h_name = std::string("h_rms_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);            
-            h_rmsLayer_gauss[l_idx][ly]->SetName(h_name.c_str());
-            h_rmsLayer_gauss[l_idx][ly]->GetXaxis()->SetTitle("RMS_{#lambda}");
-            h_rmsLayer_gauss[l_idx][ly]->Write();
+            h_rmslayer_gauss[l_idx][ly]->SetName(h_name.c_str());
+            h_rmslayer_gauss[l_idx][ly]->GetXaxis()->SetTitle("RMS_{#lambda}");
+            h_rmslayer_gauss[l_idx][ly]->Write();
         }
     }
 
@@ -119,9 +119,9 @@ void buildLogLikelihoodProfile(
         lambda = sumrms_lambda_values.start + sumrms_lambda_values.step*l_idx;
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
         auto h_name = std::string("h_sumrms_lambda_") + str_lambda;            
-        h_sumrmsLayer_gauss[l_idx]->SetName(h_name.c_str());
-        h_sumrmsLayer_gauss[l_idx]->GetXaxis()->SetTitle("SumRMS_{#lambda}");
-        h_sumrmsLayer_gauss[l_idx]->Write();
+        h_sumrmslayer_gauss[l_idx]->SetName(h_name.c_str());
+        h_sumrmslayer_gauss[l_idx]->GetXaxis()->SetTitle("SumRMS_{#lambda}");
+        h_sumrmslayer_gauss[l_idx]->Write();
     }
     
     output_file->mkdir("ELF");
@@ -133,9 +133,9 @@ void buildLogLikelihoodProfile(
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
             auto h_name = std::string("h_fraclayer_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly); 
-            h_fracLayer_gauss[l_idx][ly]->SetName(h_name.c_str());
-            h_fracLayer_gauss[l_idx][ly]->GetXaxis()->SetTitle("ELF_{#lambda}");
-            h_fracLayer_gauss[l_idx][ly]->Write();
+            h_energyfrac_layer_gauss[l_idx][ly]->SetName(h_name.c_str());
+            h_energyfrac_layer_gauss[l_idx][ly]->GetXaxis()->SetTitle("ELF_{#lambda}");
+            h_energyfrac_layer_gauss[l_idx][ly]->Write();
         }
     }
 
@@ -146,9 +146,9 @@ void buildLogLikelihoodProfile(
         lambda = elf_ang_lambda_values.start + elf_ang_lambda_values.step*l_idx;
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
         auto h_name = std::string("h_fraclayer_ang_lambda_") + str_lambda; 
-        h_fracLayer_ang_gauss[l_idx]->SetName(h_name.c_str());
-        h_fracLayer_ang_gauss[l_idx]->GetXaxis()->SetTitle("ELFang_{#lambda}");
-        h_fracLayer_ang_gauss[l_idx]->Write();
+        h_energyfrac_last_layer_gauss[l_idx]->SetName(h_name.c_str());
+        h_energyfrac_last_layer_gauss[l_idx]->GetXaxis()->SetTitle("ELFang_{#lambda}");
+        h_energyfrac_last_layer_gauss[l_idx]->Write();
     }
 
     for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
@@ -157,18 +157,18 @@ void buildLogLikelihoodProfile(
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
         for (int ly=0; ly < DAMPE_bgo_nLayers; ++ly)
         {   
-            auto map_filter = [lambda, l_idx, ly, &h_rmsLayer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
+            auto map_filter = [lambda, l_idx, ly, &h_rmslayer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
             { 
                 auto new_val = map_gauss[lambda][ly];
-                auto hmean = h_rmsLayer_gauss[l_idx][ly]->GetMean();
-                auto hsigma = h_rmsLayer_gauss[l_idx][ly]->GetRMS();
+                auto hmean = h_rmslayer_gauss[l_idx][ly]->GetMean();
+                auto hsigma = h_rmslayer_gauss[l_idx][ly]->GetRMS();
                 new_val -= hmean>0 ? hmean : -hmean;
                 if (hsigma) new_val /= hsigma;
                 return new_val;
             };
             auto h_name = std::string("h_rms_norm_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);
             auto h_title = std::string("Normalized RMS - #lambda ") + str_lambda + std::string(" - layer ") + std::to_string(ly);
-            h_rmsLayer_gauss_norm[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"})
+            h_rmslayer_gauss_norm[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"})
                                                         .Define("mapval", map_filter, {"rmsLayer_gauss"})
                                                         .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
         }
@@ -178,18 +178,18 @@ void buildLogLikelihoodProfile(
     {
         lambda = sumrms_lambda_values.start + sumrms_lambda_values.step*l_idx;
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
-        auto map_filter = [lambda, l_idx, &h_sumrmsLayer_gauss](std::map<double, double> map_gauss) -> double 
+        auto map_filter = [lambda, l_idx, &h_sumrmslayer_gauss](std::map<double, double> map_gauss) -> double 
         { 
             auto new_val = map_gauss[lambda];
-            auto hmean = h_sumrmsLayer_gauss[l_idx]->GetMean();
-            auto hsigma = h_sumrmsLayer_gauss[l_idx]->GetRMS();
+            auto hmean = h_sumrmslayer_gauss[l_idx]->GetMean();
+            auto hsigma = h_sumrmslayer_gauss[l_idx]->GetRMS();
             new_val -= hmean>0 ? hmean : -hmean;
             if (hsigma) new_val /= hsigma;
             return new_val;
         };
         auto h_name = std::string("h_sumrms_norm_lambda_") + str_lambda;
         auto h_title = std::string("Normalized SumRMS - #lambda ") + str_lambda;
-        h_sumrmsLayer_gauss_norm[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"})
+        h_sumrmslayer_gauss_norm[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"})
                                                     .Define("mapval", map_filter, {"sumrmsLayer_gauss"})
                                                     .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
     }
@@ -200,18 +200,18 @@ void buildLogLikelihoodProfile(
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
         for (int ly=0; ly < DAMPE_bgo_nLayers; ++ly)
         {   
-            auto map_filter = [lambda, l_idx, ly, &h_fracLayer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
+            auto map_filter = [lambda, l_idx, ly, &h_energyfrac_layer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
             { 
                 auto new_val = map_gauss[lambda][ly];
-                auto hmean = h_fracLayer_gauss[l_idx][ly]->GetMean();
-                auto hsigma = h_fracLayer_gauss[l_idx][ly]->GetRMS();
+                auto hmean = h_energyfrac_layer_gauss[l_idx][ly]->GetMean();
+                auto hsigma = h_energyfrac_layer_gauss[l_idx][ly]->GetRMS();
                 new_val -= hmean>0 ? hmean : -hmean;
                 if (hsigma) new_val /= hsigma;
                 return new_val;
             };
             auto h_name = std::string("h_fraclayer_norm_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);
             auto h_title = std::string("Normalized ELF - #lambda ") + str_lambda + std::string(" - layer ") + std::to_string(ly);
-            h_fracLayer_gauss_norm[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"})
+            h_energyfrac_layer_gauss_norm[l_idx][ly] = _data_fr.Filter(bin_filter, {"energy_bin"})
                                                         .Define("mapval", map_filter, {"fracLayer_gauss"})
                                                         .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
         }
@@ -221,18 +221,18 @@ void buildLogLikelihoodProfile(
     {
         lambda = elf_ang_lambda_values.start + elf_ang_lambda_values.step*l_idx;
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
-        auto map_filter = [lambda, l_idx, &h_fracLayer_ang_gauss](std::map<double, double> map_gauss) -> double 
+        auto map_filter = [lambda, l_idx, &h_energyfrac_last_layer_gauss](std::map<double, double> map_gauss) -> double 
         { 
             auto new_val = map_gauss[lambda];
-            auto hmean = h_fracLayer_ang_gauss[l_idx]->GetMean();
-            auto hsigma = h_fracLayer_ang_gauss[l_idx]->GetRMS();
+            auto hmean = h_energyfrac_last_layer_gauss[l_idx]->GetMean();
+            auto hsigma = h_energyfrac_last_layer_gauss[l_idx]->GetRMS();
             new_val -= hmean>0 ? hmean : -hmean;
             if (hsigma) new_val /= hsigma;
             return new_val;
         };
         auto h_name = std::string("h_fraclayer_ang_norm_lambda_") + str_lambda;
         auto h_title = std::string("Normalized ELFang - #lambda ") + str_lambda;
-        h_fracLayer_ang_gauss_norm[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"})
+        h_energyfrac_last_layer_gauss_norm[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"})
                                                     .Define("mapval", map_filter, {"fracLayer_ang_gauss"})
                                                     .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
     }
@@ -242,16 +242,16 @@ void buildLogLikelihoodProfile(
     for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
-            h_rmsLayer_gauss_norm[l_idx][ly]->Write();
-            h_rmsLayer_gauss_norm[l_idx][ly]->GetXaxis()->SetTitle("RMS_{#lambda}");
+            h_rmslayer_gauss_norm[l_idx][ly]->Write();
+            h_rmslayer_gauss_norm[l_idx][ly]->GetXaxis()->SetTitle("RMS_{#lambda}");
         }
     
     output_file->mkdir("SumRMS_norm");
     output_file->cd("SumRMS_norm");
     for (int l_idx=0; l_idx<=sumrms_lambda_values.num; ++l_idx)
     {
-        h_sumrmsLayer_gauss_norm[l_idx]->Write();
-        h_sumrmsLayer_gauss_norm[l_idx]->GetXaxis()->SetTitle("SumRMS_{#lambda}");
+        h_sumrmslayer_gauss_norm[l_idx]->Write();
+        h_sumrmslayer_gauss_norm[l_idx]->GetXaxis()->SetTitle("SumRMS_{#lambda}");
     }
 
     output_file->mkdir("ELF_norm");
@@ -259,16 +259,16 @@ void buildLogLikelihoodProfile(
     for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
-            h_fracLayer_gauss_norm[l_idx][ly]->Write();
-            h_fracLayer_gauss_norm[l_idx][ly]->GetXaxis()->SetTitle("ELF_{#lambda}");
+            h_energyfrac_layer_gauss_norm[l_idx][ly]->Write();
+            h_energyfrac_layer_gauss_norm[l_idx][ly]->GetXaxis()->SetTitle("ELF_{#lambda}");
         }
 
     output_file->mkdir("ELFang_norm");
     output_file->cd("ELFang_norm");
     for (int l_idx=0; l_idx<=elf_ang_lambda_values.num; ++l_idx)
     {
-        h_fracLayer_ang_gauss_norm[l_idx]->Write();
-        h_fracLayer_ang_gauss_norm[l_idx]->GetXaxis()->SetTitle("ELFang_{#lambda}");
+        h_energyfrac_last_layer_gauss_norm[l_idx]->Write();
+        h_energyfrac_last_layer_gauss_norm[l_idx]->GetXaxis()->SetTitle("ELFang_{#lambda}");
     }
 
     if (verbose) std::cout << "\nBuilding RMS and ELF likelihood profiles...\n";
@@ -282,18 +282,18 @@ void buildLogLikelihoodProfile(
         lambda = rms_lambda_values.start + rms_lambda_values.step*l_idx; 
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
-            auto map_filter = [lambda, l_idx, ly, &h_rmsLayer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
+            auto map_filter = [lambda, l_idx, ly, &h_rmslayer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
             { 
                 auto new_val = map_gauss[lambda][ly];
-                auto hmean = h_rmsLayer_gauss[l_idx][ly]->GetMean();
-                auto hsigma = h_rmsLayer_gauss[l_idx][ly]->GetRMS();
+                auto hmean = h_rmslayer_gauss[l_idx][ly]->GetMean();
+                auto hsigma = h_rmslayer_gauss[l_idx][ly]->GetRMS();
                 new_val -= hmean>0 ? hmean : -hmean;
                 if (hsigma) new_val /= hsigma;
                 return new_val;
             };
-            auto loglike = [l_idx, ly, &h_rmsLayer_gauss_norm](double value) -> double 
+            auto loglike = [l_idx, ly, &h_rmslayer_gauss_norm](double value) -> double 
             {
-                double pdf = TMath::Gaus(value, h_rmsLayer_gauss_norm[l_idx][ly]->GetMean(), h_rmsLayer_gauss_norm[l_idx][ly]->GetRMS(), true);
+                double pdf = TMath::Gaus(value, h_rmslayer_gauss_norm[l_idx][ly]->GetMean(), h_rmslayer_gauss_norm[l_idx][ly]->GetRMS(), true);
                 double loolikelihood = pdf>0 ? std::log(pdf) : 0;
                 return loolikelihood;
             };
@@ -304,18 +304,18 @@ void buildLogLikelihoodProfile(
     for (int l_idx=0; l_idx<=sumrms_lambda_values.num; ++l_idx)
     {   
         lambda = sumrms_lambda_values.start + sumrms_lambda_values.step*l_idx; 
-        auto map_filter = [lambda, l_idx, &h_sumrmsLayer_gauss](std::map<double, double> map_gauss) -> double 
+        auto map_filter = [lambda, l_idx, &h_sumrmslayer_gauss](std::map<double, double> map_gauss) -> double 
         { 
             auto new_val = map_gauss[lambda];
-            auto hmean = h_sumrmsLayer_gauss[l_idx]->GetMean();
-            auto hsigma = h_sumrmsLayer_gauss[l_idx]->GetRMS();
+            auto hmean = h_sumrmslayer_gauss[l_idx]->GetMean();
+            auto hsigma = h_sumrmslayer_gauss[l_idx]->GetRMS();
             new_val -= hmean>0 ? hmean : -hmean;
             if (hsigma) new_val /= hsigma;
             return new_val;
         };
-        auto loglike = [l_idx, &h_sumrmsLayer_gauss_norm](double value) -> double 
+        auto loglike = [l_idx, &h_sumrmslayer_gauss_norm](double value) -> double 
         {
-            double pdf = TMath::Gaus(value, h_sumrmsLayer_gauss_norm[l_idx]->GetMean(), h_sumrmsLayer_gauss_norm[l_idx]->GetRMS(), true);
+            double pdf = TMath::Gaus(value, h_sumrmslayer_gauss_norm[l_idx]->GetMean(), h_sumrmslayer_gauss_norm[l_idx]->GetRMS(), true);
             double loolikelihood = pdf>0 ? std::log(pdf) : 0;
             return loolikelihood;
         };
@@ -327,18 +327,18 @@ void buildLogLikelihoodProfile(
         lambda = elf_lambda_values.start + elf_lambda_values.step*l_idx; 
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
-            auto map_filter = [lambda, l_idx, ly, &h_fracLayer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
+            auto map_filter = [lambda, l_idx, ly, &h_energyfrac_layer_gauss](std::map<double, std::vector<double>> map_gauss) -> double 
             { 
                 auto new_val = map_gauss[lambda][ly];
-                auto hmean = h_fracLayer_gauss[l_idx][ly]->GetMean();
-                auto hsigma = h_fracLayer_gauss[l_idx][ly]->GetRMS();
+                auto hmean = h_energyfrac_layer_gauss[l_idx][ly]->GetMean();
+                auto hsigma = h_energyfrac_layer_gauss[l_idx][ly]->GetRMS();
                 new_val -= hmean>0 ? hmean : -hmean;
                 if (hsigma) new_val /= hsigma;
                 return new_val;
             };
-            auto loglike = [l_idx, ly, &h_fracLayer_gauss_norm](double value) -> double 
+            auto loglike = [l_idx, ly, &h_energyfrac_layer_gauss_norm](double value) -> double 
             {
-                double pdf = TMath::Gaus(value, h_fracLayer_gauss_norm[l_idx][ly]->GetMean(), h_fracLayer_gauss_norm[l_idx][ly]->GetRMS(), true);
+                double pdf = TMath::Gaus(value, h_energyfrac_layer_gauss_norm[l_idx][ly]->GetMean(), h_energyfrac_layer_gauss_norm[l_idx][ly]->GetRMS(), true);
                 double loolikelihood = pdf>0 ? std::log(pdf) : 0;
                 return loolikelihood;
             };
@@ -349,18 +349,18 @@ void buildLogLikelihoodProfile(
     for (int l_idx=0; l_idx<=elf_ang_lambda_values.num; ++l_idx)
     {   
         lambda = elf_ang_lambda_values.start + elf_ang_lambda_values.step*l_idx; 
-        auto map_filter = [lambda, l_idx, &h_fracLayer_ang_gauss](std::map<double, double> map_gauss) -> double 
+        auto map_filter = [lambda, l_idx, &h_energyfrac_last_layer_gauss](std::map<double, double> map_gauss) -> double 
         { 
             auto new_val = map_gauss[lambda];
-            auto hmean = h_fracLayer_ang_gauss[l_idx]->GetMean();
-            auto hsigma = h_fracLayer_ang_gauss[l_idx]->GetRMS();
+            auto hmean = h_energyfrac_last_layer_gauss[l_idx]->GetMean();
+            auto hsigma = h_energyfrac_last_layer_gauss[l_idx]->GetRMS();
             new_val -= hmean>0 ? hmean : -hmean;
             if (hsigma) new_val /= hsigma;
             return new_val;
         };
-        auto loglike = [l_idx, &h_fracLayer_ang_gauss_norm](double value) -> double 
+        auto loglike = [l_idx, &h_energyfrac_last_layer_gauss_norm](double value) -> double 
         {
-            double pdf = TMath::Gaus(value, h_fracLayer_ang_gauss_norm[l_idx]->GetMean(), h_fracLayer_ang_gauss_norm[l_idx]->GetRMS(), true);
+            double pdf = TMath::Gaus(value, h_energyfrac_last_layer_gauss_norm[l_idx]->GetMean(), h_energyfrac_last_layer_gauss_norm[l_idx]->GetRMS(), true);
             double loolikelihood = pdf>0 ? std::log(pdf) : 0;
             return loolikelihood;
         };
