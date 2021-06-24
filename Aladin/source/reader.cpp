@@ -73,6 +73,4 @@ void reader(in_args input_args)
             input_args.threads,
             input_args.mc_flag);
 
-    
-
 }

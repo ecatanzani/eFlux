@@ -27,10 +27,6 @@ int main(int argc, char **argv)
 	opt.addUsage(" -g  --gaussianize           .......... Gaussianize input TMVA variables");
 	opt.addUsage(" -l  --likelihood            .......... Build LogLikelihood profile");
 	opt.addUsage(" -f  --fit                   .......... Fit gaussianized input TMVA variables");
-
-
-	
-	//opt.addUsage(" -s  --study-gaussianized    .......... Produce histos on input gaussianized TMVA variables");
 	
 	opt.addUsage("");
 	opt.addUsage(" -p  --parallel              .......... <number_of_threads>                                  .......... Multithreading option");
@@ -47,7 +43,6 @@ int main(int argc, char **argv)
 	opt.setFlag("mc", 'm');
 	opt.setOption("regularize", 'r');
 	opt.setFlag("gaussianize", 'g');
-	//opt.setFlag("study-gaussianized", 's');
 	opt.setFlag("fit", 'f');
 	opt.setFlag("likelihood", 'l');
 	opt.setOption("parallel", 'p');
@@ -83,10 +78,6 @@ int main(int argc, char **argv)
 		input_args.regularize_tree_path = opt.getValue('r');
 	if (opt.getFlag("gaussianize") || opt.getFlag('g'))
 		input_args.gaussianize = opt.getFlag('g');
-	/*
-	if (opt.getFlag("study-gaussianized") || opt.getFlag('s'))
-		input_args.study_gaussianized = 	opt.getFlag('s');
-	*/
 	if (opt.getFlag("fit") || opt.getFlag('f'))
 		input_args.fit = 	opt.getFlag('f');
 	if (opt.getFlag("likelihood") || opt.getFlag('l'))
@@ -101,7 +92,7 @@ int main(int argc, char **argv)
 		reader(input_args);
 	else
 	{
-		std::cerr << "\n\nError ! No output path has been specified...\n\n";
+		std::cerr << "\n\nError ! Please check input parameters...\n\n";
 		exit(100);
 	}
 		

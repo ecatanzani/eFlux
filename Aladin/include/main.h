@@ -21,7 +21,6 @@ struct in_args
 	// Tasks
 	bool mc_flag = false;
 	bool gaussianize = false;
-	//bool study_gaussianized = false;
 	bool fit = false;
 	bool loglikelihood = false;
 	unsigned int energybin = 0;
