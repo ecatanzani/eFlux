@@ -13,7 +13,7 @@
 #include <ROOT/RDataFrame.hxx>
 
 inline void extract_layer_lambda(
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> &best_histos, 
+    std::vector<int> &best_histos_idx,
     std::vector<double> &best_lambda, 
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> in_gaus_histos,
     const double lambda_start,
@@ -42,7 +42,7 @@ inline void extract_layer_lambda(
                     if (goodness[ly_idx]==999)
                     {
                         best_lambda[ly_idx] = lambda_start + lambda_idx*lambda_step;
-                        best_histos[ly_idx] = in_gaus_histos[lambda_idx][ly_idx];
+                        best_histos_idx[ly_idx] = lambda_idx;
                         goodness[ly_idx] = tmp_goodness;
                     }
                     else
@@ -50,20 +50,18 @@ inline void extract_layer_lambda(
                         if (abs(tmp_goodness-1) < abs(goodness[ly_idx]-1))
                         {
                             best_lambda[ly_idx] = lambda_start + lambda_idx*lambda_step;
-                            best_histos[ly_idx] = in_gaus_histos[lambda_idx][ly_idx];
+                            best_histos_idx[ly_idx] = lambda_idx;
                             goodness[ly_idx] = tmp_goodness;
                         }
                     }
                 }
-
             }
         }
     }
-    
 }
 
 inline void extract_lambda(
-    ROOT::RDF::RResultPtr<TH1D> &best_histo, 
+    int &best_histo_idx, 
     double &best_lambda, 
     std::vector<ROOT::RDF::RResultPtr<TH1D>> in_gaus_histos,
     const double lambda_start,
@@ -90,7 +88,7 @@ inline void extract_lambda(
                 if (goodness==999)
                 {
                     best_lambda = lambda_start + lambda_idx*lambda_step;
-                    best_histo = in_gaus_histos[lambda_idx];
+                    best_histo_idx = lambda_idx;
                     goodness = tmp_goodness;
                 }
                 else
@@ -98,15 +96,13 @@ inline void extract_lambda(
                     if (abs(tmp_goodness-1) < abs(goodness-1))
                     {
                         best_lambda = lambda_start + lambda_idx*lambda_step;
-                        best_histo = in_gaus_histos[lambda_idx];
+                        best_histo_idx = lambda_idx;
                         goodness = tmp_goodness;
                     }
                 }
             }
-
         } 
     }
-    
 }
 
 void fit(
@@ -122,7 +118,6 @@ void fit(
     const unsigned int threads,
     const bool _mc)
 {
-
     ROOT::EnableImplicitMT(threads);
     ROOT::RDataFrame _data_fr(*evtch);
 
@@ -196,7 +191,7 @@ void fit(
         auto map_filter = [lambda](std::map<double, double> map_gauss) -> double { return map_gauss[lambda]; };
         h_energyfrac_last_layer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fraclastlayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
     }
-    
+
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/RMS")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/RMS")).c_str());
     for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
@@ -372,10 +367,11 @@ void fit(
     }
 
     // Find best lambda values
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> best_rms_hist (DAMPE_bgo_nLayers);
-    ROOT::RDF::RResultPtr<TH1D> best_sumrmshist;
-    std::vector<ROOT::RDF::RResultPtr<TH1D>> best_fraclayer_hist (DAMPE_bgo_nLayers);
-    ROOT::RDF::RResultPtr<TH1D> best_fraclast_ang_hist;
+    if (verbose) std::cout << "\nFinding best lambda values..." << std::endl;
+    std::vector<int> best_rms_hist_idx (DAMPE_bgo_nLayers, 0);
+    int best_sumrmshist_idx = 0;
+    std::vector<int> best_fraclayer_hist_idx (DAMPE_bgo_nLayers, 0);
+    int best_fraclast_hist_idx = 0;
 
     std::vector<double> best_rms_lambda (DAMPE_bgo_nLayers, 999);
     double best_sumrms_lambda;
@@ -383,7 +379,7 @@ void fit(
     double best_fraclast_lambda;
     
     extract_layer_lambda(
-        best_rms_hist, 
+        best_rms_hist_idx, 
         best_rms_lambda, 
         h_rmslayer_gauss_norm, 
         rms_lambda_values.start, 
@@ -391,15 +387,15 @@ void fit(
         rms_lambda_values.num);
     
     extract_layer_lambda(
-        best_fraclayer_hist, 
+        best_fraclayer_hist_idx, 
         best_fraclayer_lambda, 
         h_energyfrac_layer_gauss_norm, 
         elf_lambda_values.start, 
         elf_lambda_values.step, 
         elf_lambda_values.num);
-
+    
     extract_lambda(
-        best_sumrmshist,
+        best_sumrmshist_idx,
         best_sumrms_lambda,
         h_sumrmslayer_gauss_norm,
         sumrms_lambda_values.start,
@@ -407,18 +403,17 @@ void fit(
         sumrms_lambda_values.num);
 
     extract_lambda(
-        best_fraclast_ang_hist,
+        best_fraclast_hist_idx,
         best_fraclast_lambda,
         h_energyfrac_last_layer_gauss_norm,
         ell_lambda_values.start,
         ell_lambda_values.step,
         ell_lambda_values.num);
-
+    
     std::unique_ptr<TCanvas> rms_bestfit = std::make_unique<TCanvas>("rms_bestfit", "RMS bestfit");
     std::unique_ptr<TCanvas> sumrms_bestfit = std::make_unique<TCanvas>("sumrms_bestfit", "SumRMS bestfit");
     std::unique_ptr<TCanvas> elf_bestfit = std::make_unique<TCanvas>("elf_bestfit", "ELF bestfit");
     std::unique_ptr<TCanvas> ell_bestfit = std::make_unique<TCanvas>("ell_bestfit", "ELL bestfit");
-
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/Canvas")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/Canvas")).c_str());
@@ -427,25 +422,27 @@ void fit(
     for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
     {
         rms_bestfit->cd(ly+1);
-        best_rms_hist[ly]->Draw();
+        h_rmslayer_gauss_norm[best_rms_hist_idx[ly]][ly]->Draw();
     }
     rms_bestfit->cd(0);
     rms_bestfit->Write();
 
     sumrms_bestfit->cd();
-    best_sumrmshist->Write();
+    h_sumrmslayer_gauss_norm[best_sumrmshist_idx]->Draw();
+    sumrms_bestfit->Write();
 
     elf_bestfit->Divide(7,2);
     for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
     {
         elf_bestfit->cd(ly+1);
-        best_fraclayer_hist[ly]->Draw();
+        h_energyfrac_layer_gauss_norm[best_fraclayer_hist_idx[ly]][ly]->Draw();
     }
     elf_bestfit->cd(0);
     elf_bestfit->Write();
 
     ell_bestfit->cd();
-    best_fraclast_ang_hist->Write();
+    h_energyfrac_last_layer_gauss_norm[best_fraclast_hist_idx]->Draw();
+    ell_bestfit->Write();
 
     output_file->Close();
 

@@ -11,28 +11,25 @@
 void reader(in_args input_args)
 {
     // Parse input file list
-    bool gaussianized = input_args.loglikelihood ? true : false;
-    std::shared_ptr<parser> evt_parser;
+    bool gaussianized = input_args.gaussianize ? false : true;
+    std::shared_ptr<parser> evt_parser = std::make_shared<parser>(input_args.input_list, input_args.mc_flag, input_args.verbose, gaussianized);
+    /*
     if (!input_args.fit)
-        evt_parser = std::make_unique<parser>(
+        evt_parser = std::make_shared<parser>(
             input_args.input_list, 
             input_args.mc_flag, 
             input_args.verbose,
             gaussianized);
     else
-        evt_parser = std::make_unique<parser>(input_args.input_list);
-
+        evt_parser = std::make_shared<parser>(input_args.input_list);
+    */
     // Parse 'Collector' config file
-    std::shared_ptr<config> _config = std::make_shared<config>(
-        input_args.wd, 
-        input_args.mc_flag);
-    
+    std::shared_ptr<config> _config = std::make_shared<config>(input_args.wd, input_args.mc_flag);
     // Parse local config file
     std::shared_ptr<energy_config> _energy_config = std::make_shared<energy_config>(input_args.wd);
-
     // Parse local lambda config file
     std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
-
+    
     if (input_args.gaussianize)
         gaussianize(
             evt_parser->GetEvtTree(),

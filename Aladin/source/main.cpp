@@ -81,12 +81,13 @@ int main(int argc, char **argv)
 	if (opt.getFlag("fit") || opt.getFlag('f'))
 		input_args.fit = 	opt.getFlag('f');
 	if (opt.getFlag("likelihood") || opt.getFlag('l'))
-	{
 		input_args.loglikelihood = opt.getFlag('l');
-		input_args.energybin = std::stoul(input_args.input_list.substr(input_args.input_list.find_last_of("_")+1, input_args.input_list.find_last_of(".txt")), nullptr, 0)+1; // Jobs folder start from 0
-	}
 	if (opt.getValue("parallel") || opt.getValue('p'))
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
+
+	// Set the energy bin
+	if (opt.getFlag("likelihood") || opt.getFlag('l') || opt.getFlag("fit") || opt.getFlag('f'))
+		input_args.energybin = std::stoul(input_args.input_list.substr(input_args.input_list.find_last_of("_")+1, input_args.input_list.find_last_of(".txt")), nullptr, 0)+1; // Jobs folder start from 0
 
 	if (!input_args.output_path.empty() && input_args.check_paths())
 		reader(input_args);
