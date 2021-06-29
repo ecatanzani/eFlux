@@ -20,39 +20,37 @@ inline void extract_layer_lambda(
     const double lambda_step,
     const int lambda_num)
 {
-    int min_stats = 5;
+    auto skew_limit = 0.1;
     std::vector<double> goodness (DAMPE_bgo_nLayers, 999);
     for (int lambda_idx=0; lambda_idx<=lambda_num; ++lambda_idx)
     {
         for (unsigned int ly_idx=0; ly_idx<DAMPE_bgo_nLayers; ++ly_idx)
         {
-            if (in_gaus_histos[lambda_idx][ly_idx]->GetEntries()>min_stats)
-            {
-                auto xmin = in_gaus_histos[lambda_idx][ly_idx]->GetXaxis()->GetXmin();
-                auto xmax = in_gaus_histos[lambda_idx][ly_idx]->GetXaxis()->GetXmax();
-                std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "gaus", xmin, xmax);
-                fitfunc->SetNpx(10000);
-                in_gaus_histos[lambda_idx][ly_idx]->Fit("fitfunc", "QW");
-                auto chi2 = fitfunc->GetChisquare();
-                auto dof = fitfunc->GetNDF();
+            auto xmin = in_gaus_histos[lambda_idx][ly_idx]->GetXaxis()->GetXmin();
+            auto xmax = in_gaus_histos[lambda_idx][ly_idx]->GetXaxis()->GetXmax();
+            std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "gaus", xmin, xmax);
+            fitfunc->SetNpx(10000);
+            in_gaus_histos[lambda_idx][ly_idx]->Fit("fitfunc", "QW");
+            auto skew = fabs(in_gaus_histos[lambda_idx][ly_idx]->GetSkewness());
+            auto chi2 = fitfunc->GetChisquare();
+            auto dof = fitfunc->GetNDF();
 
-                if (dof)
+            if ((in_gaus_histos[lambda_idx][ly_idx]->GetRMS()/skew)>0.01 && (in_gaus_histos[lambda_idx][ly_idx]->GetRMS()/skew)<100.0 && skew<skew_limit)
+            {
+                double tmp_goodness = chi2/dof;
+                if (goodness[ly_idx]==999)
                 {
-                    double tmp_goodness = chi2/dof;
-                    if (goodness[ly_idx]==999)
+                    best_lambda[ly_idx] = lambda_start + lambda_idx*lambda_step;
+                    best_histos_idx[ly_idx] = lambda_idx;
+                    goodness[ly_idx] = tmp_goodness;
+                }
+                else
+                {
+                    if (abs(tmp_goodness-1) < abs(goodness[ly_idx]-1))
                     {
                         best_lambda[ly_idx] = lambda_start + lambda_idx*lambda_step;
                         best_histos_idx[ly_idx] = lambda_idx;
                         goodness[ly_idx] = tmp_goodness;
-                    }
-                    else
-                    {
-                        if (abs(tmp_goodness-1) < abs(goodness[ly_idx]-1))
-                        {
-                            best_lambda[ly_idx] = lambda_start + lambda_idx*lambda_step;
-                            best_histos_idx[ly_idx] = lambda_idx;
-                            goodness[ly_idx] = tmp_goodness;
-                        }
                     }
                 }
             }
@@ -68,40 +66,38 @@ inline void extract_lambda(
     const double lambda_step,
     const int lambda_num)
 {
-    int min_stats = 5;
     double goodness = 999;
+    auto skew_limit = 0.1;
     for (int lambda_idx=0; lambda_idx<=lambda_num; ++lambda_idx)
     {
-        if (in_gaus_histos[lambda_idx]->GetEntries()>min_stats)
-        {
-            auto xmin = in_gaus_histos[lambda_idx]->GetXaxis()->GetXmin();
-            auto xmax = in_gaus_histos[lambda_idx]->GetXaxis()->GetXmax();
-            std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "gaus", xmin, xmax);
-            fitfunc->SetNpx(10000);
-            in_gaus_histos[lambda_idx]->Fit("fitfunc", "QW");
-            auto chi2 = fitfunc->GetChisquare();
-            auto dof = fitfunc->GetNDF();
+        auto xmin = in_gaus_histos[lambda_idx]->GetXaxis()->GetXmin();
+        auto xmax = in_gaus_histos[lambda_idx]->GetXaxis()->GetXmax();
+        std::unique_ptr<TF1> fitfunc = std::make_unique<TF1>("fitfunc", "gaus", xmin, xmax);
+        fitfunc->SetNpx(10000);
+        in_gaus_histos[lambda_idx]->Fit("fitfunc", "QW");
+        auto skew = fabs(in_gaus_histos[lambda_idx]->GetSkewness());
+        auto chi2 = fitfunc->GetChisquare();
+        auto dof = fitfunc->GetNDF();
 
-            if (dof)
+        if ((in_gaus_histos[lambda_idx]->GetRMS()/skew)>0.01 && (in_gaus_histos[lambda_idx]->GetRMS()/skew)<100.0 && skew<skew_limit)
+        {
+            double tmp_goodness = chi2/dof;
+            if (goodness==999)
             {
-                double tmp_goodness = chi2/dof;
-                if (goodness==999)
+                best_lambda = lambda_start + lambda_idx*lambda_step;
+                best_histo_idx = lambda_idx;
+                goodness = tmp_goodness;
+            }
+            else
+            {
+                if (abs(tmp_goodness-1) < abs(goodness-1))
                 {
                     best_lambda = lambda_start + lambda_idx*lambda_step;
                     best_histo_idx = lambda_idx;
                     goodness = tmp_goodness;
                 }
-                else
-                {
-                    if (abs(tmp_goodness-1) < abs(goodness-1))
-                    {
-                        best_lambda = lambda_start + lambda_idx*lambda_step;
-                        best_histo_idx = lambda_idx;
-                        goodness = tmp_goodness;
-                    }
-                }
             }
-        } 
+        }    
     }
 }
 
