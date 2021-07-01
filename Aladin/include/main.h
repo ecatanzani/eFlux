@@ -23,14 +23,14 @@ struct in_args
 	bool gaussianize = false;
 	bool fit = false;
 	bool loglikelihood = false;
-	unsigned int energybin = 0;
+	unsigned int energybin = 999;
 	unsigned int threads = 1;
 
-	const bool check_paths()
+	const bool check_input()
 	{	
 		bool status = false;
 		if (loglikelihood || fit)
-			if (!wd.empty() && !input_list.empty() && !output_path.empty()) 
+			if (!wd.empty() && !input_list.empty() && !output_path.empty() && energybin!=999) 
 				status = true;
 		if (gaussianize)
 			if (!wd.empty() && !input_list.empty() && !output_path.empty() && !regularize_tree_path.empty()) 

@@ -110,6 +110,7 @@ void gaussianize(
     auto sumrms_lambda_values = _lambda_config->GetSumRMSLambdaStruct();
     auto elf_lambda_values = _lambda_config->GetELFLambdaStruct();
     auto ell_lambda_values = _lambda_config->GetELFAngLambdaStruct();
+    auto xtrl_lambda_values = _lambda_config->GetXTRLLambdaStruct();
 
     if (verbose)
     {
@@ -193,10 +194,29 @@ void gaussianize(
         return fraclastlayer_gauss;
     };
 
+    auto gaussianize_xtrl = [&xtrl_lambda_values](const double input_xtrl) -> std::map<double, double>
+    {
+        auto gaussianize_elm = [](const double elm, const double lambda) -> double
+        {
+            double elm_cp = lambda ? (exp(lambda*elm)-1)/lambda : elm;
+            return elm_cp;
+        };
+
+        std::map<double, double> xtrl_gauss;
+        for (int lambda_idx=0; lambda_idx<=xtrl_lambda_values.num; ++lambda_idx)
+        {
+            double lambda = xtrl_lambda_values.start + lambda_idx*xtrl_lambda_values.step;
+            xtrl_gauss.insert(std::pair<double, double>(lambda, gaussianize_elm(input_xtrl, lambda)));
+        }
+        
+        return xtrl_gauss;
+    };
+
     auto fr_gauss = fr.Define("rmslayer_gauss", gaussianize_rmslayer, {"rmsLayer"})
-                                    .Define("sumrmslayer_gauss", gaussianize_sumrmslayer, {"sumRms_reg"})
-                                    .Define("fraclayer_gauss", gaussianize_fraclayer, {"fracLayer"})
-                                    .Define("fraclastlayer_gauss", gaussianize_fraclastlayer, {"fracLast_reg"});
+                        .Define("sumrmslayer_gauss", gaussianize_sumrmslayer, {"sumRms_reg"})
+                        .Define("fraclayer_gauss", gaussianize_fraclayer, {"fracLayer"})
+                        .Define("fraclastlayer_gauss", gaussianize_fraclastlayer, {"fracLast_reg"})
+                        .Define("xtrl_gauss", gaussianize_xtrl, {"xtrl"});
 
     fr_gauss.Snapshot((std::string(evtch->GetName()) + std::string("_gauss")).c_str(), outputPath);
     

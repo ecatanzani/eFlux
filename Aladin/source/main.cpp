@@ -4,7 +4,6 @@
 
 int main(int argc, char **argv)
 {
-
 	AnyOption opt;
 
 	opt.addUsage("Usage: ");
@@ -29,6 +28,9 @@ int main(int argc, char **argv)
 	opt.addUsage(" -f  --fit                   .......... Fit gaussianized input TMVA variables");
 	
 	opt.addUsage("");
+	opt.addUsage(" -b  --bin                   .......... Energy bin");
+
+	opt.addUsage("");
 	opt.addUsage(" -p  --parallel              .......... <number_of_threads>                                  .......... Multithreading option");
 	
 
@@ -44,6 +46,7 @@ int main(int argc, char **argv)
 	opt.setOption("regularize", 'r');
 	opt.setFlag("gaussianize", 'g');
 	opt.setFlag("fit", 'f');
+	opt.setOption("bin", 'b');
 	opt.setFlag("likelihood", 'l');
 	opt.setOption("parallel", 'p');
 
@@ -79,17 +82,16 @@ int main(int argc, char **argv)
 	if (opt.getFlag("gaussianize") || opt.getFlag('g'))
 		input_args.gaussianize = opt.getFlag('g');
 	if (opt.getFlag("fit") || opt.getFlag('f'))
-		input_args.fit = 	opt.getFlag('f');
+		input_args.fit = opt.getFlag('f');
+	if (opt.getValue("bin") || opt.getValue('b'))
+		input_args.energybin = std::stoul(opt.getValue('b'), nullptr, 0);
 	if (opt.getFlag("likelihood") || opt.getFlag('l'))
 		input_args.loglikelihood = opt.getFlag('l');
 	if (opt.getValue("parallel") || opt.getValue('p'))
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 
 	// Set the energy bin
-	if (opt.getFlag("likelihood") || opt.getFlag('l') || opt.getFlag("fit") || opt.getFlag('f'))
-		input_args.energybin = std::stoul(input_args.input_list.substr(input_args.input_list.find_last_of("_")+1, input_args.input_list.find_last_of(".txt")), nullptr, 0)+1; // Jobs folder start from 0
-
-	if (!input_args.output_path.empty() && input_args.check_paths())
+	if (!input_args.output_path.empty() && input_args.check_input())
 		reader(input_args);
 	else
 	{

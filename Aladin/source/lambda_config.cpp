@@ -113,6 +113,26 @@ void lambda_config::get_config_info(const std::string parsed_config)
 			input_stream >> tmp_str;
 			ell_lambda_info.step = stod(tmp_str, &sz);
 		}
+
+		if (!strcmp(tmp_str.c_str(), "XTRL_lambdas"))
+		{
+			while(strcmp(tmp_str.c_str(), "start_value"))
+				input_stream >> tmp_str;
+			input_stream >> tmp_str;
+			xtrl_lambda_info.start = stod(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "end_value"))
+				input_stream >> tmp_str;
+			input_stream >> tmp_str;
+			xtrl_lambda_info.end = stod(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "number_of_elements"))
+				input_stream >> tmp_str;
+			input_stream >> tmp_str;
+			xtrl_lambda_info.num = stoi(tmp_str, &sz);
+			while(strcmp(tmp_str.c_str(), "step"))
+				input_stream >> tmp_str;
+			input_stream >> tmp_str;
+			xtrl_lambda_info.step = stod(tmp_str, &sz);
+		}
 		
 	}
 }
@@ -137,6 +157,11 @@ const ell_lambdas lambda_config::GetELFAngLambdaStruct()
 	return ell_lambda_info;
 }
 
+const xtrl_lambdas lambda_config::GetXTRLLambdaStruct()
+{
+	return xtrl_lambda_info;
+}
+
 void lambda_config::PrintLambdaSettings()
 {
     std::cout << "\n***** Input lambdas settings *****\n";
@@ -159,11 +184,17 @@ void lambda_config::PrintLambdaSettings()
     std::cout << "\nLambda number of values: [" << elf_lambda_info.num << "]";
 	std::cout << "\nLambda step: [" << elf_lambda_info.step << "]\n";
 
-	std::cout << "\n*** ELF-ANG ***\n";
+	std::cout << "\n*** ELL ***\n";
     std::cout << "\nLambda START value: [" << ell_lambda_info.start << "]";
     std::cout << "\nLambda END value: [" << ell_lambda_info.end << "]";
     std::cout << "\nLambda number of values: [" << ell_lambda_info.num << "]";
-	std::cout << "\nLambda step: [" << ell_lambda_info.step << "]";
+	std::cout << "\nLambda step: [" << ell_lambda_info.step << "]\n";
+
+	std::cout << "\n*** XTRL ***\n";
+    std::cout << "\nLambda START value: [" << xtrl_lambda_info.start << "]";
+    std::cout << "\nLambda END value: [" << xtrl_lambda_info.end << "]";
+    std::cout << "\nLambda number of values: [" << xtrl_lambda_info.num << "]";
+	std::cout << "\nLambda step: [" << xtrl_lambda_info.step << "]";
 	
     std::cout << "\n\n******************************\n\n";
 }

@@ -123,6 +123,7 @@ void fit(
     auto sumrms_lambda_values = _lambda_config->GetSumRMSLambdaStruct();
     auto elf_lambda_values = _lambda_config->GetELFLambdaStruct();
     auto ell_lambda_values = _lambda_config->GetELFAngLambdaStruct();
+    auto xtrl_lambda_values = _lambda_config->GetXTRLLambdaStruct();
 
     if (verbose)
     {   
@@ -145,11 +146,13 @@ void fit(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_sumrmslayer_gauss (sumrms_lambda_values.num+1);
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>>  h_energyfrac_layer_gauss (elf_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_energyfrac_last_layer_gauss (ell_lambda_values.num+1);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_gauss (xtrl_lambda_values.num+1);
 
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_rmslayer_gauss_norm (rms_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_sumrmslayer_gauss_norm (sumrms_lambda_values.num+1);
     std::vector<std::vector<ROOT::RDF::RResultPtr<TH1D>>> h_energyfrac_layer_gauss_norm (elf_lambda_values.num+1, std::vector<ROOT::RDF::RResultPtr<TH1D>> (DAMPE_bgo_nLayers));
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_energyfrac_last_layer_gauss_norm (ell_lambda_values.num+1);
+    std::vector<ROOT::RDF::RResultPtr<TH1D>> h_xtrl_gauss_norm (xtrl_lambda_values.num+1);
     
     double lambda;
     auto bin_filter = [focus_energybin](int energy_bin) -> bool { return energy_bin == (int)focus_energybin; };
@@ -186,6 +189,13 @@ void fit(
         lambda = ell_lambda_values.start + ell_lambda_values.step*l_idx; 
         auto map_filter = [lambda](std::map<double, double> map_gauss) -> double { return map_gauss[lambda]; };
         h_energyfrac_last_layer_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fraclastlayer_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
+    }
+
+    for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
+    {   
+        lambda = xtrl_lambda_values.start + xtrl_lambda_values.step*l_idx; 
+        auto map_filter = [lambda](std::map<double, double> map_gauss) -> double { return map_gauss[lambda]; };
+        h_xtrl_gauss[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"xtrl_gauss"}).Histo1D<double, double>("mapval", "simu_energy_w_corr");
     }
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/RMS")).c_str());
@@ -236,9 +246,21 @@ void fit(
     {
         lambda = ell_lambda_values.start + ell_lambda_values.step*l_idx;
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
-        auto h_name = std::string("h_fraclayer_ang_lambda_") + str_lambda; 
+        auto h_name = std::string("h_fraclastlayer_lambda_") + str_lambda; 
         h_energyfrac_last_layer_gauss[l_idx]->SetName(h_name.c_str());
         h_energyfrac_last_layer_gauss[l_idx]->GetXaxis()->SetTitle("ELL_{#lambda}");
+        h_energyfrac_last_layer_gauss[l_idx]->Write();
+    }
+
+    output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/XTRL")).c_str());
+    output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/XTRL")).c_str());
+    for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
+    {
+        lambda = xtrl_lambda_values.start + xtrl_lambda_values.step*l_idx;
+        auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
+        auto h_name = std::string("h_xtrl_lambda_") + str_lambda; 
+        h_energyfrac_last_layer_gauss[l_idx]->SetName(h_name.c_str());
+        h_energyfrac_last_layer_gauss[l_idx]->GetXaxis()->SetTitle("XTRL_{#lambda}");
         h_energyfrac_last_layer_gauss[l_idx]->Write();
     }
 
@@ -321,11 +343,31 @@ void fit(
             if (hsigma) new_val /= hsigma;
             return new_val;
         };
-        auto h_name = std::string("h_fraclayer_ang_norm_lambda_") + str_lambda;
-        auto h_title = std::string("Normalized ELFang - #lambda ") + str_lambda;
+        auto h_name = std::string("h_fraclastlayer_norm_lambda_") + str_lambda;
+        auto h_title = std::string("Normalized ELL - #lambda ") + str_lambda;
         h_energyfrac_last_layer_gauss_norm[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"})
                                                     .Define("mapval", map_filter, {"fraclastlayer_gauss"})
                                                     .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
+    }
+
+    for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
+    {
+        lambda = xtrl_lambda_values.start + xtrl_lambda_values.step*l_idx;
+        auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
+        auto map_filter = [lambda, l_idx, &h_xtrl_gauss](std::map<double, double> map_gauss) -> double 
+        { 
+            auto new_val = map_gauss[lambda];
+            auto hmean = h_xtrl_gauss[l_idx]->GetMean();
+            auto hsigma = h_xtrl_gauss[l_idx]->GetRMS();
+            new_val -= hmean>0 ? hmean : -hmean;
+            if (hsigma) new_val /= hsigma;
+            return new_val;
+        };
+        auto h_name = std::string("h_xtrl_norm_lambda_") + str_lambda;
+        auto h_title = std::string("Normalized XTRL - #lambda ") + str_lambda;
+        h_xtrl_gauss_norm[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"})
+                                            .Define("mapval", map_filter, {"xtrl_gauss"})
+                                            .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
     }
     
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/RMS_norm")).c_str());
@@ -362,17 +404,27 @@ void fit(
         h_energyfrac_last_layer_gauss_norm[l_idx]->GetXaxis()->SetTitle("ELL_{#lambda}");
     }
 
+    output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/XTRL_norm")).c_str());
+    output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/XTRL_norm")).c_str());
+    for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
+    {
+        h_xtrl_gauss_norm[l_idx]->Write();
+        h_xtrl_gauss_norm[l_idx]->GetXaxis()->SetTitle("XTRL_{#lambda}");
+    }
+
     // Find best lambda values
     if (verbose) std::cout << "\nFinding best lambda values..." << std::endl;
     std::vector<int> best_rms_hist_idx (DAMPE_bgo_nLayers, 0);
     int best_sumrmshist_idx = 0;
     std::vector<int> best_fraclayer_hist_idx (DAMPE_bgo_nLayers, 0);
     int best_fraclast_hist_idx = 0;
+    int best_xtrl_hist_idx = 0;
 
     std::vector<double> best_rms_lambda (DAMPE_bgo_nLayers, 999);
     double best_sumrms_lambda;
     std::vector<double> best_fraclayer_lambda (DAMPE_bgo_nLayers, 999);
     double best_fraclast_lambda;
+    double best_xtrl_lambda;
     
     extract_layer_lambda(
         best_rms_hist_idx, 
@@ -406,10 +458,19 @@ void fit(
         ell_lambda_values.step,
         ell_lambda_values.num);
     
+    extract_lambda(
+        best_xtrl_hist_idx,
+        best_xtrl_lambda,
+        h_xtrl_gauss_norm,
+        xtrl_lambda_values.start,
+        xtrl_lambda_values.step,
+        xtrl_lambda_values.num);
+    
     std::unique_ptr<TCanvas> rms_bestfit = std::make_unique<TCanvas>("rms_bestfit", "RMS bestfit");
     std::unique_ptr<TCanvas> sumrms_bestfit = std::make_unique<TCanvas>("sumrms_bestfit", "SumRMS bestfit");
     std::unique_ptr<TCanvas> elf_bestfit = std::make_unique<TCanvas>("elf_bestfit", "ELF bestfit");
     std::unique_ptr<TCanvas> ell_bestfit = std::make_unique<TCanvas>("ell_bestfit", "ELL bestfit");
+    std::unique_ptr<TCanvas> xtrl_bestfit = std::make_unique<TCanvas>("xtrl_bestfit", "XTRL bestfit");
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/Canvas")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/Canvas")).c_str());
@@ -440,6 +501,10 @@ void fit(
     h_energyfrac_last_layer_gauss_norm[best_fraclast_hist_idx]->Draw();
     ell_bestfit->Write();
 
+    xtrl_bestfit->cd();
+    h_xtrl_gauss_norm[best_xtrl_hist_idx]->Draw();
+    xtrl_bestfit->Write();
+
     output_file->Close();
 
     // Build summary TTree
@@ -458,6 +523,7 @@ void fit(
     corrections_tree.Branch("best_sumrms_lambda", &best_sumrms_lambda, "best_sumrms_lambda/D");
     corrections_tree.Branch("best_fraclayer_lambda", &best_fraclayer_lambda);
     corrections_tree.Branch("best_fraclast_lambda", &best_fraclast_lambda, "best_fraclast_lambda/D");
+    corrections_tree.Branch("best_xtrl_lambda", &best_xtrl_lambda, "best_xtrl_lambda/D");
 
     corrections_tree.Fill();
     corrections_tree.Write();

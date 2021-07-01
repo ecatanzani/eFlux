@@ -40,6 +40,14 @@ struct ell_lambdas
     double step = 1;
 };
 
+struct xtrl_lambdas
+{
+    double start = 0;
+    double end = 0;
+    int num = 1;
+    double step = 1;
+};
+
 class lambda_config
 {
     public:
@@ -50,6 +58,7 @@ class lambda_config
         const sumrms_lambdas GetSumRMSLambdaStruct();
         const elf_lambdas GetELFLambdaStruct();
         const ell_lambdas GetELFAngLambdaStruct();
+        const xtrl_lambdas GetXTRLLambdaStruct();
     private:
         std::string parse_config_file(
             const std::string wd,
@@ -59,6 +68,7 @@ class lambda_config
         sumrms_lambdas sumrms_lambda_info;
         elf_lambdas elf_lambda_info;
         ell_lambdas ell_lambda_info;
+        xtrl_lambdas xtrl_lambda_info;
 };
 
 #endif
