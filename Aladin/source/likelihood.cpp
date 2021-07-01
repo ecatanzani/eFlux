@@ -284,16 +284,16 @@ void buildLogLikelihoodProfile(
     for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
-            h_rmslayer_gauss_norm[l_idx][ly]->Write();
             h_rmslayer_gauss_norm[l_idx][ly]->GetXaxis()->SetTitle("RMS_{#lambda}");
+            h_rmslayer_gauss_norm[l_idx][ly]->Write();
         }
     
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/SumRMS_norm")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/SumRMS_norm")).c_str());
     for (int l_idx=0; l_idx<=sumrms_lambda_values.num; ++l_idx)
     {
-        h_sumrmslayer_gauss_norm[l_idx]->Write();
         h_sumrmslayer_gauss_norm[l_idx]->GetXaxis()->SetTitle("SumRMS_{#lambda}");
+        h_sumrmslayer_gauss_norm[l_idx]->Write();
     }
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELF_norm")).c_str());
@@ -301,32 +301,33 @@ void buildLogLikelihoodProfile(
     for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
-            h_energyfrac_layer_gauss_norm[l_idx][ly]->Write();
             h_energyfrac_layer_gauss_norm[l_idx][ly]->GetXaxis()->SetTitle("ELF_{#lambda}");
+            h_energyfrac_layer_gauss_norm[l_idx][ly]->Write();
         }
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELL_norm")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELL_norm")).c_str());
     for (int l_idx=0; l_idx<=ell_lambda_values.num; ++l_idx)
     {
-        h_energyfrac_last_layer_gauss_norm[l_idx]->Write();
         h_energyfrac_last_layer_gauss_norm[l_idx]->GetXaxis()->SetTitle("ELL_{#lambda}");
+        h_energyfrac_last_layer_gauss_norm[l_idx]->Write();
     }
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/XTRL_norm")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/XTRL_norm")).c_str());
     for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
     {
-        h_xtrl_gauss_norm[l_idx]->Write();
         h_xtrl_gauss_norm[l_idx]->GetXaxis()->SetTitle("XTRL_{#lambda}");
+        h_xtrl_gauss_norm[l_idx]->Write();
     }
 
     if (verbose) std::cout << "\nBuilding RMS and ELF likelihood profiles...\n";
-    std::vector<std::vector<ROOT::RDF::RResultPtr<double>>> likeprofile_rms (DAMPE_bgo_nLayers, std::vector<ROOT::RDF::RResultPtr<double>> (rms_lambda_values.num+1));
-    std::vector<ROOT::RDF::RResultPtr<double>> likeprofile_sumrms (sumrms_lambda_values.num+1);
-    std::vector<std::vector<ROOT::RDF::RResultPtr<double>>> likeprofile_elf (DAMPE_bgo_nLayers, std::vector<ROOT::RDF::RResultPtr<double>> (elf_lambda_values.num+1));
-    std::vector<ROOT::RDF::RResultPtr<double>> likeprofile_ell (ell_lambda_values.num+1);
-    std::vector<ROOT::RDF::RResultPtr<double>> likeprofile_xtrl (xtrl_lambda_values.num+1);
+    
+    std::vector<std::vector<double>> likeprofile_rms (DAMPE_bgo_nLayers, std::vector<double> (rms_lambda_values.num+1));
+    std::vector<double> likeprofile_sumrms (sumrms_lambda_values.num+1);
+    std::vector<std::vector<double>> likeprofile_elf (DAMPE_bgo_nLayers, std::vector<double> (elf_lambda_values.num+1));
+    std::vector<double> likeprofile_ell (ell_lambda_values.num+1);
+    std::vector<double> likeprofile_xtrl (xtrl_lambda_values.num+1);
     
     for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
     {   
@@ -348,7 +349,7 @@ void buildLogLikelihoodProfile(
                 double loolikelihood = pdf>0 ? std::log(pdf) : 0;
                 return loolikelihood;
             };
-            likeprofile_rms[ly][l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"rmslayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
+            likeprofile_rms[ly][l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"rmslayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval").GetValue();
         }
     }
 
@@ -370,7 +371,7 @@ void buildLogLikelihoodProfile(
             double loolikelihood = pdf>0 ? std::log(pdf) : 0;
             return loolikelihood;
         };
-        likeprofile_sumrms[l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"sumrmslayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
+        likeprofile_sumrms[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"sumrmslayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval").GetValue();
     }
 
     for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
@@ -393,7 +394,7 @@ void buildLogLikelihoodProfile(
                 double loolikelihood = pdf>0 ? std::log(pdf) : 0;
                 return loolikelihood;
             };
-            likeprofile_elf[ly][l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fraclayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
+            likeprofile_elf[ly][l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fraclayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval").GetValue();
         }
     }
 
@@ -415,7 +416,7 @@ void buildLogLikelihoodProfile(
             double loolikelihood = pdf>0 ? std::log(pdf) : 0;
             return loolikelihood;
         };
-        likeprofile_ell[l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fraclastlayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
+        likeprofile_ell[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"fraclastlayer_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval").GetValue();
     }
     
     for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
@@ -436,32 +437,9 @@ void buildLogLikelihoodProfile(
             double loolikelihood = pdf>0 ? std::log(pdf) : 0;
             return loolikelihood;
         };
-        likeprofile_xtrl[l_idx] = (_data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"xtrl_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval"));
+        likeprofile_xtrl[l_idx] = _data_fr.Filter(bin_filter, {"energy_bin"}).Define("mapval", map_filter, {"xtrl_gauss"}).Define("likeval", loglike, {"mapval"}).Sum<double>("likeval").GetValue();
     }
-
-    std::vector<std::vector<double>> flikeprofile_rms (DAMPE_bgo_nLayers, std::vector<double> (rms_lambda_values.num+1));
-    std::vector<double> flikeprofile_sumrms (rms_lambda_values.num+1);
-    std::vector<std::vector<double>> flikeprofile_elf (DAMPE_bgo_nLayers, std::vector<double> (elf_lambda_values.num+1));
-    std::vector<double> flikeprofile_ell (elf_lambda_values.num+1);
-    std::vector<double> flikeprofile_xtrl (xtrl_lambda_values.num+1);
-
-    for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
-        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-            flikeprofile_rms[ly][l_idx] = *likeprofile_rms[ly][l_idx];
     
-    for (int l_idx=0; l_idx<=sumrms_lambda_values.num; ++l_idx)
-        flikeprofile_sumrms[l_idx] = *likeprofile_sumrms[l_idx];
-        
-    for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
-        for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
-            flikeprofile_elf[ly][l_idx] = *likeprofile_elf[ly][l_idx];
-    
-    for (int l_idx=0; l_idx<=ell_lambda_values.num; ++l_idx)
-        flikeprofile_ell[l_idx] = *likeprofile_ell[l_idx];
-    
-    for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
-        flikeprofile_xtrl[l_idx] = *likeprofile_xtrl[l_idx];
-
     // Build lambda vectors
     std::vector<double> rms_lambdas (rms_lambda_values.num+1);
     std::vector<double> sumrms_lambdas (sumrms_lambda_values.num+1);
@@ -479,54 +457,38 @@ void buildLogLikelihoodProfile(
         ell_lambdas[lidx] = ell_lambda_values.start + ell_lambda_values.step*lidx;
     for (int lidx=0; lidx<=xtrl_lambda_values.num; ++lidx)
         xtrl_lambdas[lidx] = xtrl_lambda_values.start + xtrl_lambda_values.step*lidx;
-   
+    
     // Build TGraphs
     std::vector<std::shared_ptr<TGraph>> rms_lambda_likelihood_profile (DAMPE_bgo_nLayers);
-    std::shared_ptr<TGraph> sumrms_lambda_likelihood_profile;
     std::vector<std::shared_ptr<TGraph>> elf_lambda_likelihood_profile (DAMPE_bgo_nLayers);
-    std::shared_ptr<TGraph> ell_lambda_likelihood_profile;
-    std::shared_ptr<TGraph> xtrl_lambda_likelihood_profile;
-
+    
     for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
     {
-        rms_lambda_likelihood_profile[ly] = std::make_shared<TGraph>(rms_lambda_values.num+1, &rms_lambdas[0], &flikeprofile_rms[ly][0]);
-        elf_lambda_likelihood_profile[ly] = std::make_shared<TGraph>(elf_lambda_values.num+1, &elf_lambdas[0], &flikeprofile_elf[ly][0]);
-        std::string rms_graph_name = std::string("gr_rms_layer_") + std::to_string(ly);
-        std::string elf_graph_name = std::string("gr_elf_layer_") + std::to_string(ly);
-        rms_lambda_likelihood_profile[ly]->SetName(rms_graph_name.c_str());
-        elf_lambda_likelihood_profile[ly]->SetName(elf_graph_name.c_str());
+        rms_lambda_likelihood_profile[ly] = std::make_shared<TGraph>(rms_lambda_values.num+1, &rms_lambdas[0], &likeprofile_rms[ly][0]);
+        elf_lambda_likelihood_profile[ly] = std::make_shared<TGraph>(elf_lambda_values.num+1, &elf_lambdas[0], &likeprofile_elf[ly][0]);
+        rms_lambda_likelihood_profile[ly]->SetName((std::string("gr_rms_layer_") + std::to_string(ly)).c_str());
+        elf_lambda_likelihood_profile[ly]->SetName((std::string("gr_elf_layer_") + std::to_string(ly)).c_str());
     }
 
-    sumrms_lambda_likelihood_profile = std::make_shared<TGraph>(sumrms_lambda_values.num+1, &sumrms_lambdas[0], &flikeprofile_sumrms[0]);
-    ell_lambda_likelihood_profile = std::make_shared<TGraph>(ell_lambda_values.num+1, &ell_lambdas[0], &flikeprofile_ell[0]);
-    xtrl_lambda_likelihood_profile = std::make_shared<TGraph>(xtrl_lambda_values.num+1, &xtrl_lambdas[0], &flikeprofile_xtrl[0]);
+    std::shared_ptr<TGraph> sumrms_lambda_likelihood_profile = std::make_shared<TGraph>(sumrms_lambda_values.num+1, &sumrms_lambdas[0], &likeprofile_sumrms[0]);
+    std::shared_ptr<TGraph> ell_lambda_likelihood_profile = std::make_shared<TGraph>(ell_lambda_values.num+1, &ell_lambdas[0], &likeprofile_ell[0]);
+    std::shared_ptr<TGraph> xtrl_lambda_likelihood_profile = std::make_shared<TGraph>(xtrl_lambda_values.num+1, &xtrl_lambdas[0], &likeprofile_xtrl[0]);
     sumrms_lambda_likelihood_profile->SetName("gr_sumrms");
     ell_lambda_likelihood_profile->SetName("gr_ell");
     xtrl_lambda_likelihood_profile->SetName("gr_xtrl");
 
-    output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/RMS")).c_str());
-    output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/RMS")).c_str());
+    output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles")).c_str());
+    output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles")).c_str());
     for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
+    {
         rms_lambda_likelihood_profile[ly]->Write();
-    
-    output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/SumRMS")).c_str());
-    output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/SumRMS")).c_str());
-    sumrms_lambda_likelihood_profile->Write();
-
-    output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/ELF")).c_str());
-    output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/ELF")).c_str());
-    for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         elf_lambda_likelihood_profile[ly]->Write();
-    
-    output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/ELL")).c_str());
-    output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/ELL")).c_str());
+    }
+    sumrms_lambda_likelihood_profile->Write();
     ell_lambda_likelihood_profile->Write();
-    
-    output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/XTRL")).c_str());
-    output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/LProfiles/XTRL")).c_str());
     xtrl_lambda_likelihood_profile->Write();
-
+    
     output_file->Close();   
-
+    
     if (verbose)  std::cout << "\n\nOutput file has been written... [" << outputPath << "]\n";
 }

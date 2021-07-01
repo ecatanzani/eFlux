@@ -259,9 +259,9 @@ void fit(
         lambda = xtrl_lambda_values.start + xtrl_lambda_values.step*l_idx;
         auto str_lambda = lambda<0 ? std::string("neg_") + std::to_string(std::abs(lambda)) : std::to_string(lambda);
         auto h_name = std::string("h_xtrl_lambda_") + str_lambda; 
-        h_energyfrac_last_layer_gauss[l_idx]->SetName(h_name.c_str());
-        h_energyfrac_last_layer_gauss[l_idx]->GetXaxis()->SetTitle("XTRL_{#lambda}");
-        h_energyfrac_last_layer_gauss[l_idx]->Write();
+        h_xtrl_gauss[l_idx]->SetName(h_name.c_str());
+        h_xtrl_gauss[l_idx]->GetXaxis()->SetTitle("XTRL_{#lambda}");
+        h_xtrl_gauss[l_idx]->Write();
     }
 
     for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
@@ -349,7 +349,7 @@ void fit(
                                                     .Define("mapval", map_filter, {"fraclastlayer_gauss"})
                                                     .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
     }
-
+    
     for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
     {
         lambda = xtrl_lambda_values.start + xtrl_lambda_values.step*l_idx;
@@ -369,22 +369,22 @@ void fit(
                                             .Define("mapval", map_filter, {"xtrl_gauss"})
                                             .Histo1D<double, double>({h_name.c_str(), h_title.c_str(), 100, -10, 10}, "mapval", "simu_energy_w_corr");
     }
-    
+
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/RMS_norm")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/RMS_norm")).c_str());
     for (int l_idx=0; l_idx<=rms_lambda_values.num; ++l_idx)
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
-            h_rmslayer_gauss_norm[l_idx][ly]->Write();
             h_rmslayer_gauss_norm[l_idx][ly]->GetXaxis()->SetTitle("RMS_{#lambda}");
+            h_rmslayer_gauss_norm[l_idx][ly]->Write();
         }
     
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/SumRMS_norm")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/SumRMS_norm")).c_str());
     for (int l_idx=0; l_idx<=sumrms_lambda_values.num; ++l_idx)
     {
-        h_sumrmslayer_gauss_norm[l_idx]->Write();
         h_sumrmslayer_gauss_norm[l_idx]->GetXaxis()->SetTitle("SumRMS_{#lambda}");
+        h_sumrmslayer_gauss_norm[l_idx]->Write();
     }
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELF_norm")).c_str());
@@ -392,24 +392,24 @@ void fit(
     for (int l_idx=0; l_idx<=elf_lambda_values.num; ++l_idx)
         for (int ly = 0; ly < DAMPE_bgo_nLayers; ++ly)
         {
-            h_energyfrac_layer_gauss_norm[l_idx][ly]->Write();
             h_energyfrac_layer_gauss_norm[l_idx][ly]->GetXaxis()->SetTitle("ELF_{#lambda}");
+            h_energyfrac_layer_gauss_norm[l_idx][ly]->Write();
         }
 
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELL_norm")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/ELL_norm")).c_str());
     for (int l_idx=0; l_idx<=ell_lambda_values.num; ++l_idx)
     {
-        h_energyfrac_last_layer_gauss_norm[l_idx]->Write();
         h_energyfrac_last_layer_gauss_norm[l_idx]->GetXaxis()->SetTitle("ELL_{#lambda}");
+        h_energyfrac_last_layer_gauss_norm[l_idx]->Write();
     }
-
+    
     output_file->mkdir((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/XTRL_norm")).c_str());
     output_file->cd((std::string("energybin_") + std::to_string(focus_energybin) + std::string("/XTRL_norm")).c_str());
     for (int l_idx=0; l_idx<=xtrl_lambda_values.num; ++l_idx)
     {
-        h_xtrl_gauss_norm[l_idx]->Write();
         h_xtrl_gauss_norm[l_idx]->GetXaxis()->SetTitle("XTRL_{#lambda}");
+        h_xtrl_gauss_norm[l_idx]->Write();
     }
 
     // Find best lambda values
@@ -421,10 +421,10 @@ void fit(
     int best_xtrl_hist_idx = 0;
 
     std::vector<double> best_rms_lambda (DAMPE_bgo_nLayers, 999);
-    double best_sumrms_lambda;
+    double best_sumrms_lambda = 999;
     std::vector<double> best_fraclayer_lambda (DAMPE_bgo_nLayers, 999);
-    double best_fraclast_lambda;
-    double best_xtrl_lambda;
+    double best_fraclast_lambda = 999;
+    double best_xtrl_lambda = 999;
     
     extract_layer_lambda(
         best_rms_hist_idx, 
