@@ -19,13 +19,13 @@ DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
 
-ANYOPT_SRC = $(TOP)/../deps/AnyOption/anyoption.cpp
-ANYOPT_INC = $(TOP)/../deps/AnyOption
+ANYOPT_SRC = $(TOP)/../../deps/AnyOption/anyoption.cpp
+ANYOPT_INC = $(TOP)/../../deps/AnyOption
 
 DEBUG_DIR    = Debug/obj
 RELEASE_DIR  = Release/obj
-DEBUG_PROG   = Debug/Classifier
-RELEASE_PROG = Release/Classifier
+DEBUG_PROG   = Debug/Cerebrum
+RELEASE_PROG = Release/Cerebrum
 
 # Don't compile specific files
 FILTER := 
