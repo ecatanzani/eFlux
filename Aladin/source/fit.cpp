@@ -46,7 +46,8 @@ inline void extract_layer_lambda(
                 }
                 else
                 {
-                    if (abs(tmp_goodness-1) < abs(goodness[ly_idx]-1))
+                    //if (abs(tmp_goodness-1) < abs(goodness[ly_idx]-1))
+                    if (tmp_goodness<goodness[ly_idx])
                     {
                         best_lambda[ly_idx] = lambda_start + lambda_idx*lambda_step;
                         best_histos_idx[ly_idx] = lambda_idx;
@@ -90,7 +91,8 @@ inline void extract_lambda(
             }
             else
             {
-                if (abs(tmp_goodness-1) < abs(goodness-1))
+                //if (abs(tmp_goodness-1) < abs(goodness-1))
+                if (tmp_goodness<goodness)
                 {
                     best_lambda = lambda_start + lambda_idx*lambda_step;
                     best_histo_idx = lambda_idx;
