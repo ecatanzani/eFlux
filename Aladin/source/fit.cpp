@@ -420,11 +420,11 @@ void fit(
     int best_fraclast_hist_idx = 0;
     int best_xtrl_hist_idx = 0;
 
-    std::vector<double> best_rms_lambda (DAMPE_bgo_nLayers, 999);
-    double best_sumrms_lambda = 999;
-    std::vector<double> best_fraclayer_lambda (DAMPE_bgo_nLayers, 999);
-    double best_fraclast_lambda = 999;
-    double best_xtrl_lambda = 999;
+    std::vector<double> best_rms_lambda (DAMPE_bgo_nLayers, rms_lambda_values.start);
+    double best_sumrms_lambda = sumrms_lambda_values.start;
+    std::vector<double> best_fraclayer_lambda (DAMPE_bgo_nLayers, elf_lambda_values.start);
+    double best_fraclast_lambda = ell_lambda_values.start;
+    double best_xtrl_lambda = xtrl_lambda_values.start;
     
     extract_layer_lambda(
         best_rms_hist_idx, 
