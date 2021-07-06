@@ -718,9 +718,12 @@ void BuildVariablesProfiles(
         for (int b_idx=1; b_idx<=flast_cosine_err[idx]->GetNbinsX(); ++b_idx)
         {
             flast_cosine_err[idx]->SetBinContent(b_idx, flast_cosine_profile[idx]->GetBinError(b_idx));
-            flast_cosine_err[idx]->SetBinError(b_idx, sqrt(flast_cosine_profile[idx]->GetBinError(b_idx)));
+            auto tmp_profileY = flast_cosine[idx]->ProfileY((std::string(flast_cosine[idx]->GetName()) + "_profileY").c_str() ,b_idx , b_idx, profile_err_opt);
+            flast_cosine_err[idx]->SetBinError(b_idx, tmp_profileY->GetRMSError());
+            
             sumrms_cosine_err[idx]->SetBinContent(b_idx, sumrms_cosine_profile[idx]->GetBinError(b_idx));
-            sumrms_cosine_err[idx]->SetBinError(b_idx, sqrt(sumrms_cosine_profile[idx]->GetBinError(b_idx)));
+            tmp_profileY = sumrms_cosine[idx]->ProfileY((std::string(sumrms_cosine[idx]->GetName()) + "_profileY").c_str() ,b_idx , b_idx, profile_err_opt);
+            sumrms_cosine_err[idx]->SetBinError(b_idx, tmp_profileY->GetRMSError());
         }
 
         // TF1s
