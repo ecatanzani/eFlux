@@ -31,7 +31,7 @@ void buildLogLikelihoodProfile(
     auto rms_lambda_values = _lambda_config->GetRMSLambdaStruct();
     auto sumrms_lambda_values = _lambda_config->GetSumRMSLambdaStruct();
     auto elf_lambda_values = _lambda_config->GetELFLambdaStruct();
-    auto ell_lambda_values = _lambda_config->GetELFAngLambdaStruct();
+    auto ell_lambda_values = _lambda_config->GetELLLambdaStruct();
     auto xtrl_lambda_values = _lambda_config->GetXTRLLambdaStruct();
 
     if (verbose)
