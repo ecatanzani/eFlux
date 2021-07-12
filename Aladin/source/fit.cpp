@@ -478,9 +478,9 @@ best_lambda first_stage_fit(
                 if (hsigma) new_val /= hsigma;
                 return new_val;
             };
-            auto map_filter_shift = [lambda, l_idx, ly, &h_rmslayer_gauss_scale](std::map<double, std::vector<double>> map_gauss) -> double 
+            auto map_filter_shift = [l_idx, ly, &h_rmslayer_gauss_scale](const double map_gauss) -> double 
             { 
-                auto new_val = map_gauss[lambda][ly];
+                auto new_val = map_gauss;
                 auto hmean = h_rmslayer_gauss_scale[l_idx][ly]->GetMean();
                 new_val -= hmean>0 ? hmean : -hmean;
                 return new_val;
@@ -505,9 +505,9 @@ best_lambda first_stage_fit(
             if (hsigma) new_val /= hsigma;
             return new_val;
         };
-        auto map_filter_shift = [lambda, l_idx, &h_sumrmslayer_gauss_scale](std::map<double, double> map_gauss) -> double 
+        auto map_filter_shift = [l_idx, &h_sumrmslayer_gauss_scale](double map_gauss) -> double 
         { 
-            auto new_val = map_gauss[lambda];
+            auto new_val = map_gauss;
             auto hmean = h_sumrmslayer_gauss_scale[l_idx]->GetMean();
             new_val -= hmean>0 ? hmean : -hmean;
             return new_val;
@@ -533,9 +533,9 @@ best_lambda first_stage_fit(
                 if (hsigma) new_val /= hsigma;
                 return new_val;
             };
-            auto map_filter_shift = [lambda, l_idx, ly, &h_energyfrac_layer_gauss_scale](std::map<double, std::vector<double>> map_gauss) -> double 
+            auto map_filter_shift = [l_idx, ly, &h_energyfrac_layer_gauss_scale](const double map_gauss) -> double 
             { 
-                auto new_val = map_gauss[lambda][ly];
+                auto new_val = map_gauss;
                 auto hmean = h_energyfrac_layer_gauss_scale[l_idx][ly]->GetMean();
                 new_val -= hmean>0 ? hmean : -hmean;
                 return new_val;
@@ -560,9 +560,9 @@ best_lambda first_stage_fit(
             if (hsigma) new_val /= hsigma;
             return new_val;
         };
-        auto map_filter_shift = [lambda, l_idx, &h_energyfrac_last_layer_gauss_scale](std::map<double, double> map_gauss) -> double 
+        auto map_filter_shift = [l_idx, &h_energyfrac_last_layer_gauss_scale](const double map_gauss) -> double 
         { 
-            auto new_val = map_gauss[lambda];
+            auto new_val = map_gauss;
             auto hmean = h_energyfrac_last_layer_gauss_scale[l_idx]->GetMean();
             new_val -= hmean>0 ? hmean : -hmean;
             return new_val;
@@ -586,9 +586,9 @@ best_lambda first_stage_fit(
             if (hsigma) new_val /= hsigma;
             return new_val;
         };
-        auto map_filter_shift = [lambda, l_idx, &h_xtrl_gauss_scale](std::map<double, double> map_gauss) -> double 
+        auto map_filter_shift = [l_idx, &h_xtrl_gauss_scale](const double map_gauss) -> double 
         { 
-            auto new_val = map_gauss[lambda];
+            auto new_val = map_gauss;
             auto hmean = h_xtrl_gauss_scale[l_idx]->GetMean();
             new_val -= hmean>0 ? hmean : -hmean;
             return new_val;
@@ -741,7 +741,8 @@ best_lambda first_stage_fit(
 
     // Build summary TTree
     std::string tree_vars_file = outputPath.substr(0, outputPath.find_last_of("/")) + std::string("/lambda_corrections.root");
-    TFile* corrections_file = TFile::Open(st1_path(tree_vars_file).c_str(), "RECREATE");
+    //TFile* corrections_file = TFile::Open(st1_path(tree_vars_file).c_str(), "RECREATE");
+    TFile* corrections_file = TFile::Open(tree_vars_file.c_str(), "RECREATE");
     if (corrections_file->IsZombie())
     {
         std::cerr << "\n\nError writing output file [" << tree_vars_file << "]\n\n";
@@ -763,8 +764,10 @@ best_lambda first_stage_fit(
 
     if (verbose)
     {
-        std::cout << "\n\nOutput file has been written... [" << st1_path(outputPath) << "]\n";
-        std::cout << "Output corrections file has been written... [" << st1_path(tree_vars_file) << "]\n";
+        //std::cout << "\n\nOutput file has been written... [" << st1_path(outputPath) << "]\n";
+        //std::cout << "Output corrections file has been written... [" << st1_path(tree_vars_file) << "]\n";
+        std::cout << "\n\nOutput file has been written... [" << outputPath << "]\n";
+        std::cout << "Output corrections file has been written... [" << tree_vars_file << "]\n";
     }
 
     return lambda_select;
