@@ -181,7 +181,7 @@ best_lambda first_stage_fit(
     TFile* output_file = TFile::Open(st1_path(outputPath).c_str(), "RECREATE");
     if (output_file->IsZombie())
     {
-        std::cerr << "\n\nError writing output file [" << outputPath << "]\n\n";
+        std::cerr << "\n\nError writing output file [" << st1_path(outputPath) << "]\n\n";
         exit(100);
     }
 
@@ -576,8 +576,8 @@ best_lambda first_stage_fit(
 
     if (verbose)
     {
-        std::cout << "\n\nOutput file has been written... [" << outputPath << "]\n";
-        std::cout << "Output corrections file has been written... [" << tree_vars_file << "]\n";
+        std::cout << "\n\nOutput file has been written... [" << st1_path(outputPath) << "]\n";
+        std::cout << "Output corrections file has been written... [" << st1_path(tree_vars_file) << "]\n";
     }
 
     return lambda_select;
@@ -617,7 +617,7 @@ void second_stage_fit(
     TFile* output_file = TFile::Open(st2_path(outputPath).c_str(), "RECREATE");
     if (output_file->IsZombie())
     {
-        std::cerr << "\n\nError writing output file [" << outputPath << "]\n\n";
+        std::cerr << "\n\nError writing output file [" << st2_path(outputPath) << "]\n\n";
         exit(100);
     }
 
@@ -1060,7 +1060,7 @@ void second_stage_fit(
 
     // Build summary TTree
     std::string tree_vars_file = outputPath.substr(0, outputPath.find_last_of("/")) + std::string("/lambda_corrections.root");
-    TFile* corrections_file = TFile::Open(st1_path(tree_vars_file).c_str(), "RECREATE");
+    TFile* corrections_file = TFile::Open(st2_path(tree_vars_file).c_str(), "RECREATE");
     if (corrections_file->IsZombie())
     {
         std::cerr << "\n\nError writing output file [" << tree_vars_file << "]\n\n";
@@ -1082,7 +1082,7 @@ void second_stage_fit(
 
     if (verbose)
     {
-        std::cout << "\n\nOutput file has been written... [" << outputPath << "]\n";
-        std::cout << "Output corrections file has been written... [" << tree_vars_file << "]\n";
+        std::cout << "\n\nOutput file has been written... [" << st2_path(outputPath) << "]\n";
+        std::cout << "Output corrections file has been written... [" << st2_path(tree_vars_file) << "]\n";
     }
 }
