@@ -181,7 +181,7 @@ best_lambda first_stage_fit(
     }
     
     //TFile* output_file = TFile::Open(st1_path(outputPath).c_str(), "RECREATE");
-    TFile* output_file = TFile::Open(st1_path(outputPath).c_str(), "RECREATE");
+    TFile* output_file = TFile::Open(outputPath.c_str(), "RECREATE");
     if (output_file->IsZombie())
     {
         //std::cerr << "\n\nError writing output file [" << st1_path(outputPath) << "]\n\n";
@@ -482,7 +482,8 @@ best_lambda first_stage_fit(
             { 
                 auto new_val = map_gauss;
                 auto hmean = h_rmslayer_gauss_scale[l_idx][ly]->GetMean();
-                new_val -= hmean>0 ? hmean : -hmean;
+                if (hmean>0) new_val -= hmean;
+                else new_val += abs(hmean);
                 return new_val;
             };
             auto h_name = std::string("h_rms_norm_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);
@@ -509,7 +510,8 @@ best_lambda first_stage_fit(
         { 
             auto new_val = map_gauss;
             auto hmean = h_sumrmslayer_gauss_scale[l_idx]->GetMean();
-            new_val -= hmean>0 ? hmean : -hmean;
+            if (hmean>0) new_val -= hmean;
+            else new_val += abs(hmean);
             return new_val;
         };
         auto h_name = std::string("h_sumrms_norm_lambda_") + str_lambda;
@@ -537,7 +539,8 @@ best_lambda first_stage_fit(
             { 
                 auto new_val = map_gauss;
                 auto hmean = h_energyfrac_layer_gauss_scale[l_idx][ly]->GetMean();
-                new_val -= hmean>0 ? hmean : -hmean;
+                if (hmean>0) new_val -= hmean;
+                else new_val += abs(hmean);
                 return new_val;
             };
             auto h_name = std::string("h_fraclayer_norm_lambda_") + str_lambda + std::string("_layer_") + std::to_string(ly);
@@ -564,7 +567,8 @@ best_lambda first_stage_fit(
         { 
             auto new_val = map_gauss;
             auto hmean = h_energyfrac_last_layer_gauss_scale[l_idx]->GetMean();
-            new_val -= hmean>0 ? hmean : -hmean;
+            if (hmean>0) new_val -= hmean;
+            else new_val += abs(hmean);
             return new_val;
         };
         auto h_name = std::string("h_fraclastlayer_norm_lambda_") + str_lambda;
@@ -590,7 +594,8 @@ best_lambda first_stage_fit(
         { 
             auto new_val = map_gauss;
             auto hmean = h_xtrl_gauss_scale[l_idx]->GetMean();
-            new_val -= hmean>0 ? hmean : -hmean;
+            if (hmean>0) new_val -= hmean;
+            else new_val += abs(hmean);
             return new_val;
         };
         auto h_name = std::string("h_xtrl_norm_lambda_") + str_lambda;
