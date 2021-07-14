@@ -3,7 +3,7 @@
 
 energy_config::energy_config(const std::string working_dir)
 {
-    const std::string local_path = "/Kompressor/config";
+    const std::string local_path = "/Acceptance/config";
     const std::string config_file_name = "energy_config.conf";
     const auto tmp_config = working_dir.substr(0, working_dir.find("/Collector/config")) + local_path;
     get_config_info(parse_config_file(tmp_config, config_file_name));
