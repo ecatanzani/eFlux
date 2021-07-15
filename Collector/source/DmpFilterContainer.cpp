@@ -875,15 +875,14 @@ void DmpFilterContainer::CheckGeometry(
 	if (!output.evt_in_saa)
 		if (!output.out_energy_range)
 		{
-			bool geocut_result = false;
 			if (simu_primaries!=nullptr)
 			{
-				geocut_result = geometric_cut(simu_primaries);
+				auto geocut_result = geometric_cut(simu_primaries);
 				!output.trigger_check ? output.geometric_before_trigger = geocut_result : output.geometric = geocut_result;
 			}
 			else
 			{
-				geocut_result = geometric_cut_data(bgoRec_slope, bgoRec_intercept);
+				auto geocut_result = geometric_cut_data(bgoRec_slope, bgoRec_intercept);
 				output.geometric = geocut_result;
 			}
 		}
