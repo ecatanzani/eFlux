@@ -26,21 +26,33 @@ void buildAcceptance(const in_args input_args)
     // Build RDF
     ROOT::EnableImplicitMT(input_args.threads);
     ROOT::RDataFrame _data_fr(*(evt_parser->GetEvtTree()));
+    
+    // Filter events in the interesting energy range
+    auto energyFilter = [&mc_energy_config](const double energy) -> bool 
+    {
+        auto status = false;
+        auto _gev = 0.001;
+        if (energy*_gev >= mc_energy_config->GetMinEvtEnergy() && energy*_gev <= mc_energy_config->GetMaxEvtEnergy())
+            status = true;
+        return status; 
+    };
+
+    auto _data_fr_selected = _data_fr.Filter(energyFilter, {"simu_energy"});
 
     // Build acceptance histos
-    auto h_gen = _data_fr.Define("simu_energy_gev", "simu_energy * 0.001")
+    auto h_gen = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                     .Histo1D({"h_gen", "generated events; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
-    auto h_geometric = _data_fr.Define("simu_energy_gev", "simu_energy * 0.001")
+    auto h_geometric = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                             .Filter("evtfilter_geometric_before_trigger==true")
                                             .Histo1D({"h_geometric", "generated events - geometric cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
-    auto h_geometric_trigger = _data_fr.Define("simu_energy_gev", "simu_energy * 0.001")
+    auto h_geometric_trigger = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                             .Filter("evtfilter_geometric_before_trigger==true")
                                             .Filter("evtfilter_evt_triggered==true")
                                             .Histo1D({"h_geometric_trigger", "generated events - geometric cut + trigger; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");                                        
-    auto h_bgo_fiducial = _data_fr.Define("simu_energy_gev", "simu_energy * 0.001")
+    auto h_bgo_fiducial = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_BGO_fiducial==true")
                                                 .Histo1D({"h_bgo_fiducial", "generated events - BGO fiducial cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
-    auto h_all_cut = _data_fr.Define("simu_energy_gev", "simu_energy * 0.001")
+    auto h_all_cut = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_all_cut==true")
                                                 .Histo1D({"h_all_cut", "generated events - all cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
 

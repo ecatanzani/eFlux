@@ -14,6 +14,8 @@ public:
     energy_config(const std::string working_dir);
     ~energy_config(){};
     std::vector<float> GetEnergyBinning();
+    const double GetMinEvtEnergy();
+    const double GetMaxEvtEnergy();
     void PrintActiveFilters();
 
 private:

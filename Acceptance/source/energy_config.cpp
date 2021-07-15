@@ -68,3 +68,13 @@ std::vector<float> energy_config::GetEnergyBinning()
 {
 	return energy_binning;
 }
+
+const double energy_config::GetMinEvtEnergy()
+{
+	return min_event_energy;
+}
+
+const double energy_config::GetMaxEvtEnergy()
+{
+	return max_event_energy;
+}
