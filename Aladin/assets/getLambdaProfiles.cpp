@@ -69,7 +69,7 @@ void getLambdaProfiles(
     std::vector<ROOT::RDF::RResultPtr<TGraph>> gr_rms_energylog (dampe_bgo_layers);
     std::vector<ROOT::RDF::RResultPtr<TGraph>> gr_elf_energylog (dampe_bgo_layers);
     
-    auto getEnergyValue = [&energy_bins, &spectrum_index] (const int bin) -> double
+    auto getEnergyValue = [&energy_bins, &spectrum_index] (const unsigned int bin) -> double
     {
         auto dene = energy_bins[bin] - energy_bins[bin-1];
         if (spectrum_index != -1)
