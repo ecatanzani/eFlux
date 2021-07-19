@@ -33,7 +33,7 @@ void split(in_args input_args)
     {
         auto bin_filter = [bin_idx](int energy_bin) -> bool { return energy_bin == bin_idx; };
         auto fname = input_args.output_path + std::string("energybin_") + std::to_string(bin_idx) + std::string(".root");
-        if (input_args.verbose) std::cout << "\nOutput TFile has been written [" << fname << "]";
+        if (input_args.verbose) std::cout << "\nOutput TFile has been written [" << fname << "]\t entries: " << *(_data_fr.Filter(bin_filter, {"energy_bin"}).Count());
         _data_fr.Filter(bin_filter, {"energy_bin"}).Snapshot(evt_parser->GetEvtTree()->GetName(), fname.c_str());
     }
 
