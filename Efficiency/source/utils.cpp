@@ -6,6 +6,6 @@ std::string expand_output_path(
 {
     auto result = output;
     if (opt.getValue("outputdir") || opt.getValue('d'))
-        result += "/acceptance_output.root";
+        result += "/efficiency_output.root";
     return result;
 }
