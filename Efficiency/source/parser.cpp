@@ -1,10 +1,9 @@
 #include "parser.h"
 
-parser::parser(
-    const std::string input_list,
-    const bool verbose)
+parser::parser(const std::string input_list, const bool verbose, const bool mc)
 {
-    evtch = std::make_shared<TChain> (tree_name.c_str(), "DAMPE event tree");
+    auto tmp_tree_name = mc ? mc_tree_name : data_tree_name;
+    evtch = std::make_shared<TChain> (tmp_tree_name.c_str(), "DAMPE event tree");
     std::istringstream input_stream(parse_input_file(input_list));
     std::string tmp_str;
     while (input_stream >> tmp_str)

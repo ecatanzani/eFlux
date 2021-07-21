@@ -10,7 +10,7 @@
 
 void buildEfficiency(const in_args input_args)
 {
-    std::shared_ptr<parser> evt_parser = std::make_shared<parser>(input_args.input_list, input_args.verbose);
+    std::shared_ptr<parser> evt_parser = std::make_shared<parser>(input_args.input_list, input_args.verbose, input_args.mc);
     std::shared_ptr<config> mc_config = std::make_shared<config>(input_args.wd);
     std::shared_ptr<energy_config> mc_energy_config = std::make_shared<energy_config>(input_args.wd);
 
