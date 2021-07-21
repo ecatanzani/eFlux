@@ -4,13 +4,10 @@
 #include "TFile.h"
 #include "TEfficiency.h"
 
-void buildMCEfficiency(TFile* input_file, const char* output_file_path);
-void buildDATAEfficiency(TFile* input_file, const char* output_file_path);
+void buildMCEfficiency(const char* input_file_path, const char* output_file_path);
+void buildDATAEfficiency(const char* input_file_path, const char* output_file_path);
 
-void buildEfficiency(
-    const char* input_file_path, 
-    const char* output_file_path="efficiencyout.root",
-    const bool mc=false)
+void buildMCEfficiency(const char* input_file_path, const char* output_file_path)
 {
     TFile *input_file = TFile::Open(input_file_path, "READ");
     if (!input_file->IsOpen())
@@ -18,13 +15,7 @@ void buildEfficiency(
         std::cerr << "\n\nError opening input ROOT file [" << input_file_path << "]\n\n";
         exit(100);
     }
-
-    if (mc) buildMCEfficiency(input_file, output_file_path);
-    else buildDATAEfficiency(input_file, output_file_path);
-}
-
-void buildMCEfficiency(TFile* input_file, const char* output_file_path)
-{
+    
     auto h_geometric = static_cast<TH1D*>(input_file->Get("h_geometric"));
     auto h_geometric_trigger = static_cast<TH1D*>(input_file->Get("h_geometric_trigger"));
     auto h_trigger = static_cast<TH1D*>(input_file->Get("h_trigger"));
@@ -90,8 +81,8 @@ void buildMCEfficiency(TFile* input_file, const char* output_file_path)
         psd_stk_match_eff = std::make_unique<TEfficiency>(*h_psd_stk_match, *h_track_selection);
     if (TEfficiency::CheckConsistency(*h_psd_charge, *h_psd_stk_match))
         psd_charge_eff = std::make_unique<TEfficiency>(*h_psd_charge, *h_psd_stk_match);
-    if (TEfficiency::CheckConsistency(*h_stk_charge, *h_psd_charge))
-        stk_charge_eff = std::make_unique<TEfficiency>(*h_stk_charge, *h_psd_charge);
+    if (TEfficiency::CheckConsistency(*h_stk_charge, *h_psd_stk_match))
+        stk_charge_eff = std::make_unique<TEfficiency>(*h_stk_charge, *h_psd_stk_match);
     if (TEfficiency::CheckConsistency(*h_all_cuts, *h_trigger))
         all_cuts_eff = std::make_unique<TEfficiency>(*h_all_cuts, *h_trigger);
 
@@ -158,8 +149,15 @@ void buildMCEfficiency(TFile* input_file, const char* output_file_path)
     output_file->Close();
 }
 
-void buildDATAEfficiency(TFile* input_file, const char* output_file_path)
+void buildDATAEfficiency(const char* input_file_path, const char* output_file_path)
 {
+    TFile *input_file = TFile::Open(input_file_path, "READ");
+    if (!input_file->IsOpen())
+    {
+        std::cerr << "\n\nError opening input ROOT file [" << input_file_path << "]\n\n";
+        exit(100);
+    }
+    
     auto h_trigger = static_cast<TH1D*>(input_file->Get("h_trigger"));
     auto h_maxElayer = static_cast<TH1D*>(input_file->Get("h_maxElayer"));
     auto h_maxBarlayer = static_cast<TH1D*>(input_file->Get("h_maxBarlayer"));
@@ -187,7 +185,7 @@ void buildDATAEfficiency(TFile* input_file, const char* output_file_path)
     h_all_cuts->SetDirectory(0);
 
     input_file->Close();
-    
+
     std::unique_ptr<TEfficiency> maxElayer_eff;
     std::unique_ptr<TEfficiency> maxBarLayer_eff;
     std::unique_ptr<TEfficiency> BGOTrackContainment_eff;
@@ -218,11 +216,11 @@ void buildDATAEfficiency(TFile* input_file, const char* output_file_path)
         psd_stk_match_eff = std::make_unique<TEfficiency>(*h_psd_stk_match, *h_track_selection);
     if (TEfficiency::CheckConsistency(*h_psd_charge, *h_psd_stk_match))
         psd_charge_eff = std::make_unique<TEfficiency>(*h_psd_charge, *h_psd_stk_match);
-    if (TEfficiency::CheckConsistency(*h_stk_charge, *h_psd_charge))
-        stk_charge_eff = std::make_unique<TEfficiency>(*h_stk_charge, *h_psd_charge);
+    if (TEfficiency::CheckConsistency(*h_stk_charge, *h_psd_stk_match))
+        stk_charge_eff = std::make_unique<TEfficiency>(*h_stk_charge, *h_psd_stk_match);
     if (TEfficiency::CheckConsistency(*h_all_cuts, *h_trigger))
         all_cuts_eff = std::make_unique<TEfficiency>(*h_all_cuts, *h_trigger);
-    
+
     maxElayer_eff->SetStatisticOption(TEfficiency::kBUniform);
     maxBarLayer_eff->SetStatisticOption(TEfficiency::kBUniform);
     BGOTrackContainment_eff->SetStatisticOption(TEfficiency::kBUniform);
@@ -234,7 +232,7 @@ void buildDATAEfficiency(TFile* input_file, const char* output_file_path)
     psd_charge_eff->SetStatisticOption(TEfficiency::kBUniform);
     stk_charge_eff->SetStatisticOption(TEfficiency::kBUniform);
     all_cuts_eff->SetStatisticOption(TEfficiency::kBUniform);
-    
+
     maxElayer_eff->SetName("maxElayer_eff");
     maxBarLayer_eff->SetName("maxBarLayer_eff");
     BGOTrackContainment_eff->SetName("BGOTrackContainment_eff");
