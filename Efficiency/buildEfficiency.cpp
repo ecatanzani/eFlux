@@ -7,7 +7,7 @@
 void buildMCEfficiency(TFile* input_file, const char* output_file_path);
 void buildDATAEfficiency(TFile* input_file, const char* output_file_path);
 
-void BuildEfficiency(
+void buildEfficiency(
     const char* input_file_path, 
     const char* output_file_path="efficiencyout.root",
     const bool mc=false)
@@ -21,12 +21,6 @@ void BuildEfficiency(
 
     if (mc) buildMCEfficiency(input_file, output_file_path);
     else buildDATAEfficiency(input_file, output_file_path);
-   
-
-    
-    
-
-    
 }
 
 void buildMCEfficiency(TFile* input_file, const char* output_file_path)
