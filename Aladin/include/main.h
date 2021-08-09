@@ -16,6 +16,7 @@ struct in_args
 	std::string input_list;
 	std::string output_path;
 	std::string regularize_tree_path;
+	std::string best_lambda_tree_path;
 	bool verbose = false;
 
 	// Tasks
@@ -30,11 +31,21 @@ struct in_args
 	{	
 		bool status = false;
 		if (loglikelihood || fit)
+		{
 			if (!wd.empty() && !input_list.empty() && !output_path.empty() && energybin!=999) 
 				status = true;
-		if (gaussianize)
+		}
+		else if (gaussianize)
+		{
 			if (!wd.empty() && !input_list.empty() && !output_path.empty() && !regularize_tree_path.empty()) 
 				status = true;
+		}
+		else
+		{
+			if (!best_lambda_tree_path.empty() && !regularize_tree_path.empty())
+				status = true;
+		}
+
 		return status;
 	}
 };

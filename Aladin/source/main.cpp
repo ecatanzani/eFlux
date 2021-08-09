@@ -31,6 +31,9 @@ int main(int argc, char **argv)
 	opt.addUsage(" -b  --bin                   .......... Energy bin");
 
 	opt.addUsage("");
+	opt.addUsage(" -t  --tmva                  .......... <path_to_best_lambda_Tree>                           .......... Regularize variables behaviour");
+
+	opt.addUsage("");
 	opt.addUsage(" -p  --parallel              .......... <number_of_threads>                                  .......... Multithreading option");
 	
 
@@ -47,6 +50,7 @@ int main(int argc, char **argv)
 	opt.setFlag("gaussianize", 'g');
 	opt.setFlag("fit", 'f');
 	opt.setOption("bin", 'b');
+	opt.setOption("tmva", 't');
 	opt.setFlag("likelihood", 'l');
 	opt.setOption("parallel", 'p');
 
@@ -85,6 +89,8 @@ int main(int argc, char **argv)
 		input_args.fit = opt.getFlag('f');
 	if (opt.getValue("bin") || opt.getValue('b'))
 		input_args.energybin = std::stoul(opt.getValue('b'), nullptr, 0);
+	if (opt.getValue("tmva") || opt.getValue('t'))
+		input_args.best_lambda_tree_path = opt.getValue('t');
 	if (opt.getFlag("likelihood") || opt.getFlag('l'))
 		input_args.loglikelihood = opt.getFlag('l');
 	if (opt.getValue("parallel") || opt.getValue('p'))

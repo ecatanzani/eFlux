@@ -1,5 +1,6 @@
 #include "reader.h"
 #include "fit.h"
+#include "tmva_vars.h"
 #include "list_parser.h"
 #include "gaussianize.h"
 #include "loglikelihood.h"
@@ -11,7 +12,11 @@
 void reader(in_args input_args)
 {
     // Parse input file list
-    bool gaussianized = input_args.gaussianize ? false : true;
+    bool gaussianized = false;
+    if (input_args.fit || input_args.loglikelihood)
+        gaussianized = true;
+    
+    //input_args.gaussianize ? false : true;
     std::shared_ptr<parser> evt_parser = std::make_shared<parser>(input_args.input_list, input_args.mc_flag, input_args.verbose, gaussianized);
     // Parse 'Collector' config file
     std::shared_ptr<config> _config = std::make_shared<config>(input_args.wd, input_args.mc_flag);
@@ -23,7 +28,6 @@ void reader(in_args input_args)
     if (input_args.gaussianize)
         gaussianize(
             evt_parser->GetEvtTree(),
-            _config,
             _energy_config,
             _lambda_config,
             evt_parser->GetEvtTree()->GetEntries(),
@@ -48,7 +52,8 @@ void reader(in_args input_args)
             input_args.mc_flag);
 
     else if (input_args.fit)
-        fit(evt_parser->GetEvtTree(),
+        fit(
+            evt_parser->GetEvtTree(),
             _config,
             _energy_config,
             _lambda_config,
@@ -59,5 +64,17 @@ void reader(in_args input_args)
             input_args.verbose,
             input_args.threads,
             input_args.mc_flag);
+    else
+        tmva_vars(
+            evt_parser->GetEvtTree(),
+            _energy_config,
+            evt_parser->GetEvtTree()->GetEntries(),
+            input_args.best_lambda_tree_path,
+            input_args.regularize_tree_path,
+            input_args.output_path,
+            input_args.verbose,
+            input_args.threads,
+            input_args.mc_flag);
+
 
 }

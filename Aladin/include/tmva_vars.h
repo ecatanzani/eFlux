@@ -1,24 +1,18 @@
-#ifndef GAUSSIANIZE_H
-#define GAUSSIANIZE_H
-
-#include <string>
-#include <memory>
-#include <vector>
+#ifndef TMVA_VARS_H
+#define TMVA_VARS_H
 
 #include "config.h"
 #include "energy_config.h"
-#include "lambda_config.h"
-#include "DAMPE_geo_structure.h"
 
 #include "TChain.h"
 
-extern void gaussianize(
+extern void tmva_vars(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<energy_config> _energy_config,
-    std::shared_ptr<lambda_config> _lambda_config,
     const double _entries,
+    const std::string lambda_tree,
+    const std::string regularize_tree,
     const std::string outputPath,
-    const std::string regularize_tree_path,
     const bool verbose,
     const unsigned int threads,
     const bool _mc);

@@ -15,7 +15,6 @@
 
 void gaussianize(
     std::shared_ptr<TChain> evtch,
-    std::shared_ptr<config> _config,
     std::shared_ptr<energy_config> _energy_config,
     std::shared_ptr<lambda_config> _lambda_config,
     const double _entries,
@@ -138,7 +137,7 @@ void gaussianize(
         return rmslayer_gauss;
     };
 
-    auto gaussianize_sumrmslayer = [&sumrms_lambda_values](const double input_sumrmslayer) -> std::map<double, double>
+    auto gaussianize_sumrms = [&sumrms_lambda_values](const double input_sumrmslayer) -> std::map<double, double>
     {
         auto gaussianize_elm = [](const double elm, const double lambda) -> double
         {
@@ -146,14 +145,14 @@ void gaussianize(
             return elm_cp;
         };
         
-        std::map<double, double> sumrmslayer_gauss;
+        std::map<double, double> sumrms_gauss;
         for (int lambda_idx=0; lambda_idx<=sumrms_lambda_values.num; ++lambda_idx)
         {
             double lambda = sumrms_lambda_values.start + lambda_idx*sumrms_lambda_values.step;
-            sumrmslayer_gauss.insert(std::pair<double, double>(lambda, gaussianize_elm(input_sumrmslayer, lambda)));
+            sumrms_gauss.insert(std::pair<double, double>(lambda, gaussianize_elm(input_sumrmslayer, lambda)));
         }
 
-        return sumrmslayer_gauss;
+        return sumrms_gauss;
     };
 
     auto gaussianize_fraclayer = [&elf_lambda_values](const std::vector<double> input_fraclayer) -> std::map<double, std::vector<double>>
@@ -213,7 +212,7 @@ void gaussianize(
     };
 
     auto fr_gauss = fr.Define("rmslayer_gauss", gaussianize_rmslayer, {"rmsLayer"})
-                        .Define("sumrmslayer_gauss", gaussianize_sumrmslayer, {"sumRms_reg"})
+                        .Define("sumrms_gauss", gaussianize_sumrms, {"sumRms_reg"})
                         .Define("fraclayer_gauss", gaussianize_fraclayer, {"fracLayer"})
                         .Define("fraclastlayer_gauss", gaussianize_fraclastlayer, {"fracLast_reg"})
                         .Define("xtrl_gauss", gaussianize_xtrl, {"xtrl"});

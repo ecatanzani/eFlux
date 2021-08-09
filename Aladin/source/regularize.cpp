@@ -11,7 +11,7 @@ void load_tf1s(
     std::vector<TF1> &sumrms_fitfunc_err,
     std::vector<TF1> &flast_fitfunc,
     std::vector<TF1> &flast_fitfunc_err,
-    const bool _VERBOSE)
+    const bool verbose)
 {
     TFile *fitfile = TFile::Open(file_path.c_str(), "READ");
     if (!fitfile->IsOpen())
@@ -20,7 +20,7 @@ void load_tf1s(
         exit(100);
     }
     else
-        if (_VERBOSE)
+        if (verbose)
             std::cout << "\nReading fitting summary [" << file_path << "]\n";
 
     // **** Fit function parameters
