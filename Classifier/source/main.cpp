@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 	opt.addUsage("TMVA learning method: ");
 	opt.addUsage("");
 
-	opt.addUsage(" -m  --method                     .......... <TMVA_learning_method_1:method_2...>              .......... TMVA learning/classifying method");
+	opt.addUsage(" -m  --method                      .......... <TMVA_learning_method_1:method_2...>              .......... TMVA learning/classifying method");
 
 	opt.addUsage("");
 
