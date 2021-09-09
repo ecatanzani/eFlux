@@ -366,6 +366,36 @@ void tmva_vars(
                         .Define("fraclastlayer_norm", normalize_fraclastlayer, {"fraclastlayer_gauss", "energy_bin"})
                         .Define("xtrl_norm", normalize_xtrl, {"xtrl_gauss", "energy_bin"});
 
+    auto fr_tmva = fr_norm.Define("rmslayer_norm_1", "rmslayer_norm[0]")
+                            .Define("rmslayer_norm_2", "rmslayer_norm[1]")
+                            .Define("rmslayer_norm_3", "rmslayer_norm[2]")
+                            .Define("rmslayer_norm_4", "rmslayer_norm[3]")
+                            .Define("rmslayer_norm_5", "rmslayer_norm[4]")
+                            .Define("rmslayer_norm_6", "rmslayer_norm[5]")
+                            .Define("rmslayer_norm_7", "rmslayer_norm[6]")
+                            .Define("rmslayer_norm_8", "rmslayer_norm[7]")
+                            .Define("rmslayer_norm_9", "rmslayer_norm[8]")
+                            .Define("rmslayer_norm_10", "rmslayer_norm[9]")
+                            .Define("rmslayer_norm_11", "rmslayer_norm[10]")
+                            .Define("rmslayer_norm_12", "rmslayer_norm[11]")
+                            .Define("rmslayer_norm_13", "rmslayer_norm[12]")
+                            .Define("rmslayer_norm_14", "rmslayer_norm[13]")
+
+                            .Define("fraclayer_norm_1", "fraclayer_norm[0]")
+                            .Define("fraclayer_norm_2", "fraclayer_norm[1]")
+                            .Define("fraclayer_norm_3", "fraclayer_norm[2]")
+                            .Define("fraclayer_norm_4", "fraclayer_norm[3]")
+                            .Define("fraclayer_norm_5", "fraclayer_norm[4]")
+                            .Define("fraclayer_norm_6", "fraclayer_norm[5]")
+                            .Define("fraclayer_norm_7", "fraclayer_norm[6]")
+                            .Define("fraclayer_norm_8", "fraclayer_norm[7]")
+                            .Define("fraclayer_norm_9", "fraclayer_norm[8]")
+                            .Define("fraclayer_norm_10", "fraclayer_norm[9]")
+                            .Define("fraclayer_norm_11", "fraclayer_norm[10]")
+                            .Define("fraclayer_norm_12", "fraclayer_norm[11]")
+                            .Define("fraclayer_norm_13", "fraclayer_norm[12]")
+                            .Define("fraclayer_norm_14", "fraclayer_norm[13]");
+
     fr_norm.Snapshot((std::string(evtch->GetName()) + std::string("_norm")).c_str(), outputPath);
     
     if (verbose)
