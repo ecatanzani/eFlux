@@ -1,17 +1,17 @@
 #include "train.h"
-#include "config.h"
 #include "reader.h"
+#include "config.h"
 #include "train_utils.h"
 
 #include "TChain.h"
 
-#include "TMVA/Factory.h"
 #include "TMVA/Tools.h"
-#include "TMVA/MethodCategory.h"
-#include "TMVA/IMethod.h"
 #include "TMVA/Reader.h"
+#include "TMVA/Factory.h"
+#include "TMVA/IMethod.h"
 #include "TMVA/MethodCuts.h"
 #include "TMVA/DataLoader.h"
+#include "TMVA/MethodCategory.h"
 
 #include <memory>
 #include <vector>
@@ -21,16 +21,16 @@ void Train(in_args input_args)
     // Read input data sets
     if (input_args.verbose)
         std::cout << "\n==> Reading signal training data [" << input_args.train_signal_input_list << "]" << std::endl;
-    auto signal_train_tree = ReadTreeFromFile(input_args.train_signal_input_list, "trainSignal", input_args.verbose);
+    auto signal_train_tree = BuildChain(input_args.train_signal_input_list, input_args.verbose);
     if (input_args.verbose)
         std::cout << "\n==> Reading background training data [" << input_args.train_background_input_list << "]" << std::endl;
-    auto background_train_tree = ReadTreeFromFile(input_args.train_background_input_list, "trainBackground", input_args.verbose);
+    auto background_train_tree = BuildChain(input_args.train_background_input_list, input_args.verbose);
     if (input_args.verbose)
         std::cout << "\n==> Reading signal test data [" << input_args.test_signal_input_list << "]" << std::endl;
-    auto signal_test_tree = ReadTreeFromFile(input_args.test_signal_input_list, "testSignal", input_args.verbose);
+    auto signal_test_tree = BuildChain(input_args.test_signal_input_list, input_args.verbose);
     if (input_args.verbose)
         std::cout << "\n==> Reading background test data [" << input_args.test_background_input_list << "]" << std::endl;
-    auto background_test_tree = ReadTreeFromFile(input_args.test_background_input_list, "testBackground", input_args.verbose);
+    auto background_test_tree = BuildChain(input_args.test_background_input_list, input_args.verbose);
     if (input_args.verbose)
         std::cout << "\n==> Writing TMVA output ROOT file [" << input_args.output_path << "]" << std::endl;
 
@@ -48,14 +48,9 @@ void Train(in_args input_args)
     TMVA::Tools::Instance();
 
     // Parse config file
-    std::unique_ptr<config> _config =
-        std::make_unique<config>(
-            input_args.config_dir,
-            signal_train_tree,
-            background_train_tree);
+    std::unique_ptr<config> _config = std::make_unique<config>(input_args.config_dir, signal_train_tree, background_train_tree);
 
-    if (input_args.verbose)
-        _config->PrintVariableOptions();
+    if (input_args.verbose) _config->PrintVariableOptions();
 
     // Get TMVA methods
     auto methods_map = GetTMVAMethods(input_args.learning_method);
@@ -71,15 +66,16 @@ void Train(in_args input_args)
     if (input_args.verbose)
         std::cout << "\n==> Start TMVAClassification" << std::endl;
 
-    std::shared_ptr<TMVA::Factory> factory = std::make_shared<TMVA::Factory>("TMVAClassification", outfile,
-                                                                             "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification");
+    std::shared_ptr<TMVA::Factory> factory = 
+        std::make_shared<TMVA::Factory>(
+            "TMVAClassification", 
+            outfile,
+            "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification");
+
     std::shared_ptr<TMVA::DataLoader> dataloader = std::make_shared<TMVA::DataLoader>("dataset");
 
     // Define the input variables that shall be methods_mapd for the MVA training
     SetTMVAVariables(dataloader, _config->GetVariableOptions());
-
-    // Remove nans from vars
-    
 
     // Set global event weights per tree
     double signalWeight = 1.0;
