@@ -86,7 +86,7 @@ inline best_lambda getLambdaBestValues(
     else
     {
         if (verbose)
-            std::cout << "\nReading best lambda TTree [" << lambda_tree << "]\n";
+            std::cout << "\n\nReading best lambda TTree [" << lambda_tree << "]";
     }
 
     auto lambda_select = best_lambda();
@@ -225,10 +225,9 @@ void tmva_vars(
         reg_flast /= flast_fitfunc_err[energy_bin - 1].Eval(bgocosine);
         return reg_flast;
     };
-
+    
     auto fr = _fr_preselected.Define("sumRms_reg", regularize_sumrms, {"sumRms", "energy_bin", "BGOrec_trajectoryDirection2D"})
                             .Define("fracLast_reg", regularize_flast, {"fracLast", "energy_bin", "BGOrec_trajectoryDirection2D"});
-
 
     auto gaussianize_rmslayer = [lambda_select](const std::vector<double> input_rmslayer, const int energy_bin) -> std::vector<double>
     {
