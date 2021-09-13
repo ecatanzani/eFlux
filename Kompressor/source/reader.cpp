@@ -1,5 +1,4 @@
 #include "reader.h"
-#include "tmvaset.h"
 #include "kompress.h"
 #include "list_parser.h"
 
@@ -22,30 +21,15 @@ void reader(in_args input_args)
         _energy_config->PrintActiveFilters();
         std::cout << "Total number of events: " << _entries;
     }
-
-    if (input_args.tmva_set)
-        createTMVAset(
-            evt_parser->GetEvtTree(),
-            _config,
-            _energy_config,
-            input_args.fit_tree_path,
-            input_args.signal,
-            input_args.output_path,
-            input_args._VERBOSE,
-            input_args.no_split,
-            input_args.no_split_test,
-            input_args.threads,
-            input_args.mc_flag);
     
-    else
-        kompress(
-            evt_parser->GetEvtTree(), 
-            _config,
-            _energy_config,
-            input_args.fit_tree_path,
-            _entries, 
-            input_args.output_path, 
-            input_args._VERBOSE,
-            input_args.threads,
-            input_args.mc_flag);
+    kompress(
+        evt_parser->GetEvtTree(), 
+        _config,
+        _energy_config,
+        input_args.fit_tree_path,
+        _entries, 
+        input_args.output_path, 
+        input_args._VERBOSE,
+        input_args.threads,
+        input_args.mc_flag);
 }

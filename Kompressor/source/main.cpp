@@ -25,10 +25,6 @@ int main(int argc, char **argv)
 	opt.addUsage(" -r  --regularize            .......... <path_to_summary_fit_TTree>                          .......... Regularize variables behaviour");
 	
 	opt.addUsage("");
-	opt.addUsage(" -t  --tmva-set              .......... <s(signal)/b(background)>                            .......... Create TMVA Test/Training sets");
-	opt.addUsage(" -n  --no-split              .......... <t(train)/T(test)>                                   .......... Create a single Test/Training TMVA set");
-	
-	opt.addUsage("");
 	opt.addUsage(" -p  --parallel              .......... <number_of_threads>                                  .......... Multithreading option");
 	
 
@@ -42,8 +38,6 @@ int main(int argc, char **argv)
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("mc", 'm');
 	opt.setOption("regularize", 'r');
-	opt.setOption("tmva-set", 't');
-	opt.setOption("no-split", 'n');
 	opt.setOption("parallel", 'p');
 
 	opt.processCommandArgs(argc, argv);
@@ -75,13 +69,6 @@ int main(int argc, char **argv)
 		input_args.mc_flag = true;
 	if (opt.getValue("regularize") || opt.getValue('r'))
 		input_args.fit_tree_path = opt.getValue('r');
-	if (opt.getValue("tmva-set") || opt.getValue('t'))
-	{
-		input_args.tmva_set = true;
-		input_args.SetSeType(opt.getValue('t'));
-	}
-	if (opt.getValue("no-split") || opt.getValue('n'))
-		input_args.SetNSeType(opt.getValue('n'));
 	if (opt.getValue("parallel") || opt.getValue('p'))
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 

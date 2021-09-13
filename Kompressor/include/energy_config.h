@@ -7,12 +7,6 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
-struct tmva_set_energy_filter
-{
-    double min_event_energy = -999;
-    double max_event_energy = -999;
-};
 class energy_config
 {
 public:
@@ -33,7 +27,6 @@ private:
     double min_event_energy = -999;
     double max_event_energy = -999;
     std::vector<float> energy_binning;
-    tmva_set_energy_filter set_filter;
 };
 
 #endif
