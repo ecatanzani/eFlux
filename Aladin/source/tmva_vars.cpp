@@ -171,17 +171,8 @@ void tmva_vars(
 
     auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"});
     _fr_bin_patch = _mc ? _fr_bin_patch.Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"}) : _fr_bin_patch.Define("simu_energy_w_corr", "1.");
-
-    auto set_filter_min_energy = _energy_config->GetSetMinEvtEnergy();
-    auto set_filter_max_energy = _energy_config->GetSetMaxEvtEnergy();
-    auto _fr_preselected = _fr_bin_patch.Filter("evtfilter_all_cut==true")
-                                        .Filter([&set_filter_min_energy, &set_filter_max_energy, &_gev](const double energy) -> bool {
-                                                        auto status = false;
-                                                        if (energy*_gev >= set_filter_min_energy && energy*_gev <= set_filter_max_energy)
-                                                            status = true;
-                                                        else
-                                                            status = false;
-                                                        return status; }, {"energy_corr"});
+    
+    auto _fr_preselected = _fr_bin_patch.Filter("evtfilter_all_cut==true");
 
     std::cout << "\n\n**** Filter statistics ****\n";
     std::cout << "***************************\n";
