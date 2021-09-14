@@ -387,7 +387,7 @@ void tmva_vars(
                             .Define("fraclayer_norm_13", "fraclayer_norm[12]")
                             .Define("fraclayer_norm_14", "fraclayer_norm[13]");
 
-    fr_norm.Snapshot((std::string(evtch->GetName()) + std::string("_norm")).c_str(), outputPath);
+    fr_tmva.Snapshot((std::string(evtch->GetName()) + std::string("_norm")).c_str(), outputPath);
     
     if (verbose)
         std::cout << "\nOutput TFile has been written [" << outputPath << "]\n";
