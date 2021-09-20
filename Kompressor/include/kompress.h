@@ -16,7 +16,7 @@ extern void kompress(
     const std::string fit_tree_path,
     const double _entries,
     const std::string outputPath,
-    const bool _VERBOSE,
+    const bool verbose,
     const unsigned int threads,
     const bool _mc);
 

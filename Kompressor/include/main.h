@@ -11,13 +11,13 @@
 
 struct in_args
 {
-    std::string wd;
+    std::string collector_wd;
 	std::string input_list;
 	std::string output_path;
 	std::string fit_tree_path;
-	bool _VERBOSE = false;
-	bool mc_flag = false;
-	unsigned int threads = 1;
+	bool verbose {false};
+	bool mc_flag {false};
+	unsigned int threads {1};
 };
 
 #endif

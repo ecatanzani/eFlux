@@ -16,38 +16,47 @@ void kompress(
     const std::string fit_tree_path,
     const double _entries,
     const std::string outputPath,
-    const bool _VERBOSE,
+    const bool verbose,
     const unsigned int threads,
-    const bool _mc)
-{
-    // Enable multithreading
-    ROOT::EnableImplicitMT(threads);
-    // Create RDF
-    ROOT::RDataFrame _data_fr(*evtch);
-    // Extract the energy binning
+    const bool _mc) {
+
+    // Extract the energy info
     auto energy_binning = _energy_config->GetEnergyBinning();
     auto energy_nbins = (int)energy_binning.size() - 1;
+    auto min_evt_energy = _energy_config->GetMinEvtEnergy();
+    auto max_evt_energy = _energy_config->GetMaxEvtEnergy();
     // Plotting variables
     double _gev = 0.001;
     std::string sumRms_leaf = "sumRms";
     std::string fracLast_leaf = "fracLast";
-    // Check regularization option
+    // Set the regularization options
     bool regularize_vars;
     fit_tree_path.empty() ? regularize_vars = false : regularize_vars = true;
-    // Create the RDFs
+    
+    // Create the RDF
+    ROOT::EnableImplicitMT(threads);
+    ROOT::RDataFrame _data_fr(*evtch);
+    
     auto GetEnergyBin = [=](double energy) -> int { 
         int bin_idx=0;
         for (; bin_idx<energy_nbins-1; ++bin_idx)
             if (energy * _gev >= energy_binning[bin_idx] && energy * _gev < energy_binning[bin_idx+1])
                 break;
-        return bin_idx+1; };
+        return bin_idx+1; 
+    };
+    
+    auto energyFilter = [&min_evt_energy, &max_evt_energy, &_gev](const double energy) -> bool {
+        return energy*_gev >= min_evt_energy && energy*_gev <= max_evt_energy ? true : false;
+    };
+
+    auto simuEnergyWeight = [&_mc, &energy_binning](const double simu_energy_w) -> double {
+        return _mc ? simu_energy_w * pow(energy_binning[0], 2) : 1;
+    };
 
     // Create the RDF with energy bin and correct energy weight
-    auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"});
-    if (_mc)
-        _fr_bin_patch = _fr_bin_patch.Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"});
-    else
-        _fr_bin_patch = _fr_bin_patch.Define("simu_energy_w_corr", "1.");
+    auto _fr_energy_filter = _data_fr.Filter(energyFilter, {"energy_corr"})
+                                        .Define("energy_bin", GetEnergyBin, {"energy_corr"})
+                                        .Define("simu_energy_w_corr", simuEnergyWeight, {"simu_energy_w"});
     
     // Regularize RDF
     std::vector<TF1> sumrms_fitfunc(energy_nbins);
@@ -77,10 +86,8 @@ void kompress(
         return reg_flast;
     };
 
-    if (regularize_vars)
-    {
-        if (_VERBOSE)
-            std::cout << "\n\nINFO: Normalizing data facility has been activated\n";
+    if (regularize_vars) {
+        if (verbose) std::cout << "\n\nINFO: Normalizing data facility has been activated\n";
         // Reading fit summary TTree
         load_tf1s(
             fit_tree_path,
@@ -88,17 +95,17 @@ void kompress(
             sumrms_fitfunc_err,
             flast_fitfunc,
             flast_fitfunc_err,
-            _VERBOSE);
+            verbose);
 
-        _fr_bin_patch = _fr_bin_patch.Define("sumRms_reg", regularize_sumrms, {"sumRms", "energy_bin", "BGOrec_trajectoryDirection2D"})
-                            .Define("fracLast_reg", regularize_flast, {"fracLast", "energy_bin", "BGOrec_trajectoryDirection2D"});
+        _fr_energy_filter = _fr_energy_filter.Define("sumRms_reg", regularize_sumrms, {"sumRms", "energy_bin", "BGOrec_trajectoryDirection2D"})
+                                                .Define("fracLast_reg", regularize_flast, {"fracLast", "energy_bin", "BGOrec_trajectoryDirection2D"});
 
         sumRms_leaf = "sumRms_reg";
         fracLast_leaf = "fracLast_reg";
     }
 
     // Create the RDF for BGO analysis
-    auto _fr_bgo_analysis = _fr_bin_patch.Filter("evtfilter_good_event==true");
+    auto _fr_bgo_analysis = _fr_energy_filter.Filter("evtfilter_good_event==true");
     // Create the RDF for the preselected events
     auto _fr_preselected = _fr_bgo_analysis.Filter("evtfilter_all_cut==true");
     // Create the RDF for STK analysis
@@ -117,8 +124,7 @@ void kompress(
     std::cout << "\nPreselected events: " << *(_fr_preselected.Count());
     std::cout << "\n\n***************************";
 
-    if (_VERBOSE)
-        std::cout << "\n\nAnlysis running...\n\n";
+    if (verbose) std::cout << "\n\nAnlysis running...\n\n";
 
     // Get binning
     std::vector<float> sumRms_binning;
@@ -787,56 +793,56 @@ void kompress(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_NUD_adc(DAMPE_NUD_channels);
 
     for (int channel = 0; channel < DAMPE_NUD_channels; ++channel)
-        h_NUD_adc[channel] = _fr_bgo_analysis.Define("nud_adc_channel", [channel](std::vector<int> nud_adc) { return nud_adc[channel]; }, {"NUD_ADC"})
+        h_NUD_adc[channel] = _fr_bgo_analysis.Define("nud_adc_channel", [channel](std::vector<int> nud_adc) { return nud_adc[channel]; }, {"nud_adc"})
                                  .Histo1D<int, double>({(std::string("h_NUD_adc_") + std::to_string(channel)).c_str(), (std::string("NUD ADC - channel ") + std::to_string(channel)).c_str(), 100, 0, 1000}, "nud_adc_channel", "simu_energy_w_corr");
-    auto h_NUD_total_adc = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_total_adc", "NUD Total ADC", 100, 0, 10000}, "NUD_total_ADC.nud_total_adc", "simu_energy_w_corr");
-    auto h_NUD_max_adc = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_adc", "NUD Max ADC", 100, 0, 1000}, "NUD_max_ADC.nud_max_adc", "simu_energy_w_corr");
-    auto h_NUD_max_channel = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w_corr");
+    auto h_NUD_total_adc = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_total_adc", "NUD Total ADC", 100, 0, 10000}, "nud_total_adc", "simu_energy_w_corr");
+    auto h_NUD_max_adc = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_adc", "NUD Max ADC", 100, 0, 1000}, "nud_max_adc", "simu_energy_w_corr");
+    auto h_NUD_max_channel = _fr_bgo_analysis.Histo1D<int, double>({"h_NUD_max_channel", "NUD Max Channel", 3, 0, 3}, "nud_max_channel_id", "simu_energy_w_corr");
 
     // Extract filter histos
 
     ROOT::RDF::RResultPtr<TH1D> h_geo_before_trigger_cut;
     if (_mc)
-        h_geo_before_trigger_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+        h_geo_before_trigger_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                                         .Filter("evtfilter_geometric_before_trigger==true")
                                         .Histo1D<double, double>({"h_geo_before_trigger_cut", "Geometric factor pre trigger", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_trigger_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_trigger_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                          .Filter("evtfilter_evt_triggered==true")
                          .Histo1D<double, double>({"h_trigger_cut", "Trigger", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_geometric_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_geometric_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                            .Filter("evtfilter_geometric==true")
                            .Histo1D<double, double>({"h_geometric_cut", "Geometric", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_maxElayer_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_maxElayer_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_BGO_fiducial_maxElayer_cut==true")
                               .Histo1D<double, double>({"h_maxElayer_cut", "maxElayer cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_maxBarlayer_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_maxBarlayer_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_BGO_fiducial_maxBarLayer_cut==true")
                               .Histo1D<double, double>({"h_maxBarlayer_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_BGOTrackContainment_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_BGOTrackContainment_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_BGO_fiducial_BGOTrackContainment_cut==true")
                               .Histo1D<double, double>({"h_BGOTrackContainment_cut", "maxBarLayer cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_bgo_fiducial_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_bgo_fiducial_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_BGO_fiducial==true")
                               .Histo1D<double, double>({"h_bgo_fiducial_cut", "BGO fiducial", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_nbarlayer13_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_nbarlayer13_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_nBarLayer13_cut==true")
                               .Histo1D<double, double>({"h_nbarlayer13_cut", "nBar layer 13 cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_maxrms_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_maxrms_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                               .Filter("evtfilter_maxRms_cut==true")
                               .Histo1D<double, double>({"h_maxrms_cut", "max RMS cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_track_selection_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_track_selection_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_track_selection_cut==true")
                                 .Histo1D<double, double>({"h_track_selection_cut", "Track selection cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_psd_stk_match_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_psd_stk_match_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_psd_stk_match_cut==true")
                                 .Histo1D<double, double>({"h_psd_stk_match_cut", "PSD-STK match cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_psd_charge_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_psd_charge_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_psd_charge_cut==true")
                                 .Histo1D<double, double>({"h_psd_charge_cut", "PSD charge cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_stk_charge_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_stk_charge_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_stk_charge_cut==true")
                                 .Histo1D<double, double>({"h_stk_charge_cut", "STK charge cut", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
-    auto h_all_cuts_cut = _fr_bin_patch.Define("energy_corr_gev", "energy_corr * 0.001")
+    auto h_all_cuts_cut = _fr_energy_filter.Define("energy_corr_gev", "energy_corr * 0.001")
                                 .Filter("evtfilter_all_cut==true")
                                 .Histo1D<double, double>({"h_all_cuts_cut", "All cuts", energy_nbins, &energy_binning[0]}, "energy_corr_gev", "simu_energy_w_corr");
 
@@ -1470,13 +1476,13 @@ void kompress(
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_NUD_ps_adc(DAMPE_NUD_channels);
 
     for (int channel = 0; channel < DAMPE_NUD_channels; ++channel)
-        h_NUD_ps_adc[channel] = _fr_preselected.Define("nud_adc_channel", [channel](std::vector<int> nud_adc) { return nud_adc[channel]; }, {"NUD_ADC"})
+        h_NUD_ps_adc[channel] = _fr_preselected.Define("nud_adc_channel", [channel](std::vector<int> nud_adc) { return nud_adc[channel]; }, {"nud_adc"})
                                     .Histo1D<int, double>({(std::string("h_NUD_ps_adc_") + std::to_string(channel)).c_str(), (std::string("NUD ADC - channel ") + std::to_string(channel)).c_str(), 100, 0, 1000}, "nud_adc_channel", "simu_energy_w_corr");
-    auto h_NUD_ps_total_adc = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_total_adc", "NUD Total ADC", 100, 0, 10000}, "NUD_total_ADC.nud_total_adc", "simu_energy_w_corr");
-    auto h_NUD_ps_max_adc = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_max_adc", "NUD Max ADC", 100, 0, 1000}, "NUD_max_ADC.nud_max_adc", "simu_energy_w_corr");
-    auto h_NUD_ps_max_channel = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_max_channel", "NUD Max Channel", 3, 0, 3}, "NUD_max_channel_ID.nud_max_channel_id", "simu_energy_w_corr");
+    auto h_NUD_ps_total_adc = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_total_adc", "NUD Total ADC", 100, 0, 10000}, "nud_total_adc", "simu_energy_w_corr");
+    auto h_NUD_ps_max_adc = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_max_adc", "NUD Max ADC", 100, 0, 1000}, "nud_max_adc", "simu_energy_w_corr");
+    auto h_NUD_ps_max_channel = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_max_channel", "NUD Max Channel", 3, 0, 3}, "nud_max_channel_id", "simu_energy_w_corr");
 
-    if (_VERBOSE)
+    if (verbose)
         std::cout << "Writing to disk... [" << outputPath << "]" << std::endl;
 
     TFile *outfile = TFile::Open(outputPath.c_str(), "RECREATE");
