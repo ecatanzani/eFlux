@@ -19,11 +19,11 @@ void reader(in_args input_args)
     //input_args.gaussianize ? false : true;
     std::shared_ptr<parser> evt_parser = std::make_shared<parser>(input_args.input_list, input_args.mc_flag, input_args.verbose, gaussianized);
     // Parse 'Collector' config file
-    std::shared_ptr<config> _config = std::make_shared<config>(input_args.wd, input_args.mc_flag);
+    std::shared_ptr<config> _config = std::make_shared<config>(input_args.collector_wd, input_args.mc_flag);
     // Parse local config file
-    std::shared_ptr<energy_config> _energy_config = std::make_shared<energy_config>(input_args.wd);
+    std::shared_ptr<energy_config> _energy_config = std::make_shared<energy_config>(input_args.collector_wd);
     // Parse local lambda config file
-    std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.wd);
+    std::shared_ptr<lambda_config> _lambda_config = std::make_shared<lambda_config>(input_args.collector_wd);
     
     if (input_args.gaussianize)
         gaussianize(

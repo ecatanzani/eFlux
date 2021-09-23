@@ -148,20 +148,14 @@ void tmva_vars(
     const unsigned int threads,
     const bool _mc)
 {
-    ROOT::EnableImplicitMT(threads);
-
-    //*** Prepare the input RDF ***
-
     // Extract the energy binning
     auto energy_binning = _energy_config->GetEnergyBinning();
     auto energy_nbins = (int)energy_binning.size() - 1;
-
-    // Create the RDF
-    ROOT::RDataFrame _data_fr(*evtch);
-
+    auto min_evt_energy = _energy_config->GetMinEvtEnergy();
+    auto max_evt_energy = _energy_config->GetMaxEvtEnergy();
     double _gev = 0.001;
-    auto GetEnergyBin = [=](double energy) -> int 
-    { 
+
+    auto GetEnergyBin = [=](double energy) -> int { 
         int bin_idx=0;
         for (; bin_idx<energy_nbins-1; ++bin_idx)
             if (energy * _gev >= energy_binning[bin_idx] && energy * _gev < energy_binning[bin_idx+1])
@@ -169,10 +163,24 @@ void tmva_vars(
         return bin_idx+1; 
     };
 
-    auto _fr_bin_patch = _data_fr.Define("energy_bin", GetEnergyBin, {"energy_corr"});
-    _fr_bin_patch = _mc ? _fr_bin_patch.Define("simu_energy_w_corr", [&energy_binning](const double simu_energy_w) -> double { return simu_energy_w * pow(energy_binning[0], 2); }, {"simu_energy_w"}) : _fr_bin_patch.Define("simu_energy_w_corr", "1.");
+    auto energyFilter = [&min_evt_energy, &max_evt_energy, &_gev](const double energy) -> bool {
+        return energy*_gev >= min_evt_energy && energy*_gev <= max_evt_energy ? true : false;
+    };
+
+    auto simuEnergyWeight = [&_mc, &energy_binning](const double simu_energy_w) -> double {
+        return _mc ? simu_energy_w * pow(energy_binning[0], 2) : 1;
+    };
+
+    // Create the RDF
+    ROOT::EnableImplicitMT(threads);
+    ROOT::RDataFrame _data_fr(*evtch);
+
+    // Create the RDF with energy bin and correct energy weight
+    auto _fr_energy_filter = _data_fr.Filter(energyFilter, {"energy_corr"})
+                                        .Define("energy_bin", GetEnergyBin, {"energy_corr"})
+                                        .Define("simu_energy_w_corr", simuEnergyWeight, {"simu_energy_w"});
     
-    auto _fr_preselected = _fr_bin_patch.Filter("evtfilter_all_cut==true");
+    auto _fr_preselected = _fr_energy_filter.Filter("evtfilter_all_cut==true");
 
     std::cout << "\n\n**** Filter statistics ****\n";
     std::cout << "***************************\n";

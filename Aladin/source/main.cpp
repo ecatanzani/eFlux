@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 	if (opt.getValue("input") || opt.getValue('i'))
 		input_args.input_list = opt.getValue('i');
 	if (opt.getValue("workdir") || opt.getValue('w'))
-		input_args.wd = opt.getValue('w');
+		input_args.collector_wd = opt.getValue('w');
 	if (opt.getValue("output") || opt.getValue('o'))
 		input_args.output_path = expand_output_path(opt, opt.getValue('o'));
 	if (opt.getValue("outputdir") || opt.getValue('d'))

@@ -12,7 +12,7 @@
 struct in_args
 {
     // Vars
-    std::string wd;
+    std::string collector_wd;
 	std::string input_list;
 	std::string output_path;
 	std::string regularize_tree_path;
@@ -32,12 +32,12 @@ struct in_args
 		bool status = false;
 		if (loglikelihood || fit)
 		{
-			if (!wd.empty() && !input_list.empty() && !output_path.empty() && energybin!=999) 
+			if (!collector_wd.empty() && !input_list.empty() && !output_path.empty() && energybin!=999) 
 				status = true;
 		}
 		else if (gaussianize)
 		{
-			if (!wd.empty() && !input_list.empty() && !output_path.empty() && !regularize_tree_path.empty()) 
+			if (!collector_wd.empty() && !input_list.empty() && !output_path.empty() && !regularize_tree_path.empty()) 
 				status = true;
 		}
 		else
