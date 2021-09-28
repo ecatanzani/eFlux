@@ -11,7 +11,7 @@
 
 void split(in_args input_args)
 {
-    std::unique_ptr<parser> evt_parser = std::make_unique<parser>(input_args.input_list, input_args.mc_flag, input_args.verbose, true);
+    std::unique_ptr<parser> evt_parser = std::make_unique<parser>(input_args.input_list, input_args.mc_flag, input_args.verbose);
     std::unique_ptr<config> _config = std::make_unique<config>(input_args.wd, input_args.mc_flag);
     std::unique_ptr<energy_config> _energy_config = std::make_unique<energy_config>(input_args.wd);
 

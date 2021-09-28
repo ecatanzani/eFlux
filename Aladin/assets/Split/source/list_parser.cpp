@@ -1,21 +1,15 @@
 #include "list_parser.h"
 
-parser::parser(
-    const std::string input_list,
-    const bool mc,
-    const bool _VERBOSE,
-    const bool gaussianized)
+parser::parser(const std::string input_list, const bool mc, const bool verbose)
 {
-    std::string tree_name;
-    mc ? tree_name = mc_tree_name : tree_name = data_tree_name;
-    if (gaussianized) tree_name += std::string("_gauss");
+    std::string tree_name = mc ? "DmpMCEvtNtup_gauss" : "DmpEvtNtup_gauss";
     evtch = std::make_shared<TChain> (tree_name.c_str(), "DAMPE event tree");
     std::istringstream input_stream(parse_input_file(input_list));
     std::string tmp_str;
     while (input_stream >> tmp_str)
     {
         evtch->Add(tmp_str.c_str());
-        if (_VERBOSE)
+        if (verbose)
             std::cout << "\nAdding " << tmp_str << " to the chain ...";
     }
 }
