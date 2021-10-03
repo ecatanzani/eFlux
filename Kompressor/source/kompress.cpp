@@ -49,15 +49,16 @@ void kompress(
         return energy*_gev >= min_evt_energy && energy*_gev <= max_evt_energy ? true : false;
     };
 
-    auto simuEnergyWeight = [&_mc, &energy_binning](const double simu_energy_w) -> double {
-        return _mc ? simu_energy_w * pow(energy_binning[0], 2) : 1;
+    auto simuEnergyWeight = [&energy_binning](const double simu_energy_w) -> double {
+        return simu_energy_w * pow(energy_binning[0], 2);
     };
 
     // Create the RDF with energy bin and correct energy weight
     auto _fr_energy_filter = _data_fr.Filter(energyFilter, {"energy_corr"})
-                                        .Define("energy_bin", GetEnergyBin, {"energy_corr"})
-                                        .Define("simu_energy_w_corr", simuEnergyWeight, {"simu_energy_w"});
+                                        .Define("energy_bin", GetEnergyBin, {"energy_corr"});
     
+    _fr_energy_filter = _mc ? _fr_energy_filter.Define("simu_energy_w_corr", simuEnergyWeight, {"simu_energy_w"}) : _fr_energy_filter.Define("simu_energy_w_corr", "1.");
+
     // Regularize RDF
     std::vector<TF1> sumrms_fitfunc(energy_nbins);
     std::vector<TF1> sumrms_fitfunc_err(energy_nbins);
