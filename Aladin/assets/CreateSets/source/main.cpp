@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	if (opt.getFlag("verbose") || opt.getFlag('v'))
 		input_args.verbose = opt.getFlag('v');
 	if (opt.getValue("no-split") || opt.getValue('n'))
-		input_args.split = opt.getValue('n');
+		input_args.split = false;
 	if (opt.getValue("parallel") || opt.getValue('p'))
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 
