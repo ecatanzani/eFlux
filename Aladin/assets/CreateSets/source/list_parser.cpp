@@ -19,13 +19,15 @@ inline const std::string get_tree_name(const std::string file) {
     return tree_name;
 }
 
-parser::parser(const std::string input_list, const bool verbose)
-{
+parser::parser(const std::string input_list, const bool verbose) {
     std::istringstream input_stream(parse_input_file(input_list));
-    evtch = std::make_shared<TChain> (get_tree_name(((input_stream.str())[0]) + std::string("_tmva")).c_str(), "TMVA data set");
     std::string tmp_str;
-    while (input_stream >> tmp_str)
-    {
+    bool first_elm {true};
+    while (input_stream >> tmp_str) {
+        if (first_elm) {
+            evtch = std::make_shared<TChain> (get_tree_name(tmp_str).c_str(), "TMVA data set");
+            first_elm = false;
+        }
         evtch->Add(tmp_str.c_str());
         if (verbose)
             std::cout << "\nAdding " << tmp_str << " to the chain ...";
