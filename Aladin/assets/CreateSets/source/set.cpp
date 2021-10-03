@@ -49,8 +49,16 @@ void buildSet(in_args input_pars) {
         _fr_test.Snapshot(
             (list_parser->GetEvtTree())->GetName(), 
             (input_pars.output_path.substr(0, input_pars.output_path.find(".root")) + std::string("_testset.root")).c_str());
+        
+        if (input_pars.verbose) {
+            std::cout << "\n\nOutput file has been written... [" << input_pars.output_path.substr(0, input_pars.output_path.find(".root")) + std::string("_trainset.root") << "]";
+            std::cout << "\n\nOutput file has been written... [" << input_pars.output_path.substr(0, input_pars.output_path.find(".root")) + std::string("_testset.root") << "]\n";
+        }
 
     }
-    else
+    else {
         _fr_preselected.Snapshot((list_parser->GetEvtTree())->GetName(), input_pars.output_path);
+
+        if (input_pars.verbose) std::cout << "\n\nOutput file has been written... [" << input_pars.output_path << "]\n";
+    }
 }
