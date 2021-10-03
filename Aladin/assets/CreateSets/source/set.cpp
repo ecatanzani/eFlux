@@ -52,7 +52,7 @@ void buildSet(in_args input_pars) {
         
         if (input_pars.verbose) {
             std::cout << "\n\nOutput file has been written... [" << input_pars.output_path.substr(0, input_pars.output_path.find(".root")) + std::string("_trainset.root") << "]";
-            std::cout << "\n\nOutput file has been written... [" << input_pars.output_path.substr(0, input_pars.output_path.find(".root")) + std::string("_testset.root") << "]\n";
+            std::cout << "\nOutput file has been written... [" << input_pars.output_path.substr(0, input_pars.output_path.find(".root")) + std::string("_testset.root") << "]\n";
         }
 
     }
