@@ -39,8 +39,25 @@ void buildSet(in_args input_pars) {
     }
 
     if (input_pars.split) {
-        auto _fr_train = _fr_preselected.Filter("tt_assign < 0.5");
-        auto _fr_test = _fr_preselected.Filter("tt_assign >= 0.5");
+        bool train {true};
+        auto is_in_energy_range = [](const double min_energy, const double max_energy, const double energy) -> bool {return energy <= max_energy && energy >= min_energy ? true : false;};
+        auto detailed_energy_filter = [&dataset_energy_range, &is_in_energy_range, &train](const double energy, const double tt_assign) -> bool {
+            auto _gev = 0.001;
+            bool status;
+            if (dataset_energy_range->IsEnergyRangeCommon()) status = tt_assign < 0.5 ? true : false;
+            else {
+                auto in_train_range = is_in_energy_range(dataset_energy_range->GetMinTrainEvtEnergy(), dataset_energy_range->GetMaxTrainEvtEnergy(), energy*_gev);
+                auto in_test_range = is_in_energy_range(dataset_energy_range->GetMinTestEvtEnergy(), dataset_energy_range->GetMaxTestEvtEnergy(), energy*_gev);
+                if (in_train_range && !in_test_range) status = true;
+                else if (!in_train_range && in_test_range) status = false;
+                else status = tt_assign < 0.5 ? true : false;
+            }
+            if (!train) status = !status;
+            return status;
+        };
+        auto _fr_train = _fr_preselected.Filter(detailed_energy_filter, {"energy_corr", "tt_assign"});
+        train = false;
+        auto _fr_test = _fr_preselected.Filter(detailed_energy_filter, {"energy_corr", "tt_assign"});
 
         _fr_train.Snapshot(
             (list_parser->GetEvtTree())->GetName(), 
