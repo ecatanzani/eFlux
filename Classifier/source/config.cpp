@@ -11,7 +11,8 @@ config::config(
 	get_config_info(parse_config_file(working_dir, config_file_name));
 	// Auto-set training events
 	if (events.auto_train_events)
-		events.signal_train_events = events.background_train_events = std::min(signal_train->GetEntries(), background_train->GetEntries());
+		events.signal_train_events = events.background_train_events = !applied_cuts.xtrl ? 	std::min(signal_train->GetEntries(), background_train->GetEntries()) : 
+																							std::min(signal_train->GetEntries(applied_cuts.signal_string.c_str()), background_train->GetEntries(applied_cuts.background_string.c_str()));
 }
 
 std::string config::parse_config_file(
@@ -92,6 +93,39 @@ void config::get_config_info(std::string parsed_config)
 			input_stream >> tmp_str;
 			events.background_test_events = stoul(tmp_str, &sz);
 		}
+
+		// Load cuts
+		if (!strcmp(tmp_str.c_str(), "XTRL")) {
+			input_stream >> tmp_str;
+			if (!strcmp(tmp_str.c_str(), "ON") || !strcmp(tmp_str.c_str(), "on"))
+				applied_cuts.xtrl = true;
+			else if (!strcmp(tmp_str.c_str(), "OFF") || !strcmp(tmp_str.c_str(), "off"))
+				applied_cuts.xtrl = false;
+			else {
+				std::cerr << "\n\nError parsing energy config file\n\n";
+				exit(100);
+			}
+		}
+		if (applied_cuts.xtrl) {
+			if (!strcmp(tmp_str.c_str(), "signal_min_value")) {
+				input_stream >> tmp_str;
+				applied_cuts.signal_min_xtrl_value = stod(tmp_str, &sz);
+			}
+			if (!strcmp(tmp_str.c_str(), "signal_max_value")) {
+				input_stream >> tmp_str;
+				applied_cuts.signal_max_xtrl_value = stod(tmp_str, &sz);
+			}
+			if (!strcmp(tmp_str.c_str(), "background_min_value")) {
+				input_stream >> tmp_str;
+				applied_cuts.background_min_xtrl_value = stod(tmp_str, &sz);
+			}
+			if (!strcmp(tmp_str.c_str(), "background_max_value")) {
+				input_stream >> tmp_str;
+				applied_cuts.background_max_xtrl_value = stod(tmp_str, &sz);
+			}
+			applied_cuts.signal_string = std::string("xtrl>") + std::to_string(applied_cuts.signal_min_xtrl_value) + std::string("&& xtrl<") + std::to_string(applied_cuts.signal_max_xtrl_value);
+			applied_cuts.background_string = std::string("xtrl>") + std::to_string(applied_cuts.background_min_xtrl_value) + std::string("&& xtrl<") + std::to_string(applied_cuts.background_max_xtrl_value);
+		}
 	}
 }
 
@@ -114,6 +148,15 @@ const unsigned int config::GetBackgroundTestEvents()
 {
 	return events.background_test_events;
 }
+
+const std::string config::GetSignalTCuts() {
+	return applied_cuts.signal_string;
+}
+
+const std::string config::GetBackgroundTCuts() {
+	return applied_cuts.background_string;
+}
+
 
 const train_vars config::GetVariableOptions()
 {

@@ -112,6 +112,8 @@ void SetAllTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)
     dataloader->AddVariable("sumrms_norm", "sumrms_norm", "units", 'D');
     dataloader->AddVariable("fraclastlayer_norm", "fraclastlayer_norm", "units", 'D');
     dataloader->AddVariable("xtrl_norm", "xtrl_norm", "units", 'D');
+
+    dataloader->AddSpectator("xtrl", "xtrl", "units", 'D');
 }
 
 extern void SetNoNUDTMVAVariables(std::shared_ptr<TMVA::DataLoader> dataloader)

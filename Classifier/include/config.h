@@ -26,6 +26,15 @@ struct evt_stat
 	unsigned int background_test_events = 0;
 };
 
+struct cuts {
+	bool xtrl;
+	double signal_min_xtrl_value {0};
+	double signal_max_xtrl_value {0};
+	double background_min_xtrl_value {0};
+	double background_max_xtrl_value {0};
+	std::string signal_string, background_string;
+};
+
 class config
 {
 public:
@@ -39,6 +48,8 @@ public:
 	const unsigned int GetSignalTestEvents();
 	const unsigned int GetBackgroundTrainEvents();
 	const unsigned int GetBackgroundTestEvents();
+	const std::string GetSignalTCuts();
+	const std::string GetBackgroundTCuts();
 	const train_vars GetVariableOptions();
 	void PrintVariableOptions();
 
@@ -51,6 +62,7 @@ private:
 	std::string config_file_name = "classifier.conf";
 	train_vars vars;
 	evt_stat events;
+	cuts applied_cuts;
 
 };
 
