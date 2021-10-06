@@ -179,7 +179,7 @@ void tmva_vars(
     auto _fr_energy_filter = _data_fr.Filter(energyFilter, {"energy_corr"})
                                         .Define("energy_bin", GetEnergyBin, {"energy_corr"});
     
-    _fr_energy_filter = _mc ? _fr_energy_filter.Define("simu_energy_w_corr", simuEnergyWeight, {"simu_energy_w"}) : _fr_energy_filter.Define("simu_energy_w_corr", "1.");
+    _fr_energy_filter = _mc ? _fr_energy_filter.Define("simu_energy_w_corr", simuEnergyWeight, {"simu_energy_w"}) : _fr_energy_filter.Define("simu_energy_w_corr", "1.").Define("simu_energy_w", "1.");
 
     auto _fr_preselected = _fr_energy_filter.Filter("evtfilter_all_cut==true");
 

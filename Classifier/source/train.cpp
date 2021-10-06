@@ -91,10 +91,7 @@ void Train(in_args input_args)
     //dataloader->SetSignalWeightExpression("simu_energy_w_corr");
     //dataloader->SetBackgroundWeightExpression("simu_energy_w_corr");
     dataloader->SetSignalWeightExpression("simu_energy_w");
-    if (std::string(background_train_tree->GetName()).find("DmpEvtNtup")!=std::string::npos && 
-        std::string(background_test_tree->GetName()).find("DmpEvtNtup")!=std::string::npos) 
-        dataloader->SetBackgroundWeightExpression("simu_energy_w_corr");
-    else dataloader->SetBackgroundWeightExpression("simu_energy_w");
+    dataloader->SetBackgroundWeightExpression("simu_energy_w");
 
     // Apply additional cuts on the signal and background samples
     TCut signal_cuts = "";
