@@ -97,12 +97,10 @@ void Train(in_args input_args)
     TCut signal_cuts = _config->GetSignalTCuts().c_str();
     TCut background_cuts = _config->GetBackgroundTCuts().c_str();
 
-#if 0
     SetTMVACuts(
         signal_cuts, 
         background_cuts, 
         input_args.verbose);
-#endif
 
     auto loader_str =
         std::string("nTrain_Signal=") + std::to_string(_config->GetSignalTrainEvents()) +

@@ -236,65 +236,129 @@ void SetTMVACuts(
     background_cuts += energyrange;
 #endif
 
-    TCut removenans_stk = "!(TMath::IsNaN(STK_bestTrack_npoints) || !(TMath::Finite(STK_bestTrack_npoints)))";
-    signal_cuts+=removenans_stk;
-    background_cuts+=removenans_stk;
-
-    TCut removenans_rmsl1 = "!(TMath::IsNaN(rmsLayer_1) || !(TMath::Finite(rmsLayer_1)))";
+    TCut removenans_rmsl1 = "!(TMath::IsNaN(rmslayer_norm_1) || !(TMath::Finite(rmslayer_norm_1)))";
     signal_cuts+=removenans_rmsl1;
     background_cuts+=removenans_rmsl1;
 
-    TCut removenans_rmsl2 = "!(TMath::IsNaN(rmsLayer_2) || !(TMath::Finite(rmsLayer_2)))";
+    TCut removenans_rmsl2 = "!(TMath::IsNaN(rmslayer_norm_2) || !(TMath::Finite(rmslayer_norm_2)))";
     signal_cuts+=removenans_rmsl2;
     background_cuts+=removenans_rmsl2;
 
-    TCut removenans_rmsl3 = "!(TMath::IsNaN(rmsLayer_3) || !(TMath::Finite(rmsLayer_3)))";
+    TCut removenans_rmsl3 = "!(TMath::IsNaN(rmslayer_norm_3) || !(TMath::Finite(rmslayer_norm_3)))";
     signal_cuts+=removenans_rmsl3;
     background_cuts+=removenans_rmsl3;
 
-    TCut removenans_rmsl4 = "!(TMath::IsNaN(rmsLayer_4) || !(TMath::Finite(rmsLayer_4)))";
+    TCut removenans_rmsl4 = "!(TMath::IsNaN(rmslayer_norm_4) || !(TMath::Finite(rmslayer_norm_4)))";
     signal_cuts+=removenans_rmsl4;
     background_cuts+=removenans_rmsl4;
 
-    TCut removenans_rmsl5 = "!(TMath::IsNaN(rmsLayer_5) || !(TMath::Finite(rmsLayer_5)))";
+    TCut removenans_rmsl5 = "!(TMath::IsNaN(rmslayer_norm_5) || !(TMath::Finite(rmslayer_norm_5)))";
     signal_cuts+=removenans_rmsl5;
     background_cuts+=removenans_rmsl5;
 
-    TCut removenans_rmsl6 = "!(TMath::IsNaN(rmsLayer_6) || !(TMath::Finite(rmsLayer_6)))";
+    TCut removenans_rmsl6 = "!(TMath::IsNaN(rmslayer_norm_6) || !(TMath::Finite(rmslayer_norm_6)))";
     signal_cuts+=removenans_rmsl6;
     background_cuts+=removenans_rmsl6;
 
-    TCut removenans_rmsl7 = "!(TMath::IsNaN(rmsLayer_7) || !(TMath::Finite(rmsLayer_7)))";
+    TCut removenans_rmsl7 = "!(TMath::IsNaN(rmslayer_norm_7) || !(TMath::Finite(rmslayer_norm_7)))";
     signal_cuts+=removenans_rmsl7;
     background_cuts+=removenans_rmsl7;
 
-    TCut removenans_rmsl8 = "!(TMath::IsNaN(rmsLayer_8) || !(TMath::Finite(rmsLayer_8)))";
+    TCut removenans_rmsl8 = "!(TMath::IsNaN(rmslayer_norm_8) || !(TMath::Finite(rmslayer_norm_8)))";
     signal_cuts+=removenans_rmsl8;
     background_cuts+=removenans_rmsl8;
 
-    TCut removenans_rmsl9 = "!(TMath::IsNaN(rmsLayer_9) || !(TMath::Finite(rmsLayer_9)))";
+    TCut removenans_rmsl9 = "!(TMath::IsNaN(rmslayer_norm_9) || !(TMath::Finite(rmslayer_norm_9)))";
     signal_cuts+=removenans_rmsl9;
     background_cuts+=removenans_rmsl9;
 
-    TCut removenans_rmsl10 = "!(TMath::IsNaN(rmsLayer_10) || !(TMath::Finite(rmsLayer_10)))";
+    TCut removenans_rmsl10 = "!(TMath::IsNaN(rmslayer_norm_10) || !(TMath::Finite(rmslayer_norm_10)))";
     signal_cuts+=removenans_rmsl10;
     background_cuts+=removenans_rmsl10;
 
-    TCut removenans_rmsl11 = "!(TMath::IsNaN(rmsLayer_11) || !(TMath::Finite(rmsLayer_11)))";
+    TCut removenans_rmsl11 = "!(TMath::IsNaN(rmslayer_norm_11) || !(TMath::Finite(rmslayer_norm_11)))";
     signal_cuts+=removenans_rmsl11;
     background_cuts+=removenans_rmsl11;
 
-    TCut removenans_rmsl12 = "!(TMath::IsNaN(rmsLayer_12) || !(TMath::Finite(rmsLayer_12)))";
+    TCut removenans_rmsl12 = "!(TMath::IsNaN(rmslayer_norm_12) || !(TMath::Finite(rmslayer_norm_12)))";
     signal_cuts+=removenans_rmsl12;
     background_cuts+=removenans_rmsl12;
 
-    TCut removenans_rmsl13 = "!(TMath::IsNaN(rmsLayer_13) || !(TMath::Finite(rmsLayer_13)))";
+    TCut removenans_rmsl13 = "!(TMath::IsNaN(rmslayer_norm_13) || !(TMath::Finite(rmslayer_norm_13)))";
     signal_cuts+=removenans_rmsl13;
     background_cuts+=removenans_rmsl13;
 
-    TCut removenans_rmsl14 = "!(TMath::IsNaN(rmsLayer_14) || !(TMath::Finite(rmsLayer_14)))";
+    TCut removenans_rmsl14 = "!(TMath::IsNaN(rmslayer_norm_14) || !(TMath::Finite(rmslayer_norm_14)))";
     signal_cuts+=removenans_rmsl14;
     background_cuts+=removenans_rmsl14;
+
+    TCut removenans_fracl1 = "!(TMath::IsNaN(fraclayer_norm_1) || !(TMath::Finite(fraclayer_norm_1)))";
+    signal_cuts+=removenans_fracl1;
+    background_cuts+=removenans_fracl1;
+
+    TCut removenans_fracl2 = "!(TMath::IsNaN(fraclayer_norm_2) || !(TMath::Finite(fraclayer_norm_2)))";
+    signal_cuts+=removenans_fracl2;
+    background_cuts+=removenans_fracl2;
+
+    TCut removenans_fracl3 = "!(TMath::IsNaN(fraclayer_norm_3) || !(TMath::Finite(fraclayer_norm_3)))";
+    signal_cuts+=removenans_fracl3;
+    background_cuts+=removenans_fracl3;
+
+    TCut removenans_fracl4 = "!(TMath::IsNaN(fraclayer_norm_4) || !(TMath::Finite(fraclayer_norm_4)))";
+    signal_cuts+=removenans_fracl4;
+    background_cuts+=removenans_fracl4;
+
+    TCut removenans_fracl5 = "!(TMath::IsNaN(fraclayer_norm_5) || !(TMath::Finite(fraclayer_norm_5)))";
+    signal_cuts+=removenans_fracl5;
+    background_cuts+=removenans_fracl5;
+
+    TCut removenans_fracl6 = "!(TMath::IsNaN(fraclayer_norm_6) || !(TMath::Finite(fraclayer_norm_6)))";
+    signal_cuts+=removenans_fracl6;
+    background_cuts+=removenans_fracl6;
+
+    TCut removenans_fracl7 = "!(TMath::IsNaN(fraclayer_norm_7) || !(TMath::Finite(fraclayer_norm_7)))";
+    signal_cuts+=removenans_fracl7;
+    background_cuts+=removenans_fracl7;
+
+    TCut removenans_fracl8 = "!(TMath::IsNaN(fraclayer_norm_8) || !(TMath::Finite(fraclayer_norm_8)))";
+    signal_cuts+=removenans_fracl8;
+    background_cuts+=removenans_fracl8;
+
+    TCut removenans_fracl9 = "!(TMath::IsNaN(fraclayer_norm_9) || !(TMath::Finite(fraclayer_norm_9)))";
+    signal_cuts+=removenans_fracl9;
+    background_cuts+=removenans_fracl9;
+
+    TCut removenans_fracl10 = "!(TMath::IsNaN(fraclayer_norm_10) || !(TMath::Finite(fraclayer_norm_10)))";
+    signal_cuts+=removenans_fracl10;
+    background_cuts+=removenans_fracl10;
+
+    TCut removenans_fracl11 = "!(TMath::IsNaN(fraclayer_norm_11) || !(TMath::Finite(fraclayer_norm_11)))";
+    signal_cuts+=removenans_fracl11;
+    background_cuts+=removenans_fracl11;
+
+    TCut removenans_fracl12 = "!(TMath::IsNaN(fraclayer_norm_12) || !(TMath::Finite(fraclayer_norm_12)))";
+    signal_cuts+=removenans_fracl12;
+    background_cuts+=removenans_fracl12;
+
+    TCut removenans_fracl13 = "!(TMath::IsNaN(fraclayer_norm_13) || !(TMath::Finite(fraclayer_norm_13)))";
+    signal_cuts+=removenans_fracl13;
+    background_cuts+=removenans_fracl13;
+
+    TCut removenans_fracl14 = "!(TMath::IsNaN(fraclayer_norm_14) || !(TMath::Finite(fraclayer_norm_14)))";
+    signal_cuts+=removenans_fracl14;
+    background_cuts+=removenans_fracl14;
+
+    TCut removenans_sumrms = "!(TMath::IsNaN(sumrms_norm) || !(TMath::Finite(sumrms_norm)))";
+    signal_cuts+=removenans_sumrms;
+    background_cuts+=removenans_sumrms;
+
+    TCut removenans_fracll = "!(TMath::IsNaN(fraclastlayer_norm) || !(TMath::Finite(fraclastlayer_norm)))";
+    signal_cuts+=removenans_fracll;
+    background_cuts+=removenans_fracll;
+
+    TCut removenans_xtrl = "!(TMath::IsNaN(xtrl_norm) || !(TMath::Finite(xtrl_norm)))";
+    signal_cuts+=removenans_xtrl;
+    background_cuts+=removenans_xtrl;
 
     if (verbose)
     {
