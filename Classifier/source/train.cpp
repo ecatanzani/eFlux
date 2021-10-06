@@ -94,8 +94,13 @@ void Train(in_args input_args)
     dataloader->SetBackgroundWeightExpression("simu_energy_w");
 
     // Apply additional cuts on the signal and background samples
-    TCut signal_cuts = _config->GetSignalTCuts().c_str();
-    TCut background_cuts = _config->GetBackgroundTCuts().c_str();
+    TCut signal_cuts {""};
+    TCut background_cuts {""};
+
+    if (_config->GetXTRLCutStatus()) {
+        signal_cuts = _config->GetSignalTCuts().c_str();
+        background_cuts = _config->GetBackgroundTCuts().c_str();
+    }
 
     SetTMVACuts(
         signal_cuts, 

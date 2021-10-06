@@ -149,6 +149,10 @@ const unsigned int config::GetBackgroundTestEvents()
 	return events.background_test_events;
 }
 
+const bool config::GetXTRLCutStatus() {
+	return applied_cuts.xtrl;
+}
+
 const std::string config::GetSignalTCuts() {
 	return applied_cuts.signal_string;
 }

@@ -50,6 +50,7 @@ public:
 	const unsigned int GetBackgroundTestEvents();
 	const std::string GetSignalTCuts();
 	const std::string GetBackgroundTCuts();
+	const bool GetXTRLCutStatus();
 	const train_vars GetVariableOptions();
 	void PrintVariableOptions();
 
