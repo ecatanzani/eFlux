@@ -39,9 +39,7 @@ void xtrl_cut(
         }
 
         std::unique_ptr<TTree> tree = std::unique_ptr<TTree>(static_cast<TTree*>(infile->Get(get_tree_name(std::string(input_file)).c_str())));
-        tree->SetDirectory(0);
-        infile->Close();
-
+        
         ROOT::EnableImplicitMT(threads);
         ROOT::RDataFrame _fr(*tree);
 
