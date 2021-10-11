@@ -93,3 +93,15 @@ void editOnTheFlight(const char* input_file, const char* output_file, const char
              "xtrl", "NUD_ADC_1", "NUD_ADC_2", "NUD_ADC_3", "NUD_ADC_4", "NUD_total_ADC_nud_total_adc", "NUD_max_ADC_nud_max_adc",
              "NUD_ADC_min", "NUD_ADC_max", "NUD_ADC_rms", "simu_energy_w_corr", "simu_energy_w"});
 }
+
+void XTRLcut(
+    const char* input_file, 
+    const char* output_file, 
+    const double xtrl_min_cut, 
+    const double xtrl_max_cut)
+    {
+        ROOT::EnableImplicitMT();
+        ROOT::RDataFrame _fr(*tree);
+
+        
+    }

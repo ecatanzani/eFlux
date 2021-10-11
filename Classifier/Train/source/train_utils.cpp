@@ -359,7 +359,7 @@ void SetTMVACuts(
     TCut removenans_xtrl = "!(TMath::IsNaN(xtrl_norm) || !(TMath::Finite(xtrl_norm)))";
     signal_cuts+=removenans_xtrl;
     background_cuts+=removenans_xtrl;
-
+    
     if (verbose)
     {
         std::cout << "\n\nSignal cuts....\n\n";
