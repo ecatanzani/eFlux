@@ -15,6 +15,6 @@ extern void buildMCErriciency(
 extern void buildDATAErriciency(
     const in_args input_args,
     std::shared_ptr<parser> evt_parser, 
-    std::shared_ptr<energy_config> mc_energy_config);
+    std::shared_ptr<energy_config> data_energy_config);
 
 #endif

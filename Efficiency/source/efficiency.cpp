@@ -11,17 +11,17 @@
 void buildEfficiency(const in_args input_args)
 {
     std::shared_ptr<parser> evt_parser = std::make_shared<parser>(input_args.input_list, input_args.verbose, input_args.mc);
-    std::shared_ptr<config> mc_config = std::make_shared<config>(input_args.wd);
-    std::shared_ptr<energy_config> mc_energy_config = std::make_shared<energy_config>(input_args.wd);
+    std::shared_ptr<config> evt_config = std::make_shared<config>(input_args.wd, input_args.mc);
+    std::shared_ptr<energy_config> evt_energy_config = std::make_shared<energy_config>(input_args.wd);
 
     if (input_args.verbose)
     {
-        mc_config->PrintActiveFilters();
+        evt_config->PrintActiveFilters();
         std::cout << "\n\nAnalysis running...\n\n";
     }
 
-    if (input_args.mc) buildMCErriciency(input_args, evt_parser, mc_energy_config);
-    else buildDATAErriciency(input_args, evt_parser, mc_energy_config);
+    if (input_args.mc) buildMCErriciency(input_args, evt_parser, evt_energy_config);
+    else buildDATAErriciency(input_args, evt_parser, evt_energy_config);
 }
 
 void buildMCErriciency(
@@ -139,9 +139,9 @@ void buildMCErriciency(
 void buildDATAErriciency(
     const in_args input_args,
     std::shared_ptr<parser> evt_parser, 
-    std::shared_ptr<energy_config> mc_energy_config)
+    std::shared_ptr<energy_config> data_energy_config)
 {
-    auto energy_binning = mc_energy_config->GetEnergyBinning();
+    auto energy_binning = data_energy_config->GetEnergyBinning();
     auto energy_nbins = (int)energy_binning.size() - 1;
 
     // Build RDF
@@ -149,11 +149,11 @@ void buildDATAErriciency(
     ROOT::RDataFrame _data_fr(*(evt_parser->GetEvtTree()));
 
     // Filter events in the interesting energy range
-    auto energyFilter = [&mc_energy_config](const double energy) -> bool 
+    auto energyFilter = [&data_energy_config](const double energy) -> bool 
     {
         auto status = false;
         auto _gev = 0.001;
-        if (energy*_gev >= mc_energy_config->GetMinEvtEnergy() && energy*_gev <= mc_energy_config->GetMaxEvtEnergy())
+        if (energy*_gev >= data_energy_config->GetMinEvtEnergy() && energy*_gev <= data_energy_config->GetMaxEvtEnergy())
             status = true;
         return status; 
     };
