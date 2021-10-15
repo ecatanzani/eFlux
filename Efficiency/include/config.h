@@ -44,7 +44,9 @@ struct active_cuts
 class config
 {
 public:
-	config(const std::string working_dir);
+	config(
+		const std::string working_dir,
+		const bool mc);
 	~config(){};
 	void PrintActiveFilters();
 	const double GetMinEnergyRange();
@@ -55,9 +57,10 @@ public:
 	const active_cuts GetActiveCuts();
 
 private:
-	std::string parse_config_file(std::string wd, std::string config_file);
+	std::string parse_config_file(
+		std::string wd,
+		std::string config_file);
 	void get_config_info(std::string parsed_config);
-	std::string config_file_name = "mc_config.conf";
 	cuts_conf cuts;
 	active_cuts a_cuts;
 };

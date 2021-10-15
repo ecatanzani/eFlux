@@ -1,11 +1,17 @@
 #include "config.h"
 
-config::config(const std::string working_dir)
+config::config(
+	const std::string working_dir,
+	const bool mc)
 {
+	std::string config_file_name;
+	mc ? config_file_name = "mc_config.conf" : config_file_name = "data_config.conf";
 	get_config_info(parse_config_file(working_dir, config_file_name));
 }
 
-std::string config::parse_config_file(std::string wd, std::string config_file)
+std::string config::parse_config_file(
+	std::string wd,
+	std::string config_file)
 {
 	std::string configPath = wd + "/" + config_file;
 	std::ifstream input_file(configPath.c_str());
