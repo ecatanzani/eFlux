@@ -28,9 +28,13 @@ void bgofiducial_distributions(TFile* outfile, std::shared_ptr<TChain> evtch, co
     auto nevents  {evtch->GetEntries()};
 
     std::unique_ptr<TH1D> h_energy_fraction = std::make_unique<TH1D>("h_energy_fraction", "Energy fraction; Energy fraction; counts", 100, 0, 1);
-
+    
+    unsigned int step {1000};
     for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx) {
         evtch->GetEvent(evIdx);
+        if (verbose && !((evIdx+1)%step))
+            std::cout << "\nNumber of processed events [" << evIdx+1 << "]";
+
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), layer_min_energy);
 
         for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())

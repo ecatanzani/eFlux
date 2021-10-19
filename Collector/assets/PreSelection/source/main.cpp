@@ -1,5 +1,6 @@
 #include "main.h"
 #include "utils.h"
+#include "preselection.h"
 
 int main(int argc, char **argv) {
 
@@ -57,8 +58,7 @@ int main(int argc, char **argv) {
     if (opt.getValue("parallel") || opt.getValue('p'))
 		input_pars.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 	
-	
-	
+	preselection(input_pars);
 	
 	return 0;
 }
