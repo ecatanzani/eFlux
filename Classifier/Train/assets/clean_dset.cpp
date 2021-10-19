@@ -80,40 +80,40 @@ void clean_dset(
         float float_max = std::numeric_limits<float>::max();
         float float_min = std::numeric_limits<float>::min();
 
-        return  !(TMath::IsNaN(rmslayer_norm_1) || !(TMath::Finite(rmslayer_norm_1)) || rmslayer_norm_1<float_min || rmslayer_norm_1>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_2) || !(TMath::Finite(rmslayer_norm_2)) || rmslayer_norm_2<float_min || rmslayer_norm_2>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_3) || !(TMath::Finite(rmslayer_norm_3)) || rmslayer_norm_3<float_min || rmslayer_norm_3>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_4) || !(TMath::Finite(rmslayer_norm_4)) || rmslayer_norm_4<float_min || rmslayer_norm_4>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_5) || !(TMath::Finite(rmslayer_norm_5)) || rmslayer_norm_5<float_min || rmslayer_norm_5>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_6) || !(TMath::Finite(rmslayer_norm_6)) || rmslayer_norm_6<float_min || rmslayer_norm_6>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_7) || !(TMath::Finite(rmslayer_norm_7)) || rmslayer_norm_7<float_min || rmslayer_norm_7>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_8) || !(TMath::Finite(rmslayer_norm_8)) || rmslayer_norm_8<float_min || rmslayer_norm_8>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_9) || !(TMath::Finite(rmslayer_norm_9)) || rmslayer_norm_9<float_min || rmslayer_norm_9>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_10) || !(TMath::Finite(rmslayer_norm_10)) || rmslayer_norm_10<float_min || rmslayer_norm_10>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_11) || !(TMath::Finite(rmslayer_norm_11)) || rmslayer_norm_11<float_min || rmslayer_norm_11>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_12) || !(TMath::Finite(rmslayer_norm_12)) || rmslayer_norm_12<float_min || rmslayer_norm_12>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_13) || !(TMath::Finite(rmslayer_norm_13)) || rmslayer_norm_13<float_min || rmslayer_norm_13>float_max) &&
-                !(TMath::IsNaN(rmslayer_norm_14) || !(TMath::Finite(rmslayer_norm_14)) || rmslayer_norm_14<float_min || rmslayer_norm_14>float_max) &&
+        return  !(TMath::IsNaN(rmslayer_norm_1) || !(TMath::Finite(rmslayer_norm_1)) || abs(rmslayer_norm_1)<float_min || abs(rmslayer_norm_1)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_2) || !(TMath::Finite(rmslayer_norm_2)) || abs(rmslayer_norm_2)<float_min || abs(rmslayer_norm_2)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_3) || !(TMath::Finite(rmslayer_norm_3)) || abs(rmslayer_norm_3)<float_min || abs(rmslayer_norm_3)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_4) || !(TMath::Finite(rmslayer_norm_4)) || abs(rmslayer_norm_4)<float_min || abs(rmslayer_norm_4)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_5) || !(TMath::Finite(rmslayer_norm_5)) || abs(rmslayer_norm_5)<float_min || abs(rmslayer_norm_5)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_6) || !(TMath::Finite(rmslayer_norm_6)) || abs(rmslayer_norm_6)<float_min || abs(rmslayer_norm_6)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_7) || !(TMath::Finite(rmslayer_norm_7)) || abs(rmslayer_norm_7)<float_min || abs(rmslayer_norm_7)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_8) || !(TMath::Finite(rmslayer_norm_8)) || abs(rmslayer_norm_8)<float_min || abs(rmslayer_norm_8)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_9) || !(TMath::Finite(rmslayer_norm_9)) || abs(rmslayer_norm_9)<float_min || abs(rmslayer_norm_9)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_10) || !(TMath::Finite(rmslayer_norm_10)) || abs(rmslayer_norm_10)<float_min || abs(rmslayer_norm_10)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_11) || !(TMath::Finite(rmslayer_norm_11)) || abs(rmslayer_norm_11)<float_min || abs(rmslayer_norm_11)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_12) || !(TMath::Finite(rmslayer_norm_12)) || abs(rmslayer_norm_12)<float_min || abs(rmslayer_norm_12)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_13) || !(TMath::Finite(rmslayer_norm_13)) || abs(rmslayer_norm_13)<float_min || abs(rmslayer_norm_13)>float_max) &&
+                !(TMath::IsNaN(rmslayer_norm_14) || !(TMath::Finite(rmslayer_norm_14)) || abs(rmslayer_norm_14)<float_min || abs(rmslayer_norm_14)>float_max) &&
 
-                !(TMath::IsNaN(fraclayer_norm_1) || !(TMath::Finite(fraclayer_norm_1)) || fraclayer_norm_1<float_min || fraclayer_norm_1>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_2) || !(TMath::Finite(fraclayer_norm_2)) || fraclayer_norm_2<float_min || fraclayer_norm_2>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_3) || !(TMath::Finite(fraclayer_norm_3)) || fraclayer_norm_3<float_min || fraclayer_norm_3>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_4) || !(TMath::Finite(fraclayer_norm_4)) || fraclayer_norm_4<float_min || fraclayer_norm_4>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_5) || !(TMath::Finite(fraclayer_norm_5)) || fraclayer_norm_5<float_min || fraclayer_norm_5>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_6) || !(TMath::Finite(fraclayer_norm_6)) || fraclayer_norm_6<float_min || fraclayer_norm_6>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_7) || !(TMath::Finite(fraclayer_norm_7)) || fraclayer_norm_7<float_min || fraclayer_norm_7>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_8) || !(TMath::Finite(fraclayer_norm_8)) || fraclayer_norm_8<float_min || fraclayer_norm_8>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_9) || !(TMath::Finite(fraclayer_norm_9)) || fraclayer_norm_9<float_min || fraclayer_norm_9>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_10) || !(TMath::Finite(fraclayer_norm_10)) || fraclayer_norm_10<float_min || fraclayer_norm_10>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_11) || !(TMath::Finite(fraclayer_norm_11)) || fraclayer_norm_11<float_min || fraclayer_norm_11>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_12) || !(TMath::Finite(fraclayer_norm_12)) || fraclayer_norm_12<float_min || fraclayer_norm_12>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_13) || !(TMath::Finite(fraclayer_norm_13)) || fraclayer_norm_13<float_min || fraclayer_norm_13>float_max) &&
-                !(TMath::IsNaN(fraclayer_norm_14) || !(TMath::Finite(fraclayer_norm_14)) || fraclayer_norm_14<float_min || fraclayer_norm_14>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_1) || !(TMath::Finite(fraclayer_norm_1)) || abs(fraclayer_norm_1)<float_min || abs(fraclayer_norm_1)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_2) || !(TMath::Finite(fraclayer_norm_2)) || abs(fraclayer_norm_2)<float_min || abs(fraclayer_norm_2)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_3) || !(TMath::Finite(fraclayer_norm_3)) || abs(fraclayer_norm_3)<float_min || abs(fraclayer_norm_3)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_4) || !(TMath::Finite(fraclayer_norm_4)) || abs(fraclayer_norm_4)<float_min || abs(fraclayer_norm_4)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_5) || !(TMath::Finite(fraclayer_norm_5)) || abs(fraclayer_norm_5)<float_min || abs(fraclayer_norm_5)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_6) || !(TMath::Finite(fraclayer_norm_6)) || abs(fraclayer_norm_6)<float_min || abs(fraclayer_norm_6)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_7) || !(TMath::Finite(fraclayer_norm_7)) || abs(fraclayer_norm_7)<float_min || abs(fraclayer_norm_7)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_8) || !(TMath::Finite(fraclayer_norm_8)) || abs(fraclayer_norm_8)<float_min || abs(fraclayer_norm_8)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_9) || !(TMath::Finite(fraclayer_norm_9)) || abs(fraclayer_norm_9)<float_min || abs(fraclayer_norm_9)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_10) || !(TMath::Finite(fraclayer_norm_10)) || abs(fraclayer_norm_10)<float_min || abs(fraclayer_norm_10)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_11) || !(TMath::Finite(fraclayer_norm_11)) || abs(fraclayer_norm_11)<float_min || abs(fraclayer_norm_11)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_12) || !(TMath::Finite(fraclayer_norm_12)) || abs(fraclayer_norm_12)<float_min || abs(fraclayer_norm_12)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_13) || !(TMath::Finite(fraclayer_norm_13)) || abs(fraclayer_norm_13)<float_min || abs(fraclayer_norm_13)>float_max) &&
+                !(TMath::IsNaN(fraclayer_norm_14) || !(TMath::Finite(fraclayer_norm_14)) || abs(fraclayer_norm_14)<float_min || abs(fraclayer_norm_14)>float_max) &&
 
-                !(TMath::IsNaN(sumrms_norm) || !(TMath::Finite(sumrms_norm)) || sumrms_norm<float_min || sumrms_norm>float_max) &&
-                !(TMath::IsNaN(fraclastlayer_norm) || !(TMath::Finite(fraclastlayer_norm)) || fraclastlayer_norm<float_min || fraclastlayer_norm>float_max) &&
-                !(TMath::IsNaN(xtrl_norm) || !(TMath::Finite(xtrl_norm)) || xtrl_norm<float_min || xtrl_norm>float_max) &&
-                !(TMath::IsNaN(xtrl) || !(TMath::Finite(xtrl)) || xtrl<float_min || xtrl>float_max);
+                !(TMath::IsNaN(sumrms_norm) || !(TMath::Finite(sumrms_norm)) || abs(sumrms_norm)<float_min || abs(sumrms_norm)>float_max) &&
+                !(TMath::IsNaN(fraclastlayer_norm) || !(TMath::Finite(fraclastlayer_norm)) || abs(fraclastlayer_norm)<float_min || abs(fraclastlayer_norm)>float_max) &&
+                !(TMath::IsNaN(xtrl_norm) || !(TMath::Finite(xtrl_norm)) || abs(xtrl_norm)<float_min || abs(xtrl_norm)>float_max) &&
+                !(TMath::IsNaN(xtrl) || !(TMath::Finite(xtrl)) || abs(xtrl)<float_min || abs(xtrl)>float_max);
     };
 
      auto _fr_cleaned = _fr.Filter(clean_var, 
@@ -155,7 +155,7 @@ void clean_dset(
 
     _fr_cleaned.Snapshot(tree->GetName(), output_file);
     if (verbose) {
-        std::cout << "\n[" << *(_fr.Count())-*(_fr_cleaned.Count()) << "] has been removed from dataset\n";
+        std::cout << "\n\n[" << *(_fr.Count())-*(_fr_cleaned.Count()) << "] events have been removed from dataset";
         std::cout << "\nOutput file has been written [" << output_file << "]\n\n";
     }
 }
