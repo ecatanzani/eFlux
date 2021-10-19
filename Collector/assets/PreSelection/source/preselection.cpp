@@ -10,9 +10,9 @@
 void preselection(const in_pars &input_pars) {
 
     auto evtch = GetFileChain(input_pars.input_path, input_pars.verbose);
-    TFile* outfile = TFile::Open(input_pars.input_path.c_str(), "RECREATE");
+    TFile* outfile = TFile::Open(input_pars.output_path.c_str(), "RECREATE");
     if (!outfile->IsOpen()) {
-        std::cerr << "\n\nError writing output file [" << outfile << "]\n\n";
+        std::cerr << "\n\nError writing output file [" << output_path << "]\n\n";
         exit(100);
     }
 
