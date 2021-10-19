@@ -9,7 +9,6 @@
 #include "DAMPE_geo_structure.h"
 
 #include "TVector3.h"
-
 class DmpBgoContainer {
 public:
 	DmpBgoContainer() : layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>()),
