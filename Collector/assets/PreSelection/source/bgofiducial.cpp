@@ -41,6 +41,8 @@ void bgofiducial_distributions(
 	evtch->SetBranchAddress("DmpEvtBgoRec", &bgorec);
 
     double layer_min_energy {0};           //Minimum energy per layer
+    double gev {0.001};
+    double evt_corr_energy_gev {0};
     auto nevents {evtch->GetEntries()};
 
     std::vector<unsigned int> ev_number_eratio_35;
@@ -54,8 +56,8 @@ void bgofiducial_distributions(
         bool write_evt {true};
         if (verbose && !((evIdx+1)%step))
             std::cout << "\nNumber of processed events [" << evIdx+1 << "]";
-        
-        if (bgorec->GetElectronEcor()>=evt_config->GetMinEnergyRange() && bgorec->GetElectronEcor()<=evt_config->GetMaxEnergyRange()) {
+        evt_corr_energy_gev = bgorec->GetElectronEcor()*gev;
+        if (evt_corr_energy_gev>=evt_config->GetMinEnergyRange() && evt_corr_energy_gev<=evt_config->GetMaxEnergyRange()) {
             if (check_trigger(evt_header)) {
                 std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
                 bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), layer_min_energy);
