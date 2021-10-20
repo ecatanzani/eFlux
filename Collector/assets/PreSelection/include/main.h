@@ -11,6 +11,7 @@ struct in_pars
 	std::string input_path;
 	std::string output_path;
 	std::string logs_dir;
+	std::string config_wd;
 	bool verbose {false};
 
 	// Tasks

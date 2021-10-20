@@ -11,6 +11,7 @@ int main(int argc, char **argv) {
 
 	opt.addUsage(" -h  --help         .......... Prints this help");
 	opt.addUsage(" -i  --input        .......... <path_to_input_list>              .......... (*) Input list");
+	opt.addUsage(" -w  --workdir      .......... <path_to_software_config_dir>     .......... (*) Local config directory");
 	opt.addUsage(" -o  --output       .......... <path_to_output_TFile>            .......... Output ROOT TFile");
 	opt.addUsage(" -d  --outputdir    .......... <path_to_output_TFile_dir>        .......... Output ROOT TFile directory");
 	opt.addUsage(" -l  --logs         .......... <path_to_output_logs_dir>         .......... Output logs directory");
@@ -24,6 +25,7 @@ int main(int argc, char **argv) {
 
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
+	opt.setOption("workdir", 'w');
 	opt.setOption("output", 'o');
 	opt.setOption("outputDir", 'd');
 	opt.setOption("logs", 'l');
@@ -45,6 +47,8 @@ int main(int argc, char **argv) {
 	}
 	if (opt.getValue("input") || opt.getValue('i'))
 		input_pars.input_path = opt.getValue('i');
+	if (opt.getValue("workdir") || opt.getValue('w'))
+		input_pars.config_wd = opt.getValue('w');
 	if (opt.getValue("output") || opt.getValue('o'))
 		input_pars.output_path = expand_output_path(opt, opt.getValue('o'));
 	if (opt.getValue("outputdir") || opt.getValue('d'))

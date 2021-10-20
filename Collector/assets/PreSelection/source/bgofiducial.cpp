@@ -24,7 +24,8 @@ inline bool check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header) {
 void bgofiducial_distributions(
     const std::string output_path, 
     const std::string logs_dir,
-    std::shared_ptr<TChain> evtch, 
+    std::shared_ptr<TChain> evtch,
+    std::shared_ptr<config> evt_config, 
     const bool verbose) {
 
     // Register Header container
@@ -54,14 +55,16 @@ void bgofiducial_distributions(
         if (verbose && !((evIdx+1)%step))
             std::cout << "\nNumber of processed events [" << evIdx+1 << "]";
         
-        if (check_trigger(evt_header)) {
-            std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
-            bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), layer_min_energy);
-            for(auto&& elm_energy_fraction : bgoVault->GetFracLayer()) {
-                h_energy_fraction->Fill(elm_energy_fraction);
-                if (elm_energy_fraction>0.35 && write_evt && !logs_dir.empty()) {
-                    ev_number_eratio_35.push_back(evIdx);
-                    write_evt = false;
+        if (bgorec->GetElectronEcor()>=evt_config->GetMinEnergyRange() && bgorec->GetElectronEcor()<=evt_config->GetMaxEnergyRange()) {
+            if (check_trigger(evt_header)) {
+                std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
+                bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), layer_min_energy);
+                for(auto&& elm_energy_fraction : bgoVault->GetFracLayer()) {
+                    h_energy_fraction->Fill(elm_energy_fraction);
+                    if (elm_energy_fraction>0.35 && write_evt && !logs_dir.empty()) {
+                        ev_number_eratio_35.push_back(evIdx);
+                        write_evt = false;
+                    }
                 }
             }
         }
