@@ -10,8 +10,8 @@ struct in_pars
 {
 	std::string input_path;
 	std::string output_path;
+	std::string logs_dir;
 	bool verbose {false};
-    unsigned int threads {1};
 
 	// Tasks
 	bool mc {false};

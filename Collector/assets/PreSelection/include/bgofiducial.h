@@ -6,6 +6,10 @@
 #include "TFile.h"
 #include "TChain.h"
 
-extern void bgofiducial_distributions(const std::string output_path, std::shared_ptr<TChain> evtch, const bool verbose);
+extern void bgofiducial_distributions(
+    const std::string output_path, 
+    const std::string logs_dir, 
+    std::shared_ptr<TChain> evtch, 
+    const bool verbose);
 
 #endif

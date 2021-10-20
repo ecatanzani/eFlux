@@ -11,6 +11,6 @@ void preselection(const in_pars &input_pars) {
 
     auto evtch = GetFileChain(input_pars.input_path, input_pars.verbose);
 
-    bgofiducial_distributions(input_pars.output_path, evtch, input_pars.verbose);
+    bgofiducial_distributions(input_pars.output_path, input_pars.logs_dir, evtch, input_pars.verbose);
 
 }
