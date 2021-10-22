@@ -4,13 +4,14 @@
 #include <iostream>
 #include <string>
 
+#include "anyoption.h"
+
 #pragma once
 
 struct in_pars
 {
 	std::string input_path;
-	std::string output_path;
-	std::string logs_dir;
+	std::string output_wd;
 	std::string config_wd;
 	bool verbose {false};
 

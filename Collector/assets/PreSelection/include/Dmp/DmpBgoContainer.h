@@ -6,7 +6,7 @@
 
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtBgoHits.h"
-#include "DAMPE_geo_structure.h"
+#include "DmpStruct.h"
 
 #include "TVector3.h"
 class DmpBgoContainer {
