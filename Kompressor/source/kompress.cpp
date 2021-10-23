@@ -774,21 +774,21 @@ void kompress(
                                        .Histo2D<double, double, double>({"h_psd_selected_charge2D", "PSD Charge", 100, 0, 20, 100, 0, 20}, "PSD_chargeX", "PSD_chargeY", "simu_energy_w_corr");
 
     // Extract STK charge histos
-    auto h_stk_chargeX = _fr_stk_charge_analysis.Histo1D<double, double>({"h_stk_chargeX", "STK Charge X", 100, 0, 20}, "STK_chargeX", "simu_energy_w_corr");
-    auto h_stk_chargeY = _fr_stk_charge_analysis.Histo1D<double, double>({"h_stk_chargeY", "STK Charge Y", 100, 0, 20}, "STK_chargeY", "simu_energy_w_corr");
+    auto h_stk_chargeX = _fr_stk_charge_analysis.Histo1D<double, double>({"h_stk_chargeX", "STK Charge X", 500, 0, 100}, "STK_chargeX", "simu_energy_w_corr");
+    auto h_stk_chargeY = _fr_stk_charge_analysis.Histo1D<double, double>({"h_stk_chargeY", "STK Charge Y", 500, 0, 100}, "STK_chargeY", "simu_energy_w_corr");
     auto h_stk_charge = _fr_stk_charge_analysis.Define("stk_charge", [](double stk_chargeX, double stk_chargeY) { return 0.5 * (stk_chargeX + stk_chargeY); }, {"STK_chargeX", "STK_chargeY"})
                             .Histo1D<double, double>({"h_stk_charge", "STK Charge", 100, 0, 20}, "stk_charge", "simu_energy_w_corr");
-    auto h_stk_charge2D = _fr_stk_charge_analysis.Histo2D<double, double, double>({"h_stk_charge2D", "STK Charge", 100, 0, 20, 100, 0, 20}, "STK_chargeX", "STK_chargeY", "simu_energy_w_corr");
+    auto h_stk_charge2D = _fr_stk_charge_analysis.Histo2D<double, double, double>({"h_stk_charge2D", "STK Charge", 500, 0, 100, 500, 0, 100}, "STK_chargeX", "STK_chargeY", "simu_energy_w_corr");
 
     auto h_stk_selected_chargeX = _fr_stk_charge_analysis.Filter("evtfilter_stk_charge_cut==true")
-                                      .Histo1D<double, double>({"h_stk_selected_chargeX", "STK Charge X", 100, 0, 20}, "STK_chargeX", "simu_energy_w_corr");
+                                      .Histo1D<double, double>({"h_stk_selected_chargeX", "STK Charge X", 500, 0, 100}, "STK_chargeX", "simu_energy_w_corr");
     auto h_stk_selected_chargeY = _fr_stk_charge_analysis.Filter("evtfilter_stk_charge_cut==true")
-                                      .Histo1D<double, double>({"h_stk_selected_chargeY", "STK Charge Y", 100, 0, 20}, "STK_chargeY", "simu_energy_w_corr");
+                                      .Histo1D<double, double>({"h_stk_selected_chargeY", "STK Charge Y", 500, 0, 100}, "STK_chargeY", "simu_energy_w_corr");
     auto h_stk_selected_charge = _fr_stk_charge_analysis.Filter("evtfilter_stk_charge_cut==true")
                                      .Define("stk_charge", [](double stk_chargeX, double stk_chargeY) { return 0.5 * (stk_chargeX + stk_chargeY); }, {"STK_chargeX", "STK_chargeY"})
-                                     .Histo1D<double, double>({"h_stk_selected_charge", "STK Charge", 100, 0, 20}, "stk_charge", "simu_energy_w_corr");
+                                     .Histo1D<double, double>({"h_stk_selected_charge", "STK Charge", 500, 0, 100}, "stk_charge", "simu_energy_w_corr");
     auto h_stk_selected_charge2D = _fr_stk_charge_analysis.Filter("evtfilter_stk_charge_cut==true")
-                                       .Histo2D<double, double, double>({"h_stk_selected_charge2D", "STK Charge", 100, 0, 20, 100, 0, 20}, "STK_chargeX", "STK_chargeY", "simu_energy_w_corr");
+                                       .Histo2D<double, double, double>({"h_stk_selected_charge2D", "STK Charge", 500, 0, 100, 500, 0, 100}, "STK_chargeX", "STK_chargeY", "simu_energy_w_corr");
 
     // Extract NUD hisos
     std::vector<ROOT::RDF::RResultPtr<TH1D>> h_NUD_adc(DAMPE_NUD_channels);
