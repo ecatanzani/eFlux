@@ -3,14 +3,17 @@
 
 #include <memory>
 
-#include "main.h"
-#include "config.h"
+#include "histos.h"
 
-#include "TFile.h"
-#include "TChain.h"
+#include "DmpEvtBgoHits.h"
+#include "DmpEvtBgoRec.h"
+#include "DmpEvtHeader.h"
 
-extern void bgofiducial_distributions(in_pars input_pars, std::shared_ptr<TChain> evtch);
-extern void bgofiducial_distributions_mc(in_pars input_pars, std::shared_ptr<TChain> evtch);
-extern void bgofiducial_distributions_data(in_pars input_pars, std::shared_ptr<TChain> evtch);
+extern void bgofiducial_distributions(
+    std::shared_ptr<DmpEvtBgoHits> bgohits,
+    std::shared_ptr<DmpEvtBgoRec> bgorec,
+    std::shared_ptr<DmpEvtHeader> evt_header,
+    const double evt_corr_energy_gev, 
+    std::shared_ptr<histos> ps_histos);
 
 #endif
