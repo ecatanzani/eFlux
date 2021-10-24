@@ -1,4 +1,5 @@
 #include "bgo.h"
+#include "psd.h"
 #include "chain.h"
 #include "histos.h"
 #include "preselection.h"
@@ -10,8 +11,10 @@
 #include "DmpEvtHeader.h"
 #include "DmpEvtBgoHits.h"
 #include "DmpEvtBgoRec.h"
+#include "DmpEvtPsdHits.h"
 
 #include "TChain.h"
+#include "TClonesArray.h"
 
 void preselection(const in_pars &input_pars) {
     
@@ -30,6 +33,27 @@ void preselection(const in_pars &input_pars) {
     std::shared_ptr<DmpEvtBgoRec> bgorec = std::make_shared<DmpEvtBgoRec>();
     evtch->SetBranchAddress("DmpEvtBgoRec", &bgorec);
     
+    // Register STK container
+	std::shared_ptr<TClonesArray> stkclusters = std::make_shared<TClonesArray>("DmpStkSiCluster");
+	evtch->SetBranchAddress("StkClusterCollection", &stkclusters);
+
+	// Check if STK tracks collection exists
+	bool fStkKalmanTracksFound = false;
+	for (int brIdx = 0; brIdx < evtch->GetListOfBranches()->GetEntries(); ++brIdx)
+		if (strcmp(evtch->GetListOfBranches()->At(brIdx)->GetName(), "StkKalmanTracks")) {
+			fStkKalmanTracksFound = true;
+			break;
+		}
+
+	// Register STK tracks collection
+	std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack", 200);
+	if (fStkKalmanTracksFound)
+		evtch->SetBranchAddress("StkKalmanTracks", &stktracks);
+
+	// Register PSD container
+	std::shared_ptr<DmpEvtPsdHits> psdhits = std::make_shared<DmpEvtPsdHits>();
+	evtch->SetBranchAddress("DmpPsdHits", &psdhits);
+
     auto min_evt_energy = econfig->GetMinEvtEnergy();
     auto max_evt_energy = econfig->GetMaxEvtEnergy();
 
@@ -57,6 +81,8 @@ void preselection(const in_pars &input_pars) {
 
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
             bgofiducial_distributions(bgohits, bgorec, evt_header, evt_corr_energy_gev, ps_histos);
+            psd_stk_distributions(bgohits, bgorec, evt_header, stkclusters, stktracks, psdhits, evt_energy_gev, evt_corr_energy_gev, ps_histos);
+
         }
 
     }

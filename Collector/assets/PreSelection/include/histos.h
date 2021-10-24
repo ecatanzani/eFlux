@@ -48,6 +48,22 @@ class histos {
         std::shared_ptr<TH1D> h_energy_fraction_sh_axis_contained;
         std::shared_ptr<TH1D> h_energy_fraction_sh_axis_not_contained;
 
+        std::shared_ptr<TH1D> PSD_STK_X_match_energy_int;
+        std::shared_ptr<TH1D> PSD_STK_Y_match_energy_int;
+        std::shared_ptr<TH1D> PSD_STK_X_match_100_250;
+        std::shared_ptr<TH1D> PSD_STK_Y_match_100_250;
+        std::shared_ptr<TH1D> PSD_STK_X_match_250_500;
+        std::shared_ptr<TH1D> PSD_STK_Y_match_250_500;
+        std::shared_ptr<TH1D> PSD_STK_X_match_500_1000;
+        std::shared_ptr<TH1D> PSD_STK_Y_match_500_1000;
+        std::shared_ptr<TH1D> PSD_STK_X_match_1000_5000;
+        std::shared_ptr<TH1D> PSD_STK_Y_match_1000_5000;
+        std::shared_ptr<TH1D> PSD_STK_X_match_5000;
+        std::shared_ptr<TH1D> PSD_STK_Y_match_5000;
+
+
+
+
         private:
             int energy_nbins {0};
             std::vector<float> energy_binning;
