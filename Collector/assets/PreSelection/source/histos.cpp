@@ -60,8 +60,8 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_STK_Y_match_5000 = std::make_shared<TH1D>("h_PSD_STK_Y_match_5000", "PSD - STK match Y view - >5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
 
     if (h_simu) {
-        h_diff_bgo_simu_particle_direction_X = std::make_shared<TH1D>("h_diff_bgo_simu_particle_direction_X", "X view - slope_{BGO} - slope_{simu}; slope_{BGO} - slope_{simu} (deg); entries", 400, -40, 40);
-        h_diff_bgo_simu_particle_direction_Y = std::make_shared<TH1D>("h_diff_bgo_simu_particle_direction_Y", "Y view - slope_{BGO} - slope_{simu}; slope_{BGO} - slope_{simu} (deg); entries", 400, -40, 40);
+        h_diff_bgo_simu_particle_direction_X = std::make_shared<TH1D>("h_diff_bgo_simu_particle_direction_X", "X view - slope_{BGO} - slope_{simu}; slope_{BGO} - slope_{simu} (deg); entries", 500, -40, 40);
+        h_diff_bgo_simu_particle_direction_Y = std::make_shared<TH1D>("h_diff_bgo_simu_particle_direction_Y", "Y view - slope_{BGO} - slope_{simu}; slope_{BGO} - slope_{simu} (deg); entries", 500, -40, 40);
         h_diff_bgo_simu_extr_top_position_X = std::make_shared<TH1D>("h_diff_bgo_simu_extr_top_position_X", "TOP X ext - position_{BGO} - position_{simu}; position_{BGO} - position_{simu} [mm]; entries", 200, -200, 200);
         h_diff_bgo_simu_extr_top_position_Y = std::make_shared<TH1D>("h_diff_bgo_simu_extr_top_position_Y", "TOP Y ext - position_{BGO} - position_{simu}; position_{BGO} - position_{simu} [mm]; entries", 200, -200, 200);
     }
