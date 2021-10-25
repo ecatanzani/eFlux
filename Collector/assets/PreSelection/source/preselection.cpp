@@ -102,6 +102,7 @@ void preselection(const in_pars &input_pars) {
                 bgorec, 
                 evt_header, 
                 simu_primaries,
+                evt_corr_energy,
                 evt_corr_energy_gev, 
                 ps_histos);
             psd_stk_distributions(

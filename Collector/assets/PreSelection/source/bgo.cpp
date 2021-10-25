@@ -68,9 +68,11 @@ void bgofiducial_distributions(
     std::shared_ptr<DmpEvtBgoRec> bgorec,
     std::shared_ptr<DmpEvtHeader> evt_header,
     std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
+    const double evt_corr_energy,
     const double evt_corr_energy_gev, 
     std::shared_ptr<histos> ps_histos) {
 
+    double gev {0.001};
     double layer_min_energy {0}; //Minimum energy per layer
     std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
     bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), layer_min_energy);
@@ -120,6 +122,11 @@ void bgofiducial_distributions(
                 ps_histos->h_energy_fraction_large_angles_85->Fill(elm_energy_fraction);
 
         ps_histos->h_bar_energy->Fill(evt_corr_energy_gev, get_mean_bar_energy(bgoVault->GetLayerBarEnergies()));
+
+        for (auto&& layer_energy : bgoVault->GetLayerBarEnergies())
+            for (auto && single_bar_energy : layer_energy)
+                ps_histos->h_bar_energy_2D->Fill(evt_corr_energy_gev, single_bar_energy*gev);
+
         ps_histos->h_bars_last_layer_10MeV->Fill(count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10));
         ps_histos->h_bars_last_layer_10MeV_2D->Fill(evt_corr_energy_gev, count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10));
         ps_histos->h_maxrms->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()));
@@ -132,16 +139,62 @@ void bgofiducial_distributions(
         ps_histos->h_bgoshower_top_Y->Fill(bgorec_proj_Y[0]);
         ps_histos->h_bgoshower_bottom_Y->Fill(bgorec_proj_Y[1]);
 
-
         for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
             if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY))
                 ps_histos->h_energy_fraction_sh_axis_contained->Fill(elm_energy_fraction);
             else
                 ps_histos->h_energy_fraction_sh_axis_not_contained->Fill(elm_energy_fraction);
-
-
-        // Get info on BGO angular and spacial resolution (on the extrapolation)
+        
+        
         if (simu_primaries!=nullptr) {
+
+            auto energy_diff = (simu_primaries->pvpart_ekin - evt_corr_energy)/simu_primaries->pvpart_ekin;
+            auto idxBarMaxLayer = bgoVault->GetIdxBarMaxLayer();
+
+            ps_histos->h_bgoshower_top_X_simu_reco_energy_diff->Fill(bgorec_proj_X[0], energy_diff);
+            ps_histos->h_bgoshower_bottom_X_simu_reco_energy_diff->Fill(bgorec_proj_X[1], energy_diff);
+            ps_histos->h_bgoshower_top_Y_simu_reco_energy_diff->Fill(bgorec_proj_Y[0], energy_diff);
+            ps_histos->h_bgoshower_bottom_Y_simu_reco_energy_diff->Fill(bgorec_proj_Y[1], energy_diff);
+
+            for (int lIdx=0; lIdx<14; ++lIdx) {
+                if (bgoVault->GetLayerBarNumber()[lIdx].size()) {
+                    if (bgoVault->GetiMaxLayer()[lIdx] > -1) {
+                        ps_histos->h_max_bar_position_simu_reco_energy_diff->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                        switch (lIdx) {
+                            case 0: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_0->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 1: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_1->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 2: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_2->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 3: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_3->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 4: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_4->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 5: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_5->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 6: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_6->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 7: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_7->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 8: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_8->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 9: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_9->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 10: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_10->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 11: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_11->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 12: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_12->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                            case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13->Fill(idxBarMaxLayer[lIdx], energy_diff);
+                                    break;
+                        }
+                    }
+                }
+            }
+
+            // Get info on BGO angular and spacial resolution (on the extrapolation)
             TVector3 orgPosition;
             orgPosition.SetX(simu_primaries->pv_x);
             orgPosition.SetY(simu_primaries->pv_y);
