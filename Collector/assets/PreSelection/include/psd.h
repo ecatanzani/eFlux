@@ -19,6 +19,8 @@ extern void psd_stk_distributions(
     std::shared_ptr<TClonesArray> stkclusters, 
     std::shared_ptr<TClonesArray> stktracks,
     std::shared_ptr<DmpEvtPsdHits> psdhits,
+    const double evt_energy, 
+    const double evt_corr_energy,
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
     std::shared_ptr<histos> ps_histos);

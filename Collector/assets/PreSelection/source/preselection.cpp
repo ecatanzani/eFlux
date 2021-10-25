@@ -57,6 +57,8 @@ void preselection(const in_pars &input_pars) {
     auto min_evt_energy = econfig->GetMinEvtEnergy();
     auto max_evt_energy = econfig->GetMaxEvtEnergy();
 
+    double evt_corr_energy {0};
+    double evt_energy {0};
     double evt_corr_energy_gev {0};
     double evt_energy_gev {0};
     double gev {0.001};
@@ -76,12 +78,25 @@ void preselection(const in_pars &input_pars) {
             perc += 10;
         }
     
-        evt_energy_gev = bgorec->GetTotalEnergy()*gev;
-        evt_corr_energy_gev = bgorec->GetElectronEcor()*gev;
+        evt_energy = bgorec->GetTotalEnergy();
+        evt_corr_energy = bgorec->GetElectronEcor();
+        evt_energy_gev = evt_energy*gev;
+        evt_corr_energy_gev = evt_corr_energy*gev;
 
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
             bgofiducial_distributions(bgohits, bgorec, evt_header, evt_corr_energy_gev, ps_histos);
-            psd_stk_distributions(bgohits, bgorec, evt_header, stkclusters, stktracks, psdhits, evt_energy_gev, evt_corr_energy_gev, ps_histos);
+            psd_stk_distributions(
+                bgohits, 
+                bgorec, 
+                evt_header, 
+                stkclusters, 
+                stktracks, 
+                psdhits, 
+                evt_energy, 
+                evt_corr_energy, 
+                evt_energy_gev, 
+                evt_corr_energy_gev, 
+                ps_histos);
 
         }
 

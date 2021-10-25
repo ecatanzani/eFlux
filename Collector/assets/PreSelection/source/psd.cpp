@@ -84,6 +84,8 @@ void psd_stk_distributions(
     std::shared_ptr<TClonesArray> stkclusters, 
     std::shared_ptr<TClonesArray> stktracks,
     std::shared_ptr<DmpEvtPsdHits> psdhits,
+    const double evt_energy, 
+    const double evt_corr_energy,
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
     std::shared_ptr<histos> ps_histos) {
@@ -111,17 +113,16 @@ void psd_stk_distributions(
 
         if (check_trigger(evt_header)) {
 
-            auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), bgo_max_energy_ratio, evt_energy_gev);
+            auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), bgo_max_energy_ratio, evt_energy);
             auto maxbarlayer_cut = maxBarLayer_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetiMaxLayer(), bgoVault->GetIdxBarMaxLayer());
             auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), bgo_shower_axis_delta);
 
             auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
-
+            
             if (bgofiducial_cut) {
-                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy_gev);
-
+                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
                 if (nbarlayer13_cut) {
-                    auto maxrms_cut = maxRms_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetRmsLayer(), evt_energy_gev, bgo_shower_width);
+                    auto maxrms_cut = maxRms_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
 
                     if (maxrms_cut) {
                         auto trackselection_cut = track_selection_cut(
