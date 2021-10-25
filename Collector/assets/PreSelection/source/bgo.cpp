@@ -4,6 +4,7 @@
 #include "Dmp/DmpStruct.h"
 
 #include "TMath.h"
+#include "TVector3.h"
 
 #include <vector>
 #include <tuple>
@@ -66,6 +67,7 @@ void bgofiducial_distributions(
     std::shared_ptr<DmpEvtBgoHits> bgohits,
     std::shared_ptr<DmpEvtBgoRec> bgorec,
     std::shared_ptr<DmpEvtHeader> evt_header,
+    std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
     const double evt_corr_energy_gev, 
     std::shared_ptr<histos> ps_histos) {
 
@@ -136,6 +138,33 @@ void bgofiducial_distributions(
                 ps_histos->h_energy_fraction_sh_axis_contained->Fill(elm_energy_fraction);
             else
                 ps_histos->h_energy_fraction_sh_axis_not_contained->Fill(elm_energy_fraction);
+
+
+        // Get info on BGO angular and spacial resolution (on the extrapolation)
+        if (simu_primaries!=nullptr) {
+            TVector3 orgPosition;
+            orgPosition.SetX(simu_primaries->pv_x);
+            orgPosition.SetY(simu_primaries->pv_y);
+            orgPosition.SetZ(simu_primaries->pv_z);
+
+            TVector3 orgMomentum;
+            orgMomentum.SetX(simu_primaries->pvpart_px);
+            orgMomentum.SetY(simu_primaries->pvpart_py);
+            orgMomentum.SetZ(simu_primaries->pvpart_pz);
+
+            std::vector<double> slope(2, 0);
+            std::vector<double> intercept(2, 0);
+
+            slope[0] = orgMomentum.Z() ? orgMomentum.X() / orgMomentum.Z() : -999;
+            slope[1] = orgMomentum.Z() ? orgMomentum.Y() / orgMomentum.Z() : -999;
+            intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
+            intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
+
+            ps_histos->h_diff_bgo_simu_particle_direction_X->Fill(slope[0]-(bgoVault->GetBGOslope())[0]);
+            ps_histos->h_diff_bgo_simu_particle_direction_Y->Fill(slope[1]-(bgoVault->GetBGOslope())[1]);
+            ps_histos->h_diff_bgo_simu_extr_top_position_X->Fill(intercept[0]-(bgoVault->GetBGOintercept())[0]);
+            ps_histos->h_diff_bgo_simu_extr_top_position_Y->Fill(intercept[1]-(bgoVault->GetBGOintercept())[1]);
+        }
     }
     else {
         if (evt_corr_energy_gev) {

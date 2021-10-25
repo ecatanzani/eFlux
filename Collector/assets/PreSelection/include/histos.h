@@ -12,7 +12,7 @@
 
 class histos {
     public:
-        histos(std::shared_ptr<energy_config> econfig);
+        histos(std::shared_ptr<energy_config> econfig, const bool mc);
         ~histos() {};
 
         void Write(const std::string output_wd, const bool verbose);
@@ -48,23 +48,27 @@ class histos {
         std::shared_ptr<TH1D> h_energy_fraction_sh_axis_contained;
         std::shared_ptr<TH1D> h_energy_fraction_sh_axis_not_contained;
 
-        std::shared_ptr<TH1D> PSD_STK_X_match_energy_int;
-        std::shared_ptr<TH1D> PSD_STK_Y_match_energy_int;
-        std::shared_ptr<TH1D> PSD_STK_X_match_100_250;
-        std::shared_ptr<TH1D> PSD_STK_Y_match_100_250;
-        std::shared_ptr<TH1D> PSD_STK_X_match_250_500;
-        std::shared_ptr<TH1D> PSD_STK_Y_match_250_500;
-        std::shared_ptr<TH1D> PSD_STK_X_match_500_1000;
-        std::shared_ptr<TH1D> PSD_STK_Y_match_500_1000;
-        std::shared_ptr<TH1D> PSD_STK_X_match_1000_5000;
-        std::shared_ptr<TH1D> PSD_STK_Y_match_1000_5000;
-        std::shared_ptr<TH1D> PSD_STK_X_match_5000;
-        std::shared_ptr<TH1D> PSD_STK_Y_match_5000;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_energy_int;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_energy_int;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_100_250;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_100_250;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_250_500;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_250_500;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_500_1000;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_500_1000;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_1000_5000;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_1000_5000;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_5000;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_5000;
 
-
+        std::shared_ptr<TH1D> h_diff_bgo_simu_particle_direction_X;
+        std::shared_ptr<TH1D> h_diff_bgo_simu_particle_direction_Y;
+        std::shared_ptr<TH1D> h_diff_bgo_simu_extr_top_position_X;
+        std::shared_ptr<TH1D> h_diff_bgo_simu_extr_top_position_Y;
 
 
         private:
+            bool h_simu {false};
             int energy_nbins {0};
             std::vector<float> energy_binning;
             std::vector<float> bars_energy_bins;

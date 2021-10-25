@@ -12,6 +12,8 @@
 #include "DmpEvtBgoHits.h"
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtPsdHits.h"
+#include "DmpSimuTrajectory.h"
+#include "DmpEvtSimuPrimaries.h"
 
 #include "TChain.h"
 #include "TClonesArray.h"
@@ -36,6 +38,17 @@ void preselection(const in_pars &input_pars) {
     // Register STK container
 	std::shared_ptr<TClonesArray> stkclusters = std::make_shared<TClonesArray>("DmpStkSiCluster");
 	evtch->SetBranchAddress("StkClusterCollection", &stkclusters);
+
+    // Register SimuPrimaries container
+	std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries;
+    // Register SimuTrajectory container
+	std::shared_ptr<TClonesArray> simu_trajectories;
+    if (input_pars.mc) {
+        simu_primaries = std::make_shared<DmpEvtSimuPrimaries>();
+        simu_trajectories = std::make_shared<TClonesArray>("DmpSimuTrajectory");    
+        evtch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
+        evtch->SetBranchAddress("DmpTruthTrajectoriesCollection", &simu_trajectories);
+    }
 
 	// Check if STK tracks collection exists
 	bool fStkKalmanTracksFound = false;
@@ -66,7 +79,7 @@ void preselection(const in_pars &input_pars) {
 
     auto nevents {evtch->GetEntries()};
 
-    std::shared_ptr<histos> ps_histos = std::make_shared<histos>(econfig);
+    std::shared_ptr<histos> ps_histos = std::make_shared<histos>(econfig, input_pars.mc);
 
     if (input_pars.verbose) std::cout << "\n\nNumber of events: " << nevents << std::endl;
 
@@ -84,7 +97,13 @@ void preselection(const in_pars &input_pars) {
         evt_corr_energy_gev = evt_corr_energy*gev;
 
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
-            bgofiducial_distributions(bgohits, bgorec, evt_header, evt_corr_energy_gev, ps_histos);
+            bgofiducial_distributions(
+                bgohits, 
+                bgorec, 
+                evt_header, 
+                simu_primaries,
+                evt_corr_energy_gev, 
+                ps_histos);
             psd_stk_distributions(
                 bgohits, 
                 bgorec, 

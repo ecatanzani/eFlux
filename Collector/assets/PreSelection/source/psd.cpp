@@ -51,28 +51,28 @@ inline void psd_stk_match(
             }
         }
 
-        ps_histos->PSD_STK_X_match_energy_int->Fill(clu_matching.dxCloPsdClu_track[0]);
-        ps_histos->PSD_STK_Y_match_energy_int->Fill(clu_matching.dxCloPsdClu_track[1]);
+        ps_histos->h_PSD_STK_X_match_energy_int->Fill(clu_matching.dxCloPsdClu_track[0]);
+        ps_histos->h_PSD_STK_Y_match_energy_int->Fill(clu_matching.dxCloPsdClu_track[1]);
         
         if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<=250) {
-            ps_histos->PSD_STK_X_match_100_250->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->PSD_STK_Y_match_100_250->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_100_250->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_Y_match_100_250->Fill(clu_matching.dxCloPsdClu_track[1]);
         }
         else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<=500) {
-            ps_histos->PSD_STK_X_match_250_500->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->PSD_STK_X_match_250_500->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_250_500->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_X_match_250_500->Fill(clu_matching.dxCloPsdClu_track[1]);
         }
         else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<=1000) {
-            ps_histos->PSD_STK_X_match_500_1000->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->PSD_STK_X_match_500_1000->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_500_1000->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_X_match_500_1000->Fill(clu_matching.dxCloPsdClu_track[1]);
         }
         else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<=5000) {
-            ps_histos->PSD_STK_X_match_1000_5000->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->PSD_STK_X_match_1000_5000->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_1000_5000->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_X_match_1000_5000->Fill(clu_matching.dxCloPsdClu_track[1]);
         }
         else {
-            ps_histos->PSD_STK_X_match_5000->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->PSD_STK_Y_match_5000->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_5000->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_Y_match_5000->Fill(clu_matching.dxCloPsdClu_track[1]);
         }
         
     }
@@ -118,7 +118,7 @@ void psd_stk_distributions(
             auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), bgo_shower_axis_delta);
 
             auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
-            
+
             if (bgofiducial_cut) {
                 auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
                 if (nbarlayer13_cut) {

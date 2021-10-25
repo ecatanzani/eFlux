@@ -7,8 +7,9 @@
 
 #include "TFile.h"
 
-histos::histos(std::shared_ptr<energy_config> econfig) {
-
+histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
+    
+    h_simu = mc;
     energy_binning = econfig->GetEnergyBinning();
     energy_nbins = (int)energy_binning.size() - 1;
 
@@ -45,18 +46,25 @@ histos::histos(std::shared_ptr<energy_config> econfig) {
     h_energy_fraction_sh_axis_contained = std::make_shared<TH1D>("h_energy_fraction_sh_axis_contained", "Energy fraction; Energy fraction; counts", 100, 0, 1);
     h_energy_fraction_sh_axis_not_contained = std::make_shared<TH1D>("h_energy_fraction_sh_axis_not_contained", "Energy fraction; Energy fraction; counts", 100, 0, 1);
 
-    PSD_STK_X_match_energy_int = std::make_shared<TH1D>("PSD_STK_X_match_energy_int", "PSD - STK match X view- All Energies; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_Y_match_energy_int = std::make_shared<TH1D>("PSD_STK_Y_match_energy_int", "PSD - STK match Y view - All Energies; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_X_match_100_250 = std::make_shared<TH1D>("PSD_STK_X_match_100_250", "PSD - STK match X view - 100-250 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_Y_match_100_250 = std::make_shared<TH1D>("PSD_STK_Y_match_100_250", "PSD - STK match Y view - 100-250 GeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_X_match_250_500 = std::make_shared<TH1D>("PSD_STK_X_match_250_500", "PSD - STK match X view - 250-500 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_Y_match_250_500 = std::make_shared<TH1D>("PSD_STK_Y_match_250_500", "PSD - STK match Y view - 250-500 GeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_X_match_500_1000 = std::make_shared<TH1D>("PSD_STK_X_match_500_1000", "PSD - STK match X view - 500GeV-1TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_Y_match_500_1000 = std::make_shared<TH1D>("PSD_STK_Y_match_500_1000", "PSD - STK match Y view - 500GeV-1TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_X_match_1000_5000 = std::make_shared<TH1D>("PSD_STK_X_match_1000_5000", "PSD - STK match X view - 1TeV-5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_Y_match_1000_5000 = std::make_shared<TH1D>("PSD_STK_Y_match_1000_5000", "PSD - STK match Y view - 1TeV-5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_X_match_5000 = std::make_shared<TH1D>("PSD_STK_X_match_5000", "PSD - STK match X view - >5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
-    PSD_STK_Y_match_5000 = std::make_shared<TH1D>("PSD_STK_Y_match_5000", "PSD - STK match Y view - >5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_energy_int = std::make_shared<TH1D>("h_PSD_STK_X_match_energy_int", "PSD - STK match X view- All Energies; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_energy_int = std::make_shared<TH1D>("h_PSD_STK_Y_match_energy_int", "PSD - STK match Y view - All Energies; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_100_250 = std::make_shared<TH1D>("h_PSD_STK_X_match_100_250", "PSD - STK match X view - 100-250 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_100_250 = std::make_shared<TH1D>("h_PSD_STK_Y_match_100_250", "PSD - STK match Y view - 100-250 GeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_250_500 = std::make_shared<TH1D>("h_PSD_STK_X_match_250_500", "PSD - STK match X view - 250-500 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_250_500 = std::make_shared<TH1D>("h_PSD_STK_Y_match_250_500", "PSD - STK match Y view - 250-500 GeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_500_1000 = std::make_shared<TH1D>("h_PSD_STK_X_match_500_1000", "PSD - STK match X view - 500GeV-1TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_500_1000 = std::make_shared<TH1D>("h_PSD_STK_Y_match_500_1000", "PSD - STK match Y view - 500GeV-1TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_1000_5000 = std::make_shared<TH1D>("h_PSD_STK_X_match_1000_5000", "PSD - STK match X view - 1TeV-5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_1000_5000 = std::make_shared<TH1D>("h_PSD_STK_Y_match_1000_5000", "PSD - STK match Y view - 1TeV-5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_5000 = std::make_shared<TH1D>("h_PSD_STK_X_match_5000", "PSD - STK match X view - >5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_5000 = std::make_shared<TH1D>("h_PSD_STK_Y_match_5000", "PSD - STK match Y view - >5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+
+    if (h_simu) {
+        h_diff_bgo_simu_particle_direction_X = std::make_shared<TH1D>("h_diff_bgo_simu_particle_direction_X", "X view - slope_{BGO} - slope_{simu}; slope_{BGO} - slope_{simu} (deg); entries", 400, -40, 40);
+        h_diff_bgo_simu_particle_direction_Y = std::make_shared<TH1D>("h_diff_bgo_simu_particle_direction_Y", "Y view - slope_{BGO} - slope_{simu}; slope_{BGO} - slope_{simu} (deg); entries", 400, -40, 40);
+        h_diff_bgo_simu_extr_top_position_X = std::make_shared<TH1D>("h_diff_bgo_simu_extr_top_position_X", "TOP X ext - position_{BGO} - position_{simu}; position_{BGO} - position_{simu} [mm]; entries", 200, -200, 200);
+        h_diff_bgo_simu_extr_top_position_Y = std::make_shared<TH1D>("h_diff_bgo_simu_extr_top_position_Y", "TOP Y ext - position_{BGO} - position_{simu}; position_{BGO} - position_{simu} [mm]; entries", 200, -200, 200);
+    }
 }
 
 void histos::Write(const std::string output_wd, const bool verbose) {
@@ -97,21 +105,28 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_energy_fraction_sh_axis_contained->Write();
     h_energy_fraction_sh_axis_not_contained->Write();
 
+    if (h_simu) {
+        h_diff_bgo_simu_particle_direction_X->Write();
+        h_diff_bgo_simu_particle_direction_Y->Write();
+        h_diff_bgo_simu_extr_top_position_X->Write();
+        h_diff_bgo_simu_extr_top_position_Y->Write();
+    }
+
     outfile->mkdir("PSD_STK");
     outfile->cd("PSD_STK");
 
-    PSD_STK_X_match_energy_int->Write();
-    PSD_STK_Y_match_energy_int->Write();
-    PSD_STK_X_match_100_250->Write();
-    PSD_STK_Y_match_100_250->Write();
-    PSD_STK_X_match_250_500->Write();
-    PSD_STK_Y_match_250_500->Write();
-    PSD_STK_X_match_500_1000->Write();
-    PSD_STK_Y_match_500_1000->Write();
-    PSD_STK_X_match_1000_5000->Write();
-    PSD_STK_Y_match_1000_5000->Write();
-    PSD_STK_X_match_5000->Write();
-    PSD_STK_Y_match_5000->Write();
+    h_PSD_STK_X_match_energy_int->Write();
+    h_PSD_STK_Y_match_energy_int->Write();
+    h_PSD_STK_X_match_100_250->Write();
+    h_PSD_STK_Y_match_100_250->Write();
+    h_PSD_STK_X_match_250_500->Write();
+    h_PSD_STK_Y_match_250_500->Write();
+    h_PSD_STK_X_match_500_1000->Write();
+    h_PSD_STK_Y_match_500_1000->Write();
+    h_PSD_STK_X_match_1000_5000->Write();
+    h_PSD_STK_Y_match_1000_5000->Write();
+    h_PSD_STK_X_match_5000->Write();
+    h_PSD_STK_Y_match_5000->Write();
 
     outfile->Close();
 
