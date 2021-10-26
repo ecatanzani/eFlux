@@ -4,6 +4,7 @@
 #include "histos.h"
 #include "preselection.h"
 #include "energy_config.h"
+#include "lateral_showering.h"
 
 #include <iostream>
 #include <memory>
@@ -97,14 +98,28 @@ void preselection(const in_pars &input_pars) {
         evt_corr_energy_gev = evt_corr_energy*gev;
 
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
+            
             bgofiducial_distributions(
                 bgohits, 
                 bgorec, 
                 evt_header, 
                 simu_primaries,
+                evt_energy,
                 evt_corr_energy,
+                evt_energy_gev,
                 evt_corr_energy_gev, 
                 ps_histos);
+
+            lateral_showering_distributions(
+                bgohits, 
+                bgorec, 
+                evt_header,
+                evt_energy, 
+                evt_corr_energy, 
+                evt_energy_gev, 
+                evt_corr_energy_gev,
+                ps_histos);
+
             psd_stk_distributions(
                 bgohits, 
                 bgorec, 
