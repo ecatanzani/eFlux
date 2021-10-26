@@ -1,4 +1,5 @@
 #include "bgo.h"
+#include "cuts.h"
 
 #include "Dmp/DmpBgoContainer.h"
 #include "Dmp/DmpStruct.h"
@@ -68,12 +69,15 @@ void bgofiducial_distributions(
     std::shared_ptr<DmpEvtBgoRec> bgorec,
     std::shared_ptr<DmpEvtHeader> evt_header,
     std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
+    const double evt_energy, 
     const double evt_corr_energy,
+    const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
     std::shared_ptr<histos> ps_histos) {
 
     double gev {0.001};
     double layer_min_energy {0}; //Minimum energy per layer
+
     std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
     bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), layer_min_energy);
 
@@ -145,7 +149,51 @@ void bgofiducial_distributions(
             else
                 ps_histos->h_energy_fraction_sh_axis_not_contained->Fill(elm_energy_fraction);
         
-        
+        ps_histos->h_BGOrec_sumRms_flast->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+        if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
+            ps_histos->h_BGOrec_sumRms_flast_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+        else if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<250)
+            ps_histos->h_BGOrec_sumRms_flast_100_250->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+        else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<500)
+            ps_histos->h_BGOrec_sumRms_flast_250_500->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+        else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<1000)
+            ps_histos->h_BGOrec_sumRms_flast_500_1000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+        else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<3000)
+            ps_histos->h_BGOrec_sumRms_flast_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+        else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
+            ps_histos->h_BGOrec_sumRms_flast_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+        else
+            ps_histos->h_BGOrec_sumRms_flast_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+
+        double bgo_layer_min_energy     {0};    // Minimum energy per BGO layer
+        double bgo_max_energy_ratio     {0.35}; // Maximum energy ratio per layer
+        double bgo_shower_axis_delta    {280};  // BGO maximum shower axis delta (mm)
+        double bgo_shower_width         {100};  // BGO maximum shower width (mm)
+
+        auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), bgo_max_energy_ratio, evt_energy);
+        auto maxbarlayer_cut = maxBarLayer_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetiMaxLayer(), bgoVault->GetIdxBarMaxLayer());
+        auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), bgo_shower_axis_delta);
+
+        auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
+
+        if (bgofiducial_cut) {
+            ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+            if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
+                ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+            else if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<250)
+                ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_100_250->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+            else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<500)
+                ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_250_500->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+            else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<1000)
+                ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_500_1000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+            else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<3000)
+                ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+            else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
+                ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+            else
+                ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+        }
+
         if (simu_primaries!=nullptr) {
 
             auto energy_diff = (simu_primaries->pvpart_ekin - evt_corr_energy)/simu_primaries->pvpart_ekin;
