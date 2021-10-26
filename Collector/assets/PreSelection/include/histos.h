@@ -115,6 +115,35 @@ class histos {
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000;
 
+        std::shared_ptr<TH1D> h_STK_X_clusters;
+        std::shared_ptr<TH1D> h_STK_Y_clusters;
+        std::shared_ptr<TH1D> h_STK_X_holes;
+        std::shared_ptr<TH1D> h_STK_Y_holes;
+
+        std::shared_ptr<TH2D> h_STK_X_clusters_vs_energy;
+        std::shared_ptr<TH2D> h_STK_Y_clusters_vs_energy;
+        std::shared_ptr<TH2D> h_STK_X_holes_vs_energy;
+        std::shared_ptr<TH2D> h_STK_Y_holes_vs_energy;
+
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference;
+        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference;
+
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_20_100;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_100_250;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_250_500;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_500_1000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_1000_3000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_3000_5000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_5000;
+
+        std::shared_ptr<TH1D> h_STK_charge_X;
+        std::shared_ptr<TH1D> h_STK_charge_Y;
+        std::shared_ptr<TH1D> h_STK_charge;
+        std::shared_ptr<TH2D> h_STK_charge_2D;
+
         private:
             bool h_simu {false};
             int energy_nbins {0};
@@ -125,6 +154,7 @@ class histos {
             std::vector<float> max_rms_bins;
             std::vector<float> sumRms_binning;
             std::vector<float> flast_binning;
+            std::vector<float> stk_track_binning;
 
 };
 

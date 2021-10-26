@@ -1,4 +1,5 @@
 #include "bgo.h"
+#include "stk.h"
 #include "psd.h"
 #include "chain.h"
 #include "histos.h"
@@ -118,6 +119,18 @@ void preselection(const in_pars &input_pars) {
                 evt_corr_energy, 
                 evt_energy_gev, 
                 evt_corr_energy_gev,
+                ps_histos);
+
+            stk_distributions(
+                bgohits, 
+                bgorec, 
+                evt_header, 
+                stkclusters, 
+                stktracks, 
+                evt_energy, 
+                evt_corr_energy, 
+                evt_energy_gev, 
+                evt_corr_energy_gev, 
                 ps_histos);
 
             psd_stk_distributions(
