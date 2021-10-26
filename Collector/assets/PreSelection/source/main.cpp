@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
 	opt.addUsage("");
 
 	opt.addUsage(" -m  --mc           .......... MC event loop");
+	opt.addUsage(" -r  --raw_data     .......... Raw data event loop");
 
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
@@ -26,6 +27,7 @@ int main(int argc, char **argv) {
 	opt.setOption("outputDir", 'd');
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("mc", 'm');
+	opt.setFlag("raw_data", 'r');
 	
 	opt.processCommandArgs(argc, argv);
 
@@ -49,7 +51,9 @@ int main(int argc, char **argv) {
 	if (opt.getFlag("verbose") || opt.getFlag('v'))
 		input_pars.verbose = opt.getFlag('v');
 	if (opt.getFlag("mc") || opt.getFlag('m'))
-		input_pars.mc = true;
+		input_pars.mc_flag = true;
+	if (opt.getFlag("raw_data") || opt.getFlag('r'))
+		input_pars.rawdata_flag = true;
 	
 	preselection(input_pars);
 	

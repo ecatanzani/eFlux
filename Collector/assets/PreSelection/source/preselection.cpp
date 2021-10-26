@@ -45,7 +45,7 @@ void preselection(const in_pars &input_pars) {
 	std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries;
     // Register SimuTrajectory container
 	std::shared_ptr<TClonesArray> simu_trajectories;
-    if (input_pars.mc) {
+    if (input_pars.mc_flag) {
         simu_primaries = std::make_shared<DmpEvtSimuPrimaries>();
         simu_trajectories = std::make_shared<TClonesArray>("DmpSimuTrajectory");    
         evtch->SetBranchAddress("DmpEvtSimuPrimaries", &simu_primaries);
@@ -81,7 +81,7 @@ void preselection(const in_pars &input_pars) {
 
     auto nevents {evtch->GetEntries()};
 
-    std::shared_ptr<histos> ps_histos = std::make_shared<histos>(econfig, input_pars.mc);
+    std::shared_ptr<histos> ps_histos = std::make_shared<histos>(econfig, input_pars.mc_flag);
 
     if (input_pars.verbose) std::cout << "\n\nNumber of events: " << nevents << std::endl;
 
