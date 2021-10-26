@@ -17,6 +17,8 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     bars_2d_energy_bins = createLogBinning(1e-5, 1e+5, 2000);
     number_of_bars_last_layer = createLinearBinning(0, 22, 23);
     max_rms_bins = createLinearBinning(0, 3000, 1000);
+    sumRms_binning = createLogBinning(10, 2e+3, 1e+2);
+    flast_binning = createLogBinning(1e-5, 2e-1, 1e+3);
 
     h_energy_fraction = std::make_shared<TH1D>("h_energy_fraction", "Energy fraction; Energy fraction; counts", 100, 0, 1);
     h_energy_fraction_no_trigger = std::make_shared<TH1D>("h_energy_fraction_no_trigger", "Energy fraction - No triggered events; Energy fraction; counts", 100, 0, 1);
@@ -60,6 +62,33 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_STK_Y_match_1000_5000 = std::make_shared<TH1D>("h_PSD_STK_Y_match_1000_5000", "PSD - STK match Y view - 1TeV-5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
     h_PSD_STK_X_match_5000 = std::make_shared<TH1D>("h_PSD_STK_X_match_5000", "PSD - STK match X view - >5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
     h_PSD_STK_Y_match_5000 = std::make_shared<TH1D>("h_PSD_STK_Y_match_5000", "PSD - STK match Y view - >5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+
+    h_BGOrec_sumRms_flast = std::make_shared<TH2D>("h_BGOrec_sumRms_flast", "F_{last} vs sumRms correlation; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_20_100 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_20_100", "F_{last} vs sumRms correlation - 20 GeV - 100 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_100_250 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_100_250", "F_{last} vs sumRms correlation - 100 GeV - 250 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_250_500 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_250_500", "F_{last} vs sumRms correlation - 250 GeV - 500 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_500_1000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_500_1000", "F_{last} vs sumRms correlation - 500 GeV - 1 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_1000_3000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_1000_3000", "F_{last} vs sumRms correlation - 1 TeV - 3 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_3000_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_3000_5000", "F_{last} vs sumRms correlation - 3 TeV - 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_5000", "F_{last} vs sumRms correlation - > 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+
+    h_BGOrec_sumRms_flast_after_bgofiducial = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_bgofiducial", "F_{last} vs sumRms correlation; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_bgofiducial_20_100 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_bgofiducial_20_100", "F_{last} vs sumRms correlation - 20 GeV - 100 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_bgofiducial_100_250 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_bgofiducial_100_250", "F_{last} vs sumRms correlation - 100 GeV - 250 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_bgofiducial_250_500 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_bgofiducial_250_500", "F_{last} vs sumRms correlation - 250 GeV - 500 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_bgofiducial_500_1000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_bgofiducial_500_1000", "F_{last} vs sumRms correlation - 500 GeV - 1 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_bgofiducial_1000_3000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_bgofiducial_1000_3000", "F_{last} vs sumRms correlation - 1 TeV - 3 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_bgofiducial_3000_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_bgofiducial_3000_5000", "F_{last} vs sumRms correlation - 3 TeV - 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_bgofiducial_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_bgofiducial_5000", "F_{last} vs sumRms correlation - > 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering", "F_{last} vs sumRms correlation; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_20_100 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_20_100", "F_{last} vs sumRms correlation - 20 GeV - 100 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_100_250 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_100_250", "F_{last} vs sumRms correlation - 100 GeV - 250 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_250_500 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_250_500", "F_{last} vs sumRms correlation - 250 GeV - 500 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_500_1000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_500_1000", "F_{last} vs sumRms correlation - 500 GeV - 1 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_1000_3000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_1000_3000", "F_{last} vs sumRms correlation - 1 TeV - 3 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000", "F_{last} vs sumRms correlation - 3 TeV - 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000", "F_{last} vs sumRms correlation - > 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
 
     if (h_simu) {
         h_max_bar_position_simu_reco_energy_diff = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff", "Energy diff vs Macx Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
@@ -133,6 +162,15 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_energy_fraction_sh_axis_contained->Write();
     h_energy_fraction_sh_axis_not_contained->Write();
 
+    h_BGOrec_sumRms_flast->Write();
+    h_BGOrec_sumRms_flast_20_100->Write();
+    h_BGOrec_sumRms_flast_100_250->Write();
+    h_BGOrec_sumRms_flast_250_500->Write();
+    h_BGOrec_sumRms_flast_500_1000->Write();
+    h_BGOrec_sumRms_flast_1000_3000->Write();
+    h_BGOrec_sumRms_flast_3000_5000->Write();
+    h_BGOrec_sumRms_flast_5000->Write();
+
     if (h_simu) {
         h_max_bar_position_simu_reco_energy_diff->Write();
         h_max_bar_position_simu_reco_energy_diff_ly_0->Write();
@@ -160,6 +198,30 @@ void histos::Write(const std::string output_wd, const bool verbose) {
         h_diff_bgo_simu_extr_top_position_X->Write();
         h_diff_bgo_simu_extr_top_position_Y->Write();
     }
+
+    outfile->mkdir("BGO_fiducial");
+    outfile->cd("BGO_fiducial");
+
+    h_BGOrec_sumRms_flast_after_bgofiducial->Write();
+    h_BGOrec_sumRms_flast_after_bgofiducial_20_100->Write();
+    h_BGOrec_sumRms_flast_after_bgofiducial_100_250->Write();
+    h_BGOrec_sumRms_flast_after_bgofiducial_250_500->Write();
+    h_BGOrec_sumRms_flast_after_bgofiducial_500_1000->Write();
+    h_BGOrec_sumRms_flast_after_bgofiducial_1000_3000->Write();
+    h_BGOrec_sumRms_flast_after_bgofiducial_3000_5000->Write();
+    h_BGOrec_sumRms_flast_after_bgofiducial_5000->Write();
+
+    outfile->mkdir("lateral_showering");
+    outfile->cd("lateral_showering");
+    
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering->Write();
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_20_100->Write();
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_100_250->Write();
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_250_500->Write();
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_500_1000->Write();
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_1000_3000->Write();
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000->Write();
+    h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000->Write();
 
     outfile->mkdir("PSD_STK");
     outfile->cd("PSD_STK");

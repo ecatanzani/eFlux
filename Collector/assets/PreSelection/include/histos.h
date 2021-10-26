@@ -88,6 +88,32 @@ class histos {
         std::shared_ptr<TH1D> h_diff_bgo_simu_extr_top_position_X;
         std::shared_ptr<TH1D> h_diff_bgo_simu_extr_top_position_Y;
 
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_20_100;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_100_250;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_250_500;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_500_1000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_1000_3000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_3000_5000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_5000;
+        
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_bgofiducial;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_bgofiducial_20_100;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_bgofiducial_100_250;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_bgofiducial_250_500;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_bgofiducial_500_1000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_bgofiducial_1000_3000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_bgofiducial_3000_5000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_bgofiducial_5000;
+
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_20_100;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_100_250;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_250_500;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_500_1000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_1000_3000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000;
 
         private:
             bool h_simu {false};
@@ -97,6 +123,8 @@ class histos {
             std::vector<float> bars_2d_energy_bins;
             std::vector<float> number_of_bars_last_layer;
             std::vector<float> max_rms_bins;
+            std::vector<float> sumRms_binning;
+            std::vector<float> flast_binning;
 
 };
 
