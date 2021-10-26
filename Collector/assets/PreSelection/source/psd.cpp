@@ -25,7 +25,7 @@ inline void psd_stk_match(
     psd_cluster_match &clu_matching,
     std::shared_ptr<histos> ps_histos,
     const double evt_corr_energy_gev) {
-
+        
         for (int nLayer = 0; nLayer < DAMPE_psd_nLayers; ++nLayer) {
             for (unsigned int iclu = 0; iclu < psdCluster_idxBeg[nLayer].size(); ++iclu) {
                 bool IsMeasuringX = nLayer % 2;
@@ -75,6 +75,8 @@ inline void psd_stk_match(
             ps_histos->h_PSD_STK_Y_match_5000->Fill(clu_matching.dxCloPsdClu_track[1]);
         }
         
+        ps_histos->h_PSD_X_clusters->Fill(evt_corr_energy_gev, psdCluster_idxBeg[0].size());
+        ps_histos->h_PSD_Y_clusters->Fill(evt_corr_energy_gev, psdCluster_idxBeg[1].size());
     }
 
 inline void psd_fiducial_stk_match(

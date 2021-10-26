@@ -20,6 +20,7 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     sumRms_binning = createLogBinning(10, 2e+3, 1e+2);
     flast_binning = createLogBinning(1e-5, 2e-1, 1e+3);
     stk_track_binning = createLinearBinning(0, 10, 11);
+    psd_clusters_binning = createLinearBinning(0, 100, 1000);
 
     h_energy_fraction = std::make_shared<TH1D>("h_energy_fraction", "Energy fraction; Energy fraction; counts", 100, 0, 1);
     h_energy_fraction_no_trigger = std::make_shared<TH1D>("h_energy_fraction_no_trigger", "Energy fraction - No triggered events; Energy fraction; counts", 100, 0, 1);
@@ -139,8 +140,11 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_charge_2D = std::make_shared<TH2D>("h_PSD_charge_2D", "PSD Charge; PSD Charge X; PSD Charge Y", 500, 0, 100, 500, 0, 100);
     h_PSD_sum_of_XY_charges = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
 
+    h_PSD_X_clusters = std::make_shared<TH2D>("h_PSD_X_clusters", "PSD X Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD X Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
+    h_PSD_Y_clusters = std::make_shared<TH2D>("h_PSD_Y_clusters", "PSD Y Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD Y Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
+
     if (h_simu) {
-        h_max_bar_position_simu_reco_energy_diff = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff", "Energy diff vs Macx Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_0 = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_1 = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_2 = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_2", "Energy diff vs Max Bar Position - layer 2; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
@@ -341,6 +345,9 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_PSD_charge->Write();
     h_PSD_charge_2D->Write();
     h_PSD_sum_of_XY_charges->Write();
+
+    h_PSD_X_clusters->Write();
+    h_PSD_Y_clusters->Write();
 
     outfile->Close();
 

@@ -163,6 +163,9 @@ class histos {
         std::shared_ptr<TH2D> h_PSD_charge_2D;
         std::shared_ptr<TH1D> h_PSD_sum_of_XY_charges;
 
+        std::shared_ptr<TH2D> h_PSD_X_clusters;
+        std::shared_ptr<TH2D> h_PSD_Y_clusters;
+
 
         private:
             bool h_simu {false};
@@ -175,6 +178,7 @@ class histos {
             std::vector<float> sumRms_binning;
             std::vector<float> flast_binning;
             std::vector<float> stk_track_binning;
+            std::vector<float> psd_clusters_binning;
 
 };
 
