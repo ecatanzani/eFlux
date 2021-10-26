@@ -353,7 +353,7 @@ void stk_distributions(
                             track_X_clusters,
                             track_Y_clusters);
 
-                            if (track_selection_cut) {
+                            if (trackselection_cut) {
                                 ps_histos->h_BGOrec_sumRms_flast_after_track_selection->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
                                 if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
                                     ps_histos->h_BGOrec_sumRms_flast_after_track_selection_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
@@ -369,10 +369,9 @@ void stk_distributions(
                                     ps_histos->h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
                                 else
                                     ps_histos->h_BGOrec_sumRms_flast_after_track_selection_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
-                            }
 
-                            if (trackselection_cut)
                                 stk_charge(stkclusters, event_best_track, ps_histos);
+                            }
                     }
                 }
             }

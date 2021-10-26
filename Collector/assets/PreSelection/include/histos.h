@@ -83,6 +83,19 @@ class histos {
         std::shared_ptr<TH1D> h_PSD_STK_X_match_5000;
         std::shared_ptr<TH1D> h_PSD_STK_Y_match_5000;
 
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_energy_int_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_energy_int_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_100_250_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_100_250_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_250_500_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_250_500_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_500_1000_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_500_1000_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_1000_5000_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_1000_5000_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_X_match_5000_psd_fiducial;
+        std::shared_ptr<TH1D> h_PSD_STK_Y_match_5000_psd_fiducial;
+
         std::shared_ptr<TH1D> h_diff_bgo_simu_particle_direction_X;
         std::shared_ptr<TH1D> h_diff_bgo_simu_particle_direction_Y;
         std::shared_ptr<TH1D> h_diff_bgo_simu_extr_top_position_X;
@@ -143,6 +156,13 @@ class histos {
         std::shared_ptr<TH1D> h_STK_charge_Y;
         std::shared_ptr<TH1D> h_STK_charge;
         std::shared_ptr<TH2D> h_STK_charge_2D;
+
+        std::shared_ptr<TH1D> h_PSD_charge_X;
+        std::shared_ptr<TH1D> h_PSD_charge_Y;
+        std::shared_ptr<TH1D> h_PSD_charge;
+        std::shared_ptr<TH2D> h_PSD_charge_2D;
+        std::shared_ptr<TH1D> h_PSD_sum_of_XY_charges;
+
 
         private:
             bool h_simu {false};

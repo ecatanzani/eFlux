@@ -77,6 +77,106 @@ inline void psd_stk_match(
         
     }
 
+inline void psd_fiducial_stk_match(
+	const std::vector<double> bgoRec_slope,
+	const std::vector<double> bgoRec_intercept,
+	const std::vector<std::vector<short>> psdCluster_idxBeg,
+	const std::vector<std::vector<double>> psdCluster_Z,
+	const std::vector<std::vector<double>> psdCluster_maxEcoordinate,
+    const best_track &event_best_track,
+    psd_cluster_match &clu_matching,
+    std::shared_ptr<histos> ps_histos,
+    const double evt_corr_energy_gev) {
+        
+        const double PSD_fiducial = 410;
+
+        for (int nLayer = 0; nLayer < DAMPE_psd_nLayers; ++nLayer) {
+            for (unsigned int iclu = 0; iclu < psdCluster_idxBeg[nLayer].size(); ++iclu) {
+                bool IsMeasuringX = nLayer % 2;
+                double hitZ = psdCluster_Z[nLayer][iclu];
+                double thisCoord = psdCluster_maxEcoordinate[nLayer][iclu];
+
+                // Get distance between actual coordinate and BGO rec coordinate
+                double projCoord_bgoRec = IsMeasuringX ? bgoRec_slope[0] * hitZ + bgoRec_intercept[0] : bgoRec_slope[1] * hitZ + bgoRec_intercept[1];
+                double dX_bgoRec = thisCoord - projCoord_bgoRec;
+                if (fabs(dX_bgoRec) < fabs(clu_matching.dxCloPsdClu_bgoRec[nLayer])) {
+                    clu_matching.dxCloPsdClu_bgoRec[nLayer] = dX_bgoRec;
+                    clu_matching.icloPsdClu_bgoRec[nLayer] = iclu;
+                }
+
+                // Get distance between actual coordinate and best track coordinate
+                double projCoord_track = IsMeasuringX ? event_best_track.track_slope[0] * hitZ + event_best_track.track_intercept[0] : event_best_track.track_slope[1] * hitZ + event_best_track.track_intercept[1];
+                if (fabs(projCoord_track) > PSD_fiducial) continue;
+
+                double dX_track = thisCoord - projCoord_track;
+
+                if (fabs(dX_track) < fabs(clu_matching.dxCloPsdClu_track[nLayer])) {
+                    clu_matching.dxCloPsdClu_track[nLayer] = dX_track;
+                    clu_matching.icloPsdClu_track[nLayer] = iclu;
+                }
+            }
+        }
+
+        ps_histos->h_PSD_STK_X_match_energy_int_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
+        ps_histos->h_PSD_STK_Y_match_energy_int_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+        
+        if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<=250) {
+            ps_histos->h_PSD_STK_X_match_100_250_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_Y_match_100_250_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+        }
+        else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<=500) {
+            ps_histos->h_PSD_STK_X_match_250_500_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_X_match_250_500_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+        }
+        else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<=1000) {
+            ps_histos->h_PSD_STK_X_match_500_1000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_X_match_500_1000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+        }
+        else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<=5000) {
+            ps_histos->h_PSD_STK_X_match_1000_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_X_match_1000_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+        }
+        else {
+            ps_histos->h_PSD_STK_X_match_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
+            ps_histos->h_PSD_STK_Y_match_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+        }
+        
+    }
+
+inline bool psd_charge(
+	const std::vector<std::vector<double>> psdCluster_maxE,
+    best_track &event_best_track,
+    psd_cluster_match &clu_matching,
+	std::shared_ptr<histos> ps_histos) {
+
+        double psd_chargeX, psd_chargeY; 
+
+        // Charge correction
+        auto track_correction = (event_best_track.myBestTrack).getDirection().CosTheta();
+
+        // Get Y charge
+        if (clu_matching.icloPsdClu_track[0] > -1) {
+            auto energy_ClusterYTrack = psdCluster_maxE[0][clu_matching.icloPsdClu_track[0]];
+            auto energy_ClusterYTrack_corr = track_correction * energy_ClusterYTrack;
+            psd_chargeY = sqrt(energy_ClusterYTrack_corr);
+        }
+
+        // Get X charge
+        if (clu_matching.icloPsdClu_track[1] > -1)
+        {
+            auto energy_ClusterXTrack = psdCluster_maxE[1][clu_matching.icloPsdClu_track[1]];
+            auto energy_ClusterXTrack_corr = track_correction * energy_ClusterXTrack;
+            psd_chargeX = sqrt(energy_ClusterXTrack_corr);
+        }
+
+        ps_histos->h_PSD_charge_X->Fill(psd_chargeX);
+        ps_histos->h_PSD_charge_Y->Fill(psd_chargeY);
+        ps_histos->h_PSD_charge->Fill(0.5*(psd_chargeX+psd_chargeY));
+        ps_histos->h_PSD_charge_2D->Fill(psd_chargeX, psd_chargeY);
+        ps_histos->h_PSD_sum_of_XY_charges->Fill(psd_chargeX+psd_chargeY);
+       
+    }
+
 void psd_stk_distributions(
     std::shared_ptr<DmpEvtBgoHits> bgohits, 
     std::shared_ptr<DmpEvtBgoRec> bgorec, 
@@ -139,6 +239,17 @@ void psd_stk_distributions(
                             track_Y_clusters);
                     
                         if (trackselection_cut) {
+                            psd_fiducial_stk_match(
+                                bgoVault->GetBGOslope(),
+                                bgoVault->GetBGOintercept(),
+                                psdVault->getPsdClusterIdxBegin(),
+                                psdVault->getPsdClusterZ(),
+                                psdVault->getPsdClusterMaxECoo(),
+                                event_best_track,
+                                clu_matching,
+                                ps_histos,
+                                evt_corr_energy_gev);
+
                             psd_stk_match(
                                 bgoVault->GetBGOslope(),
                                 bgoVault->GetBGOintercept(),
@@ -150,6 +261,7 @@ void psd_stk_distributions(
                                 ps_histos,
                                 evt_corr_energy_gev);
 
+                            psd_charge(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos);
                         }
                     }
                 }
