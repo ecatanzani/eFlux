@@ -10,10 +10,14 @@
 
 #include "energy_config.h"
 
+#include "DmpEvtSimuPrimaries.h"
+
 class histos {
     public:
         histos(std::shared_ptr<energy_config> econfig, const bool mc);
         ~histos() {};
+        void SetWeight(std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
+        const double GetWeight();
 
         void Write(const std::string output_wd, const bool verbose);
     
@@ -168,6 +172,7 @@ class histos {
 
 
         private:
+            double weight {1};
             bool h_simu {false};
             int energy_nbins {0};
             std::vector<float> energy_binning;

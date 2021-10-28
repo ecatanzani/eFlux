@@ -172,6 +172,26 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     }
 }
 
+void histos::SetWeight(std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries) {
+    if (simu_primaries != nullptr) {
+        switch (simu_primaries->pvpart_pdg) {
+            case 11:
+                weight = -2;
+                break;
+            case 2212:
+                weight = -1.7;
+                break;
+            default:
+                std::cerr << "\n\nWrong particle ID ... Neither electron or proton ... EXIT\n\n";
+                exit(200);
+        }
+    }
+}
+
+const double histos::GetWeight() {
+    return weight;
+}
+
 void histos::Write(const std::string output_wd, const bool verbose) {
 
     auto final_output_path = output_wd+std::string("/preselection.root");

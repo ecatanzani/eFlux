@@ -82,6 +82,7 @@ void preselection(const in_pars &input_pars) {
     auto nevents {evtch->GetEntries()};
 
     std::shared_ptr<histos> ps_histos = std::make_shared<histos>(econfig, input_pars.mc_flag);
+    ps_histos->SetWeight(simu_primaries);
 
     if (input_pars.verbose) std::cout << "\n\nNumber of events: " << nevents << std::endl;
 
@@ -100,6 +101,17 @@ void preselection(const in_pars &input_pars) {
 
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
             
+            bgo_distributions(
+                bgohits, 
+                bgorec, 
+                evt_header, 
+                simu_primaries,
+                evt_energy,
+                evt_corr_energy,
+                evt_energy_gev,
+                evt_corr_energy_gev, 
+                ps_histos);
+
             bgofiducial_distributions(
                 bgohits, 
                 bgorec, 

@@ -64,7 +64,7 @@ inline std::tuple<std::vector<double>, std::vector<double>> get_shorew_axis_reco
     return std::tuple<std::vector<double>, std::vector<double>>(std::vector<double>{topX, bottomX}, std::vector<double>{topY, bottomY});
 }
 
-void bgofiducial_distributions(
+void bgo_distributions(
     std::shared_ptr<DmpEvtBgoHits> bgohits,
     std::shared_ptr<DmpEvtBgoRec> bgorec,
     std::shared_ptr<DmpEvtHeader> evt_header,
@@ -77,53 +77,54 @@ void bgofiducial_distributions(
 
     double gev {0.001};
     double layer_min_energy {0}; //Minimum energy per layer
+    auto weight {ps_histos->GetWeight()}; // Weight for histos
 
     std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
     bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), layer_min_energy);
 
     if (check_trigger(evt_header)) {
         for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-            ps_histos->h_energy_fraction->Fill(elm_energy_fraction);
+            ps_histos->h_energy_fraction->Fill(elm_energy_fraction, weight);
         
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(56*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_56->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_56->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(60*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_60->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_60->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(61*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_61->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_61->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(62*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_62->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_62->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(63*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_63->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_63->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(64*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_64->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_64->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(65*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_65->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_65->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(70*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_70->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_70->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(80*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_80->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_80->Fill(elm_energy_fraction, weight);
 
         if (bgorec->GetTrajectoryDirection2D().CosTheta()<cos(85*TMath::DegToRad()))
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_large_angles_85->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_large_angles_85->Fill(elm_energy_fraction, weight);
 
         ps_histos->h_bar_energy->Fill(evt_corr_energy_gev, get_mean_bar_energy(bgoVault->GetLayerBarEnergies()));
 
@@ -133,8 +134,8 @@ void bgofiducial_distributions(
 
         ps_histos->h_bars_last_layer_10MeV->Fill(count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10));
         ps_histos->h_bars_last_layer_10MeV_2D->Fill(evt_corr_energy_gev, count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10));
-        ps_histos->h_maxrms->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()));
-        ps_histos->h_maxrms_2D->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()));
+        ps_histos->h_maxrms->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
+        ps_histos->h_maxrms_2D->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
 
         std::vector<double> bgorec_proj_X, bgorec_proj_Y;
         std::tie(bgorec_proj_X, bgorec_proj_Y) = get_shorew_axis_reco_projections(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
@@ -145,9 +146,9 @@ void bgofiducial_distributions(
 
         for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
             if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY))
-                ps_histos->h_energy_fraction_sh_axis_contained->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_sh_axis_contained->Fill(elm_energy_fraction, weight);
             else
-                ps_histos->h_energy_fraction_sh_axis_not_contained->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_sh_axis_not_contained->Fill(elm_energy_fraction, weight);
         
         ps_histos->h_BGOrec_sumRms_flast->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
         if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
@@ -162,7 +163,7 @@ void bgofiducial_distributions(
             ps_histos->h_BGOrec_sumRms_flast_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
         else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
             ps_histos->h_BGOrec_sumRms_flast_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
-        else
+        else if (evt_corr_energy_gev>=5000)
             ps_histos->h_BGOrec_sumRms_flast_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
 
         double bgo_layer_min_energy     {0};    // Minimum energy per BGO layer
@@ -190,7 +191,7 @@ void bgofiducial_distributions(
                 ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
             else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
                 ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
-            else
+            else if (evt_corr_energy_gev>=5000)
                 ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
         }
 
@@ -270,10 +271,25 @@ void bgofiducial_distributions(
     else {
         if (evt_corr_energy_gev) {
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                ps_histos->h_energy_fraction_no_trigger->Fill(elm_energy_fraction);
+                ps_histos->h_energy_fraction_no_trigger->Fill(elm_energy_fraction, weight);
 
             ps_histos->h_maxrms_no_trigger->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()));
             ps_histos->h_maxrms_2D_no_trigger->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()));
         }
     }
 }
+
+void bgofiducial_distributions(
+    std::shared_ptr<DmpEvtBgoHits> bgohits,
+    std::shared_ptr<DmpEvtBgoRec> bgorec,
+    std::shared_ptr<DmpEvtHeader> evt_header,
+    std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
+    const double evt_energy, 
+    const double evt_corr_energy,
+    const double evt_energy_gev, 
+    const double evt_corr_energy_gev, 
+    std::shared_ptr<histos> ps_histos) {
+
+
+
+    }
