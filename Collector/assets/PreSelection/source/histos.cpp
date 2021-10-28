@@ -15,11 +15,11 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     
     bars_energy_bins = createLogBinning(1e-2, 1e+5, 1000);
     bars_2d_energy_bins = createLogBinning(1e-5, 1e+5, 2000);
-    number_of_bars_last_layer = createLinearBinning(0, 22, 23);
+    number_of_bars_last_layer = createLinearBinning(0, 22, 22);
     max_rms_bins = createLinearBinning(0, 3000, 1000);
     sumRms_binning = createLogBinning(10, 2e+3, 1e+2);
     flast_binning = createLogBinning(1e-5, 2e-1, 1e+3);
-    stk_track_binning = createLinearBinning(0, 10, 11);
+    stk_track_binning = createLinearBinning(0, 10, 10);
     psd_clusters_binning = createLinearBinning(0, 100, 1000);
 
     h_energy_fraction = std::make_shared<TH1D>("h_energy_fraction", "Energy fraction; Energy fraction; counts", 100, 0, 1);
@@ -105,10 +105,10 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000", "F_{last} vs sumRms correlation - 3 TeV - 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000", "F_{last} vs sumRms correlation - > 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
 
-    h_STK_X_clusters = std::make_shared<TH1D>("h_STK_X_clusters", "STK X clusters", 11, 0, 10);
-    h_STK_Y_clusters = std::make_shared<TH1D>("h_STK_Y_clusters", "STK Y clusters", 11, 0, 10);
-    h_STK_X_holes = std::make_shared<TH1D>("h_STK_X_holes", "STK X holes", 11, 0, 10);
-    h_STK_Y_holes = std::make_shared<TH1D>("h_STK_Y_holes", "STK Y holes", 11, 0, 10);
+    h_STK_X_clusters = std::make_shared<TH1D>("h_STK_X_clusters", "STK X clusters", 10, 0, 10);
+    h_STK_Y_clusters = std::make_shared<TH1D>("h_STK_Y_clusters", "STK Y clusters", 10, 0, 10);
+    h_STK_X_holes = std::make_shared<TH1D>("h_STK_X_holes", "STK X holes", 10, 0, 10);
+    h_STK_Y_holes = std::make_shared<TH1D>("h_STK_Y_holes", "STK Y holes", 10, 0, 10);
 
     h_STK_X_clusters_vs_energy = std::make_shared<TH2D>("h_STK_X_clusters_vs_energy", "STK X clusters vs Particle Energy; Reconstructed Energy [GeV]; STK X clusters", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
     h_STK_Y_clusters_vs_energy = std::make_shared<TH2D>("h_STK_Y_clusters_vs_energy", "STK Y clusters vs Particle Energy; Reconstructed Energy [GeV]; STK Y clusters", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
