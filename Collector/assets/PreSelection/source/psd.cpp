@@ -119,28 +119,30 @@ inline void psd_fiducial_stk_match(
             }
         }
 
-        ps_histos->h_PSD_STK_X_match_energy_int_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
-        ps_histos->h_PSD_STK_Y_match_energy_int_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+        auto weight {ps_histos->GetWeight()};
+
+        ps_histos->h_PSD_STK_X_match_energy_int_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0], weight);
+        ps_histos->h_PSD_STK_Y_match_energy_int_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1], weight);
         
         if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<=250) {
-            ps_histos->h_PSD_STK_X_match_100_250_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->h_PSD_STK_Y_match_100_250_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_100_250_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0], weight);
+            ps_histos->h_PSD_STK_Y_match_100_250_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1], weight);
         }
         else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<=500) {
-            ps_histos->h_PSD_STK_X_match_250_500_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->h_PSD_STK_X_match_250_500_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_250_500_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0], weight);
+            ps_histos->h_PSD_STK_X_match_250_500_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1], weight);
         }
         else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<=1000) {
-            ps_histos->h_PSD_STK_X_match_500_1000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->h_PSD_STK_X_match_500_1000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_500_1000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0], weight);
+            ps_histos->h_PSD_STK_X_match_500_1000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1], weight);
         }
         else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<=5000) {
-            ps_histos->h_PSD_STK_X_match_1000_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->h_PSD_STK_X_match_1000_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+            ps_histos->h_PSD_STK_X_match_1000_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0], weight);
+            ps_histos->h_PSD_STK_X_match_1000_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1], weight);
         }
-        else {
-            ps_histos->h_PSD_STK_X_match_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0]);
-            ps_histos->h_PSD_STK_Y_match_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1]);
+        else if (evt_corr_energy_gev>=5000) {
+            ps_histos->h_PSD_STK_X_match_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[0], weight);
+            ps_histos->h_PSD_STK_Y_match_5000_psd_fiducial->Fill(clu_matching.dxCloPsdClu_track[1], weight);
         }
         
     }
@@ -151,7 +153,7 @@ inline bool psd_charge(
     psd_cluster_match &clu_matching,
 	std::shared_ptr<histos> ps_histos) {
 
-        double psd_chargeX, psd_chargeY; 
+        double psd_chargeX, psd_chargeY;
 
         // Charge correction
         auto track_correction = (event_best_track.myBestTrack).getDirection().CosTheta();
@@ -171,11 +173,13 @@ inline bool psd_charge(
             psd_chargeX = sqrt(energy_ClusterXTrack_corr);
         }
 
-        ps_histos->h_PSD_charge_X->Fill(psd_chargeX);
-        ps_histos->h_PSD_charge_Y->Fill(psd_chargeY);
-        ps_histos->h_PSD_charge->Fill(0.5*(psd_chargeX+psd_chargeY));
-        ps_histos->h_PSD_charge_2D->Fill(psd_chargeX, psd_chargeY);
-        ps_histos->h_PSD_sum_of_XY_charges->Fill(psd_chargeX+psd_chargeY);
+        auto weight {ps_histos->GetWeight()};
+
+        ps_histos->h_PSD_charge_X->Fill(psd_chargeX, weight);
+        ps_histos->h_PSD_charge_Y->Fill(psd_chargeY, weight);
+        ps_histos->h_PSD_charge->Fill(0.5*(psd_chargeX+psd_chargeY), weight);
+        ps_histos->h_PSD_charge_2D->Fill(psd_chargeX, psd_chargeY, weight);
+        ps_histos->h_PSD_sum_of_XY_charges->Fill(psd_chargeX+psd_chargeY, weight);
        
     }
 

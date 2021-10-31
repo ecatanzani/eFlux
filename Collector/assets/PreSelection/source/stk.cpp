@@ -181,8 +181,7 @@ inline bool track_selection(
             bgoRec_intercept);
 
         // Loop on the tracks
-        for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx)
-        {
+        for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx) {
             std::vector<int> track_nHoles(2, 0);
             std::vector<double> track_slope(2, 0);
             std::vector<double> track_intercept(2, 0);
@@ -269,7 +268,9 @@ inline bool track_selection(
     }
 
 inline bool stk_charge(const std::shared_ptr<TClonesArray> stkclusters, best_track &event_best_track, std::shared_ptr<histos> ps_histos) {
-	
+    
+    auto weight {ps_histos->GetWeight()};
+
     double cluster_chargeX = -999;
 	double cluster_chargeY = -999;
 
@@ -288,10 +289,10 @@ inline bool stk_charge(const std::shared_ptr<TClonesArray> stkclusters, best_tra
 
 	// Check charges
 	if (cluster_chargeX != -999 && cluster_chargeY != -999) {
-        ps_histos->h_STK_charge_X->Fill(cluster_chargeX);
-        ps_histos->h_STK_charge_Y->Fill(cluster_chargeY);
-        ps_histos->h_STK_charge->Fill(0.5 * (cluster_chargeX + cluster_chargeY));
-        ps_histos->h_STK_charge_2D->Fill(cluster_chargeX, cluster_chargeY);
+        ps_histos->h_STK_charge_X->Fill(cluster_chargeX, weight);
+        ps_histos->h_STK_charge_Y->Fill(cluster_chargeY, weight);
+        ps_histos->h_STK_charge->Fill(0.5 * (cluster_chargeX + cluster_chargeY), weight);
+        ps_histos->h_STK_charge_2D->Fill(cluster_chargeX, cluster_chargeY, weight);
     }
 }
 
@@ -338,7 +339,15 @@ void stk_distributions(
                     auto maxrms_cut = maxRms_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
 
                     if (maxrms_cut) {
-                        track_selection(bgorec, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), bgohits, stkclusters, stktracks, event_best_track, evt_corr_energy_gev, ps_histos);
+                        track_selection(
+                            bgorec, bgoVault->GetBGOslope(), 
+                            bgoVault->GetBGOintercept(), 
+                            bgohits, 
+                            stkclusters, 
+                            stktracks, 
+                            event_best_track, 
+                            evt_corr_energy_gev, 
+                            ps_histos);
 
                         auto trackselection_cut = track_selection_cut(
                             bgorec, 
@@ -354,21 +363,24 @@ void stk_distributions(
                             track_Y_clusters);
 
                             if (trackselection_cut) {
-                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+
+                                auto weight {ps_histos->GetWeight()};
+
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                                 if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                                 else if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<250)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_100_250->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_100_250->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                                 else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<500)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_250_500->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_250_500->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                                 else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<1000)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_500_1000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_500_1000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                                 else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<3000)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                                 else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
-                                else
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13));
+                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                                else if (evt_corr_energy_gev>=5000)
+                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
 
                                 stk_charge(stkclusters, event_best_track, ps_histos);
                             }
