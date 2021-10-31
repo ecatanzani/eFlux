@@ -9,6 +9,9 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
+
+#include "Dmp/DmpStruct.h"
 
 #include "DmpEvtHeader.h"
 #include "DmpEvtBgoHits.h"
@@ -17,12 +20,89 @@
 #include "DmpSimuTrajectory.h"
 #include "DmpEvtSimuPrimaries.h"
 
+#include "DmpIOSvc.h"
+#include "DmpCore.h"
+#include "DmpFilterOrbit.h"
+
 #include "TChain.h"
 #include "TClonesArray.h"
 
+inline bool SAACheck(const std::shared_ptr<DmpEvtHeader> evt_header, const std::shared_ptr<DmpFilterOrbit> pFilter) {
+    return pFilter->IsInSAA(evt_header->GetSecond()) ? false : true;
+}
+
+inline bool checkBGOreco(
+	const std::vector<double> bgoRec_slope,
+	const std::vector<double> bgoRec_intercept,
+	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries) {
+        
+        bool bgoreco_status {false};
+        int position_sensitivity {20};
+
+        if ((bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0) || (bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0)) {
+            if (simu_primaries!=nullptr) {
+                TVector3 orgPosition;
+                orgPosition.SetX(simu_primaries->pv_x);
+                orgPosition.SetY(simu_primaries->pv_y);
+                orgPosition.SetZ(simu_primaries->pv_z);
+
+                TVector3 orgMomentum;
+                orgMomentum.SetX(simu_primaries->pvpart_px);
+                orgMomentum.SetY(simu_primaries->pvpart_py);
+                orgMomentum.SetZ(simu_primaries->pvpart_pz);
+
+                std::vector<double> slope(2, 0);
+                std::vector<double> intercept(2, 0);
+
+                slope[0] = orgMomentum.Z() ? orgMomentum.X() / orgMomentum.Z() : -999;
+                slope[1] = orgMomentum.Z() ? orgMomentum.Y() / orgMomentum.Z() : -999;
+                intercept[0] = orgPosition.X() - slope[0] * orgPosition.Z();
+                intercept[1] = orgPosition.Y() - slope[1] * orgPosition.Z();
+
+                double actual_X = slope[0] * BGO_TopZ + intercept[0];
+                double actual_Y = slope[1] * BGO_TopZ + intercept[1];
+                double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
+                double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
+
+                if (fabs(actual_X - topX) < position_sensitivity && fabs(actual_Y - topY) < position_sensitivity)
+                    bgoreco_status = true;
+            }
+        }
+        else
+            bgoreco_status = true;
+
+        return bgoreco_status;   
+    }
+
+inline bool check_event(
+    const std::vector<double> bgoRec_slope,
+	const std::vector<double> bgoRec_intercept,
+	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries, 
+    const std::shared_ptr<DmpEvtHeader> evt_header, 
+    const std::shared_ptr<DmpFilterOrbit> pFilter, 
+    const bool mc) {
+        
+        if (mc) {
+            return checkBGOreco(bgoRec_slope, bgoRec_intercept, simu_primaries);
+        }
+        else {
+            if (SAACheck(evt_header, pFilter))
+                return checkBGOreco(bgoRec_slope, bgoRec_intercept, simu_primaries);
+            else return false;
+        }
+}
+
+inline const std::vector<double> get_bgo_slope(std::shared_ptr<DmpEvtBgoRec> bgorec) {
+    return std::vector<double> {bgorec->GetSlopeXZ(), bgorec->GetSlopeYZ()};
+}
+
+inline const std::vector<double> get_bgo_intercept(std::shared_ptr<DmpEvtBgoRec> bgorec) {
+    return std::vector<double> {bgorec->GetInterceptXZ(), bgorec->GetInterceptYZ()};
+}
+
 void preselection(const in_pars &input_pars) {
     
-    auto evtch = GetFileChain(input_pars.input_path, input_pars.verbose);
+    auto evtch = GetFileChain(input_pars.input_path, input_pars.verbose, input_pars.mc_flag);
     std::shared_ptr<energy_config> econfig = std::make_shared<energy_config>(input_pars.config_wd);
 
     // Register Header container
@@ -69,6 +149,16 @@ void preselection(const in_pars &input_pars) {
 	std::shared_ptr<DmpEvtPsdHits> psdhits = std::make_shared<DmpEvtPsdHits>();
 	evtch->SetBranchAddress("DmpPsdHits", &psdhits);
 
+    // Register the orbit filter for DATA SAA check
+    std::shared_ptr<DmpFilterOrbit> pFilter;
+    if (input_pars.rawdata_flag) {
+        gIOSvc->Set("OutData/NoOutput", "True");
+	    gIOSvc->Initialize();
+        pFilter = std::make_shared<DmpFilterOrbit>("EventHeader");
+        pFilter->ActiveMe(); // Call this function to calculate SAA through House Keeping Data
+    }
+
+
     auto min_evt_energy = econfig->GetMinEvtEnergy();
     auto max_evt_energy = econfig->GetMaxEvtEnergy();
 
@@ -82,7 +172,6 @@ void preselection(const in_pars &input_pars) {
     auto nevents {evtch->GetEntries()};
 
     std::shared_ptr<histos> ps_histos = std::make_shared<histos>(econfig, input_pars.mc_flag);
-    ps_histos->SetWeight(simu_primaries);
 
     if (input_pars.verbose) std::cout << "\n\nNumber of events: " << nevents << std::endl;
 
@@ -98,66 +187,86 @@ void preselection(const in_pars &input_pars) {
         evt_corr_energy = bgorec->GetElectronEcor();
         evt_energy_gev = evt_energy*gev;
         evt_corr_energy_gev = evt_corr_energy*gev;
+        ps_histos->SetWeight(simu_primaries, evt_corr_energy_gev);
 
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
             
-            bgo_distributions(
-                bgohits, 
-                bgorec, 
-                evt_header, 
-                simu_primaries,
-                evt_energy,
-                evt_corr_energy,
-                evt_energy_gev,
-                evt_corr_energy_gev, 
-                ps_histos);
+            if (check_event(get_bgo_slope(bgorec), get_bgo_intercept(bgorec), simu_primaries, evt_header, pFilter, input_pars.mc_flag)) {
 
-            bgofiducial_distributions(
-                bgohits, 
-                bgorec, 
-                evt_header, 
-                simu_primaries,
-                evt_energy,
-                evt_corr_energy,
-                evt_energy_gev,
-                evt_corr_energy_gev, 
-                ps_histos);
+                // BGO distributions without any prior cut
+                bgo_distributions(
+                    bgohits, 
+                    bgorec, 
+                    evt_header, 
+                    simu_primaries,
+                    evt_energy,
+                    evt_corr_energy,
+                    evt_energy_gev,
+                    evt_corr_energy_gev, 
+                    ps_histos);
 
-            lateral_showering_distributions(
-                bgohits, 
-                bgorec, 
-                evt_header,
-                evt_energy, 
-                evt_corr_energy, 
-                evt_energy_gev, 
-                evt_corr_energy_gev,
-                ps_histos);
+                // BGO distributions after the BGO fiducial volume cut
+                bgofiducial_distributions(
+                    bgohits, 
+                    bgorec, 
+                    evt_header, 
+                    simu_primaries,
+                    evt_energy,
+                    evt_corr_energy,
+                    evt_energy_gev,
+                    evt_corr_energy_gev, 
+                    ps_histos);
 
-            stk_distributions(
-                bgohits, 
-                bgorec, 
-                evt_header, 
-                stkclusters, 
-                stktracks, 
-                evt_energy, 
-                evt_corr_energy, 
-                evt_energy_gev, 
-                evt_corr_energy_gev, 
-                ps_histos);
+                // BGO distributions as last cut
+                bgofiducial_distributions_lastcut(
+                    bgohits, 
+                    bgorec, 
+                    evt_header,
+                    stkclusters,
+                    stktracks,
+                    psdhits,
+                    simu_primaries,
+                    evt_energy,
+                    evt_corr_energy,
+                    evt_energy_gev,
+                    evt_corr_energy_gev, 
+                    ps_histos);
 
-            psd_stk_distributions(
-                bgohits, 
-                bgorec, 
-                evt_header, 
-                stkclusters, 
-                stktracks, 
-                psdhits, 
-                evt_energy, 
-                evt_corr_energy, 
-                evt_energy_gev, 
-                evt_corr_energy_gev, 
-                ps_histos);
+                lateral_showering_distributions(
+                    bgohits, 
+                    bgorec, 
+                    evt_header,
+                    evt_energy, 
+                    evt_corr_energy, 
+                    evt_energy_gev, 
+                    evt_corr_energy_gev,
+                    ps_histos);
 
+                stk_distributions(
+                    bgohits, 
+                    bgorec, 
+                    evt_header, 
+                    stkclusters, 
+                    stktracks, 
+                    evt_energy, 
+                    evt_corr_energy, 
+                    evt_energy_gev, 
+                    evt_corr_energy_gev, 
+                    ps_histos);
+
+                psd_stk_distributions(
+                    bgohits, 
+                    bgorec, 
+                    evt_header, 
+                    stkclusters, 
+                    stktracks, 
+                    psdhits, 
+                    evt_energy, 
+                    evt_corr_energy, 
+                    evt_energy_gev, 
+                    evt_corr_energy_gev, 
+                    ps_histos);
+            }
         }
 
     }
