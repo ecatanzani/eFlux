@@ -44,18 +44,16 @@ inline unsigned int count_bars_on_layer(const std::vector<double> layer_energy, 
     return bars;
 }
 
-inline double get_max_rms(const std::vector<double> rms_layer, const std::vector<double> energy_layer, const double bgo_total_raw_energy) {
-    double maxrms = -999;
-    for (auto it=std::begin(energy_layer); it!=std::end(energy_layer); ++it) {
-        if (*it>bgo_total_raw_energy/100) {
-            if (maxrms == -999) maxrms = rms_layer[std::distance(std::begin(energy_layer), it)];
-            else {
-                if (rms_layer[std::distance(std::begin(energy_layer), it)] > maxrms)
-                    maxrms = rms_layer[std::distance(std::begin(energy_layer), it)];
-            }
-        }
+inline double get_max_rms(const std::vector<double> rms_layer, const std::vector<std::vector<short>> layerBarNumber, const double bgo_total_raw_energy) {
+    auto max_rms = rms_layer[0];
+    for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx) {
+        double layerTotEnergy = 0;
+        std::accumulate(layerBarNumber[lIdx].begin(), layerBarNumber[lIdx].end(), layerTotEnergy);
+        if (layerTotEnergy > bgo_total_raw_energy/100.)
+            if (rms_layer[lIdx] > max_rms)
+                max_rms = rms_layer[lIdx];
     }
-    return maxrms;
+    return max_rms;
 }
 
 inline std::tuple<std::vector<double>, std::vector<double>> get_shorew_axis_reco_projections(const std::vector<double> brorec_slope, const std::vector<double> bgorec_intercept) {
@@ -139,8 +137,8 @@ void bgo_distributions(
         ps_histos->h_bars_last_layer_10MeV->Fill(count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
         ps_histos->h_bars_last_layer_10MeV_2D->Fill(evt_corr_energy_gev, count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
 
-        ps_histos->h_maxrms->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
-        ps_histos->h_maxrms_2D->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
+        ps_histos->h_maxrms->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
+        ps_histos->h_maxrms_2D->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
 
         std::vector<double> bgorec_proj_X, bgorec_proj_Y;
         std::tie(bgorec_proj_X, bgorec_proj_Y) = get_shorew_axis_reco_projections(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
@@ -249,8 +247,8 @@ void bgo_distributions(
             for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
                 ps_histos->h_energy_fraction_no_trigger->Fill(elm_energy_fraction, weight);
 
-            ps_histos->h_maxrms_no_trigger->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
-            ps_histos->h_maxrms_2D_no_trigger->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
+            ps_histos->h_maxrms_no_trigger->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
+            ps_histos->h_maxrms_2D_no_trigger->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
         }
     }
 }
@@ -341,8 +339,8 @@ void bgofiducial_distributions(
                     
                 ps_histos->h_bars_last_layer_10MeV_after_bgofiducial->Fill(count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
                 ps_histos->h_bars_last_layer_10MeV_2D_after_bgofiducial->Fill(evt_corr_energy_gev, count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
-                ps_histos->h_maxrms_after_bgofiducial->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
-                ps_histos->h_maxrms_2D_after_bgofiducial->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
+                ps_histos->h_maxrms_after_bgofiducial->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
+                ps_histos->h_maxrms_2D_after_bgofiducial->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
 
                 std::vector<double> bgorec_proj_X, bgorec_proj_Y;
                 std::tie(bgorec_proj_X, bgorec_proj_Y) = get_shorew_axis_reco_projections(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
@@ -452,8 +450,8 @@ void bgofiducial_distributions(
                 for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
                     ps_histos->h_energy_fraction_no_trigger->Fill(elm_energy_fraction, weight);
 
-                ps_histos->h_maxrms_no_trigger->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
-                ps_histos->h_maxrms_2D_no_trigger->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
+                ps_histos->h_maxrms_no_trigger->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
+                ps_histos->h_maxrms_2D_no_trigger->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
             }
         }
     }
@@ -597,8 +595,8 @@ void bgofiducial_distributions_lastcut(
                                     ps_histos->h_bars_last_layer_10MeV_bgofiducial_lastcut->Fill(count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
                                     ps_histos->h_bars_last_layer_10MeV_2D_bgofiducial_lastcut->Fill(evt_corr_energy_gev, count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
 
-                                    ps_histos->h_maxrms_bgofiducial_lastcut->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
-                                    ps_histos->h_maxrms_2D_bgofiducial_lastcut->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerEnergies(), bgorec->GetTotalEnergy()), weight);
+                                    ps_histos->h_maxrms_bgofiducial_lastcut->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
+                                    ps_histos->h_maxrms_2D_bgofiducial_lastcut->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
 
                                     std::vector<double> bgorec_proj_X, bgorec_proj_Y;
                                     std::tie(bgorec_proj_X, bgorec_proj_Y) = get_shorew_axis_reco_projections(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
