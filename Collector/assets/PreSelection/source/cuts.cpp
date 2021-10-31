@@ -415,3 +415,83 @@ const bool psd_stk_match_cut(
         passed_stk_psd_match = (fabs(clu_matching.dxCloPsdClu_track[0]) < STK_PSD_delta_position && fabs(clu_matching.dxCloPsdClu_track[1]) < STK_PSD_delta_position) ? true : false;
         return passed_stk_psd_match;
     }
+
+
+const bool psd_charge_cut(
+    const std::vector<std::vector<double>> psdCluster_maxE,
+    best_track &event_best_track,
+	psd_cluster_match &clu_matching,
+	const double PSD_sharge_sum,
+	const double PSD_single_charge) {
+
+        bool passed_psd_charge_cut = false;
+        bool passed_psd_charge_sum = false;
+        bool passed_psd_He_cut = false;
+
+        double psd_chargeX, psd_chargeY;
+
+        // Charge correction
+        auto track_correction = (event_best_track.myBestTrack).getDirection().CosTheta();
+
+        // Get Y charge
+        if (clu_matching.icloPsdClu_track[0] > -1) {
+            auto energy_ClusterYTrack = psdCluster_maxE[0][clu_matching.icloPsdClu_track[0]];
+            auto energy_ClusterYTrack_corr = track_correction * energy_ClusterYTrack;
+            psd_chargeY = sqrt(energy_ClusterYTrack_corr);
+        }
+
+        // Get X charge
+        if (clu_matching.icloPsdClu_track[1] > -1) {
+            auto energy_ClusterXTrack = psdCluster_maxE[1][clu_matching.icloPsdClu_track[1]];
+            auto energy_ClusterXTrack_corr = track_correction * energy_ClusterXTrack;
+            psd_chargeX = sqrt(energy_ClusterXTrack_corr);
+        }
+
+        if ((psd_chargeX + psd_chargeY) < PSD_sharge_sum)
+            passed_psd_charge_sum = true;
+
+        if (psd_chargeX < PSD_single_charge || psd_chargeY < PSD_single_charge)
+            passed_psd_He_cut = true;
+
+        passed_psd_charge_cut = passed_psd_charge_sum && passed_psd_He_cut;
+
+        return passed_psd_charge_cut;
+    }
+
+const bool stk_charge_cut(
+    const std::shared_ptr<TClonesArray> stkclusters,
+    best_track &event_best_track,
+    const double STK_single_charge) {
+    
+    bool passed_stk_charge_cut = false;
+
+	double cluster_chargeX = -999;
+	double cluster_chargeY = -999;
+
+	// Charge correction
+	auto track_correction = (event_best_track.myBestTrack).getDirection().CosTheta();
+
+	// Compute charges
+	for (auto clIdx = 0; clIdx < event_best_track.n_points; ++clIdx) {
+		auto cluster_x = (event_best_track.myBestTrack).GetClusterX(clIdx, stkclusters.get());
+		auto cluster_y = (event_best_track.myBestTrack).GetClusterY(clIdx, stkclusters.get());
+		if (cluster_x && !cluster_x->getPlane())
+			cluster_chargeX = sqrt(cluster_x->getEnergy() * track_correction);
+		if (cluster_y && !cluster_y->getPlane())
+			cluster_chargeY = sqrt(cluster_y->getEnergy() * track_correction);
+	}
+
+	// Check charges
+	if (cluster_chargeX == -999 || cluster_chargeY == -999)
+		return passed_stk_charge_cut;
+	
+	// Compute mean charge
+	auto mean_charge = 0.5 * (cluster_chargeX + cluster_chargeY);
+
+	// Check STK charge to select electrons
+	if (mean_charge < STK_single_charge)
+		passed_stk_charge_cut = true;
+
+	return passed_stk_charge_cut;
+
+}

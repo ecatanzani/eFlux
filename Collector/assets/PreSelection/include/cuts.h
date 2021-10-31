@@ -101,7 +101,19 @@ extern const bool psd_stk_match_cut(
 	const std::vector<std::vector<double>> psdCluster_maxEcoordinate,
     const best_track &event_best_track,
     psd_cluster_match &clu_matching,
-    const double STK_PSD_delta_position,
-    std::shared_ptr<histos> ps_histos);
+    const double STK_PSD_delta_position);
+
+extern const bool psd_charge_cut(
+	const std::vector<std::vector<double>> psdCluster_maxE,
+	best_track &event_best_track,
+	psd_cluster_match &clu_matching,
+	const double PSD_sharge_sum,
+	const double PSD_single_charge);
+
+extern const bool stk_charge_cut(
+	const std::shared_ptr<TClonesArray> stkclusters,
+	best_track &event_best_track,
+	const double STK_single_charge);
+
 
 #endif
