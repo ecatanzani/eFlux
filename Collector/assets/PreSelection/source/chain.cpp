@@ -7,6 +7,10 @@
 #include "TKey.h"
 #include "TFile.h"
 
+#include "DmpIOSvc.h"
+#include "DmpCore.h"
+#include "DmpFilterOrbit.h"
+
 inline const std::string get_tree_name(const std::string stream) {
     const std::string file = stream.substr(0, stream.find('\n'));
     TFile* input_file = TFile::Open(file.c_str(), "READ");
@@ -36,12 +40,12 @@ inline std::string parse_input_file(const std::string input_list)
 	return input_string;
 }
 
-std::shared_ptr<TChain> GetFileChain(const std::string input, const bool verbose) {
+std::shared_ptr<TChain> GetFileChain(const std::string input, const bool verbose, const bool mc) {
     std::istringstream input_stream(parse_input_file(input));
-    //std::shared_ptr<TChain> evtch = std::make_shared<TChain> (get_tree_name(input_stream.str()).c_str(), "DAMPE event tree");
     std::shared_ptr<TChain> evtch = std::make_shared<TChain> ("CollectionTree", "DAMPE event tree");
     std::string tmp_str;
     while (input_stream >> tmp_str) {
+        if (!mc) gIOSvc->Set("InData/Read", tmp_str.c_str());
         evtch->Add(tmp_str.c_str());
         if (verbose) std::cout << "\nAdding " << tmp_str << " to the chain ...";
     }
