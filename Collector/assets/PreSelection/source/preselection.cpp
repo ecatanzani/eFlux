@@ -232,6 +232,7 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy_gev, 
                     ps_histos);
 
+                // Remove lateral and large showering events
                 lateral_showering_distributions(
                     bgohits, 
                     bgorec, 
@@ -250,13 +251,13 @@ void preselection(const in_pars &input_pars) {
                     stkclusters,
                     stktracks,
                     psdhits,
-                    simu_primaries,
                     evt_energy,
                     evt_corr_energy,
                     evt_energy_gev,
                     evt_corr_energy_gev, 
                     ps_histos);
 
+                // STK distributions and charges
                 stk_distributions(
                     bgohits, 
                     bgorec, 
@@ -269,6 +270,21 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy_gev, 
                     ps_histos);
 
+                // STK distributions and charges as last cut
+                stk_distributions_lastcut(
+                    bgohits, 
+                    bgorec, 
+                    evt_header,
+                    stkclusters,
+                    stktracks,
+                    psdhits,
+                    evt_energy,
+                    evt_corr_energy,
+                    evt_energy_gev,
+                    evt_corr_energy_gev, 
+                    ps_histos);
+
+                // PSD distributions and charges
                 psd_stk_distributions(
                     bgohits, 
                     bgorec, 
