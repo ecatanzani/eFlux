@@ -82,6 +82,38 @@ class histos {
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12;
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13;
 
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_in;
+
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_out;
+
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_after_bgofiducial;
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial;
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial;
@@ -97,6 +129,38 @@ class histos {
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial;
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial;
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial;
+
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_in;
+
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_out;
 
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut;
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut;
@@ -114,6 +178,38 @@ class histos {
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut;
         std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut;
 
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_in;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_in;
+
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_out;
+        std::shared_ptr<TH2D> h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_out;
+
         std::shared_ptr<TH2D> h_bar_energy;
         std::shared_ptr<TH2D> h_bar_energy_2D;
         std::shared_ptr<TH1D> h_bars_last_layer_10MeV;
@@ -129,6 +225,11 @@ class histos {
         std::shared_ptr<TH1D> h_bars_last_layer_10MeV_bgofiducial_lastcut;
         std::shared_ptr<TH2D> h_bars_last_layer_10MeV_2D_bgofiducial_lastcut;
 
+        std::shared_ptr<TH2D> h_bar_energy_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_bar_energy_2D_lateral_showering_lastcut;
+        std::shared_ptr<TH1D> h_bars_last_layer_10MeV_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_bars_last_layer_10MeV_2D_lateral_showering_lastcut;
+
         std::shared_ptr<TH1D> h_maxrms;
         std::shared_ptr<TH2D> h_maxrms_2D;
         std::shared_ptr<TH1D> h_maxrms_no_trigger;
@@ -143,6 +244,9 @@ class histos {
         std::shared_ptr<TH2D> h_maxrms_2D_bgofiducial_lastcut;
         std::shared_ptr<TH1D> h_maxrms_no_trigger_bgofiducial_lastcut;
         std::shared_ptr<TH2D> h_maxrms_2D_no_trigger_bgofiducial_lastcut;
+
+        std::shared_ptr<TH1D> h_maxrms_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_maxrms_2D_lateral_showering_lastcut;
 
         std::shared_ptr<TH1D> h_bgoshower_top_X;
         std::shared_ptr<TH1D> h_bgoshower_bottom_X;
@@ -259,6 +363,15 @@ class histos {
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_1000_3000;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000;
+
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_20_100_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_100_250_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_250_500_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_500_1000_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_1000_3000_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_3000_5000_lateral_showering_lastcut;
+        std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut;
 
         std::shared_ptr<TH1D> h_STK_X_clusters;
         std::shared_ptr<TH1D> h_STK_Y_clusters;

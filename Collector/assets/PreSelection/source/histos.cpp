@@ -80,6 +80,11 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_bars_last_layer_10MeV_bgofiducial_lastcut = std::make_shared<TH1D>("h_bars_last_layer_10MeV_bgofiducial_lastcut", "Number of bars on last layer - 10 MeV minimum; Number of BGO bars", 22, 0, 22);
     h_bars_last_layer_10MeV_2D_bgofiducial_lastcut = std::make_shared<TH2D>("h_bars_last_layer_10MeV_2D_bgofiducial_lastcut", "Number of bars on last layer - 10 MeV minimum; Reconstructed Energy [GeV]; Number of BGO bars", energy_nbins -1, &energy_binning[0], (int)number_of_bars_last_layer.size() -1, &number_of_bars_last_layer[0]);
 
+    h_bar_energy_lateral_showering_lastcut = std::make_shared<TH2D>("h_bar_energy_lateral_showering_lastcut", "Mean energy bar; Reconstructed Energy [GeV]; Mean Bar Energy [GeV]", energy_nbins -1, &energy_binning[0], (int)bars_energy_bins.size() -1, &bars_energy_bins[0]);
+    h_bar_energy_2D_lateral_showering_lastcut = std::make_shared<TH2D>("h_bar_energy_2D_lateral_showering_lastcut", "Energy bar; Reconstructed Energy [GeV]; Energy Bar [GeV]", energy_nbins -1, &energy_binning[0], (int)bars_2d_energy_bins.size() -1, &bars_2d_energy_bins[0]);
+    h_bars_last_layer_10MeV_lateral_showering_lastcut = std::make_shared<TH1D>("h_bars_last_layer_10MeV_lateral_showering_lastcut", "Number of bars on last layer - 10 MeV minimum; Number of BGO bars", 22, 0, 22);
+    h_bars_last_layer_10MeV_2D_lateral_showering_lastcut = std::make_shared<TH2D>("h_bars_last_layer_10MeV_2D_lateral_showering_lastcut", "Number of bars on last layer - 10 MeV minimum; Reconstructed Energy [GeV]; Number of BGO bars", energy_nbins -1, &energy_binning[0], (int)number_of_bars_last_layer.size() -1, &number_of_bars_last_layer[0]);
+
     h_maxrms = std::make_shared<TH1D>("h_maxrms", "Max RMS Layers", 1000, 0, 3000);
     h_maxrms_2D = std::make_shared<TH2D>("h_maxrms_2D", "Max RMS - [> 1% energy content]; Reconstructed Energy [GeV]; RMS_{max}", energy_nbins -1, &energy_binning[0], (int)max_rms_bins.size()-1, &max_rms_bins[0]);
     h_maxrms_no_trigger = std::make_shared<TH1D>("h_maxrms_no_trigger", "Max RMS Layers - No Trigger", 1000, 0, 3000);
@@ -94,6 +99,9 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_maxrms_2D_bgofiducial_lastcut = std::make_shared<TH2D>("h_maxrms_2D_bgofiducial_lastcut", "Max RMS - [> 1% energy content]; Reconstructed Energy [GeV]; RMS_{max}", energy_nbins -1, &energy_binning[0], (int)max_rms_bins.size()-1, &max_rms_bins[0]);
     h_maxrms_no_trigger_bgofiducial_lastcut = std::make_shared<TH1D>("h_maxrms_no_trigger_bgofiducial_lastcut", "Max RMS Layers - No Trigger", 1000, 0, 3000);
     h_maxrms_2D_no_trigger_bgofiducial_lastcut = std::make_shared<TH2D>("h_maxrms_2D_no_trigger_bgofiducial_lastcut", "Max RMS - [> 1% energy content] - No Trigger; Reconstructed Energy [GeV]; RMS_{max}", energy_nbins -1, &energy_binning[0], (int)max_rms_bins.size()-1, &max_rms_bins[0]);
+
+    h_maxrms_lateral_showering_lastcut = std::make_shared<TH1D>("h_maxrms_lateral_showering_lastcut", "Max RMS Layers", 1000, 0, 3000);
+    h_maxrms_2D_lateral_showering_lastcut = std::make_shared<TH2D>("h_maxrms_2D_lateral_showering_lastcut", "Max RMS - [> 1% energy content]; Reconstructed Energy [GeV]; RMS_{max}", energy_nbins -1, &energy_binning[0], (int)max_rms_bins.size()-1, &max_rms_bins[0]);
 
     h_bgoshower_top_X = std::make_shared<TH1D>("h_bgoshower_top_X", "BGO Shower X TOP Projection; Top X Projection [mm]", 150, -BGO_SideXY, BGO_SideXY);
     h_bgoshower_bottom_X = std::make_shared<TH1D>("h_bgoshower_bottom_X", "BGO Shower X BOTTOM Projection; BOTTOM X Projection [mm]", 150, -BGO_SideXY, BGO_SideXY);
@@ -181,6 +189,15 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000", "F_{last} vs sumRms correlation - 3 TeV - 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000", "F_{last} vs sumRms correlation - > 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
 
+    h_BGOrec_sumRms_flast_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_lateral_showering_lastcut", "F_{last} vs sumRms correlation; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_20_100_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_20_100_lateral_showering_lastcut", "F_{last} vs sumRms correlation - 20 GeV - 100 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_100_250_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_100_250_lateral_showering_lastcut", "F_{last} vs sumRms correlation - 100 GeV - 250 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_250_500_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_250_500_lateral_showering_lastcut", "F_{last} vs sumRms correlation - 250 GeV - 500 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_500_1000_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_500_1000_lateral_showering_lastcut", "F_{last} vs sumRms correlation - 500 GeV - 1 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_1000_3000_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_1000_3000_lateral_showering_lastcut", "F_{last} vs sumRms correlation - 1 TeV - 3 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_3000_5000_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_3000_5000_lateral_showering_lastcut", "F_{last} vs sumRms correlation - 3 TeV - 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+    h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut", "F_{last} vs sumRms correlation - > 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
+
     h_STK_X_clusters = std::make_shared<TH1D>("h_STK_X_clusters", "STK X clusters", 10, 0, 10);
     h_STK_Y_clusters = std::make_shared<TH1D>("h_STK_Y_clusters", "STK Y clusters", 10, 0, 10);
     h_STK_X_holes = std::make_shared<TH1D>("h_STK_X_holes", "STK X holes", 10, 0, 10);
@@ -236,6 +253,38 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
         h_max_bar_position_simu_reco_energy_diff_ly_12 = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_13 = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
 
+        h_max_bar_position_simu_reco_energy_diff_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_bgoshower_in", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_in", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_in", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_in", "Energy diff vs Max Bar Position - layer 2; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_in", "Energy diff vs Max Bar Position - layer 3; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_in", "Energy diff vs Max Bar Position - layer 4; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_in", "Energy diff vs Max Bar Position - layer 5; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_in", "Energy diff vs Max Bar Position - layer 6; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_in", "Energy diff vs Max Bar Position - layer 7; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_in", "Energy diff vs Max Bar Position - layer 8; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_in", "Energy diff vs Max Bar Position - layer 9; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_in", "Energy diff vs Max Bar Position - layer 10; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_in", "Energy diff vs Max Bar Position - layer 11; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_in", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_in", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+
+        h_max_bar_position_simu_reco_energy_diff_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_bgoshower_out", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_out", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_out", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_out", "Energy diff vs Max Bar Position - layer 2; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_out", "Energy diff vs Max Bar Position - layer 3; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_out", "Energy diff vs Max Bar Position - layer 4; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_out", "Energy diff vs Max Bar Position - layer 5; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_out", "Energy diff vs Max Bar Position - layer 6; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_out", "Energy diff vs Max Bar Position - layer 7; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_out", "Energy diff vs Max Bar Position - layer 8; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_out", "Energy diff vs Max Bar Position - layer 9; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_out", "Energy diff vs Max Bar Position - layer 10; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_out", "Energy diff vs Max Bar Position - layer 11; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_out", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_out", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+
         h_max_bar_position_simu_reco_energy_diff_after_bgofiducial = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_after_bgofiducial", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
@@ -252,6 +301,38 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
         h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
 
+        h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 2; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 3; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 4; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 5; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 6; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 7; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 8; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 9; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 10; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 11; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_in", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+
+        h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 2; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 3; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 4; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 5; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 6; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 7; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 8; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 9; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 10; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 11; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_out", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+
         h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
@@ -267,6 +348,38 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
         h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut", "Energy diff vs Max Bar Position - layer 11; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
         h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+
+        h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 2; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 3; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 4; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 5; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 6; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 7; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 8; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 9; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 10; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 11; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_in = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_in", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+
+        h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 0; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 1; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 2; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 3; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 4; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 5; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 6; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 7; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 8; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 9; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 10; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 11; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 12; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
+        h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_out = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_out", "Energy diff vs Max Bar Position - layer 13; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
 
         h_bgoshower_top_X_simu_reco_energy_diff = std::make_shared<TH2D>("h_bgoshower_top_X_simu_reco_energy_diff", "Energy diff vs TOP X BGO position; TOP X BGO position [mm]; Energy_{simu} - Energy_{reco} / Energy_{simu}", 150, -BGO_SideXY, BGO_SideXY, 100, -0.1, 1);
         h_bgoshower_bottom_X_simu_reco_energy_diff = std::make_shared<TH2D>("h_bgoshower_bottom_X_simu_reco_energy_diff", "Energy diff vs BOTTOM X BGO position; BOTTOM X BGO position [mm]; Energy_{simu} - Energy_{reco} / Energy_{simu}", 150, -BGO_SideXY, BGO_SideXY, 100, -0.1, 1);
@@ -392,6 +505,38 @@ void histos::Write(const std::string output_wd, const bool verbose) {
         h_max_bar_position_simu_reco_energy_diff_ly_12->Write();
         h_max_bar_position_simu_reco_energy_diff_ly_13->Write();
 
+        h_max_bar_position_simu_reco_energy_diff_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_in->Write();
+
+        h_max_bar_position_simu_reco_energy_diff_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_out->Write();
+
         h_bgoshower_top_X_simu_reco_energy_diff->Write();
         h_bgoshower_bottom_X_simu_reco_energy_diff->Write();
         h_bgoshower_top_Y_simu_reco_energy_diff->Write();
@@ -463,6 +608,38 @@ void histos::Write(const std::string output_wd, const bool verbose) {
         h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial->Write();
         h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial->Write();
         h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial->Write();
+
+        h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_in->Write();
+
+        h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_out->Write();
 
         h_bgoshower_top_X_simu_reco_energy_diff_after_bgofiducial->Write();
         h_bgoshower_bottom_X_simu_reco_energy_diff_after_bgofiducial->Write();
@@ -536,6 +713,38 @@ void histos::Write(const std::string output_wd, const bool verbose) {
         h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut->Write();
         h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut->Write();
 
+        h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_in->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_in->Write();
+
+        h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_out->Write();
+        h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_out->Write();
+
         h_bgoshower_top_X_simu_reco_energy_diff_bgofiducial_lastcut->Write();
         h_bgoshower_bottom_X_simu_reco_energy_diff_bgofiducial_lastcut->Write();
         h_bgoshower_top_Y_simu_reco_energy_diff_bgofiducial_lastcut->Write();
@@ -558,6 +767,26 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_1000_3000->Write();
     h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000->Write();
     h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000->Write();
+
+    outfile->mkdir("lateral_showering_lastcut");
+    outfile->cd("lateral_showering_lastcut");
+
+    h_bar_energy_lateral_showering_lastcut->Write();
+    h_bar_energy_2D_lateral_showering_lastcut->Write();
+    h_bars_last_layer_10MeV_lateral_showering_lastcut->Write();
+    h_bars_last_layer_10MeV_2D_lateral_showering_lastcut->Write();
+
+    h_maxrms_lateral_showering_lastcut->Write();
+    h_maxrms_2D_lateral_showering_lastcut->Write();
+
+    h_BGOrec_sumRms_flast_lateral_showering_lastcut->Write();
+    h_BGOrec_sumRms_flast_20_100_lateral_showering_lastcut->Write();
+    h_BGOrec_sumRms_flast_100_250_lateral_showering_lastcut->Write();
+    h_BGOrec_sumRms_flast_250_500_lateral_showering_lastcut->Write();
+    h_BGOrec_sumRms_flast_500_1000_lateral_showering_lastcut->Write();
+    h_BGOrec_sumRms_flast_1000_3000_lateral_showering_lastcut->Write();
+    h_BGOrec_sumRms_flast_3000_5000_lateral_showering_lastcut->Write();
+    h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut->Write();  
 
     outfile->mkdir("STK");
     outfile->cd("STK");

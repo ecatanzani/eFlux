@@ -242,6 +242,21 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy_gev,
                     ps_histos);
 
+                // Remove lateral and large showering events as last cut
+                lateral_showering_distributions_lastcut(
+                    bgohits, 
+                    bgorec, 
+                    evt_header,
+                    stkclusters,
+                    stktracks,
+                    psdhits,
+                    simu_primaries,
+                    evt_energy,
+                    evt_corr_energy,
+                    evt_energy_gev,
+                    evt_corr_energy_gev, 
+                    ps_histos);
+
                 stk_distributions(
                     bgohits, 
                     bgorec, 

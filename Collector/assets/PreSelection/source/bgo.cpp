@@ -147,11 +147,14 @@ void bgo_distributions(
         ps_histos->h_bgoshower_top_Y->Fill(bgorec_proj_Y[0], weight);
         ps_histos->h_bgoshower_bottom_Y->Fill(bgorec_proj_Y[1], weight);
 
-        for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-            if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY))
+        if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY)) {
+            for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
                 ps_histos->h_energy_fraction_sh_axis_contained->Fill(elm_energy_fraction, weight);
-            else
+        }
+        else {
+            for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
                 ps_histos->h_energy_fraction_sh_axis_not_contained->Fill(elm_energy_fraction, weight);
+        }       
         
         ps_histos->h_BGOrec_sumRms_flast->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
         if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
@@ -212,6 +215,77 @@ void bgo_distributions(
                                     break;
                             case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
                                     break;
+                        }
+                    
+                        if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY)) {
+                    
+                            ps_histos->h_max_bar_position_simu_reco_energy_diff_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                            switch (lIdx) {
+                                case 0: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 1: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 2: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 3: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 4: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 5: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 6: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 7: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 8: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 9: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 10: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 11: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 12: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                            }
+
+                        }
+                        else {
+
+                            ps_histos->h_max_bar_position_simu_reco_energy_diff_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                            switch (lIdx) {
+                                case 0: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_0_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 1: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_1_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 2: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_2_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 3: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_3_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 4: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_4_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 5: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_5_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 6: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_6_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 7: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_7_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 8: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_8_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 9: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_9_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 10: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_10_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 11: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_11_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 12: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_12_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                        break;
+                                        
+                            }
                         }
                     }
                 }
@@ -336,6 +410,7 @@ void bgofiducial_distributions(
                 for (auto&& layer_energy : bgoVault->GetLayerBarEnergies())
                     for (auto && single_bar_energy : layer_energy)
                         ps_histos->h_bar_energy_2D_after_bgofiducial->Fill(evt_corr_energy_gev, single_bar_energy*gev, weight);
+
                     
                 ps_histos->h_bars_last_layer_10MeV_after_bgofiducial->Fill(count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
                 ps_histos->h_bars_last_layer_10MeV_2D_after_bgofiducial->Fill(evt_corr_energy_gev, count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
@@ -349,11 +424,14 @@ void bgofiducial_distributions(
                 ps_histos->h_bgoshower_top_Y_after_bgofiducial->Fill(bgorec_proj_Y[0]);
                 ps_histos->h_bgoshower_bottom_Y_after_bgofiducial->Fill(bgorec_proj_Y[1], weight);
 
-                for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
-                    if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY))
+                if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY)) {
+                    for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
                         ps_histos->h_energy_fraction_sh_axis_contained_after_bgofiducial->Fill(elm_energy_fraction, weight);
-                    else
+                }
+                else {
+                    for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
                         ps_histos->h_energy_fraction_sh_axis_not_contained_after_bgofiducial->Fill(elm_energy_fraction, weight);
+                }
                 
                 ps_histos->h_BGOrec_sumRms_flast_after_bgofiducial->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                 if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
@@ -414,6 +492,77 @@ void bgofiducial_distributions(
                                             break;
                                     case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
                                             break;
+                                }
+
+                                if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY)) {
+
+                                    ps_histos->h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                    switch (lIdx) {
+                                        case 0: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 1: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 2: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 3: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 4: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 5: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 6: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 7: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 8: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 9: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 10: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 11: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 12: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                    }
+
+                                }
+                                else {
+
+                                    ps_histos->h_max_bar_position_simu_reco_energy_diff_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                    switch (lIdx) {
+                                        case 0: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_0_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 1: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_1_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 2: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_2_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 3: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_3_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 4: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_4_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 5: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_5_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 6: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_6_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 7: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_7_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 8: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_8_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 9: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_9_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 10: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_10_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 11: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_11_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 12: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_12_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                        case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13_after_bgofiducial_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                break;
+                                    }
+
                                 }
                             }
                         }
@@ -605,6 +754,15 @@ void bgofiducial_distributions_lastcut(
                                     ps_histos->h_bgoshower_top_Y_bgofiducial_lastcut->Fill(bgorec_proj_Y[0], weight);
                                     ps_histos->h_bgoshower_bottom_Y_bgofiducial_lastcut->Fill(bgorec_proj_Y[1], weight);
 
+                                    if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY)) {
+                                        for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
+                                            ps_histos->h_energy_fraction_sh_axis_contained_bgofiducial_lastcut->Fill(elm_energy_fraction, weight);
+                                    }
+                                    else {
+                                        for(auto&& elm_energy_fraction : bgoVault->GetFracLayer())
+                                            ps_histos->h_energy_fraction_sh_axis_not_contained_bgofiducial_lastcut->Fill(elm_energy_fraction, weight);
+                                    }
+
                                     ps_histos->h_BGOrec_sumRms_flast_bgofiducial_lastcut->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                                     if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
                                         ps_histos->h_BGOrec_sumRms_flast_20_100_bgofiducial_lastcut->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
@@ -664,6 +822,77 @@ void bgofiducial_distributions_lastcut(
                                                                 break;
                                                         case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
                                                                 break;
+                                                    }
+
+                                                    if ((abs(bgorec_proj_X[0])<=BGO_SideXY && abs(bgorec_proj_X[1]<=BGO_SideXY)) && (abs(bgorec_proj_Y[0])<=BGO_SideXY && abs(bgorec_proj_Y[1])<=BGO_SideXY)) {
+                                                        
+                                                        ps_histos->h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                        switch (lIdx) {
+                                                            case 0: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 1: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 2: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 3: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 4: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 5: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 6: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 7: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 8: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 9: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 10: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 11: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 12: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_in->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                        }
+
+                                                    }
+                                                    else {
+                                                        
+                                                        ps_histos->h_max_bar_position_simu_reco_energy_diff_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                        switch (lIdx) {
+                                                            case 0: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_0_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 1: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_1_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 2: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_2_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 3: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_3_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 4: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_4_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 5: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_5_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 6: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_6_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 7: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_7_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 8: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_8_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 9: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_9_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 10: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_10_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 11: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_11_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 12: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_12_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                            case 13: ps_histos->h_max_bar_position_simu_reco_energy_diff_ly_13_bgofiducial_lastcut_bgoshower_out->Fill(idxBarMaxLayer[lIdx], energy_diff, weight);
+                                                                    break;
+                                                        }
+
                                                     }
                                                 }
                                             }
