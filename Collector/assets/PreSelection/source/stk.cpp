@@ -579,9 +579,9 @@ void stk_distributions_lastcut(
                                 evt_corr_energy_gev, 
                                 ps_histos,
                                 true);
-
+                            
                             // Extract the best track for the event
-                            track_selection_cut(
+                            auto trackselection_cut = track_selection_cut(
                                 bgorec, 
                                 bgoVault->GetBGOslope(), 
                                 bgoVault->GetBGOintercept(), 
@@ -594,8 +594,9 @@ void stk_distributions_lastcut(
                                 track_X_clusters,
                                 track_Y_clusters);
                             
-                            stk_charge(stkclusters, event_best_track, ps_histos, true);
-
+                            if (trackselection_cut) {
+                                stk_charge(stkclusters, event_best_track, ps_histos, true);
+                            }
                         }
                     }
                 }

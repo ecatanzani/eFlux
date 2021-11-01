@@ -3,6 +3,7 @@
 #include "psd.h"
 #include "chain.h"
 #include "histos.h"
+#include "charge.h"
 #include "preselection.h"
 #include "energy_config.h"
 #include "lateral_showering.h"
@@ -284,8 +285,36 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy_gev, 
                     ps_histos);
 
-                // PSD distributions and charges
-                psd_stk_distributions(
+                // PSD-STK match distributions and charges
+                psd_stk_match_distributions(
+                    bgohits, 
+                    bgorec, 
+                    evt_header, 
+                    stkclusters, 
+                    stktracks, 
+                    psdhits, 
+                    evt_energy, 
+                    evt_corr_energy, 
+                    evt_energy_gev, 
+                    evt_corr_energy_gev, 
+                    ps_histos);
+
+                // PSD-STK match distributions and charges lastcut
+                psd_stk_match_distributions_lastcut(
+                    bgohits, 
+                    bgorec, 
+                    evt_header, 
+                    stkclusters, 
+                    stktracks, 
+                    psdhits, 
+                    evt_energy, 
+                    evt_corr_energy, 
+                    evt_energy_gev, 
+                    evt_corr_energy_gev, 
+                    ps_histos);
+
+                // PSD-STK charge distributions
+                charge_distributions(
                     bgohits, 
                     bgorec, 
                     evt_header, 

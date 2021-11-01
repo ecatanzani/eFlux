@@ -140,6 +140,19 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_STK_X_match_5000 = std::make_shared<TH1D>("h_PSD_STK_X_match_5000", "PSD - STK match X view - >5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
     h_PSD_STK_Y_match_5000 = std::make_shared<TH1D>("h_PSD_STK_Y_match_5000", "PSD - STK match Y view - >5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
 
+    h_PSD_STK_X_match_energy_int_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_energy_int_lastcut", "PSD - STK match X view- All Energies; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_energy_int_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_energy_int_lastcut", "PSD - STK match Y view - All Energies; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_100_250_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_100_250_lastcut", "PSD - STK match X view - 100-250 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_100_250_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_100_250_lastcut", "PSD - STK match Y view - 100-250 GeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_250_500_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_250_500_lastcut", "PSD - STK match X view - 250-500 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_250_500_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_250_500_lastcut", "PSD - STK match Y view - 250-500 GeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_500_1000_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_500_1000_lastcut", "PSD - STK match X view - 500GeV-1TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_500_1000_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_500_1000_lastcut", "PSD - STK match Y view - 500GeV-1TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_1000_5000_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_1000_5000_lastcut", "PSD - STK match X view - 1TeV-5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_1000_5000_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_1000_5000_lastcut", "PSD - STK match Y view - 1TeV-5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_5000_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_5000_lastcut", "PSD - STK match X view - >5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_5000_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_5000_lastcut", "PSD - STK match Y view - >5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+
     h_PSD_STK_X_match_energy_int_psd_fiducial = std::make_shared<TH1D>("h_PSD_STK_X_match_energy_int_psd_fiducial", "PSD - STK match X view + PSD fiducial - All Energies; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
     h_PSD_STK_Y_match_energy_int_psd_fiducial = std::make_shared<TH1D>("h_PSD_STK_Y_match_energy_int_psd_fiducial", "PSD - STK match Y view + PSD fiducial - All Energies; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
     h_PSD_STK_X_match_100_250_psd_fiducial = std::make_shared<TH1D>("h_PSD_STK_X_match_100_250_psd_fiducial", "PSD - STK match X view + PSD fiducial - 100-250 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
@@ -152,6 +165,19 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_STK_Y_match_1000_5000_psd_fiducial = std::make_shared<TH1D>("h_PSD_STK_Y_match_1000_5000_psd_fiducial", "PSD - STK match Y view + PSD fiducial - 1TeV-5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
     h_PSD_STK_X_match_5000_psd_fiducial = std::make_shared<TH1D>("h_PSD_STK_X_match_5000_psd_fiducial", "PSD - STK match X view + PSD fiducial - >5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
     h_PSD_STK_Y_match_5000_psd_fiducial = std::make_shared<TH1D>("h_PSD_STK_Y_match_5000_psd_fiducial", "PSD - STK match Y view + PSD fiducial - >5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+
+    h_PSD_STK_X_match_energy_int_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_energy_int_psd_fiducial_lastcut", "PSD - STK match X view + PSD fiducial - All Energies; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_energy_int_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_energy_int_psd_fiducial_lastcut", "PSD - STK match Y view + PSD fiducial - All Energies; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_100_250_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_100_250_psd_fiducial_lastcut", "PSD - STK match X view + PSD fiducial - 100-250 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_100_250_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_100_250_psd_fiducial_lastcut", "PSD - STK match Y view + PSD fiducial - 100-250 GeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_250_500_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_250_500_psd_fiducial_lastcut", "PSD - STK match X view + PSD fiducial - 250-500 GeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_250_500_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_250_500_psd_fiducial_lastcut", "PSD - STK match Y view + PSD fiducial - 250-500 GeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_500_1000_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_500_1000_psd_fiducial_lastcut", "PSD - STK match X view + PSD fiducial - 500GeV-1TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_500_1000_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_500_1000_psd_fiducial_lastcut", "PSD - STK match Y view + PSD fiducial - 500GeV-1TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_1000_5000_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_1000_5000_psd_fiducial_lastcut", "PSD - STK match X view + PSD fiducial - 1TeV-5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_1000_5000_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_1000_5000_psd_fiducial_lastcut", "PSD - STK match Y view + PSD fiducial - 1TeV-5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_X_match_5000_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_X_match_5000_psd_fiducial_lastcut", "PSD - STK match X view + PSD fiducial - >5TeV; #Delta X (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
+    h_PSD_STK_Y_match_5000_psd_fiducial_lastcut = std::make_shared<TH1D>("h_PSD_STK_Y_match_5000_psd_fiducial_lastcut", "PSD - STK match Y view + PSD fiducial - >5TeV; #Delta Y (Track-closest PSD hit) [mm]; Entries", 200, -BGO_SideXY, BGO_SideXY);
 
     h_BGOrec_sumRms_flast = std::make_shared<TH2D>("h_BGOrec_sumRms_flast", "F_{last} vs sumRms correlation; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_20_100 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_20_100", "F_{last} vs sumRms correlation - 20 GeV - 100 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
@@ -313,8 +339,39 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_charge_2D = std::make_shared<TH2D>("h_PSD_charge_2D", "PSD Charge; PSD Charge X; PSD Charge Y", 500, 0, 100, 500, 0, 100);
     h_PSD_sum_of_XY_charges = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
 
+    h_PSD_charge_X_lastcut = std::make_shared<TH1D>("h_PSD_charge_X_lastcut", "PSD Charge - X view; PSD Charge X; entries", 500, 0, 100);
+    h_PSD_charge_Y_lastcut = std::make_shared<TH1D>("h_PSD_charge_Y_lastcut", "PSD Charge - Y view; PSD Charge Y; entries", 500, 0, 100);
+    h_PSD_charge_lastcut = std::make_shared<TH1D>("h_PSD_charge_lastcut", "PSD Charge; PSD Charge; entries", 500, 0, 100);
+    h_PSD_charge_2D_lastcut = std::make_shared<TH2D>("h_PSD_charge_2D_lastcut", "PSD Charge; PSD Charge X; PSD Charge Y", 500, 0, 100, 500, 0, 100);
+    h_PSD_sum_of_XY_charges_lastcut = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges_lastcut", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
+
     h_PSD_X_clusters = std::make_shared<TH2D>("h_PSD_X_clusters", "PSD X Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD X Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
     h_PSD_Y_clusters = std::make_shared<TH2D>("h_PSD_Y_clusters", "PSD Y Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD Y Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
+
+    h_PSD_X_clusters_lastcut = std::make_shared<TH2D>("h_PSD_X_clusters_lastcut", "PSD X Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD X Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
+    h_PSD_Y_clusters_lastcut = std::make_shared<TH2D>("h_PSD_Y_clusters_lastcut", "PSD Y Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD Y Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
+
+    h_STK_charge_X_nocut = std::make_shared<TH1D>("h_STK_charge_X_nocut", "STK Charge - X view; STK Charge X; entries", 500, 0, 100);
+    h_STK_charge_Y_nocut = std::make_shared<TH1D>("h_STK_charge_Y_nocut", "STK Charge - Y view; STK Charge Y; entries", 500, 0, 100);
+    h_STK_charge_nocut = std::make_shared<TH1D>("h_STK_charge_nocut", "STK Charge; STK Charge; entries", 500, 0, 100);
+    h_STK_charge_2D_nocut = std::make_shared<TH2D>("h_STK_charge_2D_nocut", "STK Charge; STK Charge X; STK Charge Y", 500, 0, 100, 500, 0, 100);
+
+    h_STK_charge_X_PSD_charge_cut = std::make_shared<TH1D>("h_STK_charge_X_PSD_charge_cut", "STK Charge - X view; STK Charge X; entries", 500, 0, 100);
+    h_STK_charge_Y_PSD_charge_cut = std::make_shared<TH1D>("h_STK_charge_Y_PSD_charge_cut", "STK Charge - Y view; STK Charge Y; entries", 500, 0, 100);
+    h_STK_charge_PSD_charge_cut = std::make_shared<TH1D>("h_STK_charge_PSD_charge_cut", "STK Charge; STK Charge; entries", 500, 0, 100);
+    h_STK_charge_2D_PSD_charge_cut = std::make_shared<TH2D>("h_STK_charge_2D_PSD_charge_cut", "STK Charge; STK Charge X; STK Charge Y", 500, 0, 100, 500, 0, 100);
+
+    h_PSD_charge_X_nocut = std::make_shared<TH1D>("h_PSD_charge_X_nocut", "PSD Charge - X view; PSD Charge X; entries", 500, 0, 100);
+    h_PSD_charge_Y_nocut = std::make_shared<TH1D>("h_PSD_charge_Y_nocut", "PSD Charge - Y view; PSD Charge Y; entries", 500, 0, 100);
+    h_PSD_charge_nocut = std::make_shared<TH1D>("h_PSD_charge_nocut", "PSD Charge; PSD Charge; entries", 500, 0, 100);
+    h_PSD_charge_2D_nocut = std::make_shared<TH2D>("h_PSD_charge_2D_nocut", "PSD Charge; PSD Charge X; PSD Charge Y", 500, 0, 100, 500, 0, 100);
+    h_PSD_sum_of_XY_charges_nocut = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges_nocut", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
+
+    h_PSD_charge_X_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_X_STK_charge_cut", "PSD Charge - X view; PSD Charge X; entries", 500, 0, 100);
+    h_PSD_charge_Y_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_Y_STK_charge_cut", "PSD Charge - Y view; PSD Charge Y; entries", 500, 0, 100);
+    h_PSD_charge_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_STK_charge_cut", "PSD Charge; PSD Charge; entries", 500, 0, 100);
+    h_PSD_charge_2D_STK_charge_cut = std::make_shared<TH2D>("h_PSD_charge_2D_STK_charge_cut", "PSD Charge; PSD Charge X; PSD Charge Y", 500, 0, 100, 500, 0, 100);
+    h_PSD_sum_of_XY_charges_STK_charge_cut = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges_STK_charge_cut", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
 
     if (h_simu) {
         h_max_bar_position_simu_reco_energy_diff = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
@@ -868,8 +925,8 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_BGOrec_sumRms_flast_3000_5000_lateral_showering_lastcut->Write();
     h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut->Write();  
 
-    outfile->mkdir("STK");
-    outfile->cd("STK");
+    outfile->mkdir("TrackSelection");
+    outfile->cd("TrackSelection");
 
     h_STK_X_clusters->Write();
     h_STK_Y_clusters->Write();
@@ -909,7 +966,7 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_BGOrec_sumRms_flast_after_track_selection_1000_3000->Write();
     h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Write();
     h_BGOrec_sumRms_flast_after_track_selection_5000->Write();
-
+    
     h_STK_charge_X->Write();
     h_STK_charge_Y->Write();
     h_STK_charge->Write();
@@ -930,8 +987,8 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_charge_5_clusters->Write();
     h_STK_charge_2D_5_clusters->Write();
 
-    outfile->mkdir("STK_lastcut");
-    outfile->cd("STK_lastcut");
+    outfile->mkdir("TrackSelection_lastcut");
+    outfile->cd("TrackSelection_lastcut");
 
     h_STK_X_clusters_lastcut->Write();
     h_STK_Y_clusters_lastcut->Write();
@@ -962,7 +1019,7 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_BGO_TOP_spatial_X_difference_5_clusters_lastcut->Write();
     h_STK_BGO_TOP_spatial_Y_difference_5_clusters_lastcut->Write();
     h_STK_BGO_track_angular_difference_5_clusters_lastcut->Write();
-
+    
     h_STK_charge_X_lastcut->Write();
     h_STK_charge_Y_lastcut->Write();
     h_STK_charge_lastcut->Write();
@@ -1012,8 +1069,8 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_PSD_STK_X_match_5000_psd_fiducial->Write();
     h_PSD_STK_Y_match_5000_psd_fiducial->Write();
 
-    outfile->mkdir("PSD");
-    outfile->cd("PSD");
+    h_PSD_X_clusters->Write();
+    h_PSD_Y_clusters->Write();
 
     h_PSD_charge_X->Write();
     h_PSD_charge_Y->Write();
@@ -1021,8 +1078,77 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_PSD_charge_2D->Write();
     h_PSD_sum_of_XY_charges->Write();
 
-    h_PSD_X_clusters->Write();
-    h_PSD_Y_clusters->Write();
+    outfile->mkdir("PSD_STK_lastcut");
+    outfile->cd("PSD_STK_lastcut");
+
+    h_PSD_STK_X_match_energy_int_lastcut->Write();
+    h_PSD_STK_Y_match_energy_int_lastcut->Write();
+    h_PSD_STK_X_match_100_250_lastcut->Write();
+    h_PSD_STK_Y_match_100_250_lastcut->Write();
+    h_PSD_STK_X_match_250_500_lastcut->Write();
+    h_PSD_STK_Y_match_250_500_lastcut->Write();
+    h_PSD_STK_X_match_500_1000_lastcut->Write();
+    h_PSD_STK_Y_match_500_1000_lastcut->Write();
+    h_PSD_STK_X_match_1000_5000_lastcut->Write();
+    h_PSD_STK_Y_match_1000_5000_lastcut->Write();
+    h_PSD_STK_X_match_5000_lastcut->Write();
+    h_PSD_STK_Y_match_5000_lastcut->Write();
+
+    h_PSD_STK_X_match_energy_int_psd_fiducial_lastcut->Write();
+    h_PSD_STK_Y_match_energy_int_psd_fiducial_lastcut->Write();
+    h_PSD_STK_X_match_100_250_psd_fiducial_lastcut->Write();
+    h_PSD_STK_Y_match_100_250_psd_fiducial_lastcut->Write();
+    h_PSD_STK_X_match_250_500_psd_fiducial_lastcut->Write();
+    h_PSD_STK_Y_match_250_500_psd_fiducial_lastcut->Write();
+    h_PSD_STK_X_match_500_1000_psd_fiducial_lastcut->Write();
+    h_PSD_STK_Y_match_500_1000_psd_fiducial_lastcut->Write();
+    h_PSD_STK_X_match_1000_5000_psd_fiducial_lastcut->Write();
+    h_PSD_STK_Y_match_1000_5000_psd_fiducial_lastcut->Write();
+    h_PSD_STK_X_match_5000_psd_fiducial_lastcut->Write();
+    h_PSD_STK_Y_match_5000_psd_fiducial_lastcut->Write();
+
+    h_PSD_X_clusters_lastcut->Write();
+    h_PSD_Y_clusters_lastcut->Write();
+
+    h_PSD_charge_X_lastcut->Write();
+    h_PSD_charge_Y_lastcut->Write();
+    h_PSD_charge_lastcut->Write();
+    h_PSD_charge_2D_lastcut->Write();
+    h_PSD_sum_of_XY_charges_lastcut->Write();
+
+    outfile->mkdir("PSD_charges");
+    outfile->cd("PSD_charges");
+    
+    h_PSD_charge_X_nocut->Write();
+    h_PSD_charge_Y_nocut->Write();
+    h_PSD_charge_nocut->Write();
+    h_PSD_charge_2D_nocut->Write();
+    h_PSD_sum_of_XY_charges_nocut->Write();
+
+    outfile->mkdir("PSD_charges_after_STK_charge_cut");
+    outfile->cd("PSD_charges_after_STK_charge_cut");
+    
+    h_PSD_charge_X_STK_charge_cut->Write();
+    h_PSD_charge_Y_STK_charge_cut->Write();
+    h_PSD_charge_STK_charge_cut->Write();
+    h_PSD_charge_2D_STK_charge_cut->Write();
+    h_PSD_sum_of_XY_charges_STK_charge_cut->Write();
+
+    outfile->mkdir("STK_charges");
+    outfile->cd("STK_charges");
+
+    h_STK_charge_X_nocut->Write();
+    h_STK_charge_Y_nocut->Write();
+    h_STK_charge_nocut->Write();
+    h_STK_charge_2D_nocut->Write();
+
+    outfile->mkdir("STK_charges_after_PSD_charge_cut");
+    outfile->cd("STK_charges_after_PSD_charge_cut");
+
+    h_STK_charge_X_PSD_charge_cut->Write();
+    h_STK_charge_Y_PSD_charge_cut->Write();
+    h_STK_charge_PSD_charge_cut->Write();
+    h_STK_charge_2D_PSD_charge_cut->Write();
 
     outfile->Close();
 
