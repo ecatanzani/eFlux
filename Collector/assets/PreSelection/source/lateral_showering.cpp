@@ -111,7 +111,6 @@ void lateral_showering_distributions_lastcut(
     std::shared_ptr<TClonesArray> stkclusters, 
     std::shared_ptr<TClonesArray> stktracks,
     std::shared_ptr<DmpEvtPsdHits> psdhits,
-    std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries,
     const double evt_energy, 
     const double evt_corr_energy,
     const double evt_energy_gev, 
