@@ -213,6 +213,21 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_STK_BGO_TOP_spatial_Y_difference = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
     h_STK_BGO_track_angular_difference = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference", "STK - BGO track angular difference", 250, 0, 40);
 
+    h_STK_BGO_TOP_spatial_difference_3_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_difference_3_clusters", "STK - BGO TOP spatial difference", 100, 0, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_X_difference_3_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_X_difference_3_clusters", "STK - BGO TOP spatial difference - X view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_Y_difference_3_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_3_clusters", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_track_angular_difference_3_clusters = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_3_clusters", "STK - BGO track angular difference", 250, 0, 40);
+
+    h_STK_BGO_TOP_spatial_difference_4_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_difference_4_clusters", "STK - BGO TOP spatial difference", 100, 0, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_X_difference_4_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_X_difference_4_clusters", "STK - BGO TOP spatial difference - X view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_Y_difference_4_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_4_clusters", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_track_angular_difference_4_clusters = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_4_clusters", "STK - BGO track angular difference", 250, 0, 40);
+
+    h_STK_BGO_TOP_spatial_difference_5_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_difference_5_clusters", "STK - BGO TOP spatial difference", 100, 0, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_X_difference_5_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_X_difference_5_clusters", "STK - BGO TOP spatial difference - X view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_Y_difference_5_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_5_clusters", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_track_angular_difference_5_clusters = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_5_clusters", "STK - BGO track angular difference", 250, 0, 40);
+
     h_BGOrec_sumRms_flast_after_track_selection = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection", "F_{last} vs sumRms correlation; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_after_track_selection_20_100 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection_20_100", "F_{last} vs sumRms correlation - 20 GeV - 100 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_after_track_selection_100_250 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection_100_250", "F_{last} vs sumRms correlation - 100 GeV - 250 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
@@ -226,6 +241,21 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_STK_charge_Y = std::make_shared<TH1D>("h_STK_charge_Y", "STK Charge - Y view; STK Charge Y; entries", 500, 0, 100);
     h_STK_charge = std::make_shared<TH1D>("h_STK_charge", "STK Charge; STK Charge; entries", 500, 0, 100);
     h_STK_charge_2D = std::make_shared<TH2D>("h_STK_charge_2D", "STK Charge; STK Charge X; STK Charge Y", 500, 0, 100, 500, 0, 100);
+
+    h_STK_charge_X_3_clusters = std::make_shared<TH1D>("h_STK_charge_X_3_clusters", "STK Charge - X view; STK Charge X; entries", 500, 0, 100);
+    h_STK_charge_Y_3_clusters = std::make_shared<TH1D>("h_STK_charge_Y_3_clusters", "STK Charge - Y view; STK Charge Y; entries", 500, 0, 100);
+    h_STK_charge_3_clusters = std::make_shared<TH1D>("h_STK_charge_3_clusters", "STK Charge; STK Charge; entries", 500, 0, 100);
+    h_STK_charge_2D_3_clusters = std::make_shared<TH2D>("h_STK_charge_2D_3_clusters", "STK Charge; STK Charge X; STK Charge Y", 500, 0, 100, 500, 0, 100);
+
+    h_STK_charge_X_4_clusters = std::make_shared<TH1D>("h_STK_charge_X_4_clusters", "STK Charge - X view; STK Charge X; entries", 500, 0, 100);
+    h_STK_charge_Y_4_clusters = std::make_shared<TH1D>("h_STK_charge_Y_4_clusters", "STK Charge - Y view; STK Charge Y; entries", 500, 0, 100);
+    h_STK_charge_4_clusters = std::make_shared<TH1D>("h_STK_charge_4_clusters", "STK Charge; STK Charge; entries", 500, 0, 100);
+    h_STK_charge_2D_4_clusters = std::make_shared<TH2D>("h_STK_charge_2D_4_clusters", "STK Charge; STK Charge X; STK Charge Y", 500, 0, 100, 500, 0, 100);
+
+    h_STK_charge_X_5_clusters = std::make_shared<TH1D>("h_STK_charge_X_5_clusters", "STK Charge - X view; STK Charge X; entries", 500, 0, 100);
+    h_STK_charge_Y_5_clusters = std::make_shared<TH1D>("h_STK_charge_Y_5_clusters", "STK Charge - Y view; STK Charge Y; entries", 500, 0, 100);
+    h_STK_charge_5_clusters = std::make_shared<TH1D>("h_STK_charge_5_clusters", "STK Charge; STK Charge; entries", 500, 0, 100);
+    h_STK_charge_2D_5_clusters = std::make_shared<TH2D>("h_STK_charge_2D_5_clusters", "STK Charge; STK Charge X; STK Charge Y", 500, 0, 100, 500, 0, 100);
 
     h_PSD_charge_X = std::make_shared<TH1D>("h_PSD_charge_X", "PSD Charge - X view; PSD Charge X; entries", 500, 0, 100);
     h_PSD_charge_Y = std::make_shared<TH1D>("h_PSD_charge_Y", "PSD Charge - Y view; PSD Charge Y; entries", 500, 0, 100);
@@ -806,6 +836,21 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_BGO_TOP_spatial_Y_difference->Write();
     h_STK_BGO_track_angular_difference->Write();
 
+    h_STK_BGO_TOP_spatial_difference_3_clusters->Write();
+    h_STK_BGO_TOP_spatial_X_difference_3_clusters->Write();
+    h_STK_BGO_TOP_spatial_Y_difference_3_clusters->Write();
+    h_STK_BGO_track_angular_difference_3_clusters->Write();
+
+    h_STK_BGO_TOP_spatial_difference_4_clusters->Write();
+    h_STK_BGO_TOP_spatial_X_difference_4_clusters->Write();
+    h_STK_BGO_TOP_spatial_Y_difference_4_clusters->Write();
+    h_STK_BGO_track_angular_difference_4_clusters->Write();
+
+    h_STK_BGO_TOP_spatial_difference_5_clusters->Write();
+    h_STK_BGO_TOP_spatial_X_difference_5_clusters->Write();
+    h_STK_BGO_TOP_spatial_Y_difference_5_clusters->Write();
+    h_STK_BGO_track_angular_difference_5_clusters->Write();
+
     h_BGOrec_sumRms_flast_after_track_selection->Write();
     h_BGOrec_sumRms_flast_after_track_selection_20_100->Write();
     h_BGOrec_sumRms_flast_after_track_selection_100_250->Write();
@@ -819,6 +864,21 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_charge_Y->Write();
     h_STK_charge->Write();
     h_STK_charge_2D->Write();
+
+    h_STK_charge_X_3_clusters->Write();
+    h_STK_charge_Y_3_clusters->Write();
+    h_STK_charge_3_clusters->Write();
+    h_STK_charge_2D_3_clusters->Write();
+
+    h_STK_charge_X_4_clusters->Write();
+    h_STK_charge_Y_4_clusters->Write();
+    h_STK_charge_4_clusters->Write();
+    h_STK_charge_2D_4_clusters->Write();
+
+    h_STK_charge_X_5_clusters->Write();
+    h_STK_charge_Y_5_clusters->Write();
+    h_STK_charge_5_clusters->Write();
+    h_STK_charge_2D_5_clusters->Write();
 
     outfile->mkdir("PSD_STK");
     outfile->cd("PSD_STK");

@@ -388,6 +388,21 @@ class histos {
         std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference;
         std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference;
 
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_3_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_3_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_3_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_3_clusters;
+
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_4_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_4_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_4_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_4_clusters;
+
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_5_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_5_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_5_clusters;
+        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_5_clusters;
+
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_20_100;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_100_250;
@@ -401,6 +416,21 @@ class histos {
         std::shared_ptr<TH1D> h_STK_charge_Y;
         std::shared_ptr<TH1D> h_STK_charge;
         std::shared_ptr<TH2D> h_STK_charge_2D;
+
+        std::shared_ptr<TH1D> h_STK_charge_X_3_clusters;
+        std::shared_ptr<TH1D> h_STK_charge_Y_3_clusters;
+        std::shared_ptr<TH1D> h_STK_charge_3_clusters;
+        std::shared_ptr<TH2D> h_STK_charge_2D_3_clusters;
+
+        std::shared_ptr<TH1D> h_STK_charge_X_4_clusters;
+        std::shared_ptr<TH1D> h_STK_charge_Y_4_clusters;
+        std::shared_ptr<TH1D> h_STK_charge_4_clusters;
+        std::shared_ptr<TH2D> h_STK_charge_2D_4_clusters;
+
+        std::shared_ptr<TH1D> h_STK_charge_X_5_clusters;
+        std::shared_ptr<TH1D> h_STK_charge_Y_5_clusters;
+        std::shared_ptr<TH1D> h_STK_charge_5_clusters;
+        std::shared_ptr<TH2D> h_STK_charge_2D_5_clusters;
 
         std::shared_ptr<TH1D> h_PSD_charge_X;
         std::shared_ptr<TH1D> h_PSD_charge_Y;

@@ -173,6 +173,8 @@ inline bool track_selection(
         std::vector<int> LadderToLayer(nSTKladders, -1);
         std::vector<DmpStkTrack *> selectedTracks;
 
+        auto weight {ps_histos->GetWeight()};
+
         link_ladders(LadderToLayer);
         fill_BGO_vectors(
             bgoRecEntrance,
@@ -193,10 +195,10 @@ inline bool track_selection(
             auto track = static_cast<DmpStkTrack *>(stktracks->ConstructedAt(trIdx));
 
             // Get the X and Y clusters
-            ps_histos->h_STK_X_clusters->Fill(track->getNhitX());
-            ps_histos->h_STK_Y_clusters->Fill(track->getNhitY());
-            ps_histos->h_STK_X_clusters_vs_energy->Fill(evt_corr_energy_gev, track->getNhitX());
-            ps_histos->h_STK_Y_clusters_vs_energy->Fill(evt_corr_energy_gev, track->getNhitY());
+            ps_histos->h_STK_X_clusters->Fill(track->getNhitX(), weight);
+            ps_histos->h_STK_Y_clusters->Fill(track->getNhitY(), weight);
+            ps_histos->h_STK_X_clusters_vs_energy->Fill(evt_corr_energy_gev, track->getNhitX(), weight);
+            ps_histos->h_STK_Y_clusters_vs_energy->Fill(evt_corr_energy_gev, track->getNhitY(), weight);
 
             get_track_points(
                 track,
@@ -208,8 +210,8 @@ inline bool track_selection(
             // Get the X and Y holes
             ps_histos->h_STK_X_holes->Fill(track_nHoles[0]);
             ps_histos->h_STK_Y_holes->Fill(track_nHoles[1]);
-            ps_histos->h_STK_X_holes_vs_energy->Fill(evt_corr_energy_gev, track_nHoles[0]);
-            ps_histos->h_STK_Y_holes_vs_energy->Fill(evt_corr_energy_gev, track_nHoles[1]);
+            ps_histos->h_STK_X_holes_vs_energy->Fill(evt_corr_energy_gev, track_nHoles[0], weight);
+            ps_histos->h_STK_Y_holes_vs_energy->Fill(evt_corr_energy_gev, track_nHoles[1], weight);
 
             // Find slope and intercept
             track_slope[0] = track->getTrackParams().getSlopeX();
@@ -229,10 +231,29 @@ inline bool track_selection(
             // Evaluate angular distance between STK track and BGO Rec track
             double dAngleTrackBgoRec = trackDirection.Angle(bgoRecDirection) * TMath::RadToDeg();
 
-            ps_histos->h_STK_BGO_TOP_spatial_difference->Fill(drTop);
-            ps_histos->h_STK_BGO_TOP_spatial_X_difference->Fill(dxTop);
-            ps_histos->h_STK_BGO_TOP_spatial_Y_difference->Fill(dyTop);
-            ps_histos->h_STK_BGO_track_angular_difference->Fill(dAngleTrackBgoRec);
+            ps_histos->h_STK_BGO_TOP_spatial_difference->Fill(drTop, weight);
+            ps_histos->h_STK_BGO_TOP_spatial_X_difference->Fill(dxTop, weight);
+            ps_histos->h_STK_BGO_TOP_spatial_Y_difference->Fill(dyTop, weight);
+            ps_histos->h_STK_BGO_track_angular_difference->Fill(dAngleTrackBgoRec, weight);
+
+            if (track->getNhitX() == 3 && track->getNhitY() == 3) {
+                ps_histos->h_STK_BGO_TOP_spatial_difference_3_clusters->Fill(drTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_X_difference_3_clusters->Fill(dxTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_Y_difference_3_clusters->Fill(dyTop, weight);
+                ps_histos->h_STK_BGO_track_angular_difference_3_clusters->Fill(dAngleTrackBgoRec, weight);
+            }
+            else if (track->getNhitX() == 4 && track->getNhitY() == 4) {
+                ps_histos->h_STK_BGO_TOP_spatial_difference_4_clusters->Fill(drTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_X_difference_4_clusters->Fill(dxTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_Y_difference_4_clusters->Fill(dyTop, weight);
+                ps_histos->h_STK_BGO_track_angular_difference_4_clusters->Fill(dAngleTrackBgoRec, weight);
+            }
+            else if (track->getNhitX() == 5 && track->getNhitY() == 5) {
+                ps_histos->h_STK_BGO_TOP_spatial_difference_5_clusters->Fill(drTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_X_difference_5_clusters->Fill(dxTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_Y_difference_5_clusters->Fill(dyTop, weight);
+                ps_histos->h_STK_BGO_track_angular_difference_5_clusters->Fill(dAngleTrackBgoRec, weight);
+            }
             
             selectedTracks.push_back(track);
         }
@@ -293,6 +314,26 @@ inline bool stk_charge(const std::shared_ptr<TClonesArray> stkclusters, best_tra
         ps_histos->h_STK_charge_Y->Fill(cluster_chargeY, weight);
         ps_histos->h_STK_charge->Fill(0.5 * (cluster_chargeX + cluster_chargeY), weight);
         ps_histos->h_STK_charge_2D->Fill(cluster_chargeX, cluster_chargeY, weight);
+
+        if (event_best_track.myBestTrack.getNhitX() == 3 && event_best_track.myBestTrack.getNhitY() == 3) {
+            ps_histos->h_STK_charge_X_3_clusters->Fill(cluster_chargeX, weight);
+            ps_histos->h_STK_charge_Y_3_clusters->Fill(cluster_chargeY, weight);
+            ps_histos->h_STK_charge_3_clusters->Fill(0.5 * (cluster_chargeX + cluster_chargeY), weight);
+            ps_histos->h_STK_charge_2D_3_clusters->Fill(cluster_chargeX, cluster_chargeY, weight);
+        }
+        else if (event_best_track.myBestTrack.getNhitX() == 4 && event_best_track.myBestTrack.getNhitY() == 4) {
+            ps_histos->h_STK_charge_X_4_clusters->Fill(cluster_chargeX, weight);
+            ps_histos->h_STK_charge_Y_4_clusters->Fill(cluster_chargeY, weight);
+            ps_histos->h_STK_charge_4_clusters->Fill(0.5 * (cluster_chargeX + cluster_chargeY), weight);
+            ps_histos->h_STK_charge_2D_4_clusters->Fill(cluster_chargeX, cluster_chargeY, weight);
+        }
+        else if (event_best_track.myBestTrack.getNhitX() == 5 && event_best_track.myBestTrack.getNhitY() == 5) {
+            ps_histos->h_STK_charge_X_5_clusters->Fill(cluster_chargeX, weight);
+            ps_histos->h_STK_charge_Y_5_clusters->Fill(cluster_chargeY, weight);
+            ps_histos->h_STK_charge_5_clusters->Fill(0.5 * (cluster_chargeX + cluster_chargeY), weight);
+            ps_histos->h_STK_charge_2D_5_clusters->Fill(cluster_chargeX, cluster_chargeY, weight);
+        }
+
     }
 }
 
