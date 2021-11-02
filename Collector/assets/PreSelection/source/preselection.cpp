@@ -37,6 +37,7 @@ inline bool checkBGOreco(
 	const std::vector<double> bgoRec_intercept,
 	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries) {
         
+#if 0        
         bool bgoreco_status {false};
         int position_sensitivity {20};
 
@@ -72,7 +73,10 @@ inline bool checkBGOreco(
         else
             bgoreco_status = true;
 
-        return bgoreco_status;   
+        return bgoreco_status;
+#endif
+        
+        return ((bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0) || (bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0)) ? false : true;
     }
 
 inline bool check_event(
