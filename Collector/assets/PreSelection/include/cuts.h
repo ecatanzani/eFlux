@@ -75,7 +75,7 @@ extern const bool nBarLayer13_cut(
     const double bgoTotalE);
 
 extern const bool maxRms_cut(
-	const std::vector<std::vector<short>> layerBarNumber,
+	const std::vector<double> layer_energy,
 	const std::vector<double> rmsLayer,
 	const double bgoTotalE,
 	const double max_rms_shower_width);

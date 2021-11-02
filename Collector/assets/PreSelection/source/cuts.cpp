@@ -93,7 +93,7 @@ const bool nBarLayer13_cut(
     }
 
 const bool maxRms_cut(
-	const std::vector<std::vector<short>> layerBarNumber,
+	const std::vector<double> layer_energy,
 	const std::vector<double> rmsLayer,
 	const double bgoTotalE,
 	const double max_rms_shower_width) {
@@ -102,13 +102,10 @@ const bool maxRms_cut(
         auto max_rms = rmsLayer[0];
         auto eCut = bgoTotalE / 100.;
 
-        for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx) {
-            double layerTotEnergy = 0;
-            std::accumulate(layerBarNumber[lIdx].begin(), layerBarNumber[lIdx].end(), layerTotEnergy);
-            if (layerTotEnergy > eCut)
+        for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
+            if (layer_energy[lIdx] > eCut)
                 if (rmsLayer[lIdx] > max_rms)
                     max_rms = rmsLayer[lIdx];
-        }
 
         if (max_rms < max_rms_shower_width)
             passed_maxRms_cut = true;

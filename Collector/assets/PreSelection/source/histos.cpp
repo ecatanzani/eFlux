@@ -333,16 +333,16 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_STK_charge_5_clusters_lastcut = std::make_shared<TH1D>("h_STK_charge_5_clusters_lastcut", "STK Charge; STK Charge; entries", 500, 0, 100);
     h_STK_charge_2D_5_clusters_lastcut = std::make_shared<TH2D>("h_STK_charge_2D_5_clusters_lastcut", "STK Charge; STK Charge X; STK Charge Y", 500, 0, 100, 500, 0, 100);
 
-    h_PSD_charge_X = std::make_shared<TH1D>("h_PSD_charge_X", "PSD Charge - X view; PSD Charge X; entries", 200, 0, 40);
-    h_PSD_charge_Y = std::make_shared<TH1D>("h_PSD_charge_Y", "PSD Charge - Y view; PSD Charge Y; entries", 200, 0, 40);
-    h_PSD_charge = std::make_shared<TH1D>("h_PSD_charge", "PSD Charge; PSD Charge; entries", 200, 0, 40);
-    h_PSD_charge_2D = std::make_shared<TH2D>("h_PSD_charge_2D", "PSD Charge; PSD Charge X; PSD Charge Y", 200, 0, 40, 200, 0, 40);
+    h_PSD_charge_X = std::make_shared<TH1D>("h_PSD_charge_X", "PSD Charge - X view; PSD Charge X; entries", 400, 0, 40);
+    h_PSD_charge_Y = std::make_shared<TH1D>("h_PSD_charge_Y", "PSD Charge - Y view; PSD Charge Y; entries", 400, 0, 40);
+    h_PSD_charge = std::make_shared<TH1D>("h_PSD_charge", "PSD Charge; PSD Charge; entries", 400, 0, 40);
+    h_PSD_charge_2D = std::make_shared<TH2D>("h_PSD_charge_2D", "PSD Charge; PSD Charge X; PSD Charge Y", 400, 0, 40, 400, 0, 40);
     h_PSD_sum_of_XY_charges = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
 
-    h_PSD_charge_X_lastcut = std::make_shared<TH1D>("h_PSD_charge_X_lastcut", "PSD Charge - X view; PSD Charge X; entries", 200, 0, 40);
-    h_PSD_charge_Y_lastcut = std::make_shared<TH1D>("h_PSD_charge_Y_lastcut", "PSD Charge - Y view; PSD Charge Y; entries", 200, 0, 40);
-    h_PSD_charge_lastcut = std::make_shared<TH1D>("h_PSD_charge_lastcut", "PSD Charge; PSD Charge; entries", 200, 0, 40);
-    h_PSD_charge_2D_lastcut = std::make_shared<TH2D>("h_PSD_charge_2D_lastcut", "PSD Charge; PSD Charge X; PSD Charge Y", 200, 0, 40, 200, 0, 40);
+    h_PSD_charge_X_lastcut = std::make_shared<TH1D>("h_PSD_charge_X_lastcut", "PSD Charge - X view; PSD Charge X; entries", 400, 0, 40);
+    h_PSD_charge_Y_lastcut = std::make_shared<TH1D>("h_PSD_charge_Y_lastcut", "PSD Charge - Y view; PSD Charge Y; entries", 400, 0, 40);
+    h_PSD_charge_lastcut = std::make_shared<TH1D>("h_PSD_charge_lastcut", "PSD Charge; PSD Charge; entries", 400, 0, 40);
+    h_PSD_charge_2D_lastcut = std::make_shared<TH2D>("h_PSD_charge_2D_lastcut", "PSD Charge; PSD Charge X; PSD Charge Y", 400, 0, 40, 400, 0, 40);
     h_PSD_sum_of_XY_charges_lastcut = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges_lastcut", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
 
     h_PSD_X_clusters = std::make_shared<TH2D>("h_PSD_X_clusters", "PSD X Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD X Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
@@ -361,16 +361,16 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_STK_charge_PSD_charge_cut = std::make_shared<TH1D>("h_STK_charge_PSD_charge_cut", "STK Charge; STK Charge; entries", 500, 0, 100);
     h_STK_charge_2D_PSD_charge_cut = std::make_shared<TH2D>("h_STK_charge_2D_PSD_charge_cut", "STK Charge; STK Charge X; STK Charge Y", 500, 0, 100, 500, 0, 100);
 
-    h_PSD_charge_X_nocut = std::make_shared<TH1D>("h_PSD_charge_X_nocut", "PSD Charge - X view; PSD Charge X; entries", 200, 0, 40);
-    h_PSD_charge_Y_nocut = std::make_shared<TH1D>("h_PSD_charge_Y_nocut", "PSD Charge - Y view; PSD Charge Y; entries", 200, 0, 40);
-    h_PSD_charge_nocut = std::make_shared<TH1D>("h_PSD_charge_nocut", "PSD Charge; PSD Charge; entries", 200, 0, 40);
-    h_PSD_charge_2D_nocut = std::make_shared<TH2D>("h_PSD_charge_2D_nocut", "PSD Charge; PSD Charge X; PSD Charge Y", 200, 0, 40, 200, 0, 40);
+    h_PSD_charge_X_nocut = std::make_shared<TH1D>("h_PSD_charge_X_nocut", "PSD Charge - X view; PSD Charge X; entries", 400, 0, 40);
+    h_PSD_charge_Y_nocut = std::make_shared<TH1D>("h_PSD_charge_Y_nocut", "PSD Charge - Y view; PSD Charge Y; entries", 400, 0, 40);
+    h_PSD_charge_nocut = std::make_shared<TH1D>("h_PSD_charge_nocut", "PSD Charge; PSD Charge; entries", 400, 0, 40);
+    h_PSD_charge_2D_nocut = std::make_shared<TH2D>("h_PSD_charge_2D_nocut", "PSD Charge; PSD Charge X; PSD Charge Y", 400, 0, 40, 400, 0, 40);
     h_PSD_sum_of_XY_charges_nocut = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges_nocut", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
 
-    h_PSD_charge_X_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_X_STK_charge_cut", "PSD Charge - X view; PSD Charge X; entries", 200, 0, 40);
-    h_PSD_charge_Y_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_Y_STK_charge_cut", "PSD Charge - Y view; PSD Charge Y; entries", 200, 0, 40);
-    h_PSD_charge_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_STK_charge_cut", "PSD Charge; PSD Charge; entries", 200, 0, 40);
-    h_PSD_charge_2D_STK_charge_cut = std::make_shared<TH2D>("h_PSD_charge_2D_STK_charge_cut", "PSD Charge; PSD Charge X; PSD Charge Y", 200, 0, 40, 200, 0, 40);
+    h_PSD_charge_X_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_X_STK_charge_cut", "PSD Charge - X view; PSD Charge X; entries", 400, 0, 40);
+    h_PSD_charge_Y_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_Y_STK_charge_cut", "PSD Charge - Y view; PSD Charge Y; entries", 400, 0, 40);
+    h_PSD_charge_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_STK_charge_cut", "PSD Charge; PSD Charge; entries", 400, 0, 40);
+    h_PSD_charge_2D_STK_charge_cut = std::make_shared<TH2D>("h_PSD_charge_2D_STK_charge_cut", "PSD Charge; PSD Charge X; PSD Charge Y", 400, 0, 40, 400, 0, 40);
     h_PSD_sum_of_XY_charges_STK_charge_cut = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges_STK_charge_cut", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 1000, 0, 200);
 
     if (h_simu) {

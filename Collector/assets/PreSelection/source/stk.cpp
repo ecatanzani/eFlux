@@ -456,7 +456,7 @@ void stk_distributions(
             if (bgofiducial_cut) {
                 auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
                 if (nbarlayer13_cut) {
-                    auto maxrms_cut = maxRms_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
+                    auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
 
                     if (maxrms_cut) {
                         track_selection(
@@ -557,7 +557,7 @@ void stk_distributions_lastcut(
             if (bgofiducial_cut) {
                 auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
                 if (nbarlayer13_cut) {
-                    auto maxrms_cut = maxRms_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
+                    auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
 
                     if (maxrms_cut) {       
                         auto psdcharge_cut = psd_charge_cut(

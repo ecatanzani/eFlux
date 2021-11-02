@@ -34,15 +34,16 @@ inline unsigned int count_bars_on_layer(const std::vector<double> layer_energy, 
     return bars;
 }
 
-inline double get_max_rms(const std::vector<double> rms_layer, const std::vector<std::vector<short>> layerBarNumber, const double bgo_total_raw_energy) {
-    auto max_rms = rms_layer[0];
+inline double get_max_rms(const std::vector<double> rms_layer, const std::vector<double> layer_energy, const double bgo_total_raw_energy) {
+    double max_rms = rms_layer[0];
+    double e_threshold = bgo_total_raw_energy/100.;
+
     for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx) {
-        double layerTotEnergy = 0;
-        std::accumulate(layerBarNumber[lIdx].begin(), layerBarNumber[lIdx].end(), layerTotEnergy);
-        if (layerTotEnergy > bgo_total_raw_energy/100.)
+        if (layer_energy[lIdx] > e_threshold)
             if (rms_layer[lIdx] > max_rms)
                 max_rms = rms_layer[lIdx];
     }
+   
     return max_rms;
 }
 
@@ -77,7 +78,7 @@ void lateral_showering_distributions(
                 auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
 
                 if (nbarlayer13_cut) {
-                    auto maxrms_cut = maxRms_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
+                    auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
 
                     if (maxrms_cut) {
 
@@ -199,8 +200,8 @@ void lateral_showering_distributions_lastcut(
                                 ps_histos->h_bars_last_layer_10MeV_lateral_showering_lastcut->Fill(count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
                                 ps_histos->h_bars_last_layer_10MeV_2D_lateral_showering_lastcut->Fill(evt_corr_energy_gev, count_bars_on_layer((bgoVault->GetLayerBarEnergies())[DAMPE_bgo_nLayers-1], 10), weight);
 
-                                ps_histos->h_maxrms_lateral_showering_lastcut->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
-                                ps_histos->h_maxrms_2D_lateral_showering_lastcut->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetLayerBarNumber(), bgorec->GetTotalEnergy()), weight);
+                                ps_histos->h_maxrms_lateral_showering_lastcut->Fill(get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetELayer(), bgorec->GetTotalEnergy()), weight);
+                                ps_histos->h_maxrms_2D_lateral_showering_lastcut->Fill(evt_corr_energy_gev, get_max_rms(bgoVault->GetRmsLayer(), bgoVault->GetELayer(), bgorec->GetTotalEnergy()), weight);
 
                                 ps_histos->h_BGOrec_sumRms_flast_lateral_showering_lastcut->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                                 if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
