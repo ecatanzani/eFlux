@@ -54,7 +54,7 @@ void DmpFilterContainer::Pipeline(
 			if (acuts.maxRms)
 			{
 				output.maxRms_cut = maxRms_cut(
-					bgoVault.GetLayerBarNumber(),
+					bgoVault.GetELayer(),
 					bgoVault.GetRmsLayer(),
 					bgoTotalE,
 					cuts);
@@ -308,7 +308,7 @@ const bool DmpFilterContainer::nBarLayer13_cut(
 }
 
 const bool DmpFilterContainer::maxRms_cut(
-	const std::vector<std::vector<short>> layerBarNumber,
+	const std::vector<double> layer_energy,
 	const std::vector<double> rmsLayer,
 	const double bgoTotalE,
 	const cuts_conf cuts)
@@ -318,13 +318,10 @@ const bool DmpFilterContainer::maxRms_cut(
 	auto eCut = bgoTotalE / 100.;
 
 	for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
-	{
-		double layerTotEnergy = 0;
-		std::accumulate(layerBarNumber[lIdx].begin(), layerBarNumber[lIdx].end(), layerTotEnergy);
-		if (layerTotEnergy > eCut)
+		if (layer_energy[lIdx] > eCut)
 			if (rmsLayer[lIdx] > max_rms)
 				max_rms = rmsLayer[lIdx];
-	}
+
 	if (max_rms < cuts.max_rms_shower_width)
 		passed_maxRms_cut = true;
 

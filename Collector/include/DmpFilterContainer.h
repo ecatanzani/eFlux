@@ -225,7 +225,7 @@ private:
 		const std::vector<short> layerBarNumber,
 		const double bgoTotalE);
 	const bool maxRms_cut(
-		const std::vector<std::vector<short>> layerBarNumber,
+		const std::vector<double> layer_energy,
 		const std::vector<double> rmsLayer,
 		const double bgoTotalE,
 		const cuts_conf data_cuts);
