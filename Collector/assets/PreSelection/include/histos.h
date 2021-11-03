@@ -315,19 +315,6 @@ class histos {
         std::shared_ptr<TH1D> h_PSD_STK_X_match_5000;
         std::shared_ptr<TH1D> h_PSD_STK_Y_match_5000;
 
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_energy_int_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_energy_int_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_100_250_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_100_250_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_250_500_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_250_500_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_500_1000_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_500_1000_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_1000_5000_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_1000_5000_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_5000_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_5000_lastcut;
-
         std::shared_ptr<TH1D> h_PSD_STK_X_match_energy_int_psd_fiducial;
         std::shared_ptr<TH1D> h_PSD_STK_Y_match_energy_int_psd_fiducial;
         std::shared_ptr<TH1D> h_PSD_STK_X_match_100_250_psd_fiducial;
@@ -340,19 +327,6 @@ class histos {
         std::shared_ptr<TH1D> h_PSD_STK_Y_match_1000_5000_psd_fiducial;
         std::shared_ptr<TH1D> h_PSD_STK_X_match_5000_psd_fiducial;
         std::shared_ptr<TH1D> h_PSD_STK_Y_match_5000_psd_fiducial;
-
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_energy_int_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_energy_int_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_100_250_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_100_250_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_250_500_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_250_500_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_500_1000_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_500_1000_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_1000_5000_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_1000_5000_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_X_match_5000_psd_fiducial_lastcut;
-        std::shared_ptr<TH1D> h_PSD_STK_Y_match_5000_psd_fiducial_lastcut;
 
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_20_100;
@@ -429,36 +403,6 @@ class histos {
         std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_5_clusters;
         std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_5_clusters;
 
-        std::shared_ptr<TH1D> h_STK_X_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_Y_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_X_holes_lastcut;
-        std::shared_ptr<TH1D> h_STK_Y_holes_lastcut;
-
-        std::shared_ptr<TH2D> h_STK_X_clusters_vs_energy_lastcut;
-        std::shared_ptr<TH2D> h_STK_Y_clusters_vs_energy_lastcut;
-        std::shared_ptr<TH2D> h_STK_X_holes_vs_energy_lastcut;
-        std::shared_ptr<TH2D> h_STK_Y_holes_vs_energy_lastcut;
-
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_lastcut;
-
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_3_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_3_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_3_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_3_clusters_lastcut;
-
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_4_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_4_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_4_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_4_clusters_lastcut;
-
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_5_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_5_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_5_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_5_clusters_lastcut;
-
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_20_100;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_100_250;
@@ -488,43 +432,14 @@ class histos {
         std::shared_ptr<TH1D> h_STK_charge_5_clusters;
         std::shared_ptr<TH2D> h_STK_charge_2D_5_clusters;
 
-        std::shared_ptr<TH1D> h_STK_charge_X_lastcut;
-        std::shared_ptr<TH1D> h_STK_charge_Y_lastcut;
-        std::shared_ptr<TH1D> h_STK_charge_lastcut;
-        std::shared_ptr<TH2D> h_STK_charge_2D_lastcut;
-
-        std::shared_ptr<TH1D> h_STK_charge_X_3_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_charge_Y_3_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_charge_3_clusters_lastcut;
-        std::shared_ptr<TH2D> h_STK_charge_2D_3_clusters_lastcut;
-
-        std::shared_ptr<TH1D> h_STK_charge_X_4_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_charge_Y_4_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_charge_4_clusters_lastcut;
-        std::shared_ptr<TH2D> h_STK_charge_2D_4_clusters_lastcut;
-
-        std::shared_ptr<TH1D> h_STK_charge_X_5_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_charge_Y_5_clusters_lastcut;
-        std::shared_ptr<TH1D> h_STK_charge_5_clusters_lastcut;
-        std::shared_ptr<TH2D> h_STK_charge_2D_5_clusters_lastcut;
-
         std::shared_ptr<TH1D> h_PSD_charge_X;
         std::shared_ptr<TH1D> h_PSD_charge_Y;
         std::shared_ptr<TH1D> h_PSD_charge;
         std::shared_ptr<TH2D> h_PSD_charge_2D;
         std::shared_ptr<TH1D> h_PSD_sum_of_XY_charges;
 
-        std::shared_ptr<TH1D> h_PSD_charge_X_lastcut;
-        std::shared_ptr<TH1D> h_PSD_charge_Y_lastcut;
-        std::shared_ptr<TH1D> h_PSD_charge_lastcut;
-        std::shared_ptr<TH2D> h_PSD_charge_2D_lastcut;
-        std::shared_ptr<TH1D> h_PSD_sum_of_XY_charges_lastcut;
-
         std::shared_ptr<TH2D> h_PSD_X_clusters;
         std::shared_ptr<TH2D> h_PSD_Y_clusters;
-
-        std::shared_ptr<TH2D> h_PSD_X_clusters_lastcut;
-        std::shared_ptr<TH2D> h_PSD_Y_clusters_lastcut;
 
         std::shared_ptr<TH1D> h_STK_charge_X_nocut;
         std::shared_ptr<TH1D> h_STK_charge_Y_nocut;

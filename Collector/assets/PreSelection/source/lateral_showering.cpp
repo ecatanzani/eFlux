@@ -1,51 +1,12 @@
+#include "bgo.h"
 #include "cuts.h"
+#include "trigger.h"
 #include "lateral_showering.h"
 
 #include "Dmp/DmpBgoContainer.h"
 #include "Dmp/DmpStkContainer.h"
 #include "Dmp/DmpPsdContainer.h"
 #include "Dmp/DmpStruct.h"
-
-inline bool check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header) {
-	auto trigger_mip1 = evt_header->GeneratedTrigger(1);
-	auto trigger_mip2 = evt_header->GeneratedTrigger(2);
-	auto trigger_HET = evt_header->GeneratedTrigger(3) && evt_header->EnabledTrigger(3);
-	auto trigger_LET = evt_header->GeneratedTrigger(4) && evt_header->EnabledTrigger(4);
-	auto trigger_MIP = trigger_mip1 || trigger_mip2;
-	auto trigger_general = trigger_MIP || trigger_HET || trigger_LET;
-    return trigger_general;
-}
-
-inline double get_mean_bar_energy(const std::vector<std::vector<double>> bar_energy) {
-    double esum {0};
-    double gev {0.001};
-    double def_value = -999;
-    for (auto&& layer_energy : bar_energy)
-        for (auto && single_bar_energy : layer_energy)
-            esum += single_bar_energy != def_value ? single_bar_energy : 0;
-    return (esum/(bar_energy.size()*bar_energy[0].size()))*gev;
-}
-
-inline unsigned int count_bars_on_layer(const std::vector<double> layer_energy, const double energy_threshold) {
-    unsigned int bars {0};
-    for (auto&& energy : layer_energy)
-        if (energy>=energy_threshold)
-            bars += 1;
-    return bars;
-}
-
-inline double get_max_rms(const std::vector<double> rms_layer, const std::vector<double> layer_energy, const double bgo_total_raw_energy) {
-    double max_rms = rms_layer[0];
-    double e_threshold = bgo_total_raw_energy/100.;
-
-    for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx) {
-        if (layer_energy[lIdx] > e_threshold)
-            if (rms_layer[lIdx] > max_rms)
-                max_rms = rms_layer[lIdx];
-    }
-   
-    return max_rms;
-}
 
 void lateral_showering_distributions(
     std::shared_ptr<DmpEvtBgoHits> bgohits, 
@@ -225,5 +186,4 @@ void lateral_showering_distributions_lastcut(
                 }
             }
         }
-
     }

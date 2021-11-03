@@ -197,7 +197,7 @@ void preselection(const in_pars &input_pars) {
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
             
             if (check_event(get_bgo_slope(bgorec), get_bgo_intercept(bgorec), simu_primaries, evt_header, pFilter, input_pars.mc_flag)) {
-
+                
                 // BGO distributions without any prior cut
                 bgo_distributions(
                     bgohits, 
@@ -275,20 +275,6 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy_gev, 
                     ps_histos);
 
-                // STK distributions and charges as last cut
-                stk_distributions_lastcut(
-                    bgohits, 
-                    bgorec, 
-                    evt_header,
-                    stkclusters,
-                    stktracks,
-                    psdhits,
-                    evt_energy,
-                    evt_corr_energy,
-                    evt_energy_gev,
-                    evt_corr_energy_gev, 
-                    ps_histos);
-
                 // PSD-STK match distributions and charges
                 psd_stk_match_distributions(
                     bgohits, 
@@ -302,21 +288,7 @@ void preselection(const in_pars &input_pars) {
                     evt_energy_gev, 
                     evt_corr_energy_gev, 
                     ps_histos);
-
-                // PSD-STK match distributions and charges lastcut
-                psd_stk_match_distributions_lastcut(
-                    bgohits, 
-                    bgorec, 
-                    evt_header, 
-                    stkclusters, 
-                    stktracks, 
-                    psdhits, 
-                    evt_energy, 
-                    evt_corr_energy, 
-                    evt_energy_gev, 
-                    evt_corr_energy_gev, 
-                    ps_histos);
-
+                
                 // PSD-STK charge distributions
                 charge_distributions(
                     bgohits, 

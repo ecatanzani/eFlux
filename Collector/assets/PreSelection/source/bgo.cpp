@@ -1,5 +1,6 @@
 #include "bgo.h"
 #include "cuts.h"
+#include "trigger.h"
 
 #include "Dmp/DmpBgoContainer.h"
 #include "Dmp/DmpStkContainer.h"
@@ -8,62 +9,6 @@
 
 #include "TMath.h"
 #include "TVector3.h"
-
-#include <vector>
-#include <tuple>
-
-inline bool check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header) {
-	auto trigger_mip1 = evt_header->GeneratedTrigger(1);
-	auto trigger_mip2 = evt_header->GeneratedTrigger(2);
-	auto trigger_HET = evt_header->GeneratedTrigger(3) && evt_header->EnabledTrigger(3);
-	auto trigger_LET = evt_header->GeneratedTrigger(4) && evt_header->EnabledTrigger(4);
-	auto trigger_MIP = trigger_mip1 || trigger_mip2;
-	auto trigger_general = trigger_MIP || trigger_HET || trigger_LET;
-    return trigger_general;
-}
-
-inline bool check_HE_trigger(const std::shared_ptr<DmpEvtHeader> evt_header) {
-	return evt_header->GeneratedTrigger(3) && evt_header->EnabledTrigger(3);
-}
-
-inline double get_mean_bar_energy(const std::vector<std::vector<double>> bar_energy) {
-    double esum {0};
-    double gev {0.001};
-    double def_value = -999;
-    for (auto&& layer_energy : bar_energy)
-        for (auto && single_bar_energy : layer_energy)
-            esum += single_bar_energy != def_value ? single_bar_energy : 0;
-    return (esum/(bar_energy.size()*bar_energy[0].size()))*gev;
-}
-
-inline unsigned int count_bars_on_layer(const std::vector<double> layer_energy, const double energy_threshold) {
-    unsigned int bars {0};
-    for (auto&& energy : layer_energy)
-        if (energy>=energy_threshold)
-            bars += 1;
-    return bars;
-}
-
-inline double get_max_rms(const std::vector<double> rms_layer, const std::vector<double> layer_energy, const double bgo_total_raw_energy) {
-    double max_rms = rms_layer[0];
-    double e_threshold = bgo_total_raw_energy/100.;
-
-    for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx) {
-        if (layer_energy[lIdx] > e_threshold)
-            if (rms_layer[lIdx] > max_rms)
-                max_rms = rms_layer[lIdx];
-    }
-   
-    return max_rms;
-}
-
-inline std::tuple<std::vector<double>, std::vector<double>> get_shorew_axis_reco_projections(const std::vector<double> brorec_slope, const std::vector<double> bgorec_intercept) {
-    double topX = brorec_slope[0] * BGO_TopZ + bgorec_intercept[0];
-	double topY = brorec_slope[1] * BGO_TopZ + bgorec_intercept[1];
-	double bottomX = brorec_slope[0] * BGO_BottomZ + bgorec_intercept[0];
-	double bottomY = brorec_slope[1] * BGO_BottomZ + bgorec_intercept[1];
-    return std::tuple<std::vector<double>, std::vector<double>>(std::vector<double>{topX, bottomX}, std::vector<double>{topY, bottomY});
-}
 
 void bgo_distributions(
     std::shared_ptr<DmpEvtBgoHits> bgohits,
@@ -340,7 +285,6 @@ void bgofiducial_distributions(
     std::shared_ptr<histos> ps_histos) {
 
         double gev {0.001};
-        double layer_min_energy {0}; //Minimum energy per layer
         auto weight {ps_histos->GetWeight()}; // Weight for histos
 
         std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
@@ -349,7 +293,7 @@ void bgofiducial_distributions(
         double bgo_max_energy_ratio     {0.35}; // Maximum energy ratio per layer
         double bgo_shower_axis_delta    {280};  // BGO maximum shower axis delta (mm)
         
-        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), layer_min_energy);
+        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), bgo_layer_min_energy);
 
         if (check_trigger(evt_header)) {
 
@@ -932,3 +876,40 @@ void bgofiducial_distributions_lastcut(
             }
         }
     }
+
+double get_mean_bar_energy(const std::vector<std::vector<double>> bar_energy) {
+    double esum {0};
+    double gev {0.001};
+    double def_value = -999;
+    for (auto&& layer_energy : bar_energy)
+        for (auto && single_bar_energy : layer_energy)
+            esum += single_bar_energy != def_value ? single_bar_energy : 0;
+    return (esum/(bar_energy.size()*bar_energy[0].size()))*gev;
+}
+
+unsigned int count_bars_on_layer(const std::vector<double> layer_energy, const double energy_threshold) {
+        unsigned int bars {0};
+        for (auto&& energy : layer_energy)
+        if (energy>=energy_threshold)
+            bars += 1;
+        return bars;
+}
+
+double get_max_rms(const std::vector<double> rms_layer, const std::vector<double> layer_energy, const double bgo_total_raw_energy) {
+    double max_rms = rms_layer[0];
+    double e_threshold = bgo_total_raw_energy/100.;
+    for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx) {
+        if (layer_energy[lIdx] > e_threshold)
+            if (rms_layer[lIdx] > max_rms)
+                max_rms = rms_layer[lIdx];
+    }
+    return max_rms;
+}
+
+std::tuple<std::vector<double>, std::vector<double>> get_shorew_axis_reco_projections(const std::vector<double> brorec_slope, const std::vector<double> bgorec_intercept) {
+        double topX = brorec_slope[0] * BGO_TopZ + bgorec_intercept[0];
+        double topY = brorec_slope[1] * BGO_TopZ + bgorec_intercept[1];
+        double bottomX = brorec_slope[0] * BGO_BottomZ + bgorec_intercept[0];
+        double bottomY = brorec_slope[1] * BGO_BottomZ + bgorec_intercept[1];
+        return std::tuple<std::vector<double>, std::vector<double>>(std::vector<double>{topX, bottomX}, std::vector<double>{topY, bottomY});
+}

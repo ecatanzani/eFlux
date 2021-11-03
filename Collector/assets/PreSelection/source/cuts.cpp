@@ -338,8 +338,7 @@ const bool track_selection_cut(
         DmpStkTrackHelper tHelper(stktracks.get(), true, bgorec.get(), bgohits.get());
         tHelper.MergeSort(selectedTracks, &DmpStkTrackHelper::TracksCompare);
 
-        if (selectedTracks.size() > 0)
-        {
+        if (selectedTracks.size() > 0) {
             DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
             std::vector<int> track_nHoles(2, 0);
 

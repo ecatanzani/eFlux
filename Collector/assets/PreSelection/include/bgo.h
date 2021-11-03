@@ -2,6 +2,8 @@
 #define BGO_H
 
 #include <memory>
+#include <tuple>
+#include <vector>
 
 #include "histos.h"
 
@@ -52,5 +54,10 @@ extern void bgofiducial_distributions_lastcut(
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
     std::shared_ptr<histos> ps_histos);
+
+extern double get_mean_bar_energy(const std::vector<std::vector<double>> bar_energy);
+extern unsigned int count_bars_on_layer(const std::vector<double> layer_energy, const double energy_threshold);
+extern double get_max_rms(const std::vector<double> rms_layer, const std::vector<double> layer_energy, const double bgo_total_raw_energy);
+extern std::tuple<std::vector<double>, std::vector<double>> get_shorew_axis_reco_projections(const std::vector<double> brorec_slope, const std::vector<double> bgorec_intercept);
 
 #endif
