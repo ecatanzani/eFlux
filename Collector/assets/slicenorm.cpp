@@ -1,4 +1,5 @@
 #include "TH2D.h"
+#include "TMath.h"
 #include "TFile.h"
 
 #include <iostream>
@@ -7,10 +8,13 @@ void HistoSliceNormalization(const char* input_file, const char* histo_path, con
     auto slicenorm = [](TH2D* histo) { 
         for (int bidx=1; bidx<=histo->GetNbinsX(); ++bidx) {
 		    auto scale_factor = 1/histo->Integral(bidx, bidx, 1, histo->GetNbinsY());
-		    for (int bidy=1; bidy<=histo->GetNbinsY(); ++bidy) {
-            	histo->SetBinContent(bidx, bidy, histo->GetBinContent(bidx, bidy)*scale_factor);
-			    histo->SetBinError(bidx, bidy, histo->GetBinError(bidx, bidy)*scale_factor);
-        	}
+            if (!(TMath::IsNaN(scale_factor) || !(TMath::Finite(scale_factor)))) {
+                std::cout << "\nBin X: " << bidx << " scale factor: " << scale_factor;
+                for (int bidy=1; bidy<=histo->GetNbinsY(); ++bidy) {
+                    histo->SetBinContent(bidx, bidy, histo->GetBinContent(bidx, bidy)*scale_factor);
+                    histo->SetBinError(bidx, bidy, histo->GetBinError(bidx, bidy)*scale_factor);
+                }
+            }
 	    }   
 	    return histo; 
     };
