@@ -235,6 +235,26 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_STK_BGO_TOP_spatial_Y_difference_5_clusters = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_5_clusters", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
     h_STK_BGO_track_angular_difference_5_clusters = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_5_clusters", "STK - BGO track angular difference", 250, 0, 40);
 
+    h_STK_BGO_TOP_spatial_difference_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_difference_best_track", "STK - BGO TOP spatial difference", 100, 0, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_X_difference_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_X_difference_best_track", "STK - BGO TOP spatial difference - X view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_Y_difference_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_best_track", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_track_angular_difference_best_track = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_best_track", "STK - BGO track angular difference", 250, 0, 40);
+
+    h_STK_BGO_TOP_spatial_difference_3_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_difference_3_clusters_best_track", "STK - BGO TOP spatial difference", 100, 0, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_X_difference_3_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_X_difference_3_clusters_best_track", "STK - BGO TOP spatial difference - X view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_Y_difference_3_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_3_clusters_best_track", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_track_angular_difference_3_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_3_clusters_best_track", "STK - BGO track angular difference", 250, 0, 40);
+
+    h_STK_BGO_TOP_spatial_difference_4_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_difference_4_clusters_best_track", "STK - BGO TOP spatial difference", 100, 0, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_X_difference_4_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_X_difference_4_clusters_best_track", "STK - BGO TOP spatial difference - X view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_Y_difference_4_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_4_clusters_best_track", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_track_angular_difference_4_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_4_clusters_best_track", "STK - BGO track angular difference", 250, 0, 40);
+
+    h_STK_BGO_TOP_spatial_difference_5_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_difference_5_clusters_best_track", "STK - BGO TOP spatial difference", 100, 0, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_X_difference_5_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_X_difference_5_clusters_best_track", "STK - BGO TOP spatial difference - X view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track", "STK - BGO TOP spatial difference - Y view", 200, -BGO_SideXY, BGO_SideXY);
+    h_STK_BGO_track_angular_difference_5_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_5_clusters_best_track", "STK - BGO track angular difference", 250, 0, 40);
+
     h_BGOrec_sumRms_flast_after_track_selection = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection", "F_{last} vs sumRms correlation; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_after_track_selection_20_100 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection_20_100", "F_{last} vs sumRms correlation - 20 GeV - 100 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_after_track_selection_100_250 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection_100_250", "F_{last} vs sumRms correlation - 100 GeV - 250 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
@@ -886,6 +906,26 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_BGO_TOP_spatial_X_difference_5_clusters->Write();
     h_STK_BGO_TOP_spatial_Y_difference_5_clusters->Write();
     h_STK_BGO_track_angular_difference_5_clusters->Write();
+
+    h_STK_BGO_TOP_spatial_difference_best_track->Write();
+    h_STK_BGO_TOP_spatial_X_difference_best_track->Write();
+    h_STK_BGO_TOP_spatial_Y_difference_best_track->Write();
+    h_STK_BGO_track_angular_difference_best_track->Write();
+
+    h_STK_BGO_TOP_spatial_difference_3_clusters_best_track->Write();
+    h_STK_BGO_TOP_spatial_X_difference_3_clusters_best_track->Write();
+    h_STK_BGO_TOP_spatial_Y_difference_3_clusters_best_track->Write();
+    h_STK_BGO_track_angular_difference_3_clusters_best_track->Write();
+
+    h_STK_BGO_TOP_spatial_difference_4_clusters_best_track->Write();
+    h_STK_BGO_TOP_spatial_X_difference_4_clusters_best_track->Write();
+    h_STK_BGO_TOP_spatial_Y_difference_4_clusters_best_track->Write();
+    h_STK_BGO_track_angular_difference_4_clusters_best_track->Write();
+
+    h_STK_BGO_TOP_spatial_difference_5_clusters_best_track->Write();
+    h_STK_BGO_TOP_spatial_X_difference_5_clusters_best_track->Write();
+    h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track->Write();
+    h_STK_BGO_track_angular_difference_5_clusters_best_track->Write();
 
     h_BGOrec_sumRms_flast_after_track_selection->Write();
     h_BGOrec_sumRms_flast_after_track_selection_20_100->Write();

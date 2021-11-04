@@ -410,6 +410,26 @@ class histos {
         std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_5_clusters;
         std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_5_clusters;
 
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_best_track;
+
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_3_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_3_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_3_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_3_clusters_best_track;
+
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_4_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_4_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_4_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_4_clusters_best_track;
+
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference_5_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference_5_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_5_clusters_best_track;
+
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_20_100;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_100_250;

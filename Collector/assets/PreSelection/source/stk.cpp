@@ -337,6 +337,68 @@ void track(
             else if (selected_track->getNhitX() == 5 && selected_track->getNhitY() == 5)
                 ps_histos->h_STK_best_track_clusters->Fill(selected_track->getNhitX(), weight);
 
+            std::vector<int> track_nHoles(2, 0);
+            std::vector<double> track_slope(2, 0);
+            std::vector<double> track_intercept(2, 0);
+            std::vector<double> extr_BGO_top(2, 0);
+
+            // Get the X and Y clusters
+            ps_histos->h_STK_X_clusters_best_track->Fill(selected_track->getNhitX(), weight);
+            ps_histos->h_STK_Y_clusters_best_track->Fill(selected_track->getNhitY(), weight);
+            
+            track_points(
+                selected_track,
+                stkclusters,
+                LadderToLayer,
+                track_nHoles);
+
+            // Get the X and Y holes
+            ps_histos->h_STK_X_holes_best_track->Fill(track_nHoles[0]);
+            ps_histos->h_STK_Y_holes_best_track->Fill(track_nHoles[1]);
+            
+            // Find slope and intercept
+            track_slope[0] = selected_track->getTrackParams().getSlopeX();
+            track_slope[1] = selected_track->getTrackParams().getSlopeY();
+            track_intercept[0] = selected_track->getTrackParams().getInterceptX();
+            track_intercept[1] = selected_track->getTrackParams().getInterceptY();
+            TVector3 trackDirection = (selected_track->getDirection()).Unit();
+
+            // Extrapolate to the top of BGO
+            for (int coord = 0; coord < 2; ++coord)
+                extr_BGO_top[coord] = track_slope[coord] * BGO_TopZ + track_intercept[coord];
+
+            // Evaluate distance between Top STK and BGO points
+            double dxTop = extr_BGO_top[0] - bgoRecEntrance[0];
+            double dyTop = extr_BGO_top[1] - bgoRecEntrance[1];
+            double drTop = sqrt(pow(dxTop, 2) + pow(dyTop, 2));
+            // Evaluate angular distance between STK track and BGO Rec track
+            double dAngleTrackBgoRec = trackDirection.Angle(bgoRecDirection) * TMath::RadToDeg();
+            
+            ps_histos->h_STK_BGO_TOP_spatial_difference_best_track->Fill(drTop, weight);
+            ps_histos->h_STK_BGO_TOP_spatial_X_difference_best_track->Fill(dxTop, weight);
+            ps_histos->h_STK_BGO_TOP_spatial_Y_difference_best_track->Fill(dyTop, weight);
+            ps_histos->h_STK_BGO_track_angular_difference_best_track->Fill(dAngleTrackBgoRec, weight);
+
+            if (selected_track->getNhitX() == 3 && selected_track->getNhitY() == 3) {
+                ps_histos->h_STK_BGO_TOP_spatial_difference_3_clusters_best_track->Fill(drTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_X_difference_3_clusters_best_track->Fill(dxTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_Y_difference_3_clusters_best_track->Fill(dyTop, weight);
+                ps_histos->h_STK_BGO_track_angular_difference_3_clusters_best_track->Fill(dAngleTrackBgoRec, weight);
+            }
+            else if (selected_track->getNhitX() == 4 && selected_track->getNhitY() == 4) {
+                ps_histos->h_STK_BGO_TOP_spatial_difference_4_clusters_best_track->Fill(drTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_X_difference_4_clusters_best_track->Fill(dxTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_Y_difference_4_clusters_best_track->Fill(dyTop, weight);
+                ps_histos->h_STK_BGO_track_angular_difference_4_clusters_best_track->Fill(dAngleTrackBgoRec, weight);
+            }
+            else if (selected_track->getNhitX() == 5 && selected_track->getNhitY() == 5) {
+                ps_histos->h_STK_BGO_TOP_spatial_difference_5_clusters_best_track->Fill(drTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_X_difference_5_clusters_best_track->Fill(dxTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track->Fill(dyTop, weight);
+                ps_histos->h_STK_BGO_track_angular_difference_5_clusters_best_track->Fill(dAngleTrackBgoRec, weight);
+            }
+
+            // Get the charge
             stk_charge_explore(stkclusters, selected_track, ps_histos);
         }
     }
