@@ -203,9 +203,12 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_STK_X_holes = std::make_shared<TH1D>("h_STK_X_holes", "STK X holes", 10, 0, 10);
     h_STK_Y_holes = std::make_shared<TH1D>("h_STK_Y_holes", "STK Y holes", 10, 0, 10);
 
-    h_STK_3_clusters = std::make_shared<TH1D>("h_STK_3_clusters", "STK 3 clusters", 10, 0, 10);
-    h_STK_4_clusters = std::make_shared<TH1D>("h_STK_4_clusters", "STK 4 clusters", 10, 0, 10);
-    h_STK_5_clusters = std::make_shared<TH1D>("h_STK_5_clusters", "STK 5 clusters", 10, 0, 10);
+    h_STK_X_clusters_best_track = std::make_shared<TH1D>("h_STK_X_clusters_best_track", "STK X clusters", 10, 0, 10);
+    h_STK_Y_clusters_best_track = std::make_shared<TH1D>("h_STK_Y_clusters_best_track", "STK Y clusters", 10, 0, 10);
+    h_STK_X_holes_best_track = std::make_shared<TH1D>("h_STK_X_holes_best_track", "STK X holes", 10, 0, 10);
+    h_STK_Y_holes_best_track = std::make_shared<TH1D>("h_STK_Y_holes_best_track", "STK Y holes", 10, 0, 10);
+
+    h_STK_best_track_clusters = std::make_shared<TH1D>("h_STK_best_track_clusters", "STK - best track XY clusters", 10, 0, 10);
 
     h_STK_X_clusters_vs_energy = std::make_shared<TH2D>("h_STK_X_clusters_vs_energy", "STK X clusters vs Particle Energy; Reconstructed Energy [GeV]; STK X clusters", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
     h_STK_Y_clusters_vs_energy = std::make_shared<TH2D>("h_STK_Y_clusters_vs_energy", "STK Y clusters vs Particle Energy; Reconstructed Energy [GeV]; STK Y clusters", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
@@ -852,9 +855,12 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_X_holes->Write();
     h_STK_Y_holes->Write();
 
-    h_STK_3_clusters->Write();
-    h_STK_4_clusters->Write();
-    h_STK_5_clusters->Write();
+    h_STK_X_clusters_best_track->Write();
+    h_STK_Y_clusters_best_track->Write();
+    h_STK_X_holes_best_track->Write();
+    h_STK_Y_holes_best_track->Write();
+
+    h_STK_best_track_clusters->Write();
 
     h_STK_X_clusters_vs_energy->Write();
     h_STK_Y_clusters_vs_energy->Write();

@@ -378,9 +378,12 @@ class histos {
         std::shared_ptr<TH1D> h_STK_X_holes;
         std::shared_ptr<TH1D> h_STK_Y_holes;
 
-        std::shared_ptr<TH1D> h_STK_3_clusters;
-        std::shared_ptr<TH1D> h_STK_4_clusters;
-        std::shared_ptr<TH1D> h_STK_5_clusters;
+        std::shared_ptr<TH1D> h_STK_best_track_clusters;
+
+        std::shared_ptr<TH1D> h_STK_X_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_Y_clusters_best_track;
+        std::shared_ptr<TH1D> h_STK_X_holes_best_track;
+        std::shared_ptr<TH1D> h_STK_Y_holes_best_track;
 
         std::shared_ptr<TH2D> h_STK_X_clusters_vs_energy;
         std::shared_ptr<TH2D> h_STK_Y_clusters_vs_energy;

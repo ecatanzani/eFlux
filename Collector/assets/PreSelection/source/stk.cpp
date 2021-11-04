@@ -266,13 +266,6 @@ void track(
             ps_histos->h_STK_X_clusters_vs_energy->Fill(evt_corr_energy_gev, track->getNhitX(), weight);
             ps_histos->h_STK_Y_clusters_vs_energy->Fill(evt_corr_energy_gev, track->getNhitY(), weight);
 
-            if (track->getNhitX() == 3 && track->getNhitY() == 3)
-                ps_histos->h_STK_3_clusters->Fill(track->getNhitX(), weight);
-            else if (track->getNhitX() == 4 && track->getNhitY() == 4)
-                ps_histos->h_STK_4_clusters->Fill(track->getNhitX(), weight);
-            else if (track->getNhitX() == 5 && track->getNhitY() == 5)
-                ps_histos->h_STK_5_clusters->Fill(track->getNhitX(), weight);
-
             track_points(
                 track,
                 stkclusters,
@@ -336,6 +329,14 @@ void track(
 
         if (selectedTracks.size() > 0) {
             DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
+
+            if (selected_track->getNhitX() == 3 && selected_track->getNhitY() == 3)
+                ps_histos->h_STK_best_track_clusters->Fill(selected_track->getNhitX(), weight);
+            else if (selected_track->getNhitX() == 4 && selected_track->getNhitY() == 4)
+                ps_histos->h_STK_best_track_clusters->Fill(selected_track->getNhitX(), weight);
+            else if (selected_track->getNhitX() == 5 && selected_track->getNhitY() == 5)
+                ps_histos->h_STK_best_track_clusters->Fill(selected_track->getNhitX(), weight);
+
             stk_charge_explore(stkclusters, selected_track, ps_histos);
         }
     }
