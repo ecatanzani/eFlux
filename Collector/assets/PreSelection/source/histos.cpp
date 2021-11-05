@@ -21,6 +21,7 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     sumRms_binning = createLogBinning(10, 2e+3, 1e+2);
     flast_binning = createLogBinning(1e-5, 2e-1, 1e+3);
     stk_track_binning = createLinearBinning(0, 10, 10);
+    stk_ntracks_binning = createLinearBinning(0, 1000, 1000);
     psd_clusters_binning = createLinearBinning(0, 50, 50);
 
     h_energy_fraction = std::make_shared<TH1D>("h_energy_fraction", "Energy fraction; Energy fraction; counts", 100, 0, 1);
@@ -199,6 +200,7 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut", "F_{last} vs sumRms correlation - > 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     
     h_STK_tracks = std::make_shared<TH1D>("h_STK_tracks", "STK tracks", 1000, 0, 1000);
+    h_STK_tracks_vs_energy = std::make_shared<TH2D>("h_STK_tracks_vs_energy", "STK tracks vs Energy; Reconstructed Energy [GeV]; STK Tracks", energy_nbins -1, &energy_binning[0], (int)stk_ntracks_binning.size() -1, &stk_ntracks_binning[0]);
     
     h_STK_X_clusters = std::make_shared<TH1D>("h_STK_X_clusters", "STK X clusters", 10, 0, 10);
     h_STK_Y_clusters = std::make_shared<TH1D>("h_STK_Y_clusters", "STK Y clusters", 10, 0, 10);
@@ -216,6 +218,11 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_STK_Y_clusters_vs_energy = std::make_shared<TH2D>("h_STK_Y_clusters_vs_energy", "STK Y clusters vs Particle Energy; Reconstructed Energy [GeV]; STK Y clusters", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
     h_STK_X_holes_vs_energy = std::make_shared<TH2D>("h_STK_X_holes_vs_energy", "STK X holes vs Particle Energy; Reconstructed Energy [GeV]; STK X holes", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
     h_STK_Y_holes_vs_energy = std::make_shared<TH2D>("h_STK_Y_holes_vs_energy", "STK Y holes vs Particle Energy; Reconstructed Energy [GeV]; STK Y holes", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
+
+    h_STK_X_clusters_vs_energy_best_track = std::make_shared<TH2D>("h_STK_X_clusters_vs_energy_best_track", "STK X clusters vs Particle Energy; Reconstructed Energy [GeV]; STK X clusters", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
+    h_STK_Y_clusters_vs_energy_best_track = std::make_shared<TH2D>("h_STK_Y_clusters_vs_energy_best_track", "STK Y clusters vs Particle Energy; Reconstructed Energy [GeV]; STK Y clusters", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
+    h_STK_X_holes_vs_energy_best_track = std::make_shared<TH2D>("h_STK_X_holes_vs_energy_best_track", "STK X holes vs Particle Energy; Reconstructed Energy [GeV]; STK X holes", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
+    h_STK_Y_holes_vs_energy_best_track = std::make_shared<TH2D>("h_STK_Y_holes_vs_energy_best_track", "STK Y holes vs Particle Energy; Reconstructed Energy [GeV]; STK Y holes", energy_nbins -1, &energy_binning[0], (int)stk_track_binning.size() -1, &stk_track_binning[0]);
 
     h_STK_BGO_TOP_spatial_difference = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_difference", "STK - BGO TOP spatial difference", 80, 0, BGO_SideXY);
     h_STK_BGO_TOP_spatial_X_difference = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_X_difference", "STK - BGO TOP spatial difference - X view", 100, -BGO_SideXY, BGO_SideXY);
@@ -873,18 +880,12 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     outfile->cd("TrackSelection");
 
     h_STK_tracks->Write();
+    h_STK_tracks_vs_energy->Write();
 
     h_STK_X_clusters->Write();
     h_STK_Y_clusters->Write();
     h_STK_X_holes->Write();
     h_STK_Y_holes->Write();
-
-    h_STK_X_clusters_best_track->Write();
-    h_STK_Y_clusters_best_track->Write();
-    h_STK_X_holes_best_track->Write();
-    h_STK_Y_holes_best_track->Write();
-
-    h_STK_best_track_clusters->Write();
 
     h_STK_X_clusters_vs_energy->Write();
     h_STK_Y_clusters_vs_energy->Write();
@@ -916,6 +917,30 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_BGO_TOP_spatial_Y_difference_best_track->Write();
     h_STK_BGO_track_angular_difference_best_track->Write();
 
+    h_BGOrec_sumRms_flast_after_track_selection->Write();
+    h_BGOrec_sumRms_flast_after_track_selection_20_100->Write();
+    h_BGOrec_sumRms_flast_after_track_selection_100_250->Write();
+    h_BGOrec_sumRms_flast_after_track_selection_250_500->Write();
+    h_BGOrec_sumRms_flast_after_track_selection_500_1000->Write();
+    h_BGOrec_sumRms_flast_after_track_selection_1000_3000->Write();
+    h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Write();
+    h_BGOrec_sumRms_flast_after_track_selection_5000->Write();
+
+    outfile->mkdir("TrackSelection/BestTrack");
+    outfile->cd("TrackSelection/BestTrack");
+
+    h_STK_X_clusters_best_track->Write();
+    h_STK_Y_clusters_best_track->Write();
+    h_STK_X_holes_best_track->Write();
+    h_STK_Y_holes_best_track->Write();
+
+    h_STK_best_track_clusters->Write();
+
+    h_STK_X_clusters_vs_energy_best_track->Write();
+    h_STK_Y_clusters_vs_energy_best_track->Write();
+    h_STK_X_holes_vs_energy_best_track->Write();
+    h_STK_Y_holes_vs_energy_best_track->Write();
+
     h_STK_BGO_TOP_spatial_difference_3_clusters_best_track->Write();
     h_STK_BGO_TOP_spatial_X_difference_3_clusters_best_track->Write();
     h_STK_BGO_TOP_spatial_Y_difference_3_clusters_best_track->Write();
@@ -931,15 +956,9 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track->Write();
     h_STK_BGO_track_angular_difference_5_clusters_best_track->Write();
 
-    h_BGOrec_sumRms_flast_after_track_selection->Write();
-    h_BGOrec_sumRms_flast_after_track_selection_20_100->Write();
-    h_BGOrec_sumRms_flast_after_track_selection_100_250->Write();
-    h_BGOrec_sumRms_flast_after_track_selection_250_500->Write();
-    h_BGOrec_sumRms_flast_after_track_selection_500_1000->Write();
-    h_BGOrec_sumRms_flast_after_track_selection_1000_3000->Write();
-    h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Write();
-    h_BGOrec_sumRms_flast_after_track_selection_5000->Write();
-    
+    outfile->mkdir("TrackSelection/Charge");
+    outfile->cd("TrackSelection/Charge");
+
     h_STK_charge_X->Write();
     h_STK_charge_Y->Write();
     h_STK_charge->Write();

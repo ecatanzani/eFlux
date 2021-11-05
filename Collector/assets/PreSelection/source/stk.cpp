@@ -249,6 +249,8 @@ void track(
         BGO_vectors(bgoRecEntrance, bgoRecDirection, bgoRec_slope, bgoRec_intercept);
 
         ps_histos->h_STK_tracks->Fill(stktracks->GetLast() + 1, weight);
+        ps_histos->h_STK_tracks_vs_energy->Fill(evt_corr_energy_gev, stktracks->GetLast() + 1, weight);
+
         // Loop on the tracks
         for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx) {
             std::vector<int> track_nHoles(2, 0);
@@ -346,6 +348,8 @@ void track(
             // Get the X and Y clusters
             ps_histos->h_STK_X_clusters_best_track->Fill(selected_track->getNhitX(), weight);
             ps_histos->h_STK_Y_clusters_best_track->Fill(selected_track->getNhitY(), weight);
+            ps_histos->h_STK_X_clusters_vs_energy_best_track->Fill(evt_corr_energy_gev, selected_track->getNhitX(), weight);
+            ps_histos->h_STK_Y_clusters_vs_energy_best_track->Fill(evt_corr_energy_gev, selected_track->getNhitY(), weight);
             
             track_points(
                 selected_track,
@@ -356,6 +360,8 @@ void track(
             // Get the X and Y holes
             ps_histos->h_STK_X_holes_best_track->Fill(track_nHoles[0]);
             ps_histos->h_STK_Y_holes_best_track->Fill(track_nHoles[1]);
+            ps_histos->h_STK_X_holes_vs_energy_best_track->Fill(evt_corr_energy_gev, track_nHoles[0], weight);
+            ps_histos->h_STK_Y_holes_vs_energy_best_track->Fill(evt_corr_energy_gev, track_nHoles[1], weight);
             
             // Find slope and intercept
             track_slope[0] = selected_track->getTrackParams().getSlopeX();

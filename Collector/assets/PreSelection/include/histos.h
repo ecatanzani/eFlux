@@ -374,6 +374,7 @@ class histos {
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut;
 
         std::shared_ptr<TH1D> h_STK_tracks;
+        std::shared_ptr<TH2D> h_STK_tracks_vs_energy;
 
         std::shared_ptr<TH1D> h_STK_X_clusters;
         std::shared_ptr<TH1D> h_STK_Y_clusters;
@@ -391,6 +392,11 @@ class histos {
         std::shared_ptr<TH2D> h_STK_Y_clusters_vs_energy;
         std::shared_ptr<TH2D> h_STK_X_holes_vs_energy;
         std::shared_ptr<TH2D> h_STK_Y_holes_vs_energy;
+
+        std::shared_ptr<TH2D> h_STK_X_clusters_vs_energy_best_track;
+        std::shared_ptr<TH2D> h_STK_Y_clusters_vs_energy_best_track;
+        std::shared_ptr<TH2D> h_STK_X_holes_vs_energy_best_track;
+        std::shared_ptr<TH2D> h_STK_Y_holes_vs_energy_best_track;
 
         std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_difference;
         std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_X_difference;
@@ -506,6 +512,7 @@ class histos {
             std::vector<float> sumRms_binning;
             std::vector<float> flast_binning;
             std::vector<float> stk_track_binning;
+            std::vector<float> stk_ntracks_binning;
             std::vector<float> psd_clusters_binning;
 
 };
