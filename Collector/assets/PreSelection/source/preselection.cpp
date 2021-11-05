@@ -146,7 +146,7 @@ void preselection(const in_pars &input_pars) {
 		}
 
 	// Register STK tracks collection
-	std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack", 200);
+	std::shared_ptr<TClonesArray> stktracks = std::make_shared<TClonesArray>("DmpStkTrack");
 	if (fStkKalmanTracksFound)
 		evtch->SetBranchAddress("StkKalmanTracks", &stktracks);
 
