@@ -373,6 +373,8 @@ class histos {
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_3000_5000_lateral_showering_lastcut;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut;
 
+        std::shared_ptr<TH1D> h_STK_tracks;
+
         std::shared_ptr<TH1D> h_STK_X_clusters;
         std::shared_ptr<TH1D> h_STK_Y_clusters;
         std::shared_ptr<TH1D> h_STK_X_holes;

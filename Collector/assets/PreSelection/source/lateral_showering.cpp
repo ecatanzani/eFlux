@@ -60,6 +60,8 @@ void lateral_showering_distributions(
                             ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                         else if (evt_corr_energy_gev>=5000)
                             ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+
+                        
                     }
                 }
             }

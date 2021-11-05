@@ -197,7 +197,9 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_BGOrec_sumRms_flast_1000_3000_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_1000_3000_lateral_showering_lastcut", "F_{last} vs sumRms correlation - 1 TeV - 3 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_3000_5000_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_3000_5000_lateral_showering_lastcut", "F_{last} vs sumRms correlation - 3 TeV - 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut", "F_{last} vs sumRms correlation - > 5 TeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
-
+    
+    h_STK_tracks = std::make_shared<TH1D>("h_STK_tracks", "STK tracks", 1000, 0, 1000);
+    
     h_STK_X_clusters = std::make_shared<TH1D>("h_STK_X_clusters", "STK X clusters", 10, 0, 10);
     h_STK_Y_clusters = std::make_shared<TH1D>("h_STK_Y_clusters", "STK Y clusters", 10, 0, 10);
     h_STK_X_holes = std::make_shared<TH1D>("h_STK_X_holes", "STK X holes", 10, 0, 10);
@@ -870,6 +872,8 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     outfile->mkdir("TrackSelection");
     outfile->cd("TrackSelection");
 
+    h_STK_tracks->Write();
+    
     h_STK_X_clusters->Write();
     h_STK_Y_clusters->Write();
     h_STK_X_holes->Write();

@@ -248,6 +248,7 @@ void track(
         ladders(LadderToLayer);
         BGO_vectors(bgoRecEntrance, bgoRecDirection, bgoRec_slope, bgoRec_intercept);
 
+        ps_histos->h_STK_tracks->Fill(stktracks->GetLast() + 1, weight);
         // Loop on the tracks
         for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx) {
             std::vector<int> track_nHoles(2, 0);
