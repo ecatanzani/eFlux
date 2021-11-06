@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "cuts.h"
+#include "config.h"
 #include "histos.h"
 
 #include "TClonesArray.h"
@@ -24,7 +25,8 @@ extern void psd_stk_match_distributions(
     const double evt_corr_energy,
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
-    std::shared_ptr<histos> ps_histos);
+    std::shared_ptr<histos> ps_histos,
+    std::shared_ptr<config> cuts_config);
 
 extern void psd_stk_match(
 	const std::vector<double> bgoRec_slope,

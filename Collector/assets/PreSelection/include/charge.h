@@ -3,8 +3,9 @@
 
 #include <memory>
 
-#include "histos.h"
 #include "cuts.h"
+#include "config.h"
+#include "histos.h"
 
 #include "TClonesArray.h"
 
@@ -24,7 +25,8 @@ extern void charge_distributions(
     const double evt_corr_energy,
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
-    std::shared_ptr<histos> ps_histos);
+    std::shared_ptr<histos> ps_histos,
+    std::shared_ptr<config> cuts_config);
 
 extern void stk_charge(
     const std::shared_ptr<TClonesArray> stkclusters, 

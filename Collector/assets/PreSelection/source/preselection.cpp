@@ -4,6 +4,7 @@
 #include "chain.h"
 #include "histos.h"
 #include "charge.h"
+#include "config.h"
 #include "preselection.h"
 #include "energy_config.h"
 #include "lateral_showering.h"
@@ -109,6 +110,7 @@ void preselection(const in_pars &input_pars) {
     
     auto evtch = GetFileChain(input_pars.input_path, input_pars.verbose, input_pars.mc_flag);
     std::shared_ptr<energy_config> econfig = std::make_shared<energy_config>(input_pars.config_wd);
+    std::shared_ptr<config> cuts_config = std::make_shared<config>(input_pars.config_wd);
 
     // Register Header container
     std::shared_ptr<DmpEvtHeader> evt_header = std::make_shared<DmpEvtHeader>();
@@ -208,7 +210,8 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy,
                     evt_energy_gev,
                     evt_corr_energy_gev, 
-                    ps_histos);
+                    ps_histos,
+                    cuts_config);
 
                 // BGO distributions after the BGO fiducial volume cut
                 bgofiducial_distributions(
@@ -220,7 +223,8 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy,
                     evt_energy_gev,
                     evt_corr_energy_gev, 
-                    ps_histos);
+                    ps_histos,
+                    cuts_config);
 
                 // BGO distributions as last cut
                 bgofiducial_distributions_lastcut(
@@ -235,7 +239,8 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy,
                     evt_energy_gev,
                     evt_corr_energy_gev, 
-                    ps_histos);
+                    ps_histos,
+                    cuts_config);
 
                 // Remove lateral and large showering events
                 lateral_showering_distributions(
@@ -246,7 +251,8 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy, 
                     evt_energy_gev, 
                     evt_corr_energy_gev,
-                    ps_histos);
+                    ps_histos,
+                    cuts_config);
 
                 // Remove lateral and large showering events as last cut
                 lateral_showering_distributions_lastcut(
@@ -260,7 +266,8 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy,
                     evt_energy_gev,
                     evt_corr_energy_gev, 
-                    ps_histos);
+                    ps_histos,
+                    cuts_config);
 
                 // STK distributions and charges
                 stk_distributions(
@@ -273,7 +280,8 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy, 
                     evt_energy_gev, 
                     evt_corr_energy_gev, 
-                    ps_histos);
+                    ps_histos,
+                    cuts_config);
 
                 // PSD-STK match distributions and charges
                 psd_stk_match_distributions(
@@ -287,7 +295,8 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy, 
                     evt_energy_gev, 
                     evt_corr_energy_gev, 
-                    ps_histos);
+                    ps_histos,
+                    cuts_config);
                 
                 // PSD-STK charge distributions
                 charge_distributions(
@@ -301,7 +310,8 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy, 
                     evt_energy_gev, 
                     evt_corr_energy_gev, 
-                    ps_histos);
+                    ps_histos,
+                    cuts_config);
             }
         }
 

@@ -19,37 +19,29 @@ void stk_distributions(
     const double evt_corr_energy,
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
-    std::shared_ptr<histos> ps_histos) {
+    std::shared_ptr<histos> ps_histos,
+    std::shared_ptr<config> cuts_config) {
 
         std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
         std::unique_ptr<DmpStkContainer> stkVault = std::make_unique<DmpStkContainer>();
         
         best_track event_best_track;
 
-        double bgo_layer_min_energy     {0};    // Minimum energy per BGO layer
-        double bgo_max_energy_ratio     {0.35}; // Maximum energy ratio per layer
-        double bgo_shower_axis_delta    {280};  // BGO maximum shower axis delta (mm)
-        double bgo_shower_width         {100};  // BGO maximum shower width (mm)
-        double STK_BGO_delta_position   {40};   // Linear distance between STK and BGO projections
-        double STK_BGO_delta_track      {10};   // Angular distance between BGO/STK tracks (deg)
-        int track_X_clusters            {4};    // Number of requested clusters on X tracks
-        int track_Y_clusters            {4};    // Number of requested clusters on Y tracks
-
-        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), bgo_layer_min_energy);
+        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
         stkVault->scanSTKHits(stkclusters);
 
         if (check_trigger(evt_header)) {
 
-            auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), bgo_max_energy_ratio, evt_energy);
+            auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), (cuts_config->GetCutsConfig()).bgo_max_energy_ratio, evt_energy);
             auto maxbarlayer_cut = maxBarLayer_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetiMaxLayer(), bgoVault->GetIdxBarMaxLayer());
-            auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), bgo_shower_axis_delta);
+            auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), (cuts_config->GetCutsConfig()).bgo_shower_axis_delta);
 
             auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
 
             if (bgofiducial_cut) {
                 auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
                 if (nbarlayer13_cut) {
-                    auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, bgo_shower_width);
+                    auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (cuts_config->GetCutsConfig()).bgo_shower_width);
 
                     if (maxrms_cut) {
 
@@ -70,10 +62,10 @@ void stk_distributions(
                             stkclusters, 
                             stktracks, 
                             event_best_track,
-                            STK_BGO_delta_position,
-                            STK_BGO_delta_track,
-                            track_X_clusters,
-                            track_Y_clusters);
+                            (cuts_config->GetCutsConfig()).STK_BGO_delta_position,
+                            (cuts_config->GetCutsConfig()).STK_BGO_delta_track,
+                            (cuts_config->GetCutsConfig()).track_X_clusters,
+                            (cuts_config->GetCutsConfig()).track_Y_clusters);
 
                             if (trackselection_cut) {
 

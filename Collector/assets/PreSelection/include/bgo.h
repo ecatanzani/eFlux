@@ -5,6 +5,7 @@
 #include <tuple>
 #include <vector>
 
+#include "config.h"
 #include "histos.h"
 
 #include "DmpEvtBgoHits.h"
@@ -28,7 +29,8 @@ extern void bgo_distributions(
     const double evt_corr_energy,
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
-    std::shared_ptr<histos> ps_histos);
+    std::shared_ptr<histos> ps_histos,
+    std::shared_ptr<config> cuts_config);
 
 extern void bgofiducial_distributions(
     std::shared_ptr<DmpEvtBgoHits> bgohits,
@@ -39,7 +41,8 @@ extern void bgofiducial_distributions(
     const double evt_corr_energy,
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
-    std::shared_ptr<histos> ps_histos);
+    std::shared_ptr<histos> ps_histos,
+    std::shared_ptr<config> cuts_config);
 
 extern void bgofiducial_distributions_lastcut(
     std::shared_ptr<DmpEvtBgoHits> bgohits, 
@@ -53,7 +56,8 @@ extern void bgofiducial_distributions_lastcut(
     const double evt_corr_energy,
     const double evt_energy_gev, 
     const double evt_corr_energy_gev, 
-    std::shared_ptr<histos> ps_histos);
+    std::shared_ptr<histos> ps_histos,
+    std::shared_ptr<config> cuts_config);
 
 extern double get_mean_bar_energy(const std::vector<std::vector<double>> bar_energy);
 extern unsigned int count_bars_on_layer(const std::vector<double> layer_energy, const double energy_threshold);
