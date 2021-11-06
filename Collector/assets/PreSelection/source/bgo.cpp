@@ -23,7 +23,6 @@ void bgo_distributions(
     std::shared_ptr<config> cuts_config) {
 
     double gev {0.001};
-    double layer_min_energy {0}; //Minimum energy per layer
     auto weight {ps_histos->GetWeight()}; // Weight for histos
 
     std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
@@ -593,7 +592,9 @@ void bgofiducial_distributions_lastcut(
                         (cuts_config->GetCutsConfig()).STK_BGO_delta_position,
                         (cuts_config->GetCutsConfig()).STK_BGO_delta_track,
                         (cuts_config->GetCutsConfig()).track_X_clusters,
-                        (cuts_config->GetCutsConfig()).track_Y_clusters);
+                        (cuts_config->GetCutsConfig()).track_Y_clusters,
+                        (cuts_config->GetCutsConfig()).track_X_holes,
+                        (cuts_config->GetCutsConfig()).track_Y_holes);
                 
                     if (trackselection_cut) {
                         auto psdstkmatch_cut = psd_stk_match_cut(

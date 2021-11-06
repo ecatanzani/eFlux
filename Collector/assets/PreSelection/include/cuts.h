@@ -91,7 +91,9 @@ extern const bool track_selection_cut(
 	const double STK_BGO_delta_position,
     const double STK_BGO_delta_track,
     const int track_X_clusters,
-    const int track_Y_clusters);
+    const int track_Y_clusters,
+	const int track_X_holes,
+    const int track_Y_holes);
 
 extern const bool psd_stk_match_cut(
 	const std::vector<double> bgoRec_slope,

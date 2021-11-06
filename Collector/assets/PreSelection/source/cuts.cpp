@@ -265,7 +265,9 @@ const bool track_selection_cut(
 	const double STK_BGO_delta_position,
     const double STK_BGO_delta_track,
     const int track_X_clusters,
-    const int track_Y_clusters) {
+    const int track_Y_clusters,
+    const int track_X_holes,
+    const int track_Y_holes) {
 
         bool passed_track_selection_cut = false;
 
@@ -305,7 +307,7 @@ const bool track_selection_cut(
                 track_nHoles,
                 event_best_track);
 
-            if (track_nHoles[0] > 1 || track_nHoles[1] > 1)
+            if (track_nHoles[0] > track_X_holes || track_nHoles[1] > track_Y_holes)
                 continue;
 
             // Find slope and intercept

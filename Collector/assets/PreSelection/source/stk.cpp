@@ -65,7 +65,9 @@ void stk_distributions(
                             (cuts_config->GetCutsConfig()).STK_BGO_delta_position,
                             (cuts_config->GetCutsConfig()).STK_BGO_delta_track,
                             (cuts_config->GetCutsConfig()).track_X_clusters,
-                            (cuts_config->GetCutsConfig()).track_Y_clusters);
+                            (cuts_config->GetCutsConfig()).track_Y_clusters,
+                            (cuts_config->GetCutsConfig()).track_X_holes,
+                            (cuts_config->GetCutsConfig()).track_Y_holes);
 
                             if (trackselection_cut) {
 
