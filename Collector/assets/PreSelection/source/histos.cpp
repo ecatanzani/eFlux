@@ -499,6 +499,48 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
         h_diff_bgo_simu_extr_top_position_X_bgofiducial_lastcut = std::make_shared<TH1D>("h_diff_bgo_simu_extr_top_position_X_bgofiducial_lastcut", "TOP X ext - position_{BGO} - position_{simu}; position_{BGO} - position_{simu} [mm]; entries", 200, -200, 200);
         h_diff_bgo_simu_extr_top_position_Y_bgofiducial_lastcut = std::make_shared<TH1D>("h_diff_bgo_simu_extr_top_position_Y_bgofiducial_lastcut", "TOP Y ext - position_{BGO} - position_{simu}; position_{BGO} - position_{simu} [mm]; entries", 200, -200, 200);
     }
+
+    // Efficiency histos
+    h_maxelayer_lastcut_pass = std::make_shared<TH1D>("h_maxelayer_lastcut_pass", "MaxElayer cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_maxelayer_lastcut_fail = std::make_shared<TH1D>("h_maxelayer_lastcut_fail", "MaxElayer cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_maxelayer_lastcut = std::make_shared<TH1D>("h_maxelayer_lastcut", "MaxElayer cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_maxbarlayer_lastcut_pass = std::make_shared<TH1D>("h_maxbarlayer_lastcut_pass", "MaxBarlayer cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_maxbarlayer_lastcut_fail = std::make_shared<TH1D>("h_maxbarlayer_lastcut_fail", "MaxBarlayer cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_maxbarlayer_lastcut = std::make_shared<TH1D>("h_maxbarlayer_lastcut", "MaxBarlayer cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_bgotrack_lastcut_pass = std::make_shared<TH1D>("h_bgotrack_lastcut_pass", "BGO Track cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_bgotrack_lastcut_fail = std::make_shared<TH1D>("h_bgotrack_lastcut_fail", "BGO Track cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_bgotrack_lastcut = std::make_shared<TH1D>("h_bgotrack_lastcut", "BGO Track cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_bgofiducial_lastcut_pass = std::make_shared<TH1D>("h_bgofiducial_lastcut_pass", "BGO Fiducial cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_bgofiducial_lastcut_fail = std::make_shared<TH1D>("h_bgofiducial_lastcut_fail", "BGO Fiducial cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_bgofiducial_lastcut = std::make_shared<TH1D>("h_bgofiducial_lastcut", "BGO Fiducial cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_nbarlayer13_lastcut_pass = std::make_shared<TH1D>("h_nbarlayer13_lastcut_pass", "nBarLayer13 cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_nbarlayer13_lastcut_fail = std::make_shared<TH1D>("h_nbarlayer13_lastcut_fail", "nBarLayer13 cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_nbarlayer13_lastcut = std::make_shared<TH1D>("h_nbarlayer13_lastcut", "nBarLayer13 cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_maxrms_lastcut_pass = std::make_shared<TH1D>("h_maxrms_lastcut_pass", "maxRMS cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_maxrms_lastcut_fail = std::make_shared<TH1D>("h_maxrms_lastcut_fail", "maxRMS cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_maxrms_lastcut = std::make_shared<TH1D>("h_maxrms_lastcut", "maxRMS cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_trackselection_lastcut_pass = std::make_shared<TH1D>("h_trackselection_lastcut_pass", "Track Selection cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_trackselection_lastcut_fail = std::make_shared<TH1D>("h_trackselection_lastcut_fail", "Track Selection cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_trackselection_lastcut = std::make_shared<TH1D>("h_trackselection_lastcut", "Track Selection cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_psdstkmatch_lastcut_pass = std::make_shared<TH1D>("h_psdstkmatch_lastcut_pass", "PSD/STK match cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_psdstkmatch_lastcut_fail = std::make_shared<TH1D>("h_psdstkmatch_lastcut_fail", "PSD/STK match cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_psdstkmatch_lastcut = std::make_shared<TH1D>("h_psdstkmatch_lastcut", "PSD/STK match cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_psdcharge_lastcut_pass = std::make_shared<TH1D>("h_psdcharge_lastcut_pass", "PSD Charge cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_psdcharge_lastcut_fail = std::make_shared<TH1D>("h_psdcharge_lastcut_fail", "PSD Charge cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_psdcharge_lastcut = std::make_shared<TH1D>("h_psdcharge_lastcut", "PSD Charge cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
+    h_stkcharge_lastcut_pass = std::make_shared<TH1D>("h_stkcharge_lastcut_pass", "STK Charge cut - passed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_stkcharge_lastcut_fail = std::make_shared<TH1D>("h_stkcharge_lastcut_fail", "STK Charge cut - failed; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+    h_stkcharge_lastcut = std::make_shared<TH1D>("h_stkcharge_lastcut", "STK Charge cut; Reconstructed Energy [GeV]; entries", energy_nbins -1, &energy_binning[0]);
+
 }
 
 void histos::SetWeight(std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries, const double evt_corr_energy_gev) {
@@ -1050,6 +1092,49 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_charge_Y_PSD_charge_cut->Write();
     h_STK_charge_PSD_charge_cut->Write();
     h_STK_charge_2D_PSD_charge_cut->Write();
+
+    outfile->mkdir("Stats");
+    outfile->cd("Stats");
+
+    h_maxelayer_lastcut_pass->Write();
+    h_maxelayer_lastcut_fail->Write();
+    h_maxelayer_lastcut->Write();
+
+    h_maxbarlayer_lastcut_pass->Write();
+    h_maxbarlayer_lastcut_fail->Write();
+    h_maxbarlayer_lastcut->Write();
+
+    h_bgotrack_lastcut_pass->Write();
+    h_bgotrack_lastcut_fail->Write();
+    h_bgotrack_lastcut->Write();
+
+    h_bgofiducial_lastcut_pass->Write();
+    h_bgofiducial_lastcut_fail->Write();
+    h_bgofiducial_lastcut->Write();
+
+    h_nbarlayer13_lastcut_pass->Write();
+    h_nbarlayer13_lastcut_fail->Write();
+    h_nbarlayer13_lastcut->Write();
+
+    h_maxrms_lastcut_pass->Write();
+    h_maxrms_lastcut_fail->Write();
+    h_maxrms_lastcut->Write();
+
+    h_trackselection_lastcut_pass->Write();
+    h_trackselection_lastcut_fail->Write();
+    h_trackselection_lastcut->Write();
+
+    h_psdstkmatch_lastcut_pass->Write();
+    h_psdstkmatch_lastcut_fail->Write();
+    h_psdstkmatch_lastcut->Write();
+
+    h_psdcharge_lastcut_pass->Write();
+    h_psdcharge_lastcut_fail->Write();
+    h_psdcharge_lastcut->Write();
+
+    h_stkcharge_lastcut_pass->Write();
+    h_stkcharge_lastcut_fail->Write();
+    h_stkcharge_lastcut->Write();
 
     outfile->Close();
 

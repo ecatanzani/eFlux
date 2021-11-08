@@ -69,26 +69,31 @@ void stk_distributions(
                             (cuts_config->GetCutsConfig()).track_X_holes,
                             (cuts_config->GetCutsConfig()).track_Y_holes);
 
-                            if (trackselection_cut) {
+                        auto weight {ps_histos->GetWeight()};
 
-                                auto weight {ps_histos->GetWeight()};
+                        if (trackselection_cut) {
 
-                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-                                if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-                                else if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<250)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_100_250->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-                                else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<500)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_250_500->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-                                else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<1000)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_500_1000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-                                else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<3000)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-                                else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-                                else if (evt_corr_energy_gev>=5000)
-                                    ps_histos->h_BGOrec_sumRms_flast_after_track_selection_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-                            }
+                            ps_histos->h_BGOrec_sumRms_flast_after_track_selection->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                            if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                            else if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<250)
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_100_250->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                            else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<500)
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_250_500->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                            else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<1000)
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_500_1000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                            else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<3000)
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                            else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                            else if (evt_corr_energy_gev>=5000)
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+
+                            ps_histos->h_trackselection_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                        }
+                        else
+                            ps_histos->h_trackselection_lastcut_fail->Fill(evt_corr_energy_gev, weight);
+                        ps_histos->h_trackselection_lastcut->Fill(evt_corr_energy_gev, weight);
                     }
                 }
             }

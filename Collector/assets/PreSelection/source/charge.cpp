@@ -31,6 +31,8 @@ void charge_distributions(
         stkVault->scanSTKHits(stkclusters);
         psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
 
+        auto weight {ps_histos->GetWeight()};
+        
         if (check_trigger(evt_header)) {
 
             auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), (cuts_config->GetCutsConfig()).bgo_max_energy_ratio, evt_energy);
@@ -85,11 +87,21 @@ void charge_distributions(
                                 stk_charge(stkclusters, event_best_track, ps_histos);
                                 psd_charge(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos);
 
-                                if (psdcharge_cut)
+                                if (psdcharge_cut) {
                                     stk_charge(stkclusters, event_best_track, ps_histos, true);
+                                    ps_histos->h_psdcharge_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                                }
+                                else
+                                    ps_histos->h_psdcharge_lastcut_fail->Fill(evt_corr_energy_gev, weight);
+                                ps_histos->h_psdcharge_lastcut->Fill(evt_corr_energy_gev, weight);
 
-                                if (stkcharge_cut)
+                                if (stkcharge_cut) {
                                     psd_charge(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos, true);
+                                    ps_histos->h_stkcharge_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                                }
+                                else
+                                    ps_histos->h_stkcharge_lastcut_fail->Fill(evt_corr_energy_gev, weight);
+                                ps_histos->h_stkcharge_lastcut->Fill(evt_corr_energy_gev, weight);
                             }
                         }
                     }

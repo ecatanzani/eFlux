@@ -498,6 +498,48 @@ class histos {
         std::shared_ptr<TH2D> h_PSD_charge_2D_STK_charge_cut;
         std::shared_ptr<TH1D> h_PSD_sum_of_XY_charges_STK_charge_cut;
 
+        // Efficiency histos
+        std::shared_ptr<TH1D> h_maxelayer_lastcut_pass;
+        std::shared_ptr<TH1D> h_maxelayer_lastcut_fail;
+        std::shared_ptr<TH1D> h_maxelayer_lastcut;
+
+        std::shared_ptr<TH1D> h_maxbarlayer_lastcut_pass;
+        std::shared_ptr<TH1D> h_maxbarlayer_lastcut_fail;
+        std::shared_ptr<TH1D> h_maxbarlayer_lastcut;
+
+        std::shared_ptr<TH1D> h_bgotrack_lastcut_pass;
+        std::shared_ptr<TH1D> h_bgotrack_lastcut_fail;
+        std::shared_ptr<TH1D> h_bgotrack_lastcut;
+
+        std::shared_ptr<TH1D> h_bgofiducial_lastcut_pass;
+        std::shared_ptr<TH1D> h_bgofiducial_lastcut_fail;
+        std::shared_ptr<TH1D> h_bgofiducial_lastcut;
+
+        std::shared_ptr<TH1D> h_nbarlayer13_lastcut_pass;
+        std::shared_ptr<TH1D> h_nbarlayer13_lastcut_fail;
+        std::shared_ptr<TH1D> h_nbarlayer13_lastcut;
+
+        std::shared_ptr<TH1D> h_maxrms_lastcut_pass;
+        std::shared_ptr<TH1D> h_maxrms_lastcut_fail;
+        std::shared_ptr<TH1D> h_maxrms_lastcut;
+
+        std::shared_ptr<TH1D> h_trackselection_lastcut_pass;
+        std::shared_ptr<TH1D> h_trackselection_lastcut_fail;
+        std::shared_ptr<TH1D> h_trackselection_lastcut;
+
+        std::shared_ptr<TH1D> h_psdstkmatch_lastcut_pass;
+        std::shared_ptr<TH1D> h_psdstkmatch_lastcut_fail;
+        std::shared_ptr<TH1D> h_psdstkmatch_lastcut;
+
+        std::shared_ptr<TH1D> h_psdcharge_lastcut_pass;
+        std::shared_ptr<TH1D> h_psdcharge_lastcut_fail;
+        std::shared_ptr<TH1D> h_psdcharge_lastcut;
+
+        std::shared_ptr<TH1D> h_stkcharge_lastcut_pass;
+        std::shared_ptr<TH1D> h_stkcharge_lastcut_fail;
+        std::shared_ptr<TH1D> h_stkcharge_lastcut;
+
+
         private:
             double weight {1};
             bool h_simu {false};

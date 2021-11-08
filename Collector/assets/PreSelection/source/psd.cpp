@@ -62,29 +62,52 @@ void psd_stk_match_distributions(
                             (cuts_config->GetCutsConfig()).track_Y_holes);
                     
                         if (trackselection_cut) {
-                            psd_fiducial_stk_match(
-                                bgoVault->GetBGOslope(),
-                                bgoVault->GetBGOintercept(),
-                                psdVault->getPsdClusterIdxBegin(),
-                                psdVault->getPsdClusterZ(),
-                                psdVault->getPsdClusterMaxECoo(),
-                                event_best_track,
-                                clu_matching,
-                                ps_histos,
-                                evt_corr_energy_gev);
+                            auto stkcharge_cut = stk_charge_cut(stkclusters, event_best_track, (cuts_config->GetCutsConfig()).STK_single_charge);
 
-                            psd_stk_match(
-                                bgoVault->GetBGOslope(),
-                                bgoVault->GetBGOintercept(),
-                                psdVault->getPsdClusterIdxBegin(),
-                                psdVault->getPsdClusterZ(),
-                                psdVault->getPsdClusterMaxECoo(),
-                                event_best_track,
-                                clu_matching,
-                                ps_histos,
-                                evt_corr_energy_gev);
+                            if (stkcharge_cut) {
+                                
+                                psd_fiducial_stk_match(
+                                    bgoVault->GetBGOslope(),
+                                    bgoVault->GetBGOintercept(),
+                                    psdVault->getPsdClusterIdxBegin(),
+                                    psdVault->getPsdClusterZ(),
+                                    psdVault->getPsdClusterMaxECoo(),
+                                    event_best_track,
+                                    clu_matching,
+                                    ps_histos,
+                                    evt_corr_energy_gev);
 
-                            psd_charge_explore(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos);
+                                psd_stk_match(
+                                    bgoVault->GetBGOslope(),
+                                    bgoVault->GetBGOintercept(),
+                                    psdVault->getPsdClusterIdxBegin(),
+                                    psdVault->getPsdClusterZ(),
+                                    psdVault->getPsdClusterMaxECoo(),
+                                    event_best_track,
+                                    clu_matching,
+                                    ps_histos,
+                                    evt_corr_energy_gev);
+
+                                psd_charge_explore(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos);
+
+                                auto psdstkmatch_cut = psd_stk_match_cut(
+                                    bgoVault->GetBGOslope(), 
+                                    bgoVault->GetBGOintercept(),
+                                    psdVault->getPsdClusterIdxBegin(),
+                                    psdVault->getPsdClusterZ(),
+                                    psdVault->getPsdClusterMaxECoo(),
+                                    event_best_track,
+                                    clu_matching,
+                                    (cuts_config->GetCutsConfig()).STK_PSD_delta_position);
+                                
+                                auto weight {ps_histos->GetWeight()};
+
+                                if (psdstkmatch_cut)
+                                    ps_histos->h_psdstkmatch_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                                else
+                                    ps_histos->h_psdstkmatch_lastcut_fail->Fill(evt_corr_energy_gev, weight);
+                                ps_histos->h_psdstkmatch_lastcut->Fill(evt_corr_energy_gev, weight);
+                            }
                         }
                     }
                 }

@@ -856,6 +856,34 @@ void bgofiducial_distributions_lastcut(
                                         ps_histos->h_diff_bgo_simu_extr_top_position_Y_bgofiducial_lastcut->Fill(intercept[1]-(bgoVault->GetBGOintercept())[1], weight);
                                     }
 
+                                    // Fill efficiency histos
+                                    auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), (cuts_config->GetCutsConfig()).bgo_max_energy_ratio, evt_energy);
+                                    auto maxbarlayer_cut = maxBarLayer_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetiMaxLayer(), bgoVault->GetIdxBarMaxLayer());
+                                    auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), (cuts_config->GetCutsConfig()).bgo_shower_axis_delta);
+
+                                    if (maxelayer_cut)
+                                        ps_histos->h_maxelayer_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                                    else
+                                        ps_histos->h_maxelayer_lastcut_fail->Fill(evt_corr_energy_gev, weight);
+                                    ps_histos->h_maxelayer_lastcut->Fill(evt_corr_energy_gev, weight);
+
+                                    if (maxbarlayer_cut)
+                                        ps_histos->h_maxbarlayer_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                                    else
+                                        ps_histos->h_maxbarlayer_lastcut_fail->Fill(evt_corr_energy_gev, weight);
+                                    ps_histos->h_maxbarlayer_lastcut->Fill(evt_corr_energy_gev, weight);
+
+                                    if (bgotrack_cut)
+                                        ps_histos->h_bgotrack_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                                    else
+                                        ps_histos->h_bgotrack_lastcut_fail->Fill(evt_corr_energy_gev, weight);
+                                    ps_histos->h_bgotrack_lastcut->Fill(evt_corr_energy_gev, weight);
+
+                                    if (maxelayer_cut && maxbarlayer_cut && bgotrack_cut)
+                                        ps_histos->h_bgofiducial_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                                    else
+                                        ps_histos->h_bgofiducial_lastcut_fail->Fill(evt_corr_energy_gev, weight);
+                                    ps_histos->h_bgofiducial_lastcut->Fill(evt_corr_energy_gev, weight);
                                 }
                             }
                         }
