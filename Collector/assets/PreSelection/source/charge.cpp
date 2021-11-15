@@ -84,8 +84,12 @@ void charge_distributions(
 
                                 auto stkcharge_cut = stk_charge_cut(stkclusters, event_best_track, (cuts_config->GetCutsConfig()).STK_single_charge);
 
-                                stk_charge(stkclusters, event_best_track, ps_histos);
-                                psd_charge(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos);
+                                auto stk_charges = stk_charge(stkclusters, event_best_track, ps_histos);
+                                auto psd_charges = psd_charge(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos);
+
+                                ps_histos->h_PSD_STK_X_charge->Fill(stk_charges[0], psd_charges[0], weight);
+                                ps_histos->h_PSD_STK_Y_charge->Fill(stk_charges[1], psd_charges[1], weight);
+                                ps_histos->h_PSD_STK_charge->Fill(stk_charges[2], psd_charges[2], weight);
 
                                 if (psdcharge_cut) {
                                     stk_charge(stkclusters, event_best_track, ps_histos, true);
@@ -161,7 +165,7 @@ void stk_charge_explore(
         }
     }
 
-void stk_charge(
+std::vector<double> stk_charge(
     const std::shared_ptr<TClonesArray> stkclusters, 
     best_track &event_best_track, 
     std::shared_ptr<histos> ps_histos,
@@ -200,9 +204,11 @@ void stk_charge(
                 ps_histos->h_STK_charge_2D_PSD_charge_cut->Fill(cluster_chargeX, cluster_chargeY, weight);
             }
         }
+
+        return std::vector<double> {cluster_chargeX, cluster_chargeY, 0.5 * (cluster_chargeX + cluster_chargeY)};
     }
 
-void psd_charge(
+std::vector<double> psd_charge(
 	const std::vector<std::vector<double>> psdCluster_maxE,
     best_track &event_best_track,
     psd_cluster_match &clu_matching,
@@ -243,7 +249,9 @@ void psd_charge(
             ps_histos->h_PSD_charge_STK_charge_cut->Fill(0.5*(psd_chargeX+psd_chargeY), weight);
             ps_histos->h_PSD_charge_2D_STK_charge_cut->Fill(psd_chargeX, psd_chargeY, weight);
             ps_histos->h_PSD_sum_of_XY_charges_STK_charge_cut->Fill(psd_chargeX+psd_chargeY, weight);
-        } 
+        }
+
+        return std::vector<double> {psd_chargeX, psd_chargeY, 0.5*(psd_chargeX+psd_chargeY)};
     }
 
 void psd_charge_explore(

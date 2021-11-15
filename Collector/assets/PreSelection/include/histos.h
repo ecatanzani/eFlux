@@ -438,6 +438,9 @@ class histos {
         std::shared_ptr<TH1D> h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track;
         std::shared_ptr<TH1D> h_STK_BGO_track_angular_difference_5_clusters_best_track;
 
+        std::shared_ptr<TH2D> h_STK_clusters_vs_angular_distance_X_best_track;
+        std::shared_ptr<TH2D> h_STK_clusters_vs_angular_distance_Y_best_track;
+
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_20_100;
         std::shared_ptr<TH2D> h_BGOrec_sumRms_flast_after_track_selection_100_250;
@@ -497,6 +500,10 @@ class histos {
         std::shared_ptr<TH1D> h_PSD_charge_STK_charge_cut;
         std::shared_ptr<TH2D> h_PSD_charge_2D_STK_charge_cut;
         std::shared_ptr<TH1D> h_PSD_sum_of_XY_charges_STK_charge_cut;
+
+        std::shared_ptr<TH2D> h_PSD_STK_X_charge;
+        std::shared_ptr<TH2D> h_PSD_STK_Y_charge;
+        std::shared_ptr<TH2D> h_PSD_STK_charge;
 
         // Efficiency histos
         std::shared_ptr<TH1D> h_maxelayer_lastcut_pass;

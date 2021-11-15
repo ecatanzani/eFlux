@@ -264,6 +264,9 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track", "STK - BGO TOP spatial difference - Y view", 100, -BGO_SideXY, BGO_SideXY);
     h_STK_BGO_track_angular_difference_5_clusters_best_track = std::make_shared<TH1D>("h_STK_BGO_track_angular_difference_5_clusters_best_track", "STK - BGO track angular difference", 100, 0, 40);
 
+    h_STK_clusters_vs_angular_distance_X_best_track = std::make_shared<TH2D>("h_STK_clusters_vs_angular_distance_X_best_track", "STK Best Track - angular distance vs clusters - X view", 10, 0, 10, 100, 0, 40);
+    h_STK_clusters_vs_angular_distance_Y_best_track = std::make_shared<TH2D>("h_STK_clusters_vs_angular_distance_Y_best_track", "STK Best Track - angular distance vs clusters - Y view", 10, 0, 10, 100, 0, 40);
+
     h_BGOrec_sumRms_flast_after_track_selection = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection", "F_{last} vs sumRms correlation; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_after_track_selection_20_100 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection_20_100", "F_{last} vs sumRms correlation - 20 GeV - 100 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
     h_BGOrec_sumRms_flast_after_track_selection_100_250 = std::make_shared<TH2D>("h_BGOrec_sumRms_flast_after_track_selection_100_250", "F_{last} vs sumRms correlation - 100 GeV - 250 GeV; sumRMS [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast_binning.size() - 1, &flast_binning[0]);
@@ -323,6 +326,10 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_charge_STK_charge_cut = std::make_shared<TH1D>("h_PSD_charge_STK_charge_cut", "PSD Charge; PSD Charge; entries", 300, 0, 40);
     h_PSD_charge_2D_STK_charge_cut = std::make_shared<TH2D>("h_PSD_charge_2D_STK_charge_cut", "PSD Charge; PSD Charge X; PSD Charge Y", 300, 0, 40, 300, 0, 40);
     h_PSD_sum_of_XY_charges_STK_charge_cut = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges_STK_charge_cut", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 800, 0, 200);
+
+    h_PSD_STK_X_charge = std::make_shared<TH2D>("h_PSD_STK_X_charge", "PSD/STK charge comparison; STK X charge; PSD X charge", 400, 0, 100, 300, 0, 40);
+    h_PSD_STK_Y_charge = std::make_shared<TH2D>("h_PSD_STK_Y_charge", "PSD/STK charge comparison; STK Y charge; PSD Y charge", 400, 0, 100, 300, 0, 40);
+    h_PSD_STK_charge = std::make_shared<TH2D>("h_PSD_STK_charge", "PSD/STK charge comparison; STK charge; PSD charge", 400, 0, 100, 300, 0, 40);
 
     if (h_simu) {
         h_max_bar_position_simu_reco_energy_diff = std::make_shared<TH2D>("h_max_bar_position_simu_reco_energy_diff", "Energy diff vs Max Bar Position; Max Bar; Energy_{simu} - Energy_{reco} / Energy_{simu}", 22, 0, 22, 100, -0.2, 1);
@@ -998,6 +1005,9 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track->Write();
     h_STK_BGO_track_angular_difference_5_clusters_best_track->Write();
 
+    h_STK_clusters_vs_angular_distance_X_best_track->Write();
+    h_STK_clusters_vs_angular_distance_Y_best_track->Write();
+
     outfile->mkdir("TrackSelection/Charge");
     outfile->cd("TrackSelection/Charge");
 
@@ -1092,6 +1102,13 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_STK_charge_Y_PSD_charge_cut->Write();
     h_STK_charge_PSD_charge_cut->Write();
     h_STK_charge_2D_PSD_charge_cut->Write();
+
+    outfile->mkdir("PSD_STK_charges");
+    outfile->cd("PSD_STK_charges");
+
+    h_PSD_STK_X_charge->Write();
+    h_PSD_STK_Y_charge->Write();
+    h_PSD_STK_charge->Write();
 
     outfile->mkdir("Stats");
     outfile->cd("Stats");

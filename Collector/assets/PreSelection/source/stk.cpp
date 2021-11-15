@@ -404,6 +404,9 @@ void track(
                 ps_histos->h_STK_BGO_track_angular_difference_5_clusters_best_track->Fill(dAngleTrackBgoRec, weight);
             }
 
+            ps_histos->h_STK_clusters_vs_angular_distance_X_best_track->Fill(selected_track->getNhitX(), dAngleTrackBgoRec, weight);
+            ps_histos->h_STK_clusters_vs_angular_distance_Y_best_track->Fill(selected_track->getNhitY(), dAngleTrackBgoRec, weight);
+
             // Get the charge
             stk_charge_explore(stkclusters, selected_track, ps_histos);
         }

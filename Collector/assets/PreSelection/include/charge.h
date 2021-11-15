@@ -2,6 +2,7 @@
 #define CHARGE_H
 
 #include <memory>
+#include <vector>
 
 #include "cuts.h"
 #include "config.h"
@@ -28,7 +29,7 @@ extern void charge_distributions(
     std::shared_ptr<histos> ps_histos,
     std::shared_ptr<config> cuts_config);
 
-extern void stk_charge(
+extern std::vector<double> stk_charge(
     const std::shared_ptr<TClonesArray> stkclusters, 
     best_track &event_best_track, 
     std::shared_ptr<histos> ps_histos,
@@ -39,7 +40,7 @@ extern void stk_charge_explore(
     DmpStkTrack* track,
     std::shared_ptr<histos> ps_histos);
 
-extern void psd_charge(
+extern std::vector<double> psd_charge(
 	const std::vector<std::vector<double>> psdCluster_maxE,
     best_track &event_best_track,
     psd_cluster_match &clu_matching,
