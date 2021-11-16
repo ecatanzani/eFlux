@@ -1,11 +1,7 @@
-import os
-import argparse
-import numpy as np
-from tqdm import tqdm
-from ROOT import TFile, TTree
-import matplotlib.pyplot as plt
-from matplotlib import rcParams
-from datetime import date, timedelta
+import streamlit as st
+import pandas as pd
+from ROOT import TFile
+from datetime import datetime, date, timedelta
 
 def testROOTFile(path: str) -> bool:
     _tmp_file = TFile.Open(path)
@@ -41,7 +37,7 @@ def getStatsFromFile(rootfilename: str) -> int:
     tmpfile.Close()
     return stats
 
-def fillStats(files: list, pars: dict, opts: argparse.Namespace) -> dict:
+def fillStats(files: list, farm_address: str) -> dict:
 
     files.sort()
     # Get start & end dates
@@ -59,8 +55,14 @@ def fillStats(files: list, pars: dict, opts: argparse.Namespace) -> dict:
 
     tmpstats = {'20_100': -1, '100_250': -1, '250_500': -1, '500_1': -1, '1_5': -1, 'g5': -1}
     
-    for file in tqdm(files):
-        rootfilename = pars['farmAddress'] + "/" + file
+    perc_complete = 0.
+    step = 1./len(files)
+    bar = st.progress(perc_complete)
+
+    for file in files:
+        
+        rootfilename = f"{farm_address}/{file}"
+        print(f"Reading file ... [{rootfilename}]")
         tmpdate = getdate(file)
         if tmpdate==sdate:
             if testROOTFile(rootfilename):
@@ -132,25 +134,23 @@ def fillStats(files: list, pars: dict, opts: argparse.Namespace) -> dict:
                     tmpstats['1_5'] = filestats
                 elif "500_000" in file:
                     tmpstats['g5'] = filestats
+        
+        # Update progress bar         
+        perc_complete += step
+        bar.progress(round(perc_complete, 1))
+
+    return {'date': timebins, 'evts': evts, 'evts_20_100': evts_20_100, 'evts_100_250': evts_100_250, 'evts_250_500': evts_250_500, 'evts_500_1': evts_500_1, 'evts_1_5': evts_1_5, 'evts_5': evts_5}
+
+def buildRDF(files: list, farm_address: str) -> pd.DataFrame:
+    rdf = pd.DataFrame(fillStats(files, farm_address))
+    rdf.to_csv('skimmed_data_files_rdf.csv', index=False)
+    return rdf
+
+def readRDF(path: str, start_date: datetime, end_date: datetime) -> pd.DataFrame:
+    rdf = pd.read_csv(path)
+    rdf['date'] = pd.to_datetime(rdf['date']).dt.date
+    mask = (rdf['date'] >= start_date) & (rdf['date'] <= end_date)
+    return rdf.loc[mask]
 
 
-    return {'timebins': timebins, 'evts': evts, 'evts_20_100': evts_20_100, 'evts_100_250': evts_100_250, 'evts_250_500': evts_250_500, 'evts_500_1': evts_500_1, 'evts_1_5': evts_1_5, 'evts_5': evts_5}
 
-def buildHisto(opts: argparse.Namespace, files: list, pars: dict):
-    
-    stats = fillStats(files, pars, opts)
-    
-    rcParams.update({'figure.autolayout': True})
-    plt.plot(stats['timebins'], stats['evts'], label="all energies", color="dimgray")
-    plt.plot(stats['timebins'], stats['evts_20_100'], label="20 - 100 GeV", color="cornflowerblue")
-    plt.plot(stats['timebins'], stats['evts_100_250'], label="100 - 250 GeV", color="darkorange")
-    plt.plot(stats['timebins'], stats['evts_250_500'], label="250 - 500 GeV", color="forestgreen")
-    plt.plot(stats['timebins'], stats['evts_500_1'], label="0.5 - 1 TeV", color="crimson")
-    plt.plot(stats['timebins'], stats['evts_1_5'], label="1 - 5 TeV", color="blueviolet")
-    plt.plot(stats['timebins'], stats['evts_5'], label="> 5 TeV", color="saddlebrown")
-    
-    plt.legend(bbox_to_anchor=(1.05, 0.5), loc='center left')
-    plt.yscale('log')
-    plt.ylim(10, 1e+6)
-    plt.ylabel("counts/day")
-    plt.savefig(opts.output)
