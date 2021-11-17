@@ -6,7 +6,7 @@ def single_histo(rdf: pd.DataFrame, erange: str, mycolor: str, meanbarcolor: str
     
     base =  alt.Chart(rdf)
     
-    histo = base.mark_area(
+    histo = base.mark_bar().mark_area(
         opacity=0.3,
         interpolate='step'
     ).encode(
