@@ -268,7 +268,7 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy_gev, 
                     ps_histos,
                     cuts_config);
-
+                
                 // STK distributions and charges
                 stk_distributions(
                     bgohits, 

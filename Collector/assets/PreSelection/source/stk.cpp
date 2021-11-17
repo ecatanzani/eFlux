@@ -323,6 +323,12 @@ void track(
                 ps_histos->h_STK_BGO_TOP_spatial_Y_difference_5_clusters->Fill(dyTop, weight);
                 ps_histos->h_STK_BGO_track_angular_difference_5_clusters->Fill(dAngleTrackBgoRec, weight);
             }
+            else if (track->getNhitX() == 6 && track->getNhitY() == 6) {
+                ps_histos->h_STK_BGO_TOP_spatial_difference_6_clusters->Fill(drTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_X_difference_6_clusters->Fill(dxTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_Y_difference_6_clusters->Fill(dyTop, weight);
+                ps_histos->h_STK_BGO_track_angular_difference_6_clusters->Fill(dAngleTrackBgoRec, weight);
+            }
         }
 
         // Sort selected tracks vector
@@ -337,6 +343,8 @@ void track(
             else if (selected_track->getNhitX() == 4 && selected_track->getNhitY() == 4)
                 ps_histos->h_STK_best_track_clusters->Fill(selected_track->getNhitX(), weight);
             else if (selected_track->getNhitX() == 5 && selected_track->getNhitY() == 5)
+                ps_histos->h_STK_best_track_clusters->Fill(selected_track->getNhitX(), weight);
+            else if (selected_track->getNhitX() == 6 && selected_track->getNhitY() == 6)
                 ps_histos->h_STK_best_track_clusters->Fill(selected_track->getNhitX(), weight);
 
             std::vector<int> track_nHoles(2, 0);
@@ -402,6 +410,12 @@ void track(
                 ps_histos->h_STK_BGO_TOP_spatial_X_difference_5_clusters_best_track->Fill(dxTop, weight);
                 ps_histos->h_STK_BGO_TOP_spatial_Y_difference_5_clusters_best_track->Fill(dyTop, weight);
                 ps_histos->h_STK_BGO_track_angular_difference_5_clusters_best_track->Fill(dAngleTrackBgoRec, weight);
+            }
+            else if (selected_track->getNhitX() == 6 && selected_track->getNhitY() == 6) {
+                ps_histos->h_STK_BGO_TOP_spatial_difference_6_clusters_best_track->Fill(drTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_X_difference_6_clusters_best_track->Fill(dxTop, weight);
+                ps_histos->h_STK_BGO_TOP_spatial_Y_difference_6_clusters_best_track->Fill(dyTop, weight);
+                ps_histos->h_STK_BGO_track_angular_difference_6_clusters_best_track->Fill(dAngleTrackBgoRec, weight);
             }
 
             ps_histos->h_STK_clusters_vs_angular_distance_X_best_track->Fill(selected_track->getNhitX(), dAngleTrackBgoRec, weight);

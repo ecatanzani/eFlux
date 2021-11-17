@@ -93,6 +93,11 @@ void charge_distributions(
 
                                 if (psdcharge_cut) {
                                     stk_charge(stkclusters, event_best_track, ps_histos, true);
+
+                                    ps_histos->h_PSD_STK_X_charge_after_PSD_charge_cut->Fill(stk_charges[0], psd_charges[0], weight);
+                                    ps_histos->h_PSD_STK_Y_charge_after_PSD_charge_cut->Fill(stk_charges[1], psd_charges[1], weight);
+                                    ps_histos->h_PSD_STK_charge_after_PSD_charge_cut->Fill(stk_charges[2], psd_charges[2], weight);
+
                                     ps_histos->h_psdcharge_lastcut_pass->Fill(evt_corr_energy_gev, weight);
                                 }
                                 else
@@ -101,6 +106,11 @@ void charge_distributions(
 
                                 if (stkcharge_cut) {
                                     psd_charge(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos, true);
+
+                                    ps_histos->h_PSD_STK_X_charge_after_STK_charge_cut->Fill(stk_charges[0], psd_charges[0], weight);
+                                    ps_histos->h_PSD_STK_Y_charge_after_STK_charge_cut->Fill(stk_charges[1], psd_charges[1], weight);
+                                    ps_histos->h_PSD_STK_charge_after_STK_charge_cut->Fill(stk_charges[2], psd_charges[2], weight);
+
                                     ps_histos->h_stkcharge_lastcut_pass->Fill(evt_corr_energy_gev, weight);
                                 }
                                 else
@@ -161,6 +171,12 @@ void stk_charge_explore(
                 ps_histos->h_STK_charge_Y_5_clusters->Fill(cluster_chargeY, weight);
                 ps_histos->h_STK_charge_5_clusters->Fill(0.5 * (cluster_chargeX + cluster_chargeY), weight);
                 ps_histos->h_STK_charge_2D_5_clusters->Fill(cluster_chargeX, cluster_chargeY, weight);
+            }
+            else if (track->getNhitX() == 6 && track->getNhitY() == 6) {
+                ps_histos->h_STK_charge_X_6_clusters->Fill(cluster_chargeX, weight);
+                ps_histos->h_STK_charge_Y_6_clusters->Fill(cluster_chargeY, weight);
+                ps_histos->h_STK_charge_6_clusters->Fill(0.5 * (cluster_chargeX + cluster_chargeY), weight);
+                ps_histos->h_STK_charge_2D_6_clusters->Fill(cluster_chargeX, cluster_chargeY, weight);
             }
         }
     }
