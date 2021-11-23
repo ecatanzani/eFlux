@@ -140,6 +140,21 @@ void ntuple::fill_nud_info(
 	}
 }
 
+void ntuple::fill_preselectionfilters_info(const p_cuts &preselect) {
+	if (evtfilter_good_event) {
+		preselection_maxelayer_cut = preselect.maxelayer_cut;
+		preselection_maxbarlayer_cut = preselect.maxbarlayer_cut;
+		preselection_bgotrack_cut = preselect.bgotrack_cut;
+		preselection_bgofiducial_cut = preselect.bgofiducial_cut;
+		preselection_nbarlayer13_cut = preselect.nbarlayer13_cut;
+		preselection_maxrms_cut = preselect.maxrms_cut;
+		preselection_trackselection_cut = preselect.trackselection_cut;
+		preselection_psdstkmatch_cut = preselect.psdstkmatch_cut;
+		preselection_psdcharge_cut = preselect.psdcharge_cut;
+		preselection_stkcharge_cut = preselect.stkcharge_cut;
+	}
+}
+
 void ntuple::core_reset()
 {
 	// Trigger

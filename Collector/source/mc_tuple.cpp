@@ -475,6 +475,47 @@ void mc_tuple::branch_tree()
 		"evtfilter_all_cut",
 		&evtfilter_all_cut,
 		"evtfilter_all_cut/O");
+	// Preselection Filters
+	DmpNtupTree->Branch(
+		"preselection_maxelayer_cut",
+		&preselection_maxelayer_cut,
+		"preselection_maxelayer_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_maxbarlayer_cut",
+		&preselection_maxbarlayer_cut,
+		"preselection_maxbarlayer_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_bgotrack_cut",
+		&preselection_bgotrack_cut,
+		"preselection_bgotrack_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_bgofiducial_cut",
+		&preselection_bgofiducial_cut,
+		"preselection_bgofiducial_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_nbarlayer13_cut",
+		&preselection_nbarlayer13_cut,
+		"preselection_nbarlayer13_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_maxrms_cut",
+		&preselection_maxrms_cut,
+		"preselection_maxrms_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_trackselection_cut",
+		&preselection_trackselection_cut,
+		"preselection_trackselection_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_psdstkmatch_cut",
+		&preselection_psdstkmatch_cut,
+		"preselection_psdstkmatch_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_psdcharge_cut",
+		&preselection_psdcharge_cut,
+		"preselection_psdcharge_cut/O");
+	DmpNtupTree->Branch(
+		"preselection_stkcharge_cut",
+		&preselection_stkcharge_cut,
+		"preselection_stkcharge_cut/O");
 }
 
 void mc_tuple::Fill(
@@ -483,7 +524,8 @@ void mc_tuple::Fill(
 	const std::shared_ptr<_tmp_bgo> _bgo_res,
 	const std::shared_ptr<_tmp_simu> _simu_res,
 	const std::shared_ptr<_tmp_energy> _energy_res,
-	const std::shared_ptr<_tmp_nud> _nud_res)
+	const std::shared_ptr<_tmp_nud> _nud_res,
+	const p_cuts &preselection_cuts)
 {
 	fill_trigger_info(_filter_res->evt_trigger_info);
 	fill_filter_info(_filter_res->output);
@@ -518,6 +560,7 @@ void mc_tuple::Fill(
 		_nud_res->total_adc,
 		_nud_res->max_adc,
 		_nud_res->max_channel_ID);
+	fill_preselectionfilters_info(preselection_cuts);
 	DmpNtupTree->Fill();
 }
 

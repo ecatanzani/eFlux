@@ -6,6 +6,7 @@
 #include "config.h"
 #include "particle.h"
 #include "mc_tuple.h"
+#include "preselection.h"
 #include "DmpStkContainer.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
@@ -104,6 +105,8 @@ void mcLoop(
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
+	// Load preselection class
+	preselection preselect;
 	// Load output file
 	outFile.cd();
 	// Create MC tuple objects
@@ -139,8 +142,10 @@ void mcLoop(
 		if (_VERBOSE)
 			UpdateProcessStatus(evIdx, kStep, nevents);
 		// Reset energy class
-		if (evIdx)
+		if (evIdx) {
 			evt_energy.Reset();
+			preselect.Reset();
+		}
 		// Load energy class
 		evt_energy.SetEnergies(
 			simu_primaries->pvpart_ekin,
@@ -201,7 +206,8 @@ void mcLoop(
 				psdVault,
 				stkclusters,
 				stktracks,
-				mc_config.GetActiveCuts());
+				mc_config.GetActiveCuts(),
+				preselect);
 		}
 		
 		// Fill output structures
@@ -211,7 +217,8 @@ void mcLoop(
 			fillBGOTmpStruct(bgoVault),
 			fillSimuTmpStruct(simu_primaries, simu_trajectories),
 			fillEnergyTmpStruct(evt_energy),
-			fillNUDTmpStruct(nudVault));
+			fillNUDTmpStruct(nudVault),
+			preselect.GetPreselectionStatus());
 	}
 
 	if (_VERBOSE)

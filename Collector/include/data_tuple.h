@@ -3,6 +3,7 @@
 
 #include "tuple.h"
 #include "tmpstruct.h"
+#include "preselection.h"
 #include "data_tmpstruct.h"
 
 #include "DmpEvtAttitude.h"
@@ -23,7 +24,8 @@ public:
 		const std::shared_ptr<_tmp_energy_data> _energy_res,
 		const std::shared_ptr<DmpEvtAttitude> attitude,
 		const std::shared_ptr<DmpEvtHeader> header,
-		const std::shared_ptr<_tmp_nud> _nud_res);
+		const std::shared_ptr<_tmp_nud> _nud_res,
+		const p_cuts &preselection_cuts);
 		
 	void Reset();
 	

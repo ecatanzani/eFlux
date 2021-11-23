@@ -2,6 +2,7 @@
 #define TUPLE_H
 
 #include "config.h"
+#include "preselection.h"
 #include "DmpFilterContainer.h"
 #include "DAMPE_geo_structure.h"
 
@@ -60,6 +61,7 @@ protected:
 		const int total_adc,
 		const int max_adc,
 		const int max_channel_id);
+	void fill_preselectionfilters_info(const p_cuts &preselect);
 	void core_reset();
 
 	// Tree
@@ -152,6 +154,17 @@ protected:
 	bool cut_psd_charge = false;
 	bool cut_stk_charge = false;
 	int nActiveCuts = -999;
+	// Preselection Filters
+	bool preselection_maxelayer_cut {false};
+    bool preselection_maxbarlayer_cut {false};
+    bool preselection_bgotrack_cut {false};
+    bool preselection_bgofiducial_cut {false};
+    bool preselection_nbarlayer13_cut {false};
+    bool preselection_maxrms_cut {false};
+    bool preselection_trackselection_cut {false};
+    bool preselection_psdstkmatch_cut {false};
+    bool preselection_psdcharge_cut {false};
+    bool preselection_stkcharge_cut {false};
 };
 
 #endif

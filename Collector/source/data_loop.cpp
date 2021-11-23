@@ -5,6 +5,7 @@
 #include "tmpstruct.h"
 #include "data_tmpstruct.h"
 #include "data_tuple.h"
+#include "preselection.h"
 #include "DmpStkContainer.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
@@ -106,6 +107,8 @@ void rawDataLoop(
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
+	// Load preselection class
+	preselection preselect;
 	// Load output file
 	outFile.cd();
 	// Create DATA tuple objects
@@ -141,8 +144,10 @@ void rawDataLoop(
 		if (_VERBOSE)
 			UpdateProcessStatus(evIdx, kStep, nevents);
 		// Reset energy class
-		if (evIdx)
+		if (evIdx) {
 			evt_energy.Reset();
+			preselect.Reset();
+		}
 		// Load energy class
 		evt_energy.SetRawEnergy(bgorec->GetTotalEnergy());
 		evt_energy.SetCorrEnergy(bgorec->GetElectronEcor());
@@ -192,7 +197,8 @@ void rawDataLoop(
 				psdVault,
 				stkclusters,
 				stktracks,
-				data_config.GetActiveCuts());
+				data_config.GetActiveCuts(),
+				preselect);
 		}
 		
 		// Fill output structures
@@ -203,7 +209,8 @@ void rawDataLoop(
 			fillDataEnergyTmpStruct(evt_energy),
 			attitude,
 			evt_header,
-			fillNUDTmpStruct(nudVault));
+			fillNUDTmpStruct(nudVault),
+			preselect.GetPreselectionStatus());
 	}
 
 	if (_VERBOSE)

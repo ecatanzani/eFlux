@@ -11,7 +11,8 @@ void DmpFilterContainer::Pipeline(
 	DmpPsdContainer &psdVault,
 	const std::shared_ptr<TClonesArray> &stkclusters,
 	const std::shared_ptr<TClonesArray> &stktracks,
-	const active_cuts &acuts)
+	const active_cuts &acuts,
+	preselection &preselect)
 {
 	// **** BGO Fiducial Volume ****
 	// maxElayer_cut
@@ -135,6 +136,63 @@ void DmpFilterContainer::Pipeline(
 			}
 		}
 	}
+
+	// Fill preselection class
+
+	if (output.BGO_fiducial_maxElayer_cut) preselect.SetMaxELayerCut(output.BGO_fiducial_maxElayer_cut);
+	if (output.BGO_fiducial_maxBarLayer_cut) preselect.SetMaxBarLayerCut(output.BGO_fiducial_maxBarLayer_cut);
+	if (output.BGO_fiducial_BGOTrackContainment_cut) preselect.SetBGOTrackCut(output.BGO_fiducial_BGOTrackContainment_cut);
+	if (output.BGO_fiducial) preselect.setBGOFiducialCut(output.BGO_fiducial);
+
+	auto preselect_nbarlayer13_cut = nBarLayer13_cut(
+		bgohits,
+		bgoVault.GetSingleLayerBarNumber(13),
+		bgoTotalE);
+
+	auto preselect_maxrms_cut = maxRms_cut(
+		bgoVault.GetELayer(),
+		bgoVault.GetRmsLayer(),
+		bgoTotalE,
+		cuts);
+
+	if (preselect_nbarlayer13_cut) preselect.SetNBarLayer13Cut(preselect_nbarlayer13_cut);
+	if (preselect_maxrms_cut) preselect.SetMaxRMSCut(preselect_maxrms_cut);
+
+	auto preselect_trackselection_cut = track_selection_cut(
+		bgorec, bgoVault.GetBGOslope(), 
+		bgoVault.GetBGOintercept(), 
+		bgohits, 
+		stkclusters, 
+		stktracks, 
+		cuts);
+
+	if (preselect_trackselection_cut) {
+		
+		auto preselect_psd_stk_match_cut = psd_stk_match_cut(
+			bgoVault.GetBGOslope(),
+			bgoVault.GetBGOintercept(),
+			cuts,
+			psdVault.getPsdClusterIdxBegin(),
+			psdVault.getPsdClusterZ(),
+			psdVault.getPsdClusterMaxECoo());
+
+		auto preselect_psd_charge_cut = psd_charge_cut(
+			psdVault.getPsdClusterMaxE(),
+			psdVault.getPsdClusterIdxMaxE(),
+			psdVault.getHitZ(),
+			psdVault.getGlobalBarID(),
+			cuts);
+		
+		auto preselect_stk_charge_cut = stk_charge_cut(
+			stkclusters,
+			cuts);
+
+		preselect.SetTrackSelectionCut(preselect_trackselection_cut);
+		if (preselect_psd_stk_match_cut) preselect.SetPSDSTKMatchCut(preselect_psd_stk_match_cut);
+		if (preselect_psd_charge_cut) preselect.SetPSDChargeCut(preselect_psd_charge_cut);
+		if (preselect_stk_charge_cut) preselect.SetSTKChargeCut(preselect_stk_charge_cut);
+	}
+
 }
 
 const bool DmpFilterContainer::geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
@@ -890,6 +948,9 @@ void DmpFilterContainer::checkBGOreco(
 	const std::vector<double> bgoRec_intercept,
 	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 {
+	bool bgoreco_status {((bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0) || (bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0)) ? false : true};
+	output.correct_bgo_reco = bgoreco_status;
+#if 0
 	bool bgoreco_status = false;
 	if ((bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0) || (bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0))
 	{
@@ -927,6 +988,7 @@ void DmpFilterContainer::checkBGOreco(
 	else
 		bgoreco_status = true;
 	output.correct_bgo_reco = bgoreco_status;
+#endif
 }
 
 void DmpFilterContainer::check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header)

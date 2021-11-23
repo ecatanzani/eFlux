@@ -5,6 +5,7 @@
 #include "tuple.h"
 #include "tmpstruct.h"
 #include "mc_tmpstruct.h"
+#include "preselection.h"
 
 #include "TVector3.h"
 
@@ -23,7 +24,8 @@ public:
 		const std::shared_ptr<_tmp_bgo> _bgo_res,
 		const std::shared_ptr<_tmp_simu> _simu_res,
 		const std::shared_ptr<_tmp_energy> _energy_res,
-		const std::shared_ptr<_tmp_nud> _nud_res);
+		const std::shared_ptr<_tmp_nud> _nud_res,
+		const p_cuts &preselection_cuts);
 
 	void Reset();
 

@@ -23,6 +23,7 @@
 #include "TClonesArray.h"
 
 #include "config.h"
+#include "preselection.h"
 #include "DmpBgoContainer.h"
 #include "DmpPsdContainer.h"
 
@@ -157,7 +158,8 @@ public:
 		DmpPsdContainer &psdVault,
 		const std::shared_ptr<TClonesArray> &stkclusters,
 		const std::shared_ptr<TClonesArray> &stktracks,
-		const active_cuts &acuts);
+		const active_cuts &acuts,
+		preselection &preselect);
 	void Reset();
 	void CheckGeometry(
 		const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::shared_ptr<DmpEvtSimuPrimaries>(nullptr),
