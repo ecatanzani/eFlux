@@ -5,7 +5,6 @@ Created on Mar 5, 2015
 '''
 
 import sys
-import math
 
 #@ do not remove - can be used for visualizing MIP events
 #import MIPSelection  
@@ -17,9 +16,9 @@ for arg in sys.argv:
         sys.argv.remove(arg)
     
 
-from ROOT import gStyle, gSystem, TH2D, TFile, TClonesArray, TMarker, TLine, TArrow, TEllipse, kRed, kGreen,kBlue, kYellow, kDashed, kDotted, TCanvas, TH1F, kTRUE, gROOT, TChain, TMath, TPaveText, TVector3
+from ROOT import gStyle, gSystem, TH2D, TFile, TClonesArray, TMarker, TLine, TArrow, TEllipse, kRed, kGreen,kBlue, kDashed, kDotted, TCanvas, TH1F, kTRUE, gROOT, TChain, TMath, TPaveText
 gSystem.Load("libDmpEvent.so")
-from ROOT import DmpEvtBgoHits, DmpEvtSimuPrimaries, DmpEvtBgoRec, DmpEvtHeader, DmpEvtPsdHits, DmpStkHkeepHeader, DmpStkTrackHelper
+from ROOT import DmpEvtBgoHits, DmpEvtSimuPrimaries, DmpEvtBgoRec, DmpEvtHeader, DmpEvtPsdHits, DmpStkHkeepHeader, DmpStkTrack
 from array import array
 gROOT.SetBatch(kTRUE)
 
@@ -32,8 +31,8 @@ MEV = 1.
 GEV = 1000.
 TEV = 1000000.
 
-COLORS_FOR_TRACK_MARKERS = [kYellow,kGreen,kBlue]
-SIZES_FOR_TRACK_MARKERS  = [1.5,1,0.5]
+COLORS_FOR_TRACK_MARKERS = [kRed,kGreen,kBlue]
+SIZES_FOR_TRACK_MARKERS  = [2,1,0.5]
 
 
 def deg2rad(deg):
@@ -148,6 +147,7 @@ class validator:
     
     
     #MAX_EVENTS = 10000
+    
     
     def __init__(self, amsconffile, datafilename,maxevents, showprimarydirection):
         #self.canvases = []
@@ -326,7 +326,7 @@ class validator:
         return cluster.getEnergy()
         
             
-    def __plot_event_diplay__(self, canvasname):
+    def __plot_event_diplay__(self, canvasname, event_index):
 
         
         
@@ -485,197 +485,31 @@ class validator:
                     clustertmp.SetMarkerColor(COLORS_FOR_TRACK_MARKERS[i])
                     clustertmp.SetMarkerSize(SIZES_FOR_TRACK_MARKERS[i])
                     hitsfortracky[-1].append(clustertmp)
-
-        track_X_clusters = 4
-        track_Y_clusters = 4
-        track_X_holes = 1
-        track_Y_holes = 1
-        BGO_TopZ = 46
-        selectedTracks = []
-        STK_BGO_delta_position = 40
-        STK_BGO_delta_track = 10
-
-        nSTKladders = 192
-        LadderToLayer = []
-        for ilad in xrange(nSTKladders):
-            iTRB = ilad / 24
-            iladTRB = ilad % 24
-            iPlane = 5 - iladTRB / 4
-            isY = (iTRB / 2 + 1) % 2
-            iLay = iPlane * 2 + isY
-            LadderToLayer.append(iLay)
-
-        selectedTracks = []
-
-        if self.stktracks:
-            for i in xrange(self.stktracks.GetLast()+1):
-                track = self.stktracks.ConstructedAt(i)
                 
-                # Filter on clusters
-                if track.getNhitX() < track_X_clusters or track.getNhitY() < track_Y_clusters:
-                    continue
+        #### Read the external file for best tracks
+        best_track_infile = TFile('tracks_ranking.root', 'READ')
+        if not best_track_infile.IsOpen():
+            print('Error opening input STK best track file [{}]'.format(best_track_infile.GetName()))
+            sys.exit()
+        best_track_tree = best_track_infile.Get('tracks_ranking')
+        best_track = DmpStkTrack()
+        best_track_tree.SetBranchAddress('STKBestTrack', best_track)
+        best_track_tree.GetEntry(event_index)
 
-                # Filter on holes
-                track_nHoles = [0, 0]
-                prevHole = [-2, -2]
-                firstLayer = [-1, -1]
-                lastLayer = [-1, -1]
-                lastPoint = [-1, -1]
-                track_nHoles_cont = [0, 0]
+        x = best_track.getImpactPoint().x()
+        y = best_track.getImpactPoint().y()
+        z = best_track.getImpactPoint().z()
+        incl_x = best_track.getTrackParams().getSlopeX()
+        incl_y = best_track.getTrackParams().getSlopeY()
+        stktracksx.append(TLine(x , z, incl_x * (self.STK_TRACKS_TOP_Z - z) +x, self.STK_TRACKS_TOP_Z))
+        stktracksy.append(TLine(y , z, incl_y * (self.STK_TRACKS_TOP_Z - z) +y, self.STK_TRACKS_TOP_Z))
+        stktracksx[-1].SetLineColor(kRed)
+        stktracksy[-1].SetLineColor(kRed)
+
+        best_track_infile.Close()
+        self.fout.cd()
+
                 
-                for ip in xrange(track.GetNPoints()-1, -1, -1):
-                    if lastLayer[0] == -1:
-                        lastPoint[0] = ip
-                        cluster = track.GetClusterX(ip, self.stkclusters)
-                        hardID = cluster.getLadderHardware()
-                        lastLayer[0] = LadderToLayer[hardID]
-                    if lastLayer[1] == -1:
-                        lastPoint[1] = ip
-                        cluster = track.GetClusterY(ip, self.stkclusters)
-                        hardID = cluster.getLadderHardware()
-                        lastLayer[1] = LadderToLayer[hardID]
-
-                for ip in xrange(lastPoint[0] + 1):
-                    if track.getHitMeasX(ip) > -99999:
-                        cluster = track.GetClusterX(ip, self.stkclusters)
-                        hardID = cluster.getLadderHardware()
-                        if firstLayer[0] == -1:
-                            firstLayer[0] = LadderToLayer[hardID]
-                    else:
-                        if firstLayer[0] != -1:
-                            track_nHoles[0] += 1
-                        if ip == prevHole[0] + 1:
-                            track_nHoles_cont[0] += 1
-                        prevHole[0] = ip
-
-                for ip in xrange(lastPoint[1] + 1):
-                    if track.getHitMeasY(ip) > -99999:
-                        cluster = track.GetClusterY(ip, self.stkclusters)
-                        hardID = cluster.getLadderHardware()
-                        if firstLayer[1] == -1:
-                            firstLayer[1] = LadderToLayer[hardID]
-                    else:
-                        if firstLayer[1] != -1:
-                            track_nHoles[1] += 1
-                        if ip == prevHole[1] + 1:
-                            track_nHoles_cont[1] += 1
-                        prevHole[1] = ip
-
-                if track_nHoles[0] > track_X_holes or track_nHoles[1] > track_Y_holes:
-                    continue
-
-                # Filter on BGO extrapolation
-
-                track_slope = [0, 0]
-                track_intercept = [0, 0]
-                extr_BGO_top = [0, 0]
-
-                track_slope[0] = track.getTrackParams().getSlopeX()
-                track_slope[1] = track.getTrackParams().getSlopeY()
-                track_intercept[0] = track.getTrackParams().getInterceptX()
-                track_intercept[1] = track.getTrackParams().getInterceptY()
-                trackDirection = (track.getDirection()).Unit()
-
-                for coord in xrange(2):
-                    extr_BGO_top[coord] = track_slope[coord] * BGO_TopZ + track_intercept[coord]
-
-                # Evaluate distance between Top STK and BGO points
-                bgoRec_slope = [self.bgorec.GetSlopeXZ(), self.bgorec.GetSlopeYZ()]
-                bgoRec_intercept = [self.bgorec.GetInterceptXZ(), self.bgorec.GetInterceptYZ()]
-
-                vec_s0_a = TVector3(bgoRec_intercept[0], bgoRec_intercept[1], 0.)
-                vec_s1_a = TVector3(bgoRec_intercept[0] + bgoRec_slope[0], bgoRec_intercept[1] + bgoRec_slope[1], 1.)
-                bgoRecDirection = (vec_s1_a - vec_s0_a).Unit()
-
-                topZ = BGO_TopZ
-                topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0]
-                topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1]
-
-                if math.fabs(topX) > BGO_SideXY or math.fabs(topY) > BGO_SideXY:
-                    # possibly enter from the x-sides
-                    if math.fabs(topX) > BGO_SideXY:
-                        if topX > 0:
-                            topX = BGO_SideXY
-                        else:
-                            topX = -BGO_SideXY
-                        topZ = (topX - bgoRec_intercept[0]) / bgoRec_slope[0]
-                        topY = bgoRec_slope[1] * topZ + bgoRec_intercept[1]
-                        # possibly enter from the y-sides
-                        if math.fabs(topY) > BGO_SideXY:
-                            if topY > 0:
-                                topY = BGO_SideXY
-                            else:
-                                topY = -BGO_SideXY
-                            topZ = (topY - bgoRec_intercept[1]) / bgoRec_slope[1]
-                            topX = bgoRec_slope[0] * topZ + bgoRec_intercept[0]
-                    
-                    # enter from the y-sides
-                    elif math.fabs(topY) > BGO_SideXY:
-                        if topY > 0:
-                            topY = BGO_SideXY
-                        else:
-                            topY = -BGO_SideXY
-                        topZ = (topY - bgoRec_intercept[1]) / bgoRec_slope[1]
-                        topX = bgoRec_slope[0] * topZ + bgoRec_intercept[0]
-                
-                bgoRecEntrance = []
-                
-                bgoRecEntrance[0] = topX
-                bgoRecEntrance[1] = topY
-                bgoRecEntrance[2] = topZ
-
-                dxTop = extr_BGO_top[0] - bgoRecEntrance[0]
-                dyTop = extr_BGO_top[1] - bgoRecEntrance[1]
-                drTop = math.sqrt(pow(dxTop, 2) + pow(dyTop, 2))
-
-                # Evaluate angular distance between STK track and BGO Rec track
-                dAngleTrackBgoRec = trackDirection.Angle(bgoRecDirection) * TMath.RadToDeg()
-
-                if drTop > STK_BGO_delta_position:
-                    continue
-                if dAngleTrackBgoRec > STK_BGO_delta_track:
-                    continue
-
-                # Append track to the selected tracks collection 
-                selectedTracks.append(track)
-
-        tHelper = DmpStkTrackHelper(self.stktracks, True, self.bgorec, self.bgohits)
-        tHelper.MergeSort(selectedTracks, DmpStkTrackHelper.TracksCompare)
-
-        if len(selectedTracks):
-            selected_track = selectedTracks[0]
-            x = track.getImpactPoint().x()
-            y = track.getImpactPoint().y()
-            z = track.getImpactPoint().z()
-            incl_x = track.getTrackParams().getSlopeX()
-            incl_y = track.getTrackParams().getSlopeY()
-            stktracksx.append(TLine(x , z, incl_x * (self.STK_TRACKS_TOP_Z - z) +x, self.STK_TRACKS_TOP_Z))
-            stktracksy.append(TLine(y , z, incl_y * (self.STK_TRACKS_TOP_Z - z) +y, self.STK_TRACKS_TOP_Z))
-
-            stktracksx[-1].SetLineColor(kRed)
-            stktracksy[-1].SetLineColor(kRed)
-            stktracksx[-1].SetLineWidth(2)
-            stktracksy[-1].SetLineWidth(2)
-
-            hitsfortrackx.append([])
-            hitsfortracky.append([])
-            for p in xrange(selected_track.GetNPoints()):
-                track_clx = selected_track.GetClusterX(p,self.stkclusters)
-                if not track_clx: continue
-                clustertmp = TMarker(track_clx.GetX(),track_clx.GetZ(),3)
-                clustertmp.SetMarkerColor(kRed)
-                clustertmp.SetMarkerSize(2)
-                hitsfortrackx[-1].append(clustertmp)
-            for p in xrange(selected_track.GetNPoints()):
-                track_cly = selected_track.GetClusterY(p,self.stkclusters)
-                if not track_cly: continue
-                clustertmp = TMarker(track_cly.GetY(),track_cly.GetZ(),3)
-                clustertmp.SetMarkerColor(kRed)
-                clustertmp.SetMarkerSize(2)
-                hitsfortracky[-1].append(clustertmp)
-                    
-
-
         #### add true direction here #####        
         trueDirection_x = None
         trueDirection_y = None
@@ -1630,7 +1464,7 @@ class validator:
             s = self.eventheader.GetSecond()
             ms = self.eventheader.GetMillisecond()
             date = DmpStkHkeepHeader.TimeCode2TimeStamp_PMO(s)
-            self.__plot_event_diplay__("%d_event_%ds_%dms-%s"%(processedevents,s,ms,date))
+            self.__plot_event_diplay__("%d_event_%ds_%dms-%s"%(processedevents,s,ms,date), i)
             processedevents+=1
             
         
@@ -1760,4 +1594,3 @@ def run_script():
     thevalidator.create_plots(skipevents = args["nskipeventdisplays"], nevents = args["neventdisplays"], nstkclusterslayer = nstkclusterslayer, displaysonly = displaysonly, sec = args["timestampsec"] , msec = args["timestampmsec"],mintracks=args["mintracks"],maxtracks=args["maxtracks"],minbgoenergy=args["minbgoenergy"],maxbgoenergy=args["maxbgoenergy"])
     
 run_script()            
-
