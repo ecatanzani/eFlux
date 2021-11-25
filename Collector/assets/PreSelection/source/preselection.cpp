@@ -22,12 +22,17 @@
 #include "DmpSimuTrajectory.h"
 #include "DmpEvtSimuPrimaries.h"
 
+#include "DmpStkTrack.h"
+
 #include "DmpIOSvc.h"
 #include "DmpCore.h"
 #include "DmpFilterOrbit.h"
 
 #include "TChain.h"
 #include "TClonesArray.h"
+
+#include "TFile.h"
+#include "TTree.h"
 
 inline bool SAACheck(const std::shared_ptr<DmpEvtHeader> evt_header, const std::shared_ptr<DmpFilterOrbit> pFilter) {
     return pFilter->IsInSAA(evt_header->GetSecond()) ? false : true;
@@ -181,6 +186,8 @@ void preselection(const in_pars &input_pars) {
     std::shared_ptr<histos> ps_histos = std::make_shared<histos>(econfig, input_pars.mc_flag);
 
     if (input_pars.verbose) std::cout << "\n\nNumber of events: " << nevents << std::endl;
+    
+    std::vector<DmpStkTrack> myBestTrack (nevents);
 
     for (unsigned int evIdx = 0; evIdx < nevents; ++evIdx) {
 
@@ -195,6 +202,21 @@ void preselection(const in_pars &input_pars) {
         evt_energy_gev = evt_energy*gev;
         evt_corr_energy_gev = evt_corr_energy*gev;
         ps_histos->SetWeight(simu_primaries, evt_corr_energy_gev);
+
+        if (input_pars.rank_tracks) 
+            myBestTrack[evIdx] = get_best_track(
+                bgorec,
+                get_bgo_slope(bgorec),
+                get_bgo_intercept(bgorec),
+                bgohits,
+                stkclusters,
+                stktracks,
+                (cuts_config->GetCutsConfig()).STK_BGO_delta_position,
+                (cuts_config->GetCutsConfig()).STK_BGO_delta_track,
+                (cuts_config->GetCutsConfig()).track_X_clusters,
+                (cuts_config->GetCutsConfig()).track_Y_clusters,
+                (cuts_config->GetCutsConfig()).track_X_holes,
+                (cuts_config->GetCutsConfig()).track_Y_holes);
 
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
             
@@ -318,4 +340,25 @@ void preselection(const in_pars &input_pars) {
     }
 
     ps_histos->Write(input_pars.output_wd, input_pars.verbose);
+
+    if (input_pars.rank_tracks) {
+        
+        const char* ranking_out_file = "tracks_ranking.root";
+        std::shared_ptr<TFile> tracks_ranking_outfile = std::make_shared<TFile>(ranking_out_file, "RECREATE");
+        std::shared_ptr<TTree> tracks_ranking_tree = std::make_shared<TTree>("tracks_ranking", "STK best tracks");
+        DmpStkTrack track;
+        tracks_ranking_tree->Branch("STKBestTrack", &track);    
+    
+        for (auto& elm : myBestTrack) {
+            track = elm;
+            tracks_ranking_tree->Fill();
+        }
+
+        tracks_ranking_tree->Write();
+        tracks_ranking_outfile->Close();
+
+        if (input_pars.verbose) std::cout << "STK tracks ranking file has been written [" << ranking_out_file << "]\n\n";
+    }
+    
+    
 }

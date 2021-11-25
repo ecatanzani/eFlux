@@ -425,3 +425,79 @@ void track(
             stk_charge_explore(stkclusters, selected_track, ps_histos);
         }
     }
+
+DmpStkTrack get_best_track(
+	const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::vector<double> bgoRec_slope,
+	const std::vector<double> bgoRec_intercept,
+	const std::shared_ptr<DmpEvtBgoHits> bgohits,
+	const std::shared_ptr<TClonesArray> stkclusters,
+	const std::shared_ptr<TClonesArray> stktracks,
+    const double STK_BGO_delta_position,
+    const double STK_BGO_delta_track,
+    const int track_X_clusters,
+    const int track_Y_clusters,
+	const int track_X_holes,
+    const int track_Y_holes) {
+        
+        TVector3 bgoRecEntrance;
+        TVector3 bgoRecDirection;
+        std::vector<int> LadderToLayer(nSTKladders, -1);
+        std::vector<DmpStkTrack *> selectedTracks;
+
+        ladders(LadderToLayer);
+        BGO_vectors(bgoRecEntrance, bgoRecDirection, bgoRec_slope, bgoRec_intercept);
+
+        for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx) {
+            std::vector<int> track_nHoles(2, 0);
+            std::vector<double> track_slope(2, 0);
+            std::vector<double> track_intercept(2, 0);
+            std::vector<double> extr_BGO_top(2, 0);
+            
+            auto track = static_cast<DmpStkTrack *>(stktracks->ConstructedAt(trIdx));
+
+            if (track->getNhitX() < track_X_clusters || track->getNhitY() < track_Y_clusters)
+                continue;
+            
+            track_points(
+                track,
+                stkclusters,
+                LadderToLayer,
+                track_nHoles);
+
+            if (track_nHoles[0] > track_X_holes || track_nHoles[1] > track_Y_holes)
+                continue;
+
+            // Find slope and intercept
+            track_slope[0] = track->getTrackParams().getSlopeX();
+            track_slope[1] = track->getTrackParams().getSlopeY();
+            track_intercept[0] = track->getTrackParams().getInterceptX();
+            track_intercept[1] = track->getTrackParams().getInterceptY();
+            TVector3 trackDirection = (track->getDirection()).Unit();
+
+            for (int coord = 0; coord < 2; ++coord)
+                extr_BGO_top[coord] = track_slope[coord] * BGO_TopZ + track_intercept[coord];
+
+            double dxTop = extr_BGO_top[0] - bgoRecEntrance[0];
+            double dyTop = extr_BGO_top[1] - bgoRecEntrance[1];
+            double drTop = sqrt(pow(dxTop, 2) + pow(dyTop, 2));
+            double dAngleTrackBgoRec = trackDirection.Angle(bgoRecDirection) * TMath::RadToDeg();
+
+            if (drTop > STK_BGO_delta_position)
+                continue;
+            if (dAngleTrackBgoRec > STK_BGO_delta_track)
+                continue;
+
+            selectedTracks.push_back(track);
+        }
+
+        DmpStkTrack best_track;
+        
+        DmpStkTrackHelper tHelper(stktracks.get(), true, bgorec.get(), bgohits.get());
+        tHelper.MergeSort(selectedTracks, &DmpStkTrackHelper::TracksCompare);
+
+        if (selectedTracks.size())
+            best_track = static_cast<DmpStkTrack>(*(selectedTracks[0]));
+            
+        return best_track;
+    }

@@ -16,8 +16,9 @@ struct in_pars
 	bool verbose {false};
 
 	// Tasks
-	bool mc_flag = false;
-	bool rawdata_flag = false;
+	bool mc_flag {false};
+	bool rawdata_flag {false};
+	bool rank_tracks {false};
 };
 
 #endif

@@ -56,4 +56,18 @@ extern void track(
     const double evt_corr_energy_gev,
     std::shared_ptr<histos> ps_histos);
 
+extern DmpStkTrack get_best_track(
+	const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    const std::vector<double> bgoRec_slope,
+	const std::vector<double> bgoRec_intercept,
+	const std::shared_ptr<DmpEvtBgoHits> bgohits,
+	const std::shared_ptr<TClonesArray> stkclusters,
+	const std::shared_ptr<TClonesArray> stktracks,
+    const double STK_BGO_delta_position,
+    const double STK_BGO_delta_track,
+    const int track_X_clusters,
+    const int track_Y_clusters,
+	const int track_X_holes,
+    const int track_Y_holes);
+
 #endif

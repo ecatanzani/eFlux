@@ -18,8 +18,9 @@ int main(int argc, char **argv) {
 	opt.addUsage("Tasks: ");
 	opt.addUsage("");
 
-	opt.addUsage(" -m  --mc           .......... MC event loop");
-	opt.addUsage(" -r  --raw_data     .......... Raw data event loop");
+	opt.addUsage(" -m  --mc               .......... MC event loop");
+	opt.addUsage(" -r  --raw_data         .......... Raw data event loop");
+	opt.addUsage(" -t  --tracks_rank      .......... Rank STK tracks");
 
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
@@ -28,6 +29,7 @@ int main(int argc, char **argv) {
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("mc", 'm');
 	opt.setFlag("raw_data", 'r');
+	opt.setFlag("tracks_rank", 't');
 	
 	opt.processCommandArgs(argc, argv);
 
@@ -54,6 +56,8 @@ int main(int argc, char **argv) {
 		input_pars.mc_flag = true;
 	if (opt.getFlag("raw_data") || opt.getFlag('r'))
 		input_pars.rawdata_flag = true;
+	if (opt.getFlag("tracks_rank") || opt.getFlag('t'))
+		input_pars.rank_tracks = true;
 	
 	preselection(input_pars);
 	
