@@ -1,6 +1,7 @@
 #ifndef STK_H
 #define STK_H
 
+#include <tuple>
 #include <memory>
 
 #include "histos.h"
@@ -56,18 +57,15 @@ extern void track(
     const double evt_corr_energy_gev,
     std::shared_ptr<histos> ps_histos);
 
-extern DmpStkTrack get_best_track(
+extern std::tuple<bool, DmpStkTrack> get_best_track(
 	const std::shared_ptr<DmpEvtBgoRec> bgorec,
+	std::shared_ptr<DmpEvtHeader> evt_header,
     const std::vector<double> bgoRec_slope,
 	const std::vector<double> bgoRec_intercept,
 	const std::shared_ptr<DmpEvtBgoHits> bgohits,
 	const std::shared_ptr<TClonesArray> stkclusters,
 	const std::shared_ptr<TClonesArray> stktracks,
-    const double STK_BGO_delta_position,
-    const double STK_BGO_delta_track,
-    const int track_X_clusters,
-    const int track_Y_clusters,
-	const int track_X_holes,
-    const int track_Y_holes);
+	const double evt_energy,
+	std::shared_ptr<config> _config);
 
 #endif

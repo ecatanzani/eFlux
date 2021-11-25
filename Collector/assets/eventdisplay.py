@@ -180,6 +180,7 @@ class validator:
         self.eventheader  = None
         self.mcprimaries  = None
         self.truthtrajectory = None
+        self.stkbesttrack = None
         
         self.tree.SetBranchAddress("StkClusterCollection",self.stkclusters)
         self.b_stkclusters = self.tree.GetBranch("StkClusterCollection")
@@ -244,7 +245,10 @@ class validator:
             min_ams_z = min(self.all_ams_z)
             self.AMS_TOP_Z    = max_ams_z + (max_ams_z - min_ams_z)* 0.2
             self.AMS_BOTTOM_Z = min_ams_z - (max_ams_z - min_ams_z)* 0.2
-             
+        
+        if "STKBestTrack" in self.branchnames:
+            self.stkbesttrack = DmpStkTrack()
+            self.tree.SetBranchAddress("STKBestTrack", self.stkbesttrack)
     
     def __get_ams_parameters__(self):
         self.amsparameters = []
@@ -487,28 +491,17 @@ class validator:
                     hitsfortracky[-1].append(clustertmp)
                 
         #### Read the external file for best tracks
-        best_track_infile = TFile('tracks_ranking.root', 'READ')
-        if not best_track_infile.IsOpen():
-            print('Error opening input STK best track file [{}]'.format(best_track_infile.GetName()))
-            sys.exit()
-        best_track_tree = best_track_infile.Get('tracks_ranking')
-        best_track = DmpStkTrack()
-        best_track_tree.SetBranchAddress('STKBestTrack', best_track)
-        best_track_tree.GetEntry(event_index)
-
-        x = best_track.getImpactPoint().x()
-        y = best_track.getImpactPoint().y()
-        z = best_track.getImpactPoint().z()
-        incl_x = best_track.getTrackParams().getSlopeX()
-        incl_y = best_track.getTrackParams().getSlopeY()
+        x = self.stkbesttrack.getImpactPoint().x()
+        y = self.stkbesttrack.getImpactPoint().y()
+        z = self.stkbesttrack.getImpactPoint().z()
+        incl_x = self.stkbesttrack.getTrackParams().getSlopeX()
+        incl_y = self.stkbesttrack.getTrackParams().getSlopeY()
         stktracksx.append(TLine(x , z, incl_x * (self.STK_TRACKS_TOP_Z - z) +x, self.STK_TRACKS_TOP_Z))
         stktracksy.append(TLine(y , z, incl_y * (self.STK_TRACKS_TOP_Z - z) +y, self.STK_TRACKS_TOP_Z))
         stktracksx[-1].SetLineColor(kRed)
         stktracksy[-1].SetLineColor(kRed)
-
-        best_track_infile.Close()
-        self.fout.cd()
-
+        stktracksx[-1].SetLineWidth(2)
+        stktracksy[-1].SetLineWidth(2)
                 
         #### add true direction here #####        
         trueDirection_x = None

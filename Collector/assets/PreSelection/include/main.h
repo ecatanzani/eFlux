@@ -18,7 +18,7 @@ struct in_pars
 	// Tasks
 	bool mc_flag {false};
 	bool rawdata_flag {false};
-	bool rank_tracks {false};
+	bool focus {false};
 };
 
 #endif

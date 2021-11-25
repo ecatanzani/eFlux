@@ -21,17 +21,26 @@ struct cuts_config {
     double STK_single_charge        {0};    // STK charge cut on single view
 };
 
+struct event_display {
+    int min_track_X_clusters {0};
+    int min_track_Y_clusters {0};
+    int track_X_clusters {0};
+    int track_Y_clusters {0};
+};
+
 class config {
     public:
         config(const std::string energy_config_path);
         ~config(){};
         const cuts_config GetCutsConfig();
+        const event_display GetEventDisplayConfig();
 
     private:
         std::string parse_config_file(std::string wd,std::string config_file);
         void get_config_info(std::string parsed_config);
 
         cuts_config cuts;
+        event_display event_display_config;
 };
 
 #endif

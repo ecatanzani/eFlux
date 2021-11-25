@@ -72,7 +72,6 @@ void stk_distributions(
                         auto weight {ps_histos->GetWeight()};
 
                         if (trackselection_cut) {
-
                             ps_histos->h_BGOrec_sumRms_flast_after_track_selection->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                             if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
                                 ps_histos->h_BGOrec_sumRms_flast_after_track_selection_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
@@ -426,78 +425,67 @@ void track(
         }
     }
 
-DmpStkTrack get_best_track(
+std::tuple<bool, DmpStkTrack> get_best_track(
 	const std::shared_ptr<DmpEvtBgoRec> bgorec,
+    std::shared_ptr<DmpEvtHeader> evt_header, 
     const std::vector<double> bgoRec_slope,
 	const std::vector<double> bgoRec_intercept,
 	const std::shared_ptr<DmpEvtBgoHits> bgohits,
 	const std::shared_ptr<TClonesArray> stkclusters,
 	const std::shared_ptr<TClonesArray> stktracks,
-    const double STK_BGO_delta_position,
-    const double STK_BGO_delta_track,
-    const int track_X_clusters,
-    const int track_Y_clusters,
-	const int track_X_holes,
-    const int track_Y_holes) {
+    const double evt_energy,
+    std::shared_ptr<config> _config) {
         
-        TVector3 bgoRecEntrance;
-        TVector3 bgoRecDirection;
-        std::vector<int> LadderToLayer(nSTKladders, -1);
-        std::vector<DmpStkTrack *> selectedTracks;
+        std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
+        std::unique_ptr<DmpStkContainer> stkVault = std::make_unique<DmpStkContainer>();
+        
+        best_track event_best_track;
 
-        ladders(LadderToLayer);
-        BGO_vectors(bgoRecEntrance, bgoRecDirection, bgoRec_slope, bgoRec_intercept);
+        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (_config->GetCutsConfig()).bgo_layer_min_energy);
+        stkVault->scanSTKHits(stkclusters);
 
-        for (int trIdx = 0; trIdx < stktracks->GetLast() + 1; ++trIdx) {
-            std::vector<int> track_nHoles(2, 0);
-            std::vector<double> track_slope(2, 0);
-            std::vector<double> track_intercept(2, 0);
-            std::vector<double> extr_BGO_top(2, 0);
-            
-            auto track = static_cast<DmpStkTrack *>(stktracks->ConstructedAt(trIdx));
+        bool isTrackInteresting {false};
 
-            if (track->getNhitX() < track_X_clusters || track->getNhitY() < track_Y_clusters)
-                continue;
-            
-            track_points(
-                track,
-                stkclusters,
-                LadderToLayer,
-                track_nHoles);
+        if (check_trigger(evt_header)) {
 
-            if (track_nHoles[0] > track_X_holes || track_nHoles[1] > track_Y_holes)
-                continue;
+            auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), (_config->GetCutsConfig()).bgo_max_energy_ratio, evt_energy);
+            auto maxbarlayer_cut = maxBarLayer_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetiMaxLayer(), bgoVault->GetIdxBarMaxLayer());
+            auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), (_config->GetCutsConfig()).bgo_shower_axis_delta);
 
-            // Find slope and intercept
-            track_slope[0] = track->getTrackParams().getSlopeX();
-            track_slope[1] = track->getTrackParams().getSlopeY();
-            track_intercept[0] = track->getTrackParams().getInterceptX();
-            track_intercept[1] = track->getTrackParams().getInterceptY();
-            TVector3 trackDirection = (track->getDirection()).Unit();
+            auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
 
-            for (int coord = 0; coord < 2; ++coord)
-                extr_BGO_top[coord] = track_slope[coord] * BGO_TopZ + track_intercept[coord];
+            if (bgofiducial_cut) {
+                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
+                if (nbarlayer13_cut) {
+                    auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (_config->GetCutsConfig()).bgo_shower_width);
 
-            double dxTop = extr_BGO_top[0] - bgoRecEntrance[0];
-            double dyTop = extr_BGO_top[1] - bgoRecEntrance[1];
-            double drTop = sqrt(pow(dxTop, 2) + pow(dyTop, 2));
-            double dAngleTrackBgoRec = trackDirection.Angle(bgoRecDirection) * TMath::RadToDeg();
+                    if (maxrms_cut) {
 
-            if (drTop > STK_BGO_delta_position)
-                continue;
-            if (dAngleTrackBgoRec > STK_BGO_delta_track)
-                continue;
+                        auto trackselection_cut = track_selection_cut(
+                            bgorec, 
+                            bgoVault->GetBGOslope(), 
+                            bgoVault->GetBGOintercept(), 
+                            bgohits, 
+                            stkclusters, 
+                            stktracks, 
+                            event_best_track,
+                            (_config->GetCutsConfig()).STK_BGO_delta_position,
+                            (_config->GetCutsConfig()).STK_BGO_delta_track,
+                            (_config->GetEventDisplayConfig()).min_track_X_clusters,
+                            (_config->GetEventDisplayConfig()).min_track_Y_clusters,
+                            (_config->GetCutsConfig()).track_X_holes,
+                            (_config->GetCutsConfig()).track_Y_holes);
 
-            selectedTracks.push_back(track);
+                        if (trackselection_cut) {
+                            if (event_best_track.myBestTrack.getNhitX() == (_config->GetEventDisplayConfig()).
+                            track_X_clusters && event_best_track.myBestTrack.getNhitY() == (_config->GetEventDisplayConfig()).track_Y_clusters) {
+                                isTrackInteresting = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-        DmpStkTrack best_track;
-        
-        DmpStkTrackHelper tHelper(stktracks.get(), true, bgorec.get(), bgohits.get());
-        tHelper.MergeSort(selectedTracks, &DmpStkTrackHelper::TracksCompare);
-
-        if (selectedTracks.size())
-            best_track = static_cast<DmpStkTrack>(*(selectedTracks[0]));
             
-        return best_track;
+        return std::tuple<bool, DmpStkTrack> (isTrackInteresting, event_best_track.myBestTrack);
     }

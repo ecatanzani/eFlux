@@ -91,9 +91,30 @@ void config::get_config_info(std::string parsed_config)
 			input_stream >> tmp_str;
 			cuts.STK_single_charge = stod(tmp_str, &sz);
         }
+
+		if (!strcmp(tmp_str.c_str(), "eventdisplay_min_track_X_clusters")) {
+			input_stream >> tmp_str;
+			event_display_config.min_track_X_clusters = stoi(tmp_str, &sz);
+		}
+		if (!strcmp(tmp_str.c_str(), "eventdisplay_min_track_Y_clusters")) {
+			input_stream >> tmp_str;
+			event_display_config.min_track_Y_clusters = stoi(tmp_str, &sz);
+		}
+		if (!strcmp(tmp_str.c_str(), "eventdisplay_track_X_clusters")) {
+			input_stream >> tmp_str;
+			event_display_config.track_X_clusters = stoi(tmp_str, &sz);
+		}
+		if (!strcmp(tmp_str.c_str(), "eventdisplay_track_Y_clusters")) {
+			input_stream >> tmp_str;
+			event_display_config.track_Y_clusters = stoi(tmp_str, &sz);
+		}
 	}
 }
 
 const cuts_config config::GetCutsConfig() {
     return cuts;
+}
+
+const event_display config::GetEventDisplayConfig() {
+	return event_display_config;
 }
