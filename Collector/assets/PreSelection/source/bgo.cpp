@@ -929,3 +929,97 @@ std::tuple<std::vector<double>, std::vector<double>> get_shorew_axis_reco_projec
         double bottomY = brorec_slope[1] * BGO_BottomZ + bgorec_intercept[1];
         return std::tuple<std::vector<double>, std::vector<double>>(std::vector<double>{topX, bottomX}, std::vector<double>{topY, bottomY});
 }
+
+const bool isEventHittingEdgeBars(
+    std::shared_ptr<DmpEvtBgoHits> bgohits, 
+    std::shared_ptr<DmpEvtBgoRec> bgorec, 
+    std::shared_ptr<DmpEvtHeader> evt_header, 
+    std::shared_ptr<TClonesArray> stkclusters, 
+    std::shared_ptr<TClonesArray> stktracks,
+    std::shared_ptr<DmpEvtPsdHits> psdhits,
+    const double evt_energy,
+    std::shared_ptr<config> cuts_config) {
+        
+        bool is_hitting_edge_bars {false};
+
+        std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
+        std::unique_ptr<DmpStkContainer> stkVault = std::make_unique<DmpStkContainer>();
+        std::unique_ptr<DmpPsdContainer> psdVault = std::make_unique<DmpPsdContainer>();
+
+        best_track event_best_track;
+        psd_cluster_match clu_matching;
+
+        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
+        stkVault->scanSTKHits(stkclusters);
+        psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
+
+        if (check_trigger(evt_header)) {
+            
+            auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
+            
+            if (nbarlayer13_cut) {
+                auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (cuts_config->GetCutsConfig()).bgo_shower_width);
+
+                if (maxrms_cut) {
+                    auto trackselection_cut = track_selection_cut(
+                        bgorec, 
+                        bgoVault->GetBGOslope(), 
+                        bgoVault->GetBGOintercept(), 
+                        bgohits, 
+                        stkclusters, 
+                        stktracks, 
+                        event_best_track,
+                        (cuts_config->GetCutsConfig()).STK_BGO_delta_position,
+                        (cuts_config->GetCutsConfig()).STK_BGO_delta_track,
+                        (cuts_config->GetCutsConfig()).track_X_clusters,
+                        (cuts_config->GetCutsConfig()).track_Y_clusters,
+                        (cuts_config->GetCutsConfig()).track_X_holes,
+                        (cuts_config->GetCutsConfig()).track_Y_holes);
+                
+                    if (trackselection_cut) {
+                        auto psdstkmatch_cut = psd_stk_match_cut(
+                            bgoVault->GetBGOslope(), 
+                            bgoVault->GetBGOintercept(),
+                            psdVault->getPsdClusterIdxBegin(),
+                            psdVault->getPsdClusterZ(),
+                            psdVault->getPsdClusterMaxECoo(),
+                            event_best_track,
+                            clu_matching,
+                            (cuts_config->GetCutsConfig()).STK_PSD_delta_position);
+
+                        if (psdstkmatch_cut) {
+                            auto psdcharge_cut = psd_charge_cut(
+                                psdVault->getPsdClusterMaxE(),
+                                event_best_track,
+                                clu_matching,
+                                (cuts_config->GetCutsConfig()).PSD_sharge_sum,
+                                (cuts_config->GetCutsConfig()).PSD_single_charge);
+
+                            if (psdcharge_cut)
+                                is_hitting_edge_bars = ! maxBarLayer_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetiMaxLayer(), bgoVault->GetIdxBarMaxLayer());
+                        }
+                    }
+                }
+            }
+        }
+
+        return is_hitting_edge_bars;
+    }
+
+const bool isEventOutsideBGOFiducial(
+    std::shared_ptr<DmpEvtBgoHits> bgohits, 
+    std::shared_ptr<DmpEvtBgoRec> bgorec, 
+    std::shared_ptr<DmpEvtHeader> evt_header,
+    const double evt_energy,
+    std::shared_ptr<config> cuts_config) {
+
+        bool is_outside_bgo_fiducial {false};
+        std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
+        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
+
+        if (check_trigger(evt_header))
+            is_outside_bgo_fiducial = ! BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), (cuts_config->GetCutsConfig()).bgo_shower_axis_delta);
+
+        return is_outside_bgo_fiducial;
+    
+    }

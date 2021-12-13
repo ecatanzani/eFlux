@@ -64,4 +64,21 @@ extern unsigned int count_bars_on_layer(const std::vector<double> layer_energy, 
 extern double get_max_rms(const std::vector<double> rms_layer, const std::vector<double> layer_energy, const double bgo_total_raw_energy);
 extern std::tuple<std::vector<double>, std::vector<double>> get_shorew_axis_reco_projections(const std::vector<double> brorec_slope, const std::vector<double> bgorec_intercept);
 
+extern const bool isEventHittingEdgeBars(
+    std::shared_ptr<DmpEvtBgoHits> bgohits, 
+    std::shared_ptr<DmpEvtBgoRec> bgorec, 
+    std::shared_ptr<DmpEvtHeader> evt_header, 
+    std::shared_ptr<TClonesArray> stkclusters, 
+    std::shared_ptr<TClonesArray> stktracks,
+    std::shared_ptr<DmpEvtPsdHits> psdhits,
+    const double evt_energy,
+    std::shared_ptr<config> cuts_config);
+
+extern const bool isEventOutsideBGOFiducial(
+    std::shared_ptr<DmpEvtBgoHits> bgohits, 
+    std::shared_ptr<DmpEvtBgoRec> bgorec, 
+    std::shared_ptr<DmpEvtHeader> evt_header,
+    const double evt_energy,
+    std::shared_ptr<config> cuts_config);
+    
 #endif

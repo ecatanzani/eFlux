@@ -36,6 +36,11 @@
 #include "TFile.h"
 #include "TTree.h"
 
+// Event display parameters
+#define _BEST_TRACK     true
+#define _BGO_EDGE       false
+#define _OUTSIDE_BGO    false
+
 inline bool SAACheck(const std::shared_ptr<DmpEvtHeader> evt_header, const std::shared_ptr<DmpFilterOrbit> pFilter) {
     return pFilter->IsInSAA(evt_header->GetSecond()) ? false : true;
 }
@@ -118,6 +123,10 @@ void focus(const in_pars &input_pars) {
 	if (fStkKalmanTracksFound)
 		evtch->SetBranchAddress("StkKalmanTracks", &stktracks);
 
+    // Register PSD container
+	std::shared_ptr<DmpEvtPsdHits> psdhits = std::make_shared<DmpEvtPsdHits>();
+	evtch->SetBranchAddress("DmpPsdHits", &psdhits);
+
     // Register the orbit filter for DATA SAA check
     std::shared_ptr<DmpFilterOrbit> pFilter;
     if (input_pars.rawdata_flag) {
@@ -162,25 +171,38 @@ void focus(const in_pars &input_pars) {
         bool isTrackInteresting {false};
         DmpStkTrack tmp_best_track;
 
-        if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
+        if (evt_corr_energy_gev>=(_config->GetEventDisplayConfig()).evt_min_energy && evt_corr_energy_gev<=(_config->GetEventDisplayConfig()).evt_max_energy) {
             
             if (check_event(get_bgo_slope(bgorec), get_bgo_intercept(bgorec), simu_primaries, evt_header, pFilter, input_pars.mc_flag)) {
-                std::tie(isTrackInteresting, tmp_best_track) = 
-                    get_best_track(
-                        bgorec,
-                        evt_header,
-                        get_bgo_slope(bgorec),
-                        get_bgo_intercept(bgorec),
-                        bgohits,
-                        stkclusters,
-                        stktracks,
-                        evt_energy,
-                        _config);
+                
+                if (_BEST_TRACK) {
+                    std::tie(isTrackInteresting, tmp_best_track) = 
+                        get_best_track(
+                            bgorec,
+                            evt_header,
+                            get_bgo_slope(bgorec),
+                            get_bgo_intercept(bgorec),
+                            bgohits,
+                            stkclusters,
+                            stktracks,
+                            evt_energy,
+                            _config);
 
-                if (isTrackInteresting) {
-                    focus_events.push_back(evIdx);
-                    best_track.push_back(tmp_best_track);
-            }
+                    if (isTrackInteresting) {
+                        focus_events.push_back(evIdx);
+                        best_track.push_back(tmp_best_track);
+                    }
+                }
+
+                if (_BGO_EDGE) {
+                    if (isEventHittingEdgeBars(bgohits, bgorec, evt_header, stkclusters, stktracks, psdhits, evt_energy, _config))
+                        focus_events.push_back(evIdx);
+                }
+
+                if (_OUTSIDE_BGO) {
+                    if (isEventOutsideBGOFiducial(bgohits, bgorec, evt_header, evt_energy, _config))
+                        focus_events.push_back(evIdx);
+                }
             }
         }
     }
@@ -191,11 +213,11 @@ void focus(const in_pars &input_pars) {
     TFile* focus_tuple_output = TFile::Open(output_file.c_str(), "RECREATE");
     auto focus_tree = static_cast<TTree*>(evtch->CloneTree(0));
     DmpStkTrack track;
-    focus_tree->Branch("STKBestTrack", &track);
+    //focus_tree->Branch("STKBestTrack", &track);
 
     for (unsigned int ev {0}; ev<focus_events.size(); ++ev) {
         evtch->GetEvent(focus_events[ev]);
-        track = best_track[ev];
+        //track = best_track[ev];
         focus_tree->Fill();
     }
 

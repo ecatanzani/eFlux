@@ -22,6 +22,8 @@ struct cuts_config {
 };
 
 struct event_display {
+    double evt_min_energy {0};
+    double evt_max_energy {0};
     int min_track_X_clusters {0};
     int min_track_Y_clusters {0};
     int track_X_clusters {0};
