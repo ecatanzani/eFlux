@@ -20,12 +20,13 @@ int main(int argc, char **argv)
 	opt.addUsage("TMVA learning method: ");
 	opt.addUsage("");
 
-	opt.addUsage(" -m  --method                      .......... <TMVA_learning_method_1>                         .......... TMVA learning/classifying method");
+	opt.addUsage(" -m  --method                      .......... <TMVA_learning_method>                           .......... TMVA learning/classifying method");
 
 	opt.addUsage("");
 
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
+	opt.setOption("config", 'c');
 	opt.setOption("workdir", 'w');
 	opt.setOption("output", 'o');
 	opt.setOption("outputdir", 'd');
@@ -50,6 +51,8 @@ int main(int argc, char **argv)
 	
 	if (opt.getValue("input") || opt.getValue('i'))
 		input_args.input_list = opt.getValue('i');
+	if (opt.getValue("config") || opt.getValue('c'))
+		input_args.config_dir = opt.getValue('c');
 	if (opt.getValue("workdir") || opt.getValue('w'))
 		input_args.config_dir = opt.getValue('w');
 	if (opt.getValue("output") || opt.getValue('o'))

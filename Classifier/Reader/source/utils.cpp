@@ -6,6 +6,6 @@ std::string expand_output_path(
 {
     auto result = output;
     if (opt.getValue("outputdir") || opt.getValue('d'))
-        result += "/aladin_output.root";
+        result += "/electron_selection_output.root";
     return result;
 }
