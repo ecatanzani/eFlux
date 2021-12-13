@@ -490,18 +490,19 @@ class validator:
                     clustertmp.SetMarkerSize(SIZES_FOR_TRACK_MARKERS[i])
                     hitsfortracky[-1].append(clustertmp)
                 
-        #### Read the external file for best tracks
-        x = self.stkbesttrack.getImpactPoint().x()
-        y = self.stkbesttrack.getImpactPoint().y()
-        z = self.stkbesttrack.getImpactPoint().z()
-        incl_x = self.stkbesttrack.getTrackParams().getSlopeX()
-        incl_y = self.stkbesttrack.getTrackParams().getSlopeY()
-        stktracksx.append(TLine(x , z, incl_x * (self.STK_TRACKS_TOP_Z - z) +x, self.STK_TRACKS_TOP_Z))
-        stktracksy.append(TLine(y , z, incl_y * (self.STK_TRACKS_TOP_Z - z) +y, self.STK_TRACKS_TOP_Z))
-        stktracksx[-1].SetLineColor(kRed)
-        stktracksy[-1].SetLineColor(kRed)
-        stktracksx[-1].SetLineWidth(2)
-        stktracksy[-1].SetLineWidth(2)
+        #### Add best track information
+        if "STKBestTrack" in self.branchnames:
+            x = self.stkbesttrack.getImpactPoint().x()
+            y = self.stkbesttrack.getImpactPoint().y()
+            z = self.stkbesttrack.getImpactPoint().z()
+            incl_x = self.stkbesttrack.getTrackParams().getSlopeX()
+            incl_y = self.stkbesttrack.getTrackParams().getSlopeY()
+            stktracksx.append(TLine(x , z, incl_x * (self.STK_TRACKS_TOP_Z - z) +x, self.STK_TRACKS_TOP_Z))
+            stktracksy.append(TLine(y , z, incl_y * (self.STK_TRACKS_TOP_Z - z) +y, self.STK_TRACKS_TOP_Z))
+            stktracksx[-1].SetLineColor(kRed)
+            stktracksy[-1].SetLineColor(kRed)
+            stktracksx[-1].SetLineWidth(2)
+            stktracksy[-1].SetLineWidth(2)
                 
         #### add true direction here #####        
         trueDirection_x = None
@@ -657,7 +658,7 @@ class validator:
             palette_bgo_x.SetY1NDC(paly1)
             palette_bgo_x.SetY2NDC(paly2)
         except:
-            print "failde to change z palette for bgo"
+            print "failed to change z palette for bgo"
         
         maxpsdz = max(self.psdhits.fEnergy) if len(self.psdhits.fEnergy) else self.PSD_HIT_ENERGY_CUT
 
@@ -676,7 +677,7 @@ class validator:
             palette_psd_x.SetY1NDC(paly3)
             palette_psd_x.SetY2NDC(paly4)
         except:
-            print "failde to change z palette for psd"
+            print "failed to change z palette for psd"
         #palette.SetLabelSize(0.01)
 
         #map(lambda a: a.Draw("same"), psdhitsx)
@@ -722,7 +723,7 @@ class validator:
             palette_bgo_y.SetY1NDC(paly1)
             palette_bgo_y.SetY2NDC(paly2)
         except:
-            print "failde to change z palette for bgo"
+            print "failed to change z palette for bgo"
 
 
         histo_psd_y_1.GetZaxis().SetRangeUser(0,maxpsdz)
@@ -738,7 +739,7 @@ class validator:
             palette_psd_y.SetY1NDC(paly3)
             palette_psd_y.SetY2NDC(paly4)
         except:
-            print "failde to change z palette for psd"
+            print "failed to change z palette for psd"
 
         #map(lambda a: a.Draw("same"), psdhitsy)
         map(lambda a: a.Draw("same"), stktracksy)
