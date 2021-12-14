@@ -11,6 +11,7 @@
 #include "TTreeReaderValue.h"
 #include <ROOT/RDataFrame.hxx>
 
+#define _NO_STK_CHARGE true
 struct best_lambda
 {
     std::vector<std::vector<double>> rms;
@@ -181,7 +182,7 @@ void tmva_vars(
     
     _fr_energy_filter = _mc ? _fr_energy_filter.Define("simu_energy_w_corr", simuEnergyWeight, {"simu_energy_w"}) : _fr_energy_filter.Define("simu_energy_w_corr", "1.").Define("simu_energy_w", "1.");
 
-    auto _fr_preselected = _fr_energy_filter.Filter("evtfilter_all_cut==true");
+    auto _fr_preselected = _NO_STK_CHARGE ? _fr_energy_filter.Filter("evtfilter_psd_charge_cut==true") :  _fr_energy_filter.Filter("evtfilter_all_cut==true");
 
     std::cout << "\n\n**** Filter statistics ****\n";
     std::cout << "***************************\n";
