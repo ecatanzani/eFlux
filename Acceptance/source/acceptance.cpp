@@ -8,6 +8,8 @@
 #include "TFile.h"
 #include <ROOT/RDataFrame.hxx>
 
+#define _NO_STK_CHARGE true
+
 void buildAcceptance(const in_args input_args)
 {
     std::shared_ptr<parser> evt_parser = std::make_shared<parser>(input_args.input_list, input_args.verbose);
@@ -52,9 +54,11 @@ void buildAcceptance(const in_args input_args)
     auto h_bgo_fiducial = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_BGO_fiducial==true")
                                                 .Histo1D({"h_bgo_fiducial", "generated events - BGO fiducial cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
-    auto h_all_cut = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+    
+    auto h_all_cut = _NO_STK_CHARGE ? _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_psd_charge_cut==true")
+                                                .Histo1D({"h_all_cut", "generated events - all cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev") :  _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_all_cut==true")
-                                                .Filter("evtfilter_psd_charge_measurement==true")
                                                 .Histo1D({"h_all_cut", "generated events - all cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
 
     h_gen->Sumw2();
