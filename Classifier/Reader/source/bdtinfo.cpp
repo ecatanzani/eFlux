@@ -197,4 +197,7 @@ void ExtractBDTInfo(in_args input_args)
 
     electron_tree->Write();
     output_file->Close();
+
+    if (input_args.verbose)
+        std::cout << "\nOutput TFile has been written [" << input_args.output_path << "]\n";
 }
