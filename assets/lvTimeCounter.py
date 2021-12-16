@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 import time
 import datetime
-from ROOT import gSystem
+from ROOT import *
 from argparse import ArgumentParser
 
 def data_to_timestamp(data):
     return int(time.mktime(datetime.datetime.strptime(data, "%d/%m/%Y").timetuple()))
+
+def compute_livetime(start_date, end_date):
+    gSystem.Load("libDmpService.so")
+    return DmpSvcLiveTime.GetInstance().GetLiveTime(data_to_timestamp(start_date), data_to_timestamp(end_date))
 
 def main(args=None):
     parser = ArgumentParser(usage="Usage: %(prog)s [options]", description="DAMPE live-time facility")
@@ -18,19 +22,16 @@ def main(args=None):
     if opts.start_date is None:
         opts.start_date = "01/01/2016"
         if opts.verbose:
-            print('The start date has not been provided... default one is used[{}]'.format(opts.start_date))
+            print('\nThe start date has not been provided... default one is used[{}]'.format(opts.start_date))
     if opts.end_date is None:
         opts.end_date = "03/11/2021"
         if opts.verbose:
-            print('The end date has not been provided... default one is used[{}]'.format(opts.end_date))
+            print('\nThe end date has not been provided... default one is used[{}]'.format(opts.end_date))
 
     if (opts.verbose):
-        print('Computing LiveTime in the following interval: [{}, {}]'.format(opts.start_date, opts.end_date))
-    gSystem.Load("libDmpService.so")
-    _time_instance = DmpSvcLiveTime.GetInstance(data_to_timestamp(opts.start_date), data_to_timestamp(opts.end_date))
-    live_time = _time_instance.GetLiveTime()
+        print('\n\nComputing LiveTime in the following interval: [{}, {}]\n\n'.format(opts.start_date, opts.end_date))
     
-    print('LiveTime: {}'.format(live_time))
+    print('LiveTime: {}'.format(compute_livetime(opts.start_date, opts.end_date)))
 
 
 if __name__ == '__main__':
