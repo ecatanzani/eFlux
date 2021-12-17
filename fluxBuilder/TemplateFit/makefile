@@ -19,8 +19,8 @@ DIPS_LIBS = $(shell root-config --ldflags) $(shell root-config --libs)
 S_DIR  = $(TOP)/source/
 S_INC  = $(TOP)/include/
 
-ANYOPT_SRC = $(TOP)/../deps/AnyOption/anyoption.cpp
-ANYOPT_INC = $(TOP)/../deps/AnyOption
+ANYOPT_SRC = $(TOP)/../../deps/AnyOption/anyoption.cpp
+ANYOPT_INC = $(TOP)/../../deps/AnyOption
 
 DEBUG_DIR    = Debug/obj
 RELEASE_DIR  = Release/obj
