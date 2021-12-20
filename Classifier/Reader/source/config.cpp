@@ -23,7 +23,6 @@ std::string config::parse_config_file(
 	input_file.close();
 	return input_string;
 }
-
 void config::get_config_info(std::string parsed_config)
 {
 	std::string tmp_str;
@@ -195,15 +194,15 @@ void config::get_local_config_info(std::string parsed_config) {
 		if (!strcmp(tmp_str.c_str(), "high_energy_weights")) input_stream >> he_weights;
 		if (!strcmp(tmp_str.c_str(), "low_energy_classifier_cut")) { 
 			input_stream >> tmp_str;
-			le_c_cut = stoi(tmp_str, &sz); 
+			le_c_cut = stod(tmp_str, &sz); 
 		}
 		if (!strcmp(tmp_str.c_str(), "medium_energy_classifier_cut")) { 
 			input_stream >> tmp_str;
-			me_c_cut = stoi(tmp_str, &sz); 
+			me_c_cut = stod(tmp_str, &sz); 
 		}
 		if (!strcmp(tmp_str.c_str(), "high_energy_classifier_cut")) { 
 			input_stream >> tmp_str;
-			he_c_cut = stoi(tmp_str, &sz); 
+			he_c_cut = stod(tmp_str, &sz); 
 		}
 	}
 }
