@@ -88,40 +88,40 @@ inline void linkTreeVariables(std::shared_ptr<TChain> evtch, data_vars &vars) {
 }
 
 inline void sync_vars(const data_vars &vars, bdt_vars &tmva_vars) {
-    tmva_vars.rmslayer_norm_1 = vars.rmslayer_norm_1;
-    tmva_vars.rmslayer_norm_2 = vars.rmslayer_norm_2;
-    tmva_vars.rmslayer_norm_3 = vars.rmslayer_norm_3;
-    tmva_vars.rmslayer_norm_4 = vars.rmslayer_norm_4;
-    tmva_vars.rmslayer_norm_5 = vars.rmslayer_norm_5;
-    tmva_vars.rmslayer_norm_6 = vars.rmslayer_norm_6;
-    tmva_vars.rmslayer_norm_7 = vars.rmslayer_norm_7;
-    tmva_vars.rmslayer_norm_8 = vars.rmslayer_norm_8;
-    tmva_vars.rmslayer_norm_9 = vars.rmslayer_norm_9;
-    tmva_vars.rmslayer_norm_10 = vars.rmslayer_norm_10;
-    tmva_vars.rmslayer_norm_11 = vars.rmslayer_norm_11;
-    tmva_vars.rmslayer_norm_12 = vars.rmslayer_norm_12;
-    tmva_vars.rmslayer_norm_13 = vars.rmslayer_norm_13;
-    tmva_vars.rmslayer_norm_14 = vars.rmslayer_norm_14;
+    tmva_vars.rmslayer_norm_1 = static_cast<float>(vars.rmslayer_norm_1);
+    tmva_vars.rmslayer_norm_2 = static_cast<float>(vars.rmslayer_norm_2);
+    tmva_vars.rmslayer_norm_3 = static_cast<float>(vars.rmslayer_norm_3);
+    tmva_vars.rmslayer_norm_4 = static_cast<float>(vars.rmslayer_norm_4);
+    tmva_vars.rmslayer_norm_5 = static_cast<float>(vars.rmslayer_norm_5);
+    tmva_vars.rmslayer_norm_6 = static_cast<float>(vars.rmslayer_norm_6);
+    tmva_vars.rmslayer_norm_7 = static_cast<float>(vars.rmslayer_norm_7);
+    tmva_vars.rmslayer_norm_8 = static_cast<float>(vars.rmslayer_norm_8);
+    tmva_vars.rmslayer_norm_9 = static_cast<float>(vars.rmslayer_norm_9);
+    tmva_vars.rmslayer_norm_10 = static_cast<float>(vars.rmslayer_norm_10);
+    tmva_vars.rmslayer_norm_11 = static_cast<float>(vars.rmslayer_norm_11);
+    tmva_vars.rmslayer_norm_12 = static_cast<float>(vars.rmslayer_norm_12);
+    tmva_vars.rmslayer_norm_13 = static_cast<float>(vars.rmslayer_norm_13);
+    tmva_vars.rmslayer_norm_14 = static_cast<float>(vars.rmslayer_norm_14);
 
-    tmva_vars.fraclayer_norm_1 = vars.fraclayer_norm_1;
-    tmva_vars.fraclayer_norm_2 = vars.fraclayer_norm_2;
-    tmva_vars.fraclayer_norm_3 = vars.fraclayer_norm_3;
-    tmva_vars.fraclayer_norm_4 = vars.fraclayer_norm_4;
-    tmva_vars.fraclayer_norm_5 = vars.fraclayer_norm_5;
-    tmva_vars.fraclayer_norm_6 = vars.fraclayer_norm_6;
-    tmva_vars.fraclayer_norm_7 = vars.fraclayer_norm_7;
-    tmva_vars.fraclayer_norm_8 = vars.fraclayer_norm_8;
-    tmva_vars.fraclayer_norm_9 = vars.fraclayer_norm_9;
-    tmva_vars.fraclayer_norm_10 = vars.fraclayer_norm_10;
-    tmva_vars.fraclayer_norm_11 = vars.fraclayer_norm_11;
-    tmva_vars.fraclayer_norm_12 = vars.fraclayer_norm_12;
-    tmva_vars.fraclayer_norm_13 = vars.fraclayer_norm_13;
-    tmva_vars.fraclayer_norm_14 = vars.fraclayer_norm_14;
+    tmva_vars.fraclayer_norm_1 = static_cast<float>(vars.fraclayer_norm_1);
+    tmva_vars.fraclayer_norm_2 = static_cast<float>(vars.fraclayer_norm_2);
+    tmva_vars.fraclayer_norm_3 = static_cast<float>(vars.fraclayer_norm_3);
+    tmva_vars.fraclayer_norm_4 = static_cast<float>(vars.fraclayer_norm_4);
+    tmva_vars.fraclayer_norm_5 = static_cast<float>(vars.fraclayer_norm_5);
+    tmva_vars.fraclayer_norm_6 = static_cast<float>(vars.fraclayer_norm_6);
+    tmva_vars.fraclayer_norm_7 = static_cast<float>(vars.fraclayer_norm_7);
+    tmva_vars.fraclayer_norm_8 = static_cast<float>(vars.fraclayer_norm_8);
+    tmva_vars.fraclayer_norm_9 = static_cast<float>(vars.fraclayer_norm_9);
+    tmva_vars.fraclayer_norm_10 = static_cast<float>(vars.fraclayer_norm_10);
+    tmva_vars.fraclayer_norm_11 = static_cast<float>(vars.fraclayer_norm_11);
+    tmva_vars.fraclayer_norm_12 = static_cast<float>(vars.fraclayer_norm_12);
+    tmva_vars.fraclayer_norm_13 = static_cast<float>(vars.fraclayer_norm_13);
+    tmva_vars.fraclayer_norm_14 = static_cast<float>(vars.fraclayer_norm_14);
 
-    tmva_vars.sumrms_norm = vars.sumrms_norm;
-    tmva_vars.fraclastlayer_norm = vars.fraclastlayer_norm;
-    tmva_vars.xtrl_norm = vars.xtrl_norm;
-    tmva_vars.xtrl = vars.xtrl;
+    tmva_vars.sumrms_norm = static_cast<float>(vars.sumrms_norm);
+    tmva_vars.fraclastlayer_norm = static_cast<float>(vars.fraclastlayer_norm);
+    tmva_vars.xtrl_norm = static_cast<float>(vars.xtrl_norm);
+    tmva_vars.xtrl = static_cast<float>(vars.xtrl);
 }
 
 void ExtractBDTInfo(in_args input_args)
@@ -146,7 +146,7 @@ void ExtractBDTInfo(in_args input_args)
     bdt_vars tmva_vars;
     data_vars vars;
 
-    // Attach avriables to reader
+    // Attach variables to reader
     addVariableToReader(tmva_LE_reader, tmva_vars);
     addVariableToReader(tmva_ME_reader, tmva_vars);
     addVariableToReader(tmva_HE_reader, tmva_vars);
@@ -167,7 +167,7 @@ void ExtractBDTInfo(in_args input_args)
     for (unsigned int evidx=0; evidx<list_parser->GetEvtTree()->GetEntries(); ++evidx) {
         list_parser->GetEvtTree()->GetEntry(evidx);
         sync_vars(vars, tmva_vars);
-        is_electron =false;
+        is_electron = false;
 
         if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100) {
             tmva_classifier = tmva_LE_reader->EvaluateMVA(input_args.learning_method.c_str());
