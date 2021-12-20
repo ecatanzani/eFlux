@@ -179,7 +179,7 @@ void ExtractBDTInfo(in_args input_args)
             if (tmva_classifier>sw_config->GetMEClassifierCut())
                 is_electron = true;
         }
-        else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<10000) {
+        else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<=10000) {
             tmva_classifier = tmva_HE_reader->EvaluateMVA(input_args.learning_method.c_str());
             if (tmva_classifier>sw_config->GetHEClassifierCut())
                 is_electron = true;
