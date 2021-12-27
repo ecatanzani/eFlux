@@ -158,10 +158,11 @@ void ExtractBDTInfo(in_args input_args)
     linkTreeVariables(list_parser->GetEvtTree(), vars);
 
     // Clone TChain
-    std::shared_ptr<TTree> electron_tree = std::shared_ptr<TTree>(static_cast<TTree*>(list_parser->GetEvtTree()->CloneTree(0)));
+    double tmva_classifier {0};
+    std::unique_ptr<TTree> electron_tree = std::unique_ptr<TTree>(static_cast<TTree*>(list_parser->GetEvtTree()->CloneTree(0)));
+    electron_tree->Branch("tmva_classifier", &tmva_classifier, "tmva_classifier/D");
 
     // Loop on the events
-    double tmva_classifier;
     double gev {0.001};
     bool is_electron;
     for (unsigned int evidx=0; evidx<list_parser->GetEvtTree()->GetEntries(); ++evidx) {
