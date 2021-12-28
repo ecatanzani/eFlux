@@ -119,7 +119,7 @@ void extractClassifier(
         ROOT::RDataFrame fr(*mytree);
 
         // Build histos
-        auto bdt_binning = createLinearBinning(-10, 10, 100);
+        auto bdt_binning = createLinearBinning(-1, 1, 100);
         auto xtrl_binning = createLinearBinning(0, 1000, 1000);
         auto h_classifier = fr.Histo2D<double, double>({"h_classifier", "XTRL/BDT classifiers; BDT; xtrl", (int)bdt_binning.size()-1, &bdt_binning[0], (int)xtrl_binning.size()-1, &xtrl_binning[0]}, "tmva_classifier", "xtrl");
         auto h_classifier_energy = fr.Define("enrgy_corr_gev", "energy_corr*0.001").Histo3D<double, double, double>({"h_classifier_energy", "XTRL/BDT classifiers; BDT; xtrl; Corrected Energy [GeV]", (int)bdt_binning.size()-1, &bdt_binning[0], (int)xtrl_binning.size()-1, &xtrl_binning[0], (int)energy_binning.size()-1, &energy_binning[0]}, "tmva_classifier", "xtrl", "enrgy_corr_gev");
