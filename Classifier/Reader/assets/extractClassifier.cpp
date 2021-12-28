@@ -122,14 +122,19 @@ void extractClassifier(
         auto bdt_binning = createLinearBinning(-10, 10, 100);
         auto xtrl_binning = createLinearBinning(0, 1000, 1000);
         auto h_classifier = fr.Histo2D<double, double>({"h_classifier", "XTRL/BDT classifiers; BDT; xtrl", (int)bdt_binning.size()-1, &bdt_binning[0], (int)xtrl_binning.size()-1, &xtrl_binning[0]}, "tmva_classifier", "xtrl");
-        auto h_classifier_energy = fr.Histo3D<double, double, double>({"h_classifier_energy", "XTRL/BDT classifiers; BDT; xtrl; Corrected Energy [GeV]", (int)bdt_binning.size()-1, &bdt_binning[0], (int)xtrl_binning.size()-1, &xtrl_binning[0], (int)energy_binning.size()-1, &energy_binning[0]}, "tmva_classifier", "xtrl");
+        auto h_classifier_energy = fr.Define("enrgy_corr_gev", "energy_corr*0.001").Histo3D<double, double, double>({"h_classifier_energy", "XTRL/BDT classifiers; BDT; xtrl; Corrected Energy [GeV]", (int)bdt_binning.size()-1, &bdt_binning[0], (int)xtrl_binning.size()-1, &xtrl_binning[0], (int)energy_binning.size()-1, &energy_binning[0]}, "tmva_classifier", "xtrl", "enrgy_corr_gev");
+        auto h_xtrl = fr.Histo1D<double>({ "h_xtrl", "XTRL; XTRL [m]", (int)xtrl_binning.size()-1, &xtrl_binning[0]}, "xtrl");
+        auto h_bdt = fr.Histo1D<double>({ "h_bdt", "BDT; BDT", (int)bdt_binning.size()-1, &bdt_binning[0]}, "tmva_classifier");
+        auto h_energy = fr.Define("energy_corr_gev", "energy_corr*0.001").Histo1D<double>({ "h_energy", "Energy; Energy [GeV]", (int)energy_binning.size()-1, &energy_binning[0]}, "energy_corr_gev");
 
         std::vector<ROOT::RDF::RResultPtr<TH2D>> h_classifier_energy_bin((int)energy_binning.size()-1);
-        for (unsigned int bIdx = 0; bIdx < energy_binning.size()-1; ++bIdx)
-            h_classifier_energy_bin[bIdx] = fr.Histo2D<double, double>({
+        for (unsigned int bIdx {1}; bIdx <= energy_binning.size()-1; ++bIdx) {
+            auto bin_filter = [bIdx](int energy_bin) -> bool { return static_cast<unsigned int>(energy_bin) == bIdx; };
+            h_classifier_energy_bin[bIdx-1] = fr.Filter(bin_filter, {"energy_bin"}).Histo2D<double, double>({
                 (std::string("h_classifier_energy_bin_") + std::to_string(bIdx)).c_str(), 
                 ("XTRL/BDT classifiers - energy bin " + std::to_string(bIdx+1) + std::string("; BDT; xtrl")).c_str(), 
                 (int)bdt_binning.size()-1, &bdt_binning[0], (int)xtrl_binning.size()-1, &xtrl_binning[0]}, "tmva_classifier", "xtrl");
+        }
 
         TFile* outfile {TFile::Open(output_file, "RECREATE")};
         if (infile->IsZombie()) {
@@ -139,8 +144,11 @@ void extractClassifier(
 
         h_classifier->Write();
         h_classifier_energy->Write();
-        for (unsigned int bIdx = 0; bIdx < energy_binning.size()-1; ++bIdx)
-            h_classifier_energy_bin[bIdx]->Write();
+        h_xtrl->Write();
+        h_bdt->Write();
+        h_energy->Write();
+        for (auto& elm : h_classifier_energy_bin)
+            elm->Write();
 
         outfile->Close();
     }
