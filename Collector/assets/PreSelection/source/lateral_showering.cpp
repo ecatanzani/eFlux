@@ -188,3 +188,83 @@ void lateral_showering_distributions_lastcut(
             }
         }
     }
+
+const bool isNumberOfLastLayerBarsTooHigh(
+    std::shared_ptr<DmpEvtBgoHits> bgohits, 
+    std::shared_ptr<DmpEvtBgoRec> bgorec, 
+    std::shared_ptr<DmpEvtHeader> evt_header, 
+    std::shared_ptr<TClonesArray> stkclusters, 
+    std::shared_ptr<TClonesArray> stktracks,
+    std::shared_ptr<DmpEvtPsdHits> psdhits,
+    const double evt_energy,
+    std::shared_ptr<config> cuts_config) {
+
+        bool isNumberOfLastLayerBarsTooHigh {false};
+
+        std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
+        std::unique_ptr<DmpStkContainer> stkVault = std::make_unique<DmpStkContainer>();
+        std::unique_ptr<DmpPsdContainer> psdVault = std::make_unique<DmpPsdContainer>();
+
+        best_track event_best_track;
+        psd_cluster_match clu_matching;
+
+        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
+        stkVault->scanSTKHits(stkclusters);
+        psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
+
+        if (check_trigger(evt_header)) {
+            auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), (cuts_config->GetCutsConfig()).bgo_max_energy_ratio, evt_energy);
+            auto maxbarlayer_cut = maxBarLayer_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetiMaxLayer(), bgoVault->GetIdxBarMaxLayer());
+            auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), (cuts_config->GetCutsConfig()).bgo_shower_axis_delta);
+
+            auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
+                
+            if (bgofiducial_cut) {
+                auto trackselection_cut = track_selection_cut(
+                        bgorec, 
+                        bgoVault->GetBGOslope(), 
+                        bgoVault->GetBGOintercept(), 
+                        bgohits, 
+                        stkclusters, 
+                        stktracks, 
+                        event_best_track,
+                        (cuts_config->GetCutsConfig()).STK_BGO_delta_position,
+                        (cuts_config->GetCutsConfig()).STK_BGO_delta_track,
+                        (cuts_config->GetCutsConfig()).track_X_clusters,
+                        (cuts_config->GetCutsConfig()).track_Y_clusters,
+                        (cuts_config->GetCutsConfig()).track_X_holes,
+                        (cuts_config->GetCutsConfig()).track_Y_holes);
+
+                if (trackselection_cut) {
+                    auto psdstkmatch_cut = psd_stk_match_cut(
+                        bgoVault->GetBGOslope(), 
+                        bgoVault->GetBGOintercept(),
+                        psdVault->getPsdClusterIdxBegin(),
+                        psdVault->getPsdClusterZ(),
+                        psdVault->getPsdClusterMaxECoo(),
+                        event_best_track,
+                        clu_matching,
+                        (cuts_config->GetCutsConfig()).STK_PSD_delta_position);
+
+                    if (psdstkmatch_cut) {
+                        auto psdcharge_cut = psd_charge_cut(
+                            psdVault->getPsdClusterMaxE(),
+                            event_best_track,
+                            clu_matching,
+                            (cuts_config->GetCutsConfig()).PSD_sharge_sum,
+                            (cuts_config->GetCutsConfig()).PSD_single_charge);
+
+                        if (psdcharge_cut) {
+                            auto stkcharge_cut = stk_charge_cut(stkclusters, event_best_track, (cuts_config->GetCutsConfig()).STK_single_charge);
+
+                            if (stkcharge_cut)
+                                isNumberOfLastLayerBarsTooHigh = ! nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
+                        }
+                    }
+                }
+            }
+        }
+
+        return isNumberOfLastLayerBarsTooHigh;
+    }
+

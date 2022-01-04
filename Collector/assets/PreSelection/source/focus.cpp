@@ -37,9 +37,10 @@
 #include "TTree.h"
 
 // Event display parameters
-#define _BEST_TRACK     true
-#define _BGO_EDGE       false
-#define _OUTSIDE_BGO    false
+#define _BEST_TRACK         false
+#define _BGO_EDGE           false
+#define _OUTSIDE_BGO        false
+#define _N_BAR_LAST_LAYER   true
 
 inline bool SAACheck(const std::shared_ptr<DmpEvtHeader> evt_header, const std::shared_ptr<DmpFilterOrbit> pFilter) {
     return pFilter->IsInSAA(evt_header->GetSecond()) ? false : true;
@@ -201,6 +202,11 @@ void focus(const in_pars &input_pars) {
 
                 if (_OUTSIDE_BGO) {
                     if (isEventOutsideBGOFiducial(bgohits, bgorec, evt_header, evt_energy, _config))
+                        focus_events.push_back(evIdx);
+                }
+
+                if (_N_BAR_LAST_LAYER) {
+                    if (isNumberOfLastLayerBarsTooHigh(bgohits, bgorec, evt_header, stkclusters, stktracks, psdhits, evt_energy, _config))
                         focus_events.push_back(evIdx);
                 }
             }
