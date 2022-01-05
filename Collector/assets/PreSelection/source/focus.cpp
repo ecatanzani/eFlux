@@ -37,10 +37,10 @@
 #include "TTree.h"
 
 // Event display parameters
-#define _BEST_TRACK         false
+#define _BEST_TRACK         true
 #define _BGO_EDGE           false
 #define _OUTSIDE_BGO        false
-#define _N_BAR_LAST_LAYER   true
+#define _N_BAR_LAST_LAYER   false
 
 inline bool SAACheck(const std::shared_ptr<DmpEvtHeader> evt_header, const std::shared_ptr<DmpFilterOrbit> pFilter) {
     return pFilter->IsInSAA(evt_header->GetSecond()) ? false : true;
