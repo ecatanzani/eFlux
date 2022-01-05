@@ -354,6 +354,7 @@ void track(
             // Get the X and Y clusters
             ps_histos->h_STK_X_clusters_best_track->Fill(selected_track->getNhitX(), weight);
             ps_histos->h_STK_Y_clusters_best_track->Fill(selected_track->getNhitY(), weight);
+            ps_histos->h_STK_clusters_best_track->Fill(selected_track->getNhitX(), selected_track->getNhitY(), weight);
             ps_histos->h_STK_X_clusters_vs_energy_best_track->Fill(evt_corr_energy_gev, selected_track->getNhitX(), weight);
             ps_histos->h_STK_Y_clusters_vs_energy_best_track->Fill(evt_corr_energy_gev, selected_track->getNhitY(), weight);
             

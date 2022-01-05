@@ -209,6 +209,7 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
 
     h_STK_X_clusters_best_track = std::make_shared<TH1D>("h_STK_X_clusters_best_track", "STK X clusters", 10, 0, 10);
     h_STK_Y_clusters_best_track = std::make_shared<TH1D>("h_STK_Y_clusters_best_track", "STK Y clusters", 10, 0, 10);
+    h_STK_clusters_best_track = std::make_shared<TH2D>("h_STK_clusters_best_track", "STK clusters; STK X clusters; STK Y clusters", 10, 0, 10, 10, 0, 10);
     h_STK_X_holes_best_track = std::make_shared<TH1D>("h_STK_X_holes_best_track", "STK X holes", 10, 0, 10);
     h_STK_Y_holes_best_track = std::make_shared<TH1D>("h_STK_Y_holes_best_track", "STK Y holes", 10, 0, 10);
 
@@ -314,6 +315,9 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_charge_X = std::make_shared<TH1D>("h_PSD_charge_X", "PSD Charge - X view; PSD Charge X; entries", 300, 0, 40);
     h_PSD_charge_Y = std::make_shared<TH1D>("h_PSD_charge_Y", "PSD Charge - Y view; PSD Charge Y; entries", 300, 0, 40);
     h_PSD_charge = std::make_shared<TH1D>("h_PSD_charge", "PSD Charge; PSD Charge; entries", 300, 0, 40);
+
+    h_PSD_charge_cleaned = std::make_shared<TH1D>("h_PSD_charge_cleaned", "PSD Charge; PSD Charge; entries", 200, 0, 30);
+
     h_PSD_charge_2D = std::make_shared<TH2D>("h_PSD_charge_2D", "PSD Charge; PSD Charge X; PSD Charge Y", 300, 0, 40, 300, 0, 40);
     h_PSD_sum_of_XY_charges = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 800, 0, 200);
 
@@ -1008,6 +1012,7 @@ void histos::Write(const std::string output_wd, const bool verbose) {
 
     h_STK_X_clusters_best_track->Write();
     h_STK_Y_clusters_best_track->Write();
+    h_STK_clusters_best_track->Write();
     h_STK_X_holes_best_track->Write();
     h_STK_Y_holes_best_track->Write();
 
@@ -1115,6 +1120,7 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_PSD_charge_nocut->Write();
     h_PSD_charge_2D_nocut->Write();
     h_PSD_sum_of_XY_charges_nocut->Write();
+    h_PSD_charge_cleaned->Write();
 
     outfile->mkdir("PSD_charges_after_STK_charge_cut");
     outfile->cd("PSD_charges_after_STK_charge_cut");

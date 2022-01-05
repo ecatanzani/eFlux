@@ -91,6 +91,9 @@ void charge_distributions(
                                 ps_histos->h_PSD_STK_Y_charge->Fill(stk_charges[1], psd_charges[1], weight);
                                 ps_histos->h_PSD_STK_charge->Fill(stk_charges[2], psd_charges[2], weight);
 
+                                if (abs(psd_charges[0]-psd_charges[1])<=2)
+                                    ps_histos->h_PSD_charge_cleaned->Fill(psd_charges[2], weight);
+
                                 if (psdcharge_cut) {
                                     stk_charge(stkclusters, event_best_track, ps_histos, true);
 

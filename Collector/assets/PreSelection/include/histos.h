@@ -385,6 +385,7 @@ class histos {
 
         std::shared_ptr<TH1D> h_STK_X_clusters_best_track;
         std::shared_ptr<TH1D> h_STK_Y_clusters_best_track;
+        std::shared_ptr<TH2D> h_STK_clusters_best_track;
         std::shared_ptr<TH1D> h_STK_X_holes_best_track;
         std::shared_ptr<TH1D> h_STK_Y_holes_best_track;
 
@@ -488,6 +489,7 @@ class histos {
         std::shared_ptr<TH1D> h_PSD_charge_X;
         std::shared_ptr<TH1D> h_PSD_charge_Y;
         std::shared_ptr<TH1D> h_PSD_charge;
+        std::shared_ptr<TH1D> h_PSD_charge_cleaned;
         std::shared_ptr<TH2D> h_PSD_charge_2D;
         std::shared_ptr<TH1D> h_PSD_sum_of_XY_charges;
 
