@@ -96,8 +96,6 @@ def main(args=None):
 
     parser.add_argument("-c", "--config", type=str,
                         dest='config', help='Software Config Directory')
-    parser.add_argument("-f", "--file", type=int, dest='file',
-                        const=100, nargs='?', help='files to process in job')
     parser.add_argument("-x", "--executable", type=str,
                         dest='executable', help='Analysis script')
 
@@ -107,7 +105,6 @@ def main(args=None):
         "input_data_list": opts.list,
         "config": opts.config,
         "output": opts.output,
-        "files": opts.file,
         "executable": opts.executable,
         "verbose": opts.verbose
     }
