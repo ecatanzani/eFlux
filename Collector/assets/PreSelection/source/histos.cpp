@@ -315,11 +315,13 @@ histos::histos(std::shared_ptr<energy_config> econfig, const bool mc) {
     h_PSD_charge_X = std::make_shared<TH1D>("h_PSD_charge_X", "PSD Charge - X view; PSD Charge X; entries", 300, 0, 40);
     h_PSD_charge_Y = std::make_shared<TH1D>("h_PSD_charge_Y", "PSD Charge - Y view; PSD Charge Y; entries", 300, 0, 40);
     h_PSD_charge = std::make_shared<TH1D>("h_PSD_charge", "PSD Charge; PSD Charge; entries", 300, 0, 40);
-
-    h_PSD_charge_cleaned = std::make_shared<TH1D>("h_PSD_charge_cleaned", "PSD Charge; PSD Charge; entries", 200, 0, 30);
-
     h_PSD_charge_2D = std::make_shared<TH2D>("h_PSD_charge_2D", "PSD Charge; PSD Charge X; PSD Charge Y", 300, 0, 40, 300, 0, 40);
     h_PSD_sum_of_XY_charges = std::make_shared<TH1D>("h_PSD_sum_of_XY_charges", "PSD Charge (X+Y); PSD Charge (X+Y); entries", 800, 0, 200);
+
+    h_PSD_charge_X_cleaned = std::make_shared<TH1D>("h_PSD_charge_X_cleaned", "PSD Charge - X view; PSD Charge X; entries", 200, 0, 30);
+    h_PSD_charge_Y_cleaned = std::make_shared<TH1D>("h_PSD_charge_Y_cleaned", "PSD Charge - Y view; PSD Charge Y; entries", 200, 0, 30);
+    h_PSD_charge_cleaned = std::make_shared<TH1D>("h_PSD_charge_cleaned", "PSD Charge; PSD Charge; entries", 200, 0, 30);
+    h_PSD_charge_2D_cleaned = std::make_shared<TH2D>("h_PSD_charge_2D_cleaned", "PSD Charge; PSD Charge X; PSD Charge Y", 200, 0, 30, 200, 0, 30);
 
     h_PSD_X_clusters = std::make_shared<TH2D>("h_PSD_X_clusters", "PSD X Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD X Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
     h_PSD_Y_clusters = std::make_shared<TH2D>("h_PSD_Y_clusters", "PSD Y Clusters vs Reconstructed Energy; Reconstructed Energy [GeV]; PSD Y Clusters;", energy_nbins -1, &energy_binning[0], (int)psd_clusters_binning.size() -1, &psd_clusters_binning[0]);
@@ -1120,7 +1122,10 @@ void histos::Write(const std::string output_wd, const bool verbose) {
     h_PSD_charge_nocut->Write();
     h_PSD_charge_2D_nocut->Write();
     h_PSD_sum_of_XY_charges_nocut->Write();
+    h_PSD_charge_X_cleaned->Write();
+    h_PSD_charge_Y_cleaned->Write();
     h_PSD_charge_cleaned->Write();
+    h_PSD_charge_2D_cleaned->Write();
 
     outfile->mkdir("PSD_charges_after_STK_charge_cut");
     outfile->cd("PSD_charges_after_STK_charge_cut");

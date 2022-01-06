@@ -489,8 +489,11 @@ class histos {
         std::shared_ptr<TH1D> h_PSD_charge_X;
         std::shared_ptr<TH1D> h_PSD_charge_Y;
         std::shared_ptr<TH1D> h_PSD_charge;
-        std::shared_ptr<TH1D> h_PSD_charge_cleaned;
         std::shared_ptr<TH2D> h_PSD_charge_2D;
+        std::shared_ptr<TH1D> h_PSD_charge_X_cleaned;
+        std::shared_ptr<TH1D> h_PSD_charge_Y_cleaned;
+        std::shared_ptr<TH1D> h_PSD_charge_cleaned;
+        std::shared_ptr<TH2D> h_PSD_charge_2D_cleaned;
         std::shared_ptr<TH1D> h_PSD_sum_of_XY_charges;
 
         std::shared_ptr<TH2D> h_PSD_X_clusters;
