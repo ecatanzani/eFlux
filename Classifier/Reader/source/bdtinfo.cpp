@@ -63,20 +63,20 @@ inline void linkTreeVariables(std::shared_ptr<TChain> evtch, data_vars &vars) {
     evtch->SetBranchAddress("rmslayer_norm_13", &vars.rmslayer_norm_13);
     evtch->SetBranchAddress("rmslayer_norm_14", &vars.rmslayer_norm_14);
 
-    evtch->SetBranchAddress("fraclayer_norm_1", &vars.rmslayer_norm_1);
-    evtch->SetBranchAddress("fraclayer_norm_2", &vars.rmslayer_norm_2);
-    evtch->SetBranchAddress("fraclayer_norm_3", &vars.rmslayer_norm_3);
-    evtch->SetBranchAddress("fraclayer_norm_4", &vars.rmslayer_norm_4);
-    evtch->SetBranchAddress("fraclayer_norm_5", &vars.rmslayer_norm_5);
-    evtch->SetBranchAddress("fraclayer_norm_6", &vars.rmslayer_norm_6);
-    evtch->SetBranchAddress("fraclayer_norm_7", &vars.rmslayer_norm_7);
-    evtch->SetBranchAddress("fraclayer_norm_8", &vars.rmslayer_norm_8);
-    evtch->SetBranchAddress("fraclayer_norm_9", &vars.rmslayer_norm_9);
-    evtch->SetBranchAddress("fraclayer_norm_10", &vars.rmslayer_norm_10);
-    evtch->SetBranchAddress("fraclayer_norm_11", &vars.rmslayer_norm_11);
-    evtch->SetBranchAddress("fraclayer_norm_12", &vars.rmslayer_norm_12);
-    evtch->SetBranchAddress("fraclayer_norm_13", &vars.rmslayer_norm_13);
-    evtch->SetBranchAddress("fraclayer_norm_14", &vars.rmslayer_norm_14);
+    evtch->SetBranchAddress("fraclayer_norm_1", &vars.fraclayer_norm_1);
+    evtch->SetBranchAddress("fraclayer_norm_2", &vars.fraclayer_norm_2);
+    evtch->SetBranchAddress("fraclayer_norm_3", &vars.fraclayer_norm_3);
+    evtch->SetBranchAddress("fraclayer_norm_4", &vars.fraclayer_norm_4);
+    evtch->SetBranchAddress("fraclayer_norm_5", &vars.fraclayer_norm_5);
+    evtch->SetBranchAddress("fraclayer_norm_6", &vars.fraclayer_norm_6);
+    evtch->SetBranchAddress("fraclayer_norm_7", &vars.fraclayer_norm_7);
+    evtch->SetBranchAddress("fraclayer_norm_8", &vars.fraclayer_norm_8);
+    evtch->SetBranchAddress("fraclayer_norm_9", &vars.fraclayer_norm_9);
+    evtch->SetBranchAddress("fraclayer_norm_10", &vars.fraclayer_norm_10);
+    evtch->SetBranchAddress("fraclayer_norm_11", &vars.fraclayer_norm_11);
+    evtch->SetBranchAddress("fraclayer_norm_12", &vars.fraclayer_norm_12);
+    evtch->SetBranchAddress("fraclayer_norm_13", &vars.fraclayer_norm_13);
+    evtch->SetBranchAddress("fraclayer_norm_14", &vars.fraclayer_norm_14);
 
     evtch->SetBranchAddress("sumrms_norm", &vars.sumrms_norm);
     evtch->SetBranchAddress("fraclastlayer_norm", &vars.fraclastlayer_norm);
@@ -159,8 +159,10 @@ void ExtractBDTInfo(in_args input_args)
 
     // Clone TChain
     double tmva_classifier {0};
+    list_parser->GetEvtTree()->Branch("tmva_classifier", &tmva_classifier, "tmva_classifier/D");
     std::unique_ptr<TTree> electron_tree = std::unique_ptr<TTree>(static_cast<TTree*>(list_parser->GetEvtTree()->CloneTree(0)));
-    electron_tree->Branch("tmva_classifier", &tmva_classifier, "tmva_classifier/D");
+    std::unique_ptr<TTree> proton_tree = std::unique_ptr<TTree>(static_cast<TTree*>(list_parser->GetEvtTree()->CloneTree(0)));
+    std::unique_ptr<TTree> total_tree = std::unique_ptr<TTree>(static_cast<TTree*>(list_parser->GetEvtTree()->CloneTree(0)));
 
     // Loop on the events
     double gev {0.001};
@@ -188,6 +190,9 @@ void ExtractBDTInfo(in_args input_args)
         
         if (is_electron)
             electron_tree->Fill();
+        else
+            proton_tree->Fill();
+        total_tree->Fill();
     }
 
     TFile* output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
@@ -197,6 +202,9 @@ void ExtractBDTInfo(in_args input_args)
     }
 
     electron_tree->Write();
+    proton_tree->Write();
+    total_tree->Write();
+
     output_file->Close();
 
     if (input_args.verbose)
