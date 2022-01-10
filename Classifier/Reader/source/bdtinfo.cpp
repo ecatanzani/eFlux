@@ -128,11 +128,12 @@ void ExtractBDTInfo(in_args input_args)
 {
     std::shared_ptr<parser> list_parser = std::make_shared<parser>(input_args.input_list, input_args.verbose);
     std::shared_ptr<config> sw_config = std::make_shared<config>(input_args.config_dir);
+    long long int total_events {list_parser->GetEvtTree()->GetEntries()};
 
     if (input_args.verbose) {
         sw_config->PrintActiveFilters();
         sw_config->PrintWeights();
-        std::cout << "\n\nTotal number of events: " << list_parser->GetEvtTree()->GetEntries();
+        std::cout << "\n\nTotal number of events: " << total_events << "\n\n";
     }
     
     TMVA::Tools::Instance();
@@ -157,20 +158,50 @@ void ExtractBDTInfo(in_args input_args)
     
     linkTreeVariables(list_parser->GetEvtTree(), vars);
 
+    std::shared_ptr<TFile> output_file = std::make_shared<TFile>(input_args.output_path.c_str(), "RECREATE");
+    if (output_file->IsZombie()) {
+        std::cout << "Error creating output file: [" << input_args.output_path << "]\n\n";
+        exit(100);
+    }
+    
+    auto clone_tree = [](std::shared_ptr<TChain> original_tree, const char* cp_tree_name, const char* cp_tree_title) -> std::shared_ptr<TTree> {
+        std::shared_ptr<TTree> my_copy_tree = std::shared_ptr<TTree>(static_cast<TTree*>(original_tree->CloneTree(0)));
+        my_copy_tree->SetName(cp_tree_name);
+        my_copy_tree->SetTitle(cp_tree_title);
+        return my_copy_tree;
+    };
+
     // Clone TChain
-    double tmva_classifier {0};
-    list_parser->GetEvtTree()->Branch("tmva_classifier", &tmva_classifier, "tmva_classifier/D");
-    std::unique_ptr<TTree> electron_tree = std::unique_ptr<TTree>(static_cast<TTree*>(list_parser->GetEvtTree()->CloneTree(0)));
-    std::unique_ptr<TTree> proton_tree = std::unique_ptr<TTree>(static_cast<TTree*>(list_parser->GetEvtTree()->CloneTree(0)));
-    std::unique_ptr<TTree> total_tree = std::unique_ptr<TTree>(static_cast<TTree*>(list_parser->GetEvtTree()->CloneTree(0)));
+    auto electron_tree = clone_tree(list_parser->GetEvtTree(), "electron_tree", "Signal Tree");
+    auto proton_tree = clone_tree(list_parser->GetEvtTree(), "proton_tree", "Background Tree");
+    auto total_tree = clone_tree(list_parser->GetEvtTree(), "total_tree", "Total Tree");
+
+    double tmva_classifier;
+    electron_tree->Branch("tmva_classifier", &tmva_classifier, "tmva_classifier/D");
+    proton_tree->Branch("tmva_classifier", &tmva_classifier, "tmva_classifier/D");
+    total_tree->Branch("tmva_classifier", &tmva_classifier, "tmva_classifier/D");
 
     // Loop on the events
     double gev {0.001};
+    int kstep {10};
     bool is_electron;
+
+    auto evstatus_printer = [](unsigned int evidx, int &kstep, long long int total_events) {
+        auto percentage = ((evidx + 1) / (double)total_events) * 100;
+        if (floor(percentage) != 0 && ((int)floor(percentage) % kstep) == 0) {
+            std::cout << "\n" << (int)percentage << " %\t | \tProcessed " << evidx + 1 << " events / " << total_events;
+            kstep += 10;
+        }
+    };
+
     for (unsigned int evidx=0; evidx<list_parser->GetEvtTree()->GetEntries(); ++evidx) {
         list_parser->GetEvtTree()->GetEntry(evidx);
         sync_vars(vars, tmva_vars);
+        tmva_classifier = -999;
         is_electron = false;
+
+        if (input_args.verbose)
+            evstatus_printer(evidx, kstep, total_events);
 
         if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100) {
             tmva_classifier = tmva_LE_reader->EvaluateMVA(input_args.learning_method.c_str());
@@ -188,24 +219,16 @@ void ExtractBDTInfo(in_args input_args)
                 is_electron = true;
         }
         
-        if (is_electron)
-            electron_tree->Fill();
-        else
-            proton_tree->Fill();
+        is_electron ? electron_tree->Fill() : proton_tree->Fill();
         total_tree->Fill();
-    }
 
-    TFile* output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
-    if (output_file->IsZombie()) {
-        std::cout << "Error creating output file: [" << input_args.output_path << "]\n\n";
-        exit(100);
     }
 
     electron_tree->Write();
     proton_tree->Write();
     total_tree->Write();
 
-    output_file->Close();
+    //output_file->Close();
 
     if (input_args.verbose)
         std::cout << "\nOutput TFile has been written [" << input_args.output_path << "]\n";
