@@ -24,6 +24,8 @@ int main(int argc, char **argv)
 
 	opt.addUsage("");
 
+	opt.addUsage("");
+
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
 	opt.setOption("config", 'c');

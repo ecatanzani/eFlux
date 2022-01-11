@@ -15,7 +15,7 @@ struct in_args
 	std::string config_dir;
 	std::string output_path;
 	std::string learning_method;
-	bool verbose = false;
+	bool verbose {false};
 };
 
 #endif

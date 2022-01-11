@@ -9,6 +9,7 @@
 #include "TFile.h"
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
+#include <ROOT/RDataFrame.hxx>
 
 inline void addVariableToReader(std::shared_ptr<TMVA::Reader> tmva_reader, bdt_vars &tmva_vars) {
     tmva_reader->AddVariable("rmslayer_norm_1", &tmva_vars.rmslayer_norm_1);
@@ -157,21 +158,21 @@ void ExtractBDTInfo(in_args input_args)
     tmva_HE_reader->BookMVA(input_args.learning_method.c_str(), (sw_config->GetHEWeights()).c_str());
     
     linkTreeVariables(list_parser->GetEvtTree(), vars);
-
+    
     std::shared_ptr<TFile> output_file = std::make_shared<TFile>(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
         std::cout << "Error creating output file: [" << input_args.output_path << "]\n\n";
         exit(100);
     }
     
+    // Clone TChain
     auto clone_tree = [](std::shared_ptr<TChain> original_tree, const char* cp_tree_name, const char* cp_tree_title) -> std::shared_ptr<TTree> {
         std::shared_ptr<TTree> my_copy_tree = std::shared_ptr<TTree>(static_cast<TTree*>(original_tree->CloneTree(0)));
         my_copy_tree->SetName(cp_tree_name);
         my_copy_tree->SetTitle(cp_tree_title);
         return my_copy_tree;
     };
-
-    // Clone TChain
+    
     auto electron_tree = clone_tree(list_parser->GetEvtTree(), "electron_tree", "Signal Tree");
     auto proton_tree = clone_tree(list_parser->GetEvtTree(), "proton_tree", "Background Tree");
     auto total_tree = clone_tree(list_parser->GetEvtTree(), "total_tree", "Total Tree");
@@ -227,8 +228,6 @@ void ExtractBDTInfo(in_args input_args)
     electron_tree->Write();
     proton_tree->Write();
     total_tree->Write();
-
-    //output_file->Close();
 
     if (input_args.verbose)
         std::cout << "\nOutput TFile has been written [" << input_args.output_path << "]\n";
