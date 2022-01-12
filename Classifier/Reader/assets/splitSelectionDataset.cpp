@@ -92,18 +92,18 @@ inline void split_energy_bins(
         ROOT::EnableImplicitMT(threads);
         ROOT::RDataFrame _data_fr(*cumulative_tree);
 
-    for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
-        auto bin_filter = [bin_idx](int energy_bin) -> bool { return energy_bin == bin_idx; };
+        for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
+            auto bin_filter = [bin_idx](int energy_bin) -> bool { return energy_bin == bin_idx; };
 
-        std::string fname;
-        if (wd.empty()) fname = cumulative_tree->GetName() + std::string("_energybin_") + std::to_string(bin_idx) + std::string(".root");
-        else fname = wd + std::string("/") + cumulative_tree->GetName() + std::string("_energybin_") + std::to_string(bin_idx) + std::string(".root");
-        auto tmp_entries = *(_data_fr.Filter(bin_filter, {"energy_bin"}).Count());
-        if (tmp_entries) {
-            if (verbose) std::cout << "\nOutput TFile has been written [" << fname << "]\t entries: " << tmp_entries;
-            _data_fr.Filter(bin_filter, {"energy_bin"}).Snapshot(cumulative_tree->GetName(), fname.c_str());
+            std::string fname;
+            if (wd.empty()) fname = cumulative_tree->GetName() + std::string("_energybin_") + std::to_string(bin_idx) + std::string(".root");
+            else fname = wd + std::string("/") + cumulative_tree->GetName() + std::string("_energybin_") + std::to_string(bin_idx) + std::string(".root");
+            auto tmp_entries = *(_data_fr.Filter(bin_filter, {"energy_bin"}).Count());
+            if (tmp_entries) {
+                if (verbose) std::cout << "\nOutput TFile has been written [" << fname << "]\t entries: " << tmp_entries;
+                _data_fr.Filter(bin_filter, {"energy_bin"}).Snapshot(cumulative_tree->GetName(), fname.c_str());
+            }
         }
-    }
 }
 
 inline std::shared_ptr<TTree> getTreeFromFile(const char* input_file, const char* tree_name, const bool verbose) {
@@ -128,11 +128,32 @@ void splitSelectionDataset(
 
         // Extract energy binning from config file
         auto energy_binning = parse_energy_config(energy_config_file);
-        auto n_energy_bins = energy_binning.size() - 1;
+        auto n_energy_bins = static_cast<int>(energy_binning.size()) - 1;
 
         // Extract tree from file
-        auto tree = getTreeFromFile(input_file, tree_name, verbose);
+        //auto tree = getTreeFromFile(input_file, tree_name, verbose);
+        std::shared_ptr<TFile> input = std::make_shared<TFile>(input_file, "READ");
+        if (!input->IsOpen()) {
+            std::cerr << "\n\nInput file not found [" << input_file << "]\n\n";
+            exit(100);
+        }
+
+        std::shared_ptr<TTree> tree(static_cast<TTree*>(input->Get(tree_name)));
+        if (verbose) std::cout << "\n\nExtracting from input file ... [" << tree_name << "]\n\n";
 
         // Split tree into energy bins
-        split_energy_bins(tree, output_directory, n_energy_bins, threads, verbose);
+        //split_energy_bins(tree, output_directory, n_energy_bins, threads, verbose);
+        ROOT::EnableImplicitMT(threads);
+        ROOT::RDataFrame _data_fr(*tree);
+
+        for (int bin_idx = 1; bin_idx <= n_energy_bins; ++bin_idx) {
+            auto bin_filter = [bin_idx](int energy_bin) -> bool { return energy_bin == bin_idx; };
+
+            std::string fname = output_directory + std::string("/") + tree->GetName() + std::string("_energybin_") + std::to_string(bin_idx) + std::string(".root");
+            auto tmp_entries = *(_data_fr.Filter(bin_filter, {"energy_bin"}).Count());
+            if (tmp_entries) {
+                if (verbose) std::cout << "\nOutput TFile has been written [" << fname << "]\t entries: " << tmp_entries;
+                _data_fr.Filter(bin_filter, {"energy_bin"}).Snapshot(tree->GetName(), fname.c_str());
+            }
+        }
     }
