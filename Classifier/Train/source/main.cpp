@@ -1,4 +1,5 @@
 #include "main.h"
+#include "utils.h"
 #include "train.h"
 
 int main(int argc, char **argv)
@@ -64,9 +65,9 @@ int main(int argc, char **argv)
 	if (opt.getValue("config") || opt.getValue('c'))
 		input_args.config_dir = opt.getValue('c');
 	if (opt.getValue("output") || opt.getValue('o'))
-		input_args.output_path = opt.getValue('o');
+		input_args.output_path = expand_output_path(opt, opt.getValue('o'));
 	if (opt.getValue("outputDir") || opt.getValue('d'))
-		input_args.output_path = opt.getValue('d');
+		input_args.output_path = expand_output_path(opt, opt.getValue('d'));
 	if (opt.getFlag("verbose") || opt.getFlag('v'))
 		input_args.verbose = opt.getFlag('v');
 	if (opt.getValue("method") || opt.getValue('m'))
