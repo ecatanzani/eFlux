@@ -41,7 +41,7 @@ def aggregate(data_files: list, input_dir: str, output_dir: str, add_file_number
         subprocess.run(_cmd, shell=True, check=True)
 
 def addFiles(file_list: list, input_dir: str, output_dir: str, add_number: int, verbose: bool):
-    for idx, files in enumerate(file_list):
+    for files in file_list:
         aggregate(files, input_dir, output_dir, add_number, verbose)
 
 
