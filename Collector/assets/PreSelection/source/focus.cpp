@@ -41,6 +41,7 @@
 #define _BGO_EDGE           false
 #define _OUTSIDE_BGO        false
 #define _N_BAR_LAST_LAYER   false
+#define _PERC_35_LAYER      false
 
 inline bool SAACheck(const std::shared_ptr<DmpEvtHeader> evt_header, const std::shared_ptr<DmpFilterOrbit> pFilter) {
     return pFilter->IsInSAA(evt_header->GetSecond()) ? false : true;
@@ -207,6 +208,11 @@ void focus(const in_pars &input_pars) {
 
                 if (_N_BAR_LAST_LAYER) {
                     if (isNumberOfLastLayerBarsTooHigh(bgohits, bgorec, evt_header, stkclusters, stktracks, psdhits, evt_energy, _config))
+                        focus_events.push_back(evIdx);
+                }
+
+                if (_PERC_35_LAYER) {
+                    if (isEnergyPercentageGT35(bgohits, bgorec, evt_header, stkclusters, stktracks, psdhits, evt_energy, _config))
                         focus_events.push_back(evIdx);
                 }
             }

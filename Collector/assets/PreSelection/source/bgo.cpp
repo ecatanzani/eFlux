@@ -1023,3 +1023,23 @@ const bool isEventOutsideBGOFiducial(
         return is_outside_bgo_fiducial;
     
     }
+
+const bool isEnergyPercentageGT35(
+    std::shared_ptr<DmpEvtBgoHits> bgohits,
+    std::shared_ptr<DmpEvtBgoRec> bgorec, 
+    std::shared_ptr<DmpEvtHeader> evt_header,
+    std::shared_ptr<TClonesArray> stkclusters,
+    std::shared_ptr<TClonesArray> stktracks,
+    std::shared_ptr<DmpEvtPsdHits> psdhits,
+    const double evt_energy,
+    std::shared_ptr<config> cuts_config) {
+
+        bool is_energy_percentage_gt_35 {false};
+        std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
+        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
+        
+        if (check_trigger(evt_header))
+            is_energy_percentage_gt_35 = ! maxElayer_cut(bgoVault->GetLayerEnergies(), (cuts_config->GetCutsConfig()).bgo_max_energy_ratio, evt_energy);
+
+        return is_energy_percentage_gt_35;
+    }

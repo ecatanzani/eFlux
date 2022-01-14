@@ -80,5 +80,15 @@ extern const bool isEventOutsideBGOFiducial(
     std::shared_ptr<DmpEvtHeader> evt_header,
     const double evt_energy,
     std::shared_ptr<config> cuts_config);
-    
+
+extern const bool isEnergyPercentageGT35(
+    std::shared_ptr<DmpEvtBgoHits> bgohits,
+    std::shared_ptr<DmpEvtBgoRec> bgorec, 
+    std::shared_ptr<DmpEvtHeader> evt_header,
+    std::shared_ptr<TClonesArray> stkclusters,
+    std::shared_ptr<TClonesArray> stktracks,
+    std::shared_ptr<DmpEvtPsdHits> psdhits,
+    const double evt_energy,
+    std::shared_ptr<config> cuts_config);    
+
 #endif
