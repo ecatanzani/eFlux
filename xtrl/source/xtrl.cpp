@@ -7,7 +7,7 @@
 #include "TFile.h"
 #include <ROOT/RDataFrame.hxx>
 
-const double _XTRL_FILTER {10};
+const double _XTRL_FILTER {8.5};
 
 void xtrl_selection(in_args input_args) {
 
