@@ -13,8 +13,12 @@ inline const std::string get_tree_name(const std::string stream) {
     std::string tree_name;
     for (TObject* keyAsObject : *input_file->GetListOfKeys()) {
         auto key = dynamic_cast<TKey*>(keyAsObject);
-        if (!strcmp(key->GetClassName(), "TTree"))
-            tree_name = static_cast<std::string>(key->GetName());
+        if (!strcmp(key->GetClassName(), "TTree")) {
+            if (!strcmp(key->GetName(), "total_tree")) {
+                tree_name = static_cast<std::string>(key->GetName());
+                break;
+            }
+        }
     }
     input_file->Close();
     return tree_name;
