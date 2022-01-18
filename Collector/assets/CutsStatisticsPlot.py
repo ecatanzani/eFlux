@@ -1,5 +1,6 @@
 import os
 import ROOT
+from tqdm import tqdm
 from argparse import ArgumentParser
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
@@ -27,19 +28,19 @@ def BuildPlot(input_dir: str, output_file: str, verbose: bool):
         'psd_charge': []
     }
 
-    for folder in os.listdir(input_dir):
+    for folder in tqdm(os.listdir(input_dir), desc=f"Processing folders in {input_dir}"):
         
         year = int(folder[:4])
         month = int(folder[4:6])
         day = int(folder[6:8])
         
-        if folder.startswith('20'):
-
+        if folder.startswith('20') and os.path.isfile(os.path.join(input_dir, folder, 'output.log')):
+            
             # Extract the date information from the folder name
             stats['dates'].append(date(year, month, day))
 
             # Load the RDF
-            root_filename = [file for file in os.listdir(f"{input_dir}/{folder}/outFiles/") if file.endswith('.root')][0]
+            root_filename = [os.path.join(input_dir, folder, "outFiles", file) for file in os.listdir(os.path.join(input_dir, folder, "outFiles")) if file.endswith('.root')][0]
             root_tree_name = GetROOTTreeName(root_filename)
 
             # Extract the counts info
@@ -52,7 +53,7 @@ def BuildPlot(input_dir: str, output_file: str, verbose: bool):
                 stats['track_selection'].append(rdf.Filter('evtfilter_track_selection_cut==1').Count().GetValue())
                 stats['psd_stk_match'].append(rdf.Filter('evtfilter_psd_stk_match_cut==1').Count().GetValue())
                 stats['psd_charge'].append(rdf.Filter('evtfilter_psd_charge_cut==1').Count().GetValue())
-
+            
     # build the histo
     rcParams.update({'figure.autolayout': True})
     plt.plot(stats['dates'], stats['raw_events'], label="total counts", color="dimgray")
