@@ -9,15 +9,18 @@ def GetROOTTreeName(filename: str) -> str:
         if root_file.Get(key.GetName()).ClassName() == 'TTree':
             tree_name = key.GetName()
             break
-    return 
+    return tree_name
 
 def Stats(input_list: str, verbose: bool) -> tuple:
 
+    with open(input_list) as file_list:
+        input_files = file_list.read().splitlines()
+    
     total_events = 0
     preselected_events = 0
 
     tree_name = None
-    for file in tqdm(input_list, desc=f"Processing files in input directory: {input_list}"):
+    for file in tqdm(input_files, desc=f"Processing files in input list: {input_list}"):
         if tree_name==None:
             tree_name = GetROOTTreeName(file)
         rdf = ROOT.RDataFrame(tree_name, file)
