@@ -35,6 +35,8 @@ def main(args=None):
         usage="Usage: %(prog)s [options]", description="Flight DATA statistics")
     parser.add_argument("-i", "--input", type=str,
                         dest='input', help='input directory')
+    parser.add_argument("-o", "--output", type=str,
+                        dest='output', help='output file name')
     parser.add_argument("-v", "--verbose", dest='verbose', default=False,
                         action='store_true', help='run in high verbosity mode')
 
@@ -45,5 +47,10 @@ def main(args=None):
     print(f"Total events: {total_events}")
     print(f"Preselected events: {preselected_events}")
 
+    with open(opts.output, 'w') as output:
+        output.write(f"Total events: {total_events}\n")
+        output.write(f"Preselected events: {preselected_events}\n")
+        output.write(f"Preselection efficiency: {float(preselected_events)/total_events}\n")
+        
 if __name__ == '__main__':
     main()
