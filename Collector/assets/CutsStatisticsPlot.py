@@ -25,10 +25,15 @@ def BuildPlot(input_dir: str, output_file: str, verbose: bool):
         'maxrms': [],
         'track_selection': [],
         'psd_stk_match': [],
-        'psd_charge': []
+        'psd_charge': [],
+        'preselection': []
     }
 
-    for folder in tqdm(os.listdir(input_dir), desc=f"Processing folders in {input_dir}"):
+    # Sort folders in order to have an ordinate dictionary of values
+    folders = os.listdir(input_dir)
+    folders.sort()
+
+    for folder in tqdm(folders, desc=f"Processing folders in {input_dir}"):
         
         year = int(folder[:4])
         month = int(folder[4:6])
@@ -53,6 +58,7 @@ def BuildPlot(input_dir: str, output_file: str, verbose: bool):
                 stats['track_selection'].append(rdf.Filter('evtfilter_track_selection_cut==1').Count().GetValue())
                 stats['psd_stk_match'].append(rdf.Filter('evtfilter_psd_stk_match_cut==1').Count().GetValue())
                 stats['psd_charge'].append(rdf.Filter('evtfilter_psd_charge_cut==1').Count().GetValue())
+                stats['preselection'] = rdf.Filter('evtfilter_all_cut==1').Count().GetValue()
             
     # build the histo
     rcParams.update({'figure.autolayout': True})
@@ -63,6 +69,7 @@ def BuildPlot(input_dir: str, output_file: str, verbose: bool):
     plt.plot(stats['dates'], stats['track_selection'], label="Track Selection cut", color="crimson")
     plt.plot(stats['dates'], stats['psd_stk_match'], label="PSD/STK match cut", color="blueviolet")
     plt.plot(stats['dates'], stats['psd_charge'], label="PSD charge cut", color="saddlebrown")
+    plt.plot(stats['dates'], stats['preselection'], label="Preselection", color="navy")
 
     plt.legend(bbox_to_anchor=(1.05, 0.5), loc='center left')
     plt.yscale('log')
