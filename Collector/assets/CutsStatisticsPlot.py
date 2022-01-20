@@ -58,7 +58,7 @@ def BuildPlot(input_dir: str, output_file: str, verbose: bool):
                 stats['track_selection'].append(rdf.Filter('evtfilter_track_selection_cut==1').Count().GetValue())
                 stats['psd_stk_match'].append(rdf.Filter('evtfilter_psd_stk_match_cut==1').Count().GetValue())
                 stats['psd_charge'].append(rdf.Filter('evtfilter_psd_charge_cut==1').Count().GetValue())
-                stats['preselection'] = rdf.Filter('evtfilter_all_cut==1').Count().GetValue()
+                stats['preselection'].append(rdf.Filter('evtfilter_all_cut==1').Count().GetValue())
             
     # build the histo
     rcParams.update({'figure.autolayout': True})
