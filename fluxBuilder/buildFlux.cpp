@@ -31,6 +31,7 @@ inline std::shared_ptr<TH1D> extractHistoFromFile(const char* file, const bool v
 void buildFlux(
     const char* e_counts_input_file,
     const char* e_acc_input_file,
+    const char* proton_background,
     const double exposure_time,
     const char* output_file,
     const bool verbose) {
@@ -41,6 +42,12 @@ void buildFlux(
         // Extract info from input files
         auto h_e_counts = extractHistoFromFile(e_counts_input_file, verbose);
         auto h_e_acc = extractHistoFromFile(e_acc_input_file, verbose);
+        auto h_background = extractHistoFromFile(proton_background, verbose);
+
+        // subtract proton background
+        h_e_counts->Add(h_background.get(), -1);
+
+        auto h_e_subtracted = h_e_counts->Clone("h_e_subtracted");
 
         // Divide by the acceptance
         h_e_counts->Divide(h_e_acc.get());
@@ -81,6 +88,7 @@ void buildFlux(
 
         h_e_counts->Write();
         h_e_counts_E3->Write();
+        h_e_subtracted->Write();
 
         outfile->Close();
 
