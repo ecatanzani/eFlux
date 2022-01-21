@@ -28,11 +28,17 @@ void buildSignalEfficiency(
         if (verbose)
             std::cout << "\n\nReading input files... " << std::endl;
 
-        auto h_signal_not_passed = GetHistoFromFile(background_proton_fraction, "h_signal_not_passed", verbose);
-        auto h_signal = GetHistoFromFile(rejected_proton_data, "h_signal", verbose);
+        auto h_signal_not_passed = GetHistoFromFile(signal_eff_file, "h_signal_not_passed", verbose);
+        auto h_signal = GetHistoFromFile(signal_eff_file, "h_signal", verbose);
+
+        h_signal_not_passed->Sumw2();
+        h_signal->Sumw2();
 
         auto h_signal_efficiency = static_cast<TH1D*>(h_signal_not_passed->Clone("h_signal_efficiency"));
         h_signal_efficiency->Divide(h_signal.get());
+
+        for (int bin=1; bin<=h_signal_efficiency->GetNbinsX(); ++bin)
+            h_signal_efficiency->SetBinContent(bin, 1 - h_signal_efficiency->GetBinContent(bin));
 
         TFile* outfile = TFile::Open(output_file, "RECREATE");
         if (!outfile->IsOpen()) {
