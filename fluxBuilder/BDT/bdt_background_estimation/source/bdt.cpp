@@ -37,18 +37,12 @@ void bdt_selection(in_args input_args) {
         return cut;
     };
 
-    const double background_spectral_index = -2.7;
-    auto get_weight = [background_spectral_index] (const double energy_gev) -> double {
-        return std::pow(energy_gev, background_spectral_index -1);
-    };
-
     if (input_args.verbose) std::cout << "\n\nAnlysis running...\n\n";
 
     auto h_proton_not_passed = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
-                                        .Define("evt_w", get_weight, {"corr_energy_gev"})
                                         .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev"})
                                         .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"tmva_classifier", "bdt_cut"})
-                                        .Histo1D<double, double>({"h_proton_not_passed", "BDT selected events; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "evt_w");
+                                        .Histo1D<double>({"h_proton_not_passed", "BDT selected events; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev");
 
     TFile* outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (!outfile->IsOpen()) {
