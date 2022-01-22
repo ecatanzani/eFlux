@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import ROOT
+import os
 from tqdm import tqdm
 
 def GetROOTTreeName(filename: str) -> str:
@@ -18,6 +19,7 @@ def Stats(input_list: str, verbose: bool) -> tuple:
     
     total_events = 0
     preselected_events = 0
+    total_size = 0
 
     tree_name = None
     for file in tqdm(input_files, desc=f"Processing files in input list: {input_list}"):
@@ -26,8 +28,9 @@ def Stats(input_list: str, verbose: bool) -> tuple:
         rdf = ROOT.RDataFrame(tree_name, file)
         total_events += rdf.Count().GetValue()
         preselected_events += rdf.Filter('evtfilter_all_cut==1').Count().GetValue()
+        total_size += os.path.getsize(file)
 
-    return (total_events, preselected_events)
+    return (total_events, preselected_events, total_size)
 
 def main(args=None):
     
@@ -42,15 +45,17 @@ def main(args=None):
 
     opts = parser.parse_args(args)
 
-    (total_events, preselected_events) = Stats(opts.input, opts.verbose)
+    (total_events, preselected_events, total_size) = Stats(opts.input, opts.verbose)
 
     print(f"Total events: {total_events}")
     print(f"Preselected events: {preselected_events}")
+    print(f"Total size (TB): {float(total_size)/1e-12}")
 
     with open(opts.output, 'w') as output:
         output.write(f"Total events: {total_events}\n")
         output.write(f"Preselected events: {preselected_events}\n")
         output.write(f"Preselection efficiency: {float(preselected_events)/total_events}\n")
+        output.write(f"Total size (TB): {float(total_size)/1e-12}")
         
 if __name__ == '__main__':
     main()
