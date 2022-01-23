@@ -49,13 +49,13 @@ def main(args=None):
 
     print(f"Total events: {total_events}")
     print(f"Preselected events: {preselected_events}")
-    print(f"Total size (TB): {float(total_size)/1e-12}")
+    print(f"Total size (TB): {float(total_size)/1e+12}")
 
     with open(opts.output, 'w') as output:
         output.write(f"Total events: {total_events}\n")
         output.write(f"Preselected events: {preselected_events}\n")
         output.write(f"Preselection efficiency: {float(preselected_events)/total_events}\n")
-        output.write(f"Total size (TB): {float(total_size)/1e-12}")
+        output.write(f"Total size (TB): {float(total_size)/1e+12}")
         
 if __name__ == '__main__':
     main()
