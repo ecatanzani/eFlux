@@ -361,7 +361,7 @@ void kompress(
     regularize_vars ? sumrms2D_bin_lvalue = -20 : sumrms2D_bin_lvalue = 0;
     regularize_vars ? sumrms2D_bin_rvalue = 20 : sumrms2D_bin_rvalue = 2e+3;
     regularize_vars ? flast_bin_lvalue = -10 : flast_bin_lvalue = 0;
-    regularize_vars ? flast_bin_rvalue = 10 : flast_bin_rvalue = 0.3;
+    regularize_vars ? flast_bin_rvalue = 10 : flast_bin_rvalue = 0.4;
 
     std::vector<std::shared_ptr<TH1D>> h_BGOrec_bar_energy_bin(energy_nbins);
     
@@ -930,7 +930,7 @@ void kompress(
                                                        .Histo2D<double, double, double>({"h_BGOrec_ps_sumRms_flast_13_10000_20000", "sumRms vs F_{13} correlation - 10 TeV - 20 TeV ;sumRms [mm]; F_{last}", (int)sumRms_binning.size() - 1, &sumRms_binning[0], (int)flast13_binning.size() - 1, &flast13_binning[0]}, sumRms_leaf.c_str(), "fracLast_13", "simu_energy_w_corr");
     auto h_BGOrec_ps_last_layer = _fr_preselected.Histo1D<int, double>({"h_BGOrec_ps_last_layer", "Last BGO layer; Last Energy Layer; entries", 14, 0, 14}, "lastBGOLayer", "simu_energy_w_corr");
 
-    auto h_BGOrec_ps_ratio_last_layer = _fr_preselected.Histo1D<double, double>({"h_BGOrec_ps_ratio_last_layer", "Energy Ratio Last Layer", 100, flast_bin_lvalue, flast_bin_rvalue}, fracLast_leaf, "simu_energy_w_corr");
+    auto h_BGOrec_ps_ratio_last_layer = _fr_preselected.Histo1D<double, double>({"h_BGOrec_ps_ratio_last_layer", "Energy Ratio Last Layer", 200, flast_bin_lvalue, flast_bin_rvalue}, fracLast_leaf, "simu_energy_w_corr");
 
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy", "BGO Bar Energy; Bar Energy [MeV]", 1e+3, 0, 1e+4);
     std::shared_ptr<TH1D> h_BGOrec_ps_bar_energy_zoom = std::make_shared<TH1D>("h_BGOrec_ps_bar_energy_zoom", "BGO Bar Energy; Bar Energy [MeV]", 1e+3, 0, 1e+2);
@@ -1136,7 +1136,7 @@ void kompress(
                                                         .Define("max_energy_ratio", GetMaxEnergyRatio, {"fracLayer"})
                                                         .Histo1D<double, double>({(std::string("h_BGOrec_ps_max_energy_ratio_bin_") + std::to_string(bin_idx)).c_str(), (std::string("max energy ratio - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 1}, "max_energy_ratio", "simu_energy_w_corr");
         h_BGOrec_ps_ratio_last[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
-                                                  .Histo1D<double, double>({(std::string("h_BGOrec_ps_ratio_last_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, flast_bin_lvalue, flast_bin_rvalue}, fracLast_leaf, "simu_energy_w_corr");
+                                                  .Histo1D<double, double>({(std::string("h_BGOrec_ps_ratio_last_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio Last Layer - bin ") + std::to_string(bin_idx)).c_str(), 200, flast_bin_lvalue, flast_bin_rvalue}, fracLast_leaf, "simu_energy_w_corr");
         h_BGOrec_ps_ratio_13[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                                 .Define("energy_ratio_13", "fracLayer[13]")
                                                 .Histo1D<double, double>({(std::string("h_BGOrec_ps_ratio_13_bin_") + std::to_string(bin_idx)).c_str(), (std::string("Energy Ratio 13th Layer - bin ") + std::to_string(bin_idx)).c_str(), 100, 0, 0.01}, "energy_ratio_13", "simu_energy_w_corr");
