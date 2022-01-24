@@ -1486,26 +1486,24 @@ void kompress(
     auto h_NUD_ps_max_channel = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_max_channel", "NUD Max Channel", 3, 0, 3}, "nud_max_channel_id", "simu_energy_w_corr");
 
 
-    auto reg_sumrms_by_histo = [&h_BGOrec_sumRms_bin_cosine2D] (const double sumrms, const double cosine, const int energy_bin) -> double {
-        auto cosine_bin_idx = h_BGOrec_sumRms_bin_cosine2D[energy_bin-1]->GetXaxis()->FindBin(cosine);
-        auto sumrms_mean_value = h_BGOrec_sumRms_bin_cosine2D[energy_bin-1]->ProjectionY((std::string("h_BGOrec_sumRms_bin_cosine2D_") + std::to_string(cosine_bin_idx)).c_str(), cosine_bin_idx, cosine_bin_idx)->GetMean();
+    auto reg_sumrms_by_histo = [&h_BGOrec_ps_sumRms_bin_cosine2D] (const double sumrms, const double cosine, const int energy_bin) -> double {
+        auto cosine_bin_idx = h_BGOrec_ps_sumRms_bin_cosine2D[energy_bin-1]->GetXaxis()->FindBin(cosine);
+        auto sumrms_mean_value = h_BGOrec_ps_sumRms_bin_cosine2D[energy_bin-1]->ProjectionY((std::string("h_BGOrec_ps_sumRms_bin_cosine2D_") + std::to_string(cosine_bin_idx)).c_str(), cosine_bin_idx, cosine_bin_idx)->GetMean();
         return sumrms - sumrms_mean_value;
     };
 
-    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_sumRms_bin_cosine2D_hreg(energy_nbins);
+    std::vector<ROOT::RDF::RResultPtr<TH2D>> h_BGOrec_ps_sumRms_bin_cosine2D_hreg(energy_nbins);
 
     for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx)
     {
         auto bin_filter = [=](int energy_bin) -> bool { return energy_bin == bin_idx; };
 
-        h_BGOrec_sumRms_bin_cosine2D_hreg[bin_idx - 1] = _fr_bgo_analysis.Filter(bin_filter, {"energy_bin"})
+        h_BGOrec_ps_sumRms_bin_cosine2D_hreg[bin_idx - 1] = _fr_preselected.Filter(bin_filter, {"energy_bin"})
                                                         .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
                                                         .Define("bgorec_sumrms_reg", reg_sumrms_by_histo, {"sumRms", "bgorec_cosine", "energy_bin"})
-                                                        .Histo2D<double, double>({(std::string("h_BGOrec_sumRms_bin_cosine2D_hreg_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms [mm]")).c_str(), 100, 0, 1, 100, sumrms2D_bin_lvalue, sumrms2D_bin_rvalue}, "bgorec_cosine", sumRms_leaf.c_str(), "simu_energy_w_corr");
+                                                        .Histo2D<double, double>({(std::string("h_BGOrec_ps_sumRms_bin_cosine2D_hreg_") + std::to_string(bin_idx)).c_str(), (std::string("sumRms cosine - bin ") + std::to_string(bin_idx) + std::string("; cos(#theta); sumRms [mm]")).c_str(), 100, 0, 1, 100, sumrms2D_bin_lvalue, sumrms2D_bin_rvalue}, "bgorec_cosine", sumRms_leaf.c_str(), "simu_energy_w_corr");
 
     }
-
-
 
     if (verbose)
         std::cout << "Writing to disk... [" << outputPath << "]" << std::endl;
@@ -1660,7 +1658,6 @@ void kompress(
         h_BGOrec_sumRms_bin_cosine_cosine2D[bidx]->Write();
         h_BGOrec_sumRms_bin_cosine_cosine2D_log[bidx]->Write();
         h_BGOrec_sumRms_bin_cosine2D[bidx]->Write();
-        h_BGOrec_sumRms_bin_cosine2D_hreg[bidx]->Write();
 
         if (!regularize_vars)
             h_BGOrec_sumRms_bin_cosine2D_log[bidx]->Write();
@@ -1889,6 +1886,8 @@ void kompress(
         h_BGOrec_ps_sumRms_bin_cosine_cosine2D[bidx]->Write();
         h_BGOrec_ps_sumRms_bin_cosine_cosine2D_log[bidx]->Write();
         h_BGOrec_ps_sumRms_bin_cosine2D[bidx]->Write();
+        h_BGOrec_ps_sumRms_bin_cosine2D_hreg[bidx]->Write();
+
         if (!regularize_vars)
             h_BGOrec_ps_sumRms_bin_cosine2D_log[bidx]->Write();
         h_BGOrec_ps_sumRms_flast_bin[bidx]->Write();
