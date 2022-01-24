@@ -306,8 +306,7 @@ std::tuple<double, double> get_xtrl_efficiencies(
         
         electron_reader->Restart();
         proton_reader->Restart();
-
-        /*
+        
         double signal_selection {-999};
         double background_efficiency {-999};
         double proton_rejection {-999};
@@ -319,10 +318,10 @@ std::tuple<double, double> get_xtrl_efficiencies(
             background_efficiency = (double)proton_survived_xtrl_cut/proton_events;
             proton_rejection = 1 - background_efficiency;
         }
-        */
        
         //return std::tuple<double, double> (signal_selection, proton_rejection);
-        return std::tuple<double, double> ((double)electron_survived_xtrl_cut/electron_events, (double)proton_survived_xtrl_cut/proton_events);
+        return std::tuple<double, double> (signal_selection, background_efficiency);
+        //return std::tuple<double, double> ((double)electron_survived_xtrl_cut/electron_events, (double)proton_survived_xtrl_cut/proton_events);
     }
 
 std::tuple<double, double> get_bdt_efficiencies(
@@ -516,8 +515,7 @@ std::tuple<double, double> get_bdt_efficiencies(
 
         electron_reader->Restart();
         proton_reader->Restart();
-
-        /*
+        
         double signal_selection {-999};
         double background_efficiency {-999};
         double proton_rejection {-999};
@@ -529,8 +527,8 @@ std::tuple<double, double> get_bdt_efficiencies(
             background_efficiency = (double)proton_survived_xtrl_cut/proton_events;
             proton_rejection = 1 - background_efficiency;
         }
-        */
        
         //return std::tuple<double, double> (signal_selection, proton_rejection);
-        return std::tuple<double, double> ((double)electron_survived_xtrl_cut/electron_events, (double)proton_survived_xtrl_cut/proton_events);
+        return std::tuple<double, double> (signal_selection, background_efficiency);
+        //return std::tuple<double, double> ((double)electron_survived_xtrl_cut/electron_events, (double)proton_survived_xtrl_cut/proton_events);
     }
