@@ -129,7 +129,7 @@ void mcShift(
             mean = it->GetPtr()->GetMean();
             rms = it->GetPtr()->GetRMS();
             TF1 gaus_fit("gaus_fit", "gaus", mean-rms, mean+rms);
-            it->GetPtr()->Fit(&gaus_fit, "Q");
+            !mc ? it->GetPtr()->Fit(&gaus_fit, "RQLN") : it->GetPtr()->Fit(&gaus_fit, "RQWLN");
             gaus_fit_1[std::distance(std::begin(h_classifier_bin), it)] = gaus_fit;
         }
 
@@ -139,7 +139,7 @@ void mcShift(
             tf1_mean = gaus_fit_1[std::distance(std::begin(h_classifier_bin), it)].GetParameter(1);
             tf1_rms = gaus_fit_1[std::distance(std::begin(h_classifier_bin), it)].GetParameter(2);
             TF1 gaus_fit("gaus_fit", "gaus", tf1_mean-tf1_rms, tf1_mean+tf1_rms);
-            it->GetPtr()->Fit(&gaus_fit, "Q");
+            !mc ? it->GetPtr()->Fit(&gaus_fit, "RQLN") : it->GetPtr()->Fit(&gaus_fit, "RQWLN");
             gaus_fit_2[std::distance(std::begin(h_classifier_bin), it)] = gaus_fit;
         }
 
@@ -157,9 +157,9 @@ void mcShift(
         gr_shift_mean.GetYaxis()->SetTitle("Mean Shift");
 
         TGraph gr_shift_rms(energy_nbins, &bins[0], &rms_shift[0]);
-        gr_shift_mean.SetName("gr_shift_rms");
-        gr_shift_mean.GetXaxis()->SetTitle("Energy Bin");
-        gr_shift_mean.GetYaxis()->SetTitle("RMS Shift");
+        gr_shift_rms.SetName("gr_shift_rms");
+        gr_shift_rms.GetXaxis()->SetTitle("Energy Bin");
+        gr_shift_rms.GetYaxis()->SetTitle("RMS Shift");
 
         TFile outfile(output_file, "RECREATE");
         if (outfile.IsZombie()) {
@@ -175,6 +175,8 @@ void mcShift(
             gaus_fit_1[bidx].Write();
             gaus_fit_2[bidx].Write();
         }
+
+        outfile.cd();
 
         gr_shift_mean.Write();
         gr_shift_rms.Write();
