@@ -169,18 +169,6 @@ void lateral_showering_distributions_lastcut(
                                 // Fill efficiency histos
                                 auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
                                 auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (cuts_config->GetCutsConfig()).bgo_shower_width);
-
-                                if (nbarlayer13_cut)
-                                    ps_histos->h_nbarlayer13_lastcut_pass->Fill(evt_corr_energy_gev, weight);
-                                else
-                                    ps_histos->h_nbarlayer13_lastcut_fail->Fill(evt_corr_energy_gev, weight);
-                                ps_histos->h_nbarlayer13_lastcut->Fill(evt_corr_energy_gev, weight);
-
-                                if (maxrms_cut)
-                                    ps_histos->h_maxrms_lastcut_pass->Fill(evt_corr_energy_gev, weight);
-                                else
-                                    ps_histos->h_maxrms_lastcut_fail->Fill(evt_corr_energy_gev, weight);
-                                ps_histos->h_maxrms_lastcut->Fill(evt_corr_energy_gev, weight);
                             }
                         }
                     }

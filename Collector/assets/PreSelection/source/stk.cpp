@@ -86,13 +86,8 @@ void stk_distributions(
                             else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
                                 ps_histos->h_BGOrec_sumRms_flast_after_track_selection_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
                             else if (evt_corr_energy_gev>=5000)
-                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
-
-                            ps_histos->h_trackselection_lastcut_pass->Fill(evt_corr_energy_gev, weight);
+                                ps_histos->h_BGOrec_sumRms_flast_after_track_selection_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);   
                         }
-                        else
-                            ps_histos->h_trackselection_lastcut_fail->Fill(evt_corr_energy_gev, weight);
-                        ps_histos->h_trackselection_lastcut->Fill(evt_corr_energy_gev, weight);
                     }
                 }
             }

@@ -99,14 +99,6 @@ void psd_stk_match_distributions(
                                     event_best_track,
                                     clu_matching,
                                     (cuts_config->GetCutsConfig()).STK_PSD_delta_position);
-                                
-                                auto weight {ps_histos->GetWeight()};
-
-                                if (psdstkmatch_cut)
-                                    ps_histos->h_psdstkmatch_lastcut_pass->Fill(evt_corr_energy_gev, weight);
-                                else
-                                    ps_histos->h_psdstkmatch_lastcut_fail->Fill(evt_corr_energy_gev, weight);
-                                ps_histos->h_psdstkmatch_lastcut->Fill(evt_corr_energy_gev, weight);
                             }
                         }
                     }

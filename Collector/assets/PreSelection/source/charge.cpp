@@ -104,12 +104,7 @@ void charge_distributions(
                                     ps_histos->h_PSD_STK_X_charge_after_PSD_charge_cut->Fill(stk_charges[0], psd_charges[0], weight);
                                     ps_histos->h_PSD_STK_Y_charge_after_PSD_charge_cut->Fill(stk_charges[1], psd_charges[1], weight);
                                     ps_histos->h_PSD_STK_charge_after_PSD_charge_cut->Fill(stk_charges[2], psd_charges[2], weight);
-
-                                    ps_histos->h_psdcharge_lastcut_pass->Fill(evt_corr_energy_gev, weight);
                                 }
-                                else
-                                    ps_histos->h_psdcharge_lastcut_fail->Fill(evt_corr_energy_gev, weight);
-                                ps_histos->h_psdcharge_lastcut->Fill(evt_corr_energy_gev, weight);
 
                                 if (stkcharge_cut) {
                                     psd_charge(psdVault->getPsdClusterMaxE(), event_best_track, clu_matching, ps_histos, true);
@@ -117,12 +112,7 @@ void charge_distributions(
                                     ps_histos->h_PSD_STK_X_charge_after_STK_charge_cut->Fill(stk_charges[0], psd_charges[0], weight);
                                     ps_histos->h_PSD_STK_Y_charge_after_STK_charge_cut->Fill(stk_charges[1], psd_charges[1], weight);
                                     ps_histos->h_PSD_STK_charge_after_STK_charge_cut->Fill(stk_charges[2], psd_charges[2], weight);
-
-                                    ps_histos->h_stkcharge_lastcut_pass->Fill(evt_corr_energy_gev, weight);
                                 }
-                                else
-                                    ps_histos->h_stkcharge_lastcut_fail->Fill(evt_corr_energy_gev, weight);
-                                ps_histos->h_stkcharge_lastcut->Fill(evt_corr_energy_gev, weight);
                             }
                         }
                     }

@@ -5,6 +5,7 @@
 #include "histos.h"
 #include "charge.h"
 #include "config.h"
+#include "efficiency.h"
 #include "preselection.h"
 #include "energy_config.h"
 #include "lateral_showering.h"
@@ -176,6 +177,8 @@ void preselection(const in_pars &input_pars) {
     double evt_energy {0};
     double evt_corr_energy_gev {0};
     double evt_energy_gev {0};
+    double simu_energy {0};
+    double simu_energy_gev {0};
     double gev {0.001};
     unsigned int perc {10};
 
@@ -200,6 +203,11 @@ void preselection(const in_pars &input_pars) {
         evt_energy_gev = evt_energy*gev;
         evt_corr_energy_gev = evt_corr_energy*gev;
         ps_histos->SetWeight(simu_primaries, evt_corr_energy_gev);
+
+        if (input_pars.mc_flag) {
+            simu_energy = simu_primaries->pvpart_ekin;
+            simu_energy_gev = simu_energy*gev;
+        }
 
         if (evt_corr_energy_gev>=min_evt_energy && evt_corr_energy_gev<=max_evt_energy) {
             
@@ -315,6 +323,21 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy, 
                     evt_energy_gev, 
                     evt_corr_energy_gev, 
+                    ps_histos,
+                    cuts_config);
+
+                buildEfficiencies(
+                    bgohits, 
+                    bgorec, 
+                    evt_header, 
+                    stkclusters, 
+                    stktracks, 
+                    psdhits, 
+                    evt_energy, 
+                    evt_corr_energy, 
+                    evt_energy_gev, 
+                    evt_corr_energy_gev,
+                    simu_energy_gev,
                     ps_histos,
                     cuts_config);
             }
