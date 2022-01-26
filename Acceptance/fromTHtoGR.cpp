@@ -9,7 +9,7 @@
 #include "TKey.h"
 #include "TH1D.h"
 #include "TFile.h"
-#include "TGraph.h"
+#include "TGraphErrors.h"
 
 struct energy_config {
     std::size_t n_bins;
@@ -128,16 +128,19 @@ void fromTHtoGR(
         auto h_acceptance = extractHistoFromFile(infile, verbose);
 
         std::vector<double> energies, acceptance;
+        std::vector<double> err_energies, err_acceptance;
 
         for (int b_idx=1; b_idx<=h_acceptance->GetNbinsX(); ++b_idx) {
             auto bin_center = h_acceptance->GetBinCenter(b_idx);
             if (bin_center > energy_th_gev) {
                 energies.push_back(bin_center);
                 acceptance.push_back(h_acceptance->GetBinContent(b_idx));
+                err_energies.push_back(0);
+                err_acceptance.push_back(h_acceptance->GetBinError(b_idx));
             }
         }
         
-        TGraph gr(energies.size(), &energies[0], &acceptance[0]);
+        TGraphErrors gr(energies.size(), &energies[0], &acceptance[0], &err_energies[0], &err_acceptance[0]);
         gr.SetName("gr_acceptance");
         gr.GetXaxis()->SetTitle("Energy [GeV]");
         gr.GetYaxis()->SetTitle("Acceptance [m^{2} sr]");
