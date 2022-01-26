@@ -108,7 +108,7 @@ void mcShift(
 
         const double signal_spectral_index = -3;
         auto get_weight = [signal_spectral_index, &energy_binning] (const double energy_gev) -> double {
-            return std::pow(energy_gev, signal_spectral_index -1)*std::pow(energy_binning[0], 2);
+            return std::pow(energy_gev, signal_spectral_index +1)*std::pow(energy_binning[0], signal_spectral_index+1);
         };
 
         // Build the tmva classifier distribution for each bin
@@ -128,7 +128,11 @@ void mcShift(
         for (auto it=std::begin(h_classifier_bin); it != std::end(h_classifier_bin); ++it) {
             mean = it->GetPtr()->GetMean();
             rms = it->GetPtr()->GetRMS();
-            TF1 gaus_fit("gaus_fit", "gaus", mean-rms, mean+rms);
+           
+            double moda {it->GetPtr()->GetBinCenter(it->GetPtr()->GetMaximumBin())};
+
+            //TF1 gaus_fit("gaus_fit", "gaus", mean-5*rms, mean+3*rms);
+            TF1 gaus_fit("gaus_fit", "gaus", moda-rms, moda+rms);
             !mc ? it->GetPtr()->Fit(&gaus_fit, "RQLN") : it->GetPtr()->Fit(&gaus_fit, "RQWLN");
             gaus_fit_1[std::distance(std::begin(h_classifier_bin), it)] = gaus_fit;
         }
