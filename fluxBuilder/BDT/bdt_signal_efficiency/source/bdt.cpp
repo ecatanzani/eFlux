@@ -39,7 +39,7 @@ void bdt_selection(in_args input_args) {
 
     const double signal_spectral_index = -3;
     auto get_weight = [signal_spectral_index, &energy_binning] (const double energy_gev) -> double {
-        return std::pow(energy_gev, signal_spectral_index -1)*std::pow(energy_binning[0], 2);
+        return std::pow(energy_gev, signal_spectral_index+1)*std::pow(energy_binning[0], fabs(signal_spectral_index+1));
     };
 
     if (input_args.verbose) std::cout << "\n\nAnlysis running...\n\n";
