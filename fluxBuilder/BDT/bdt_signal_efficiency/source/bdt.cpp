@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include "TF1.h"
 #include "TFile.h"
 #include <ROOT/RDataFrame.hxx>
 
@@ -12,11 +13,24 @@ inline const char* get_bdt_config_file(const char* energy_config_file) {
     return (std::string(energy_config_file).substr(0, std::string(energy_config_file).find("/eFlux")+6) + std::string("/Classifier/Reader/config/classifier.conf")).c_str();
 }
 
+inline std::shared_ptr<TF1> extractTF1(const char* file_name, const char* tf1_name="shift_fit_function") {
+    TFile *infile = TFile::Open(file_name, "READ");
+    if (infile->IsZombie()) {
+        std::cout << "Error opening input TF1 file: [" << file_name << "]\n\n";
+        exit(100);
+    }
+
+    std::shared_ptr<TF1> tf1 = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get(tf1_name)));
+    return tf1;
+}
+
 void bdt_selection(in_args input_args) {
 
     std::shared_ptr<energy_config> config = std::make_shared<energy_config>(input_args.energy_config_file);
     std::shared_ptr<parser> evt_parser = std::make_unique<parser>(input_args.input_list, input_args.verbose);
     std::shared_ptr<bdt_config> cl_config = std::make_unique<bdt_config>(get_bdt_config_file(input_args.energy_config_file));
+
+    auto corr_func = extractTF1(input_args.eff_corr_function.c_str());
 
     auto energy_binning = config->GetEnergyBinning();
     auto energy_nbins = (int)energy_binning.size() - 1;
@@ -29,12 +43,12 @@ void bdt_selection(in_args input_args) {
     std::cout << "\nTotal events: " << *(_data_fr.Count());
     std::cout << "\n\n***************************";
 
-    auto get_bdt_cut = [cl_config] (const double energy_gev) -> double {
+    auto get_bdt_cut = [cl_config, &corr_func] (const double energy_gev) -> double {
         double cut {0};
         if (energy_gev>=10 && energy_gev<100) cut = cl_config->GetLowEnergyBDTCut();
         else if (energy_gev>=100 && energy_gev<1000) cut = cl_config->GetMidEnergyBDTCut();
         else if (energy_gev>=1000 && energy_gev<=10000) cut = cl_config->GetHighEnergyBDTCut();
-        return cut;
+        return cut - corr_func->Eval(energy_gev);
     };
 
     const double signal_spectral_index = -3;

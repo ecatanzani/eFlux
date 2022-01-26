@@ -14,6 +14,7 @@ struct in_args
     const char* energy_config_file;
 	std::string input_list;
 	std::string output_path;
+	std::string eff_corr_function;
 	bool verbose {false};
 	unsigned int threads {1};
 };
