@@ -90,8 +90,8 @@ void Train(in_args input_args)
     // Add events weights
     //dataloader->SetSignalWeightExpression("simu_energy_w_corr");
     //dataloader->SetBackgroundWeightExpression("simu_energy_w_corr");
-    dataloader->SetSignalWeightExpression("simu_energy_w");
-    dataloader->SetBackgroundWeightExpression("simu_energy_w");
+    //dataloader->SetSignalWeightExpression("simu_energy_w");
+    //dataloader->SetBackgroundWeightExpression("simu_energy_w");
 
     // Apply additional cuts on the signal and background samples
     TCut signal_cuts {""};

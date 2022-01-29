@@ -236,6 +236,12 @@ void SetTMVACuts(
     background_cuts += energyrange;
 #endif
 
+    // Remove bad events values on fraclastlayer_norm valiable (maybe due to gaussianization process)
+    TCut fraclastlayer_norm_errs = "!(fraclastlayer_norm<-100 || fraclastlayer_norm>100)";
+    signal_cuts+=fraclastlayer_norm_errs;
+    background_cuts+=fraclastlayer_norm_errs;
+
+    // Remove infinite values and nans
     TCut removenans_rmsl1 = "!(TMath::IsNaN(rmslayer_norm_1) || !(TMath::Finite(rmslayer_norm_1)))";
     signal_cuts+=removenans_rmsl1;
     background_cuts+=removenans_rmsl1;

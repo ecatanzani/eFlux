@@ -11,8 +11,7 @@ config::config(
 	get_config_info(parse_config_file(working_dir, config_file_name));
 	// Auto-set training events
 	if (events.auto_train_events)
-		events.signal_train_events = events.background_train_events = !applied_cuts.xtrl ? 	std::min(signal_train->GetEntries(), background_train->GetEntries()) : 
-																							std::min(signal_train->GetEntries(applied_cuts.signal_string.c_str()), background_train->GetEntries(applied_cuts.background_string.c_str()));
+		events.signal_train_events = events.background_train_events = std::min(signal_train->GetEntries(applied_cuts.signal_string.c_str()), background_train->GetEntries(applied_cuts.background_string.c_str()));
 }
 
 std::string config::parse_config_file(
@@ -125,6 +124,16 @@ void config::get_config_info(std::string parsed_config)
 			}
 			applied_cuts.signal_string = std::string("xtrl>") + std::to_string(applied_cuts.signal_min_xtrl_value) + std::string("&& xtrl<") + std::to_string(applied_cuts.signal_max_xtrl_value);
 			applied_cuts.background_string = std::string("xtrl>") + std::to_string(applied_cuts.background_min_xtrl_value) + std::string("&& xtrl<") + std::to_string(applied_cuts.background_max_xtrl_value);
+		}
+
+		// fraclastlayer_norm removal
+		if (applied_cuts.signal_string.empty()) {
+			applied_cuts.signal_string = std::string("fraclastlayer_norm>=-100 && fraclastlayer_norm<=100");
+			applied_cuts.background_string = std::string("fraclastlayer_norm>=-100 && fraclastlayer_norm<=100");
+		}
+		else {
+			applied_cuts.signal_string += std::string(" && fraclastlayer_norm>=-100 && fraclastlayer_norm<=100");
+			applied_cuts.background_string += std::string("&& fraclastlayer_norm>=-100 && fraclastlayer_norm<=100");
 		}
 	}
 }
