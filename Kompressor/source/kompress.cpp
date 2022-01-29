@@ -9,6 +9,27 @@
 #include "TVector3.h"
 #include <ROOT/RDataFrame.hxx>
 
+inline std::vector<std::shared_ptr<TH2D>> extractHistoFrorRegBH(const int bins, const char* path="/mnt/eFlux/Kompressor/protons_kompressor_0123_sumrms_reg_by_hand_integral_6.root") {
+    TFile* infile = TFile::Open(path, "READ");
+    if (infile->IsZombie()) {
+        std::cerr << "\n\nError reading Reg Histo BH: [" << path << "]\n\n";
+        exit(100);
+    }
+
+    std::vector<std::shared_ptr<TH2D>> histos;
+
+    for (int idx=0; idx<bins; ++idx) {
+        std::string histo_name = "Preselection/BGO/energybin_" + std::to_string(idx+1) + std::string("/h_BGOrec_ps_sumRms_cosine2D_bin_") + std::to_string(idx+1);
+        auto tmp_histo = std::shared_ptr<TH2D>(static_cast<TH2D*>(infile->Get(histo_name.c_str())));
+        tmp_histo->SetDirectory(0);
+        histos.push_back(tmp_histo);
+    }
+
+    infile->Close();
+
+    return histos;
+}
+
 void kompress(
     std::shared_ptr<TChain> evtch,
     std::shared_ptr<config> _config,
@@ -1485,16 +1506,11 @@ void kompress(
     auto h_NUD_ps_max_adc = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_max_adc", "NUD Max ADC", 100, 0, 1000}, "nud_max_adc", "simu_energy_w_corr");
     auto h_NUD_ps_max_channel = _fr_preselected.Histo1D<int, double>({"h_NUD_ps_max_channel", "NUD Max Channel", 3, 0, 3}, "nud_max_channel_id", "simu_energy_w_corr");
 
-
+    auto h_BGOrec_ps_sumRms_bin_cosine2D_complete = extractHistoFrorRegBH(energy_nbins);
     
-    auto reg_sumrms_by_histo = [] (const double sumrms, const double cosine, const int energy_bin) -> double {
-
-        TFile* in_reg_histo = TFile::Open("/storage/gpfs_data/dampe/users/ecatanzani/myRepos/CondorHelper/protons_kompressor_0123_sumrms_reg_by_hand_integral_6.root", "READ");
-        std::string file_name = std::string("Preselection/BGO/energybin_") + std::to_string(energy_bin) + std::string("h_BGOrec_ps_sumRms_cosine2D_bin_") + std::to_string(energy_bin);
-        std::shared_ptr<TH2D> h_BGOrec_ps_sumRms_bin_cosine2D_complete = std::shared_ptr<TH2D>(static_cast<TH2D*>(in_reg_histo->Get(file_name.c_str())));
-
-        auto cosine_bin_idx = h_BGOrec_ps_sumRms_bin_cosine2D_complete->GetXaxis()->FindBin(cosine);
-        auto ptojy = static_cast<TH1D*>(h_BGOrec_ps_sumRms_bin_cosine2D_complete->ProjectionY((std::string("h_BGOrec_ps_sumRms_bin_cosine2D_") + std::to_string(cosine_bin_idx)).c_str(), cosine_bin_idx, cosine_bin_idx));
+    auto reg_sumrms_by_histo = [h_BGOrec_ps_sumRms_bin_cosine2D_complete] (const double sumrms, const double cosine, const int energy_bin) -> double {
+        auto cosine_bin_idx = h_BGOrec_ps_sumRms_bin_cosine2D_complete[energy_bin-1]->GetXaxis()->FindBin(cosine);
+        auto ptojy = static_cast<TH1D*>(h_BGOrec_ps_sumRms_bin_cosine2D_complete[energy_bin-1]->ProjectionY((std::string("h_BGOrec_ps_sumRms_bin_cosine2D_") + std::to_string(cosine_bin_idx)).c_str(), cosine_bin_idx, cosine_bin_idx));
         auto sumrms_mean_value = ptojy->GetMean();
         auto sumrms_rms_value = ptojy->GetRMS();
         auto sumrms_reg = sumrms_rms_value ? (sumrms-sumrms_mean_value)/sumrms_rms_value : sumrms-sumrms_mean_value;
