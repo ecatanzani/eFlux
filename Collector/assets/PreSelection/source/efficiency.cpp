@@ -376,12 +376,10 @@ void nbarlayer13_efficiency(
             auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
                 
             if (bgofiducial_cut) {
-
-                /*
+                
                 auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (cuts_config->GetCutsConfig()).bgo_shower_width);
 
                 if (maxrms_cut) {
-                */
                     auto trackselection_cut = track_selection_cut(
                         bgorec, 
                         bgoVault->GetBGOslope(), 
@@ -429,7 +427,7 @@ void nbarlayer13_efficiency(
                             }
                         }
                     }
-                //}
+                }
             }
         }
     }
@@ -470,11 +468,10 @@ void maxrms_efficiency(
                 
             if (bgofiducial_cut) {
                 
-                /*
                 auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
 
                 if (nbarlayer13_cut) {
-                */
+
                     auto trackselection_cut = track_selection_cut(
                         bgorec, 
                         bgoVault->GetBGOslope(), 
@@ -522,7 +519,7 @@ void maxrms_efficiency(
                             }
                         }
                     }
-                //}
+                }
             }
         }
     }
