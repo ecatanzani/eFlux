@@ -156,3 +156,10 @@ void fromTHtoGR(
         outfile_ptr->Close();
 
     }
+
+void getBinning(const char* energy_config_file) {
+    auto energy_binning = parse_energy_config(energy_config_file);
+
+    for (unsigned int idx=0; idx < energy_binning.size()-1; ++idx)
+        std::cout << "\nBin " << idx +1 << ":\t" << energy_binning[idx] << " - " << energy_binning[idx+1];
+}
