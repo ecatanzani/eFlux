@@ -32,10 +32,9 @@ void buildFlux(
     const char* e_counts_input_file,
     const char* e_acc_input_file,
     const char* signal_efficiency,
-    const char* background,
-    const double exposure_time,
-    const char* output_file,
-    const bool verbose) {
+    const double exposure_time = 140143948.911,
+    const char* output_file = "flux.root",
+    const bool verbose = true) {
 
         if (verbose)
             std::cout << "\n\nReading input files... " << std::endl;
@@ -44,15 +43,9 @@ void buildFlux(
         auto h_e_counts = extractHistoFromFile(e_counts_input_file, verbose);
         auto h_e_acc = extractHistoFromFile(e_acc_input_file, verbose);
         auto h_signal_eff = extractHistoFromFile(signal_efficiency, verbose);
-        auto h_background = extractHistoFromFile(background, verbose);
 
         // Correct for the efficiency
         h_e_counts->Divide(h_signal_eff.get());
-
-        // Subtract proton background
-        h_e_counts->Add(h_background.get(), -1);
-
-        auto h_e_eff_patch = h_e_counts->Clone("h_e_eff_patch");
 
         // Divide by the acceptance
         h_e_counts->Divide(h_e_acc.get());
@@ -93,7 +86,6 @@ void buildFlux(
 
         h_e_counts->Write();
         h_e_counts_E3->Write();
-        h_e_eff_patch->Write();
 
         outfile->Close();
 
