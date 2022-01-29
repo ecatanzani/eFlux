@@ -44,7 +44,7 @@ struct active_cuts
 class config
 {
 public:
-	config(const std::string working_dir);
+	config(const std::string working_dir, const std::string bdt_config_file);
 	~config(){};
 
 	void PrintActiveFilters();
@@ -66,7 +66,7 @@ public:
 	const double GetHEClassifierCut();
 
 private:
-	std::string parse_config_file(std::string wd, std::string config_file);
+	std::string parse_config_file(std::string config_file);
 	void get_config_info(std::string parsed_config);
 	void get_local_config_info(std::string parsed_config);
 	cuts_conf cuts;

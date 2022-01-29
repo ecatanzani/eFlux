@@ -1,20 +1,16 @@
 #include "config.h"
 
-config::config(const std::string working_dir) {
-	get_config_info(parse_config_file(working_dir, std::string("data_config.conf")));
-	const std::string local_config_path = working_dir.substr(0, working_dir.find("/Collector/config")) + std::string("/Classifier/Reader/config/");
-	get_local_config_info(parse_config_file(local_config_path, std::string("classifier.conf")));
+config::config(const std::string working_dir, const std::string bdt_config_file) {
+	get_config_info(parse_config_file(working_dir+std::string("/data_config.conf")));
+	get_local_config_info(parse_config_file(bdt_config_file));
 }
 
-std::string config::parse_config_file(
-	std::string wd,
-	std::string config_file)
+std::string config::parse_config_file(std::string config_file)
 {
-	std::string configPath = wd + "/" + config_file;
-	std::ifstream input_file(configPath.c_str());
+	std::ifstream input_file(config_file.c_str());
 	if (!input_file.is_open())
 	{
-		std::cerr << "\nInput config file not found [" << configPath << "]\n\n";
+		std::cerr << "\nInput config file not found [" << config_file << "]\n\n";
 		exit(100);
 	}
 	std::string input_string(
@@ -23,6 +19,7 @@ std::string config::parse_config_file(
 	input_file.close();
 	return input_string;
 }
+
 void config::get_config_info(std::string parsed_config)
 {
 	std::string tmp_str;

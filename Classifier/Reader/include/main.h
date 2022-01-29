@@ -13,6 +13,7 @@ struct in_args
 {
 	std::string input_list;
 	std::string config_dir;
+	std::string bdt_reader_config_file;
 	std::string output_path;
 	std::string learning_method;
 	bool verbose {false};

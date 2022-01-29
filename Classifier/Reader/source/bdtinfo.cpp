@@ -86,6 +86,8 @@ inline void linkTreeVariables(std::shared_ptr<TChain> evtch, data_vars &vars) {
 
     evtch->SetBranchAddress("energy_corr", &vars.evt_corr_energy);
 
+    evtch->SetBranchAddress("energy_bin", &vars.energy_bin);
+
 }
 
 inline void sync_vars(const data_vars &vars, bdt_vars &tmva_vars) {
@@ -128,7 +130,7 @@ inline void sync_vars(const data_vars &vars, bdt_vars &tmva_vars) {
 void ExtractBDTInfo(in_args input_args)
 {
     std::shared_ptr<parser> list_parser = std::make_shared<parser>(input_args.input_list, input_args.verbose);
-    std::shared_ptr<config> sw_config = std::make_shared<config>(input_args.config_dir);
+    std::shared_ptr<config> sw_config = std::make_shared<config>(input_args.config_dir, input_args.bdt_reader_config_file);
     long long int total_events {list_parser->GetEvtTree()->GetEntries()};
 
     if (input_args.verbose) {
@@ -195,6 +197,8 @@ void ExtractBDTInfo(in_args input_args)
         }
     };
 
+    double tmva_classifier_cut_value {-100};
+
     for (unsigned int evidx=0; evidx<list_parser->GetEvtTree()->GetEntries(); ++evidx) {
         list_parser->GetEvtTree()->GetEntry(evidx);
         sync_vars(vars, tmva_vars);
@@ -206,20 +210,20 @@ void ExtractBDTInfo(in_args input_args)
 
         if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100) {
             tmva_classifier = tmva_LE_reader->EvaluateMVA(input_args.learning_method.c_str());
-            if (tmva_classifier>sw_config->GetLEClassifierCut())
-                is_electron = true;
+            tmva_classifier_cut_value = sw_config->GetLEClassifierCut();
         }
         else if (vars.evt_corr_energy*gev>=100 && vars.evt_corr_energy*gev<1000) {
             tmva_classifier = tmva_ME_reader->EvaluateMVA(input_args.learning_method.c_str());
-            if (tmva_classifier>sw_config->GetMEClassifierCut())
-                is_electron = true;
+            tmva_classifier_cut_value = vars.energy_bin != 32 ? sw_config->GetMEClassifierCut() : sw_config->GetMEClassifierCut() - 0.07;
         }
         else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<=10000) {
             tmva_classifier = tmva_HE_reader->EvaluateMVA(input_args.learning_method.c_str());
-            if (tmva_classifier>sw_config->GetHEClassifierCut())
-                is_electron = true;
+            tmva_classifier_cut_value = sw_config->GetHEClassifierCut();
         }
         
+        if (tmva_classifier>tmva_classifier_cut_value)
+            is_electron = true;
+
         is_electron ? electron_tree->Fill() : proton_tree->Fill();
         total_tree->Fill();
 

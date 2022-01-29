@@ -12,6 +12,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -h  --help                        .......... Prints this help");
 	opt.addUsage(" -i  --input                       .......... <path_to_input_list>                             .......... (*) Input file list");
 	opt.addUsage(" -c  --config                      .......... <path_to_config_dir>                             .......... Collector working directory");
+	opt.addUsage(" -b  --config-bdt                  .......... <path_to_bdt_config_file>                        .......... BDT config file");
 	opt.addUsage(" -o  --output                      .......... <path_to_output_TFile>                           .......... Output ROOT TFile");
 	opt.addUsage(" -d  --outputDir                   .......... <path_to_output_TFile_dir>                       .......... Output ROOT TFile directory");
 	opt.addUsage(" -v  --verbose                     .......... Verbose output");
@@ -29,6 +30,7 @@ int main(int argc, char **argv)
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
 	opt.setOption("config", 'c');
+	opt.setOption("config-bdt", 'b');
 	opt.setOption("workdir", 'w');
 	opt.setOption("output", 'o');
 	opt.setOption("outputdir", 'd');
@@ -55,6 +57,8 @@ int main(int argc, char **argv)
 		input_args.input_list = opt.getValue('i');
 	if (opt.getValue("config") || opt.getValue('c'))
 		input_args.config_dir = opt.getValue('c');
+	if (opt.getValue("config-bdt") || opt.getValue('b'))
+		input_args.bdt_reader_config_file = opt.getValue('b');
 	if (opt.getValue("workdir") || opt.getValue('w'))
 		input_args.config_dir = opt.getValue('w');
 	if (opt.getValue("output") || opt.getValue('o'))

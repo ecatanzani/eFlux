@@ -73,6 +73,7 @@ struct data_vars {
     double xtrl {0};
 
     double evt_corr_energy {0};
+    int energy_bin {0};
 };
 
 extern void ExtractBDTInfo(in_args input_args);
