@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <tuple>
 
 #include "TF1.h"
 #include "TKey.h"
@@ -71,7 +72,7 @@ void mcShift(
     const char* input_file,
     const char* output_file,
     const char* energy_config_file,
-    const bool verbose,
+    const bool verbose = true,
     const bool mc = false,
     const double energy_th = 20,
     const unsigned int threads=1) {
@@ -166,7 +167,9 @@ void mcShift(
             gaus_fit_2[std::distance(std::begin(h_classifier_bin), it)] = gaus_fit;
         }
 
-        std::vector<double> mean_shift(energy_nbins, 0), rms_shift(energy_nbins, 0), mean_shift_error(energy_nbins, 0), energy_err(energy_nbins, 0), energy(energy_nbins, 0);
+        std::vector<double> mean_shift(energy_nbins, 0), mean_shift_error(energy_nbins, 0);
+        std::vector<double> rms_shift(energy_nbins, 0), rms_shift_error(energy_nbins, 0);
+        std::vector<double> energy_err(energy_nbins, 0), energy(energy_nbins, 0);
 
         for (int idx=0; idx<energy_nbins; ++idx) {
             energy[idx] = (energy_binning[idx] + energy_binning[idx+1])/2;
@@ -177,47 +180,84 @@ void mcShift(
             rms_shift[bin_idx-1] = gaus_fit_2[bin_idx-1].GetParameter(2);
             //mean_shift_error[bin_idx -1] = h_classifier_bin[bin_idx-1]->GetEntries() ? rms_shift[bin_idx-1]/sqrt(h_classifier_bin[bin_idx-1]->GetEntries()) : rms_shift[bin_idx-1];
             mean_shift_error[bin_idx -1] = gaus_fit_2[bin_idx-1].GetParError(1);
+            rms_shift_error[bin_idx -1] = gaus_fit_2[bin_idx-1].GetParError(2);
         }
 
         std::vector<double> bins(energy_nbins);
         std::iota(std::begin(bins), std::end(bins), 1);
-        TGraph gr_shift_mean(energy_nbins, &bins[0], &mean_shift[0]);
-        gr_shift_mean.SetName("gr_shift_mean");
-        gr_shift_mean.GetXaxis()->SetTitle("Energy Bin");
-        !mc ? gr_shift_mean.GetYaxis()->SetTitle("data peak position") : gr_shift_mean.GetYaxis()->SetTitle("electron peak position");
+        
+        // Mean graph for bin
+        TGraph gr_mean(energy_nbins, &bins[0], &mean_shift[0]);
+        gr_mean.SetName("gr_mean");
+        gr_mean.GetXaxis()->SetTitle("Energy Bin");
+        !mc ? gr_mean.GetYaxis()->SetTitle("data peak position") : gr_mean.GetYaxis()->SetTitle("electron peak position");
 
-        TGraphErrors gr_shift_mean_we(energy_nbins, &bins[0], &mean_shift[0], &energy_err[0], &mean_shift_error[0]);
-        gr_shift_mean_we.SetName("gr_shift_mean_we");
-        gr_shift_mean_we.GetXaxis()->SetTitle("Energy Bin");
-        !mc ? gr_shift_mean_we.GetYaxis()->SetTitle("data peak position") : gr_shift_mean.GetYaxis()->SetTitle("electron peak position");
+        // Mean graph with errors for bin
+        TGraphErrors gr_mean_we(energy_nbins, &bins[0], &mean_shift[0], &energy_err[0], &mean_shift_error[0]);
+        gr_mean_we.SetName("gr_mean_we");
+        gr_mean_we.GetXaxis()->SetTitle("Energy Bin");
+        !mc ? gr_mean_we.GetYaxis()->SetTitle("data peak position") : gr_mean_we.GetYaxis()->SetTitle("electron peak position");
 
-        TGraph gr_shift_rms(energy_nbins, &bins[0], &rms_shift[0]);
-        gr_shift_rms.SetName("gr_shift_rms");
-        gr_shift_rms.GetXaxis()->SetTitle("Energy Bin");
-        !mc ? gr_shift_rms.GetYaxis()->SetTitle("data peak position") : gr_shift_mean.GetYaxis()->SetTitle("electron peak position");
+        // Sigma graph for bin
+        TGraph gr_sigma(energy_nbins, &bins[0], &rms_shift[0]);
+        gr_sigma.SetName("gr_sigma");
+        gr_sigma.GetXaxis()->SetTitle("Energy Bin");
+        !mc ? gr_sigma.GetYaxis()->SetTitle("#sigma_{data}") : gr_sigma.GetYaxis()->SetTitle("#sigma_{electron}");
 
-        TGraphErrors gr_shift_full_interval(energy_nbins, &energy[0], &mean_shift[0], &energy_err[0], &mean_shift_error[0]);
-        gr_shift_full_interval.SetName("gr_shift_full_interval");
-        gr_shift_full_interval.GetXaxis()->SetTitle("Energy [GeV]");
-        !mc ? gr_shift_full_interval.GetYaxis()->SetTitle("data peak position") : gr_shift_mean.GetYaxis()->SetTitle("electron peak position");
+        // Sigma graph with errors for bin
+        TGraphErrors gr_sigma_we(energy_nbins, &bins[0], &rms_shift[0], &energy_err[0], &rms_shift_error[0]);
+        gr_sigma_we.SetName("gr_sigma_we");
+        gr_sigma_we.GetXaxis()->SetTitle("Energy Bin");
+        !mc ? gr_sigma_we.GetYaxis()->SetTitle("#sigma_{data}") : gr_sigma_we.GetYaxis()->SetTitle("#sigma_{electron}");
 
-        std::vector<double> mean_shift_shrink, mean_shift_err_shrink, energy_shrink, energy_err_shrink;
+        // Mean graph full energy range
+        TGraphErrors gr_mean_full_interval(energy_nbins, &energy[0], &mean_shift[0], &energy_err[0], &mean_shift_error[0]);
+        gr_mean_full_interval.SetName("gr_mean_full_interval");
+        gr_mean_full_interval.GetXaxis()->SetTitle("Energy [GeV]");
+        !mc ? gr_mean_full_interval.GetYaxis()->SetTitle("data peak position") : gr_mean_full_interval.GetYaxis()->SetTitle("electron peak position");
+        TF1 mean_full_interval_fit_func("mean_full_interval_fit_func", "[0] + [1]*log10(x)", energy.front(), energy.back());
+        gr_mean_full_interval.Fit(&mean_full_interval_fit_func, "RQ");
+
+        // Sigma graph full energy range
+        TGraphErrors gr_sigma_full_interval(energy_nbins, &energy[0], &rms_shift[0], &energy_err[0], &rms_shift_error[0]);
+        gr_sigma_full_interval.SetName("gr_sigma_full_interval");
+        gr_sigma_full_interval.GetXaxis()->SetTitle("Energy [GeV]");
+        !mc ? gr_sigma_full_interval.GetYaxis()->SetTitle("#sigma_{data}") : gr_sigma_full_interval.GetYaxis()->SetTitle("#sigma_{electron}");
+        TF1 sigma_full_interval_fit_func("sigma_full_interval_fit_func", "[0] + [1]*log10(x)", energy.front(), energy.back());
+        gr_sigma_full_interval.Fit(&sigma_full_interval_fit_func, "RQ");
+
+        std::vector<double> mean_shift_shrink, mean_shift_err_shrink;
+        std::vector<double> sigma_shift_shrink, sigma_shift_err_shrink;
+        std::vector<double> energy_shrink, energy_err_shrink;
+        
         for (int idx=0; idx<energy_nbins; ++idx) {
             if (energy[idx]>energy_th) {
                 energy_shrink.push_back(energy[idx]);
                 energy_err_shrink.push_back(0);
                 mean_shift_shrink.push_back(mean_shift[idx]);
                 mean_shift_err_shrink.push_back(mean_shift_error[idx]);
+                sigma_shift_shrink.push_back(rms_shift[idx]);
+                sigma_shift_err_shrink.push_back(rms_shift_error[idx]);
             }
         }
 
-        TGraphErrors gr_shift((int)energy_shrink.size(), &energy_shrink[0], &mean_shift_shrink[0], &energy_err_shrink[0], &mean_shift_err_shrink[0]);
-        gr_shift.SetName("gr_shift");
-        gr_shift.GetXaxis()->SetTitle("Energy [GeV]");
-        !mc ? gr_shift.GetYaxis()->SetTitle("data peak position") : gr_shift_mean.GetYaxis()->SetTitle("electron peak position");
-        TF1 shift_fit_func("shift_fit_func", "pol1", energy_shrink.front(), energy_shrink.back());
-        gr_shift.Fit(&shift_fit_func, "RQ");
+        // Mean graph small energy range
+        TGraphErrors gr_mean_reduced_energy_range((int)energy_shrink.size(), &energy_shrink[0], &mean_shift_shrink[0], &energy_err_shrink[0], &mean_shift_err_shrink[0]);
+        gr_mean_reduced_energy_range.SetName("gr_mean_reduced_energy_range");
+        gr_mean_reduced_energy_range.GetXaxis()->SetTitle("Energy [GeV]");
+        !mc ? gr_mean_reduced_energy_range.GetYaxis()->SetTitle("data peak position") : gr_mean_reduced_energy_range.GetYaxis()->SetTitle("electron peak position");
+        TF1 mean_fit_func("mean_fit_func", "[0] + [1]*log10(x)", energy_shrink.front(), energy_shrink.back());
+        gr_mean_reduced_energy_range.Fit(&mean_fit_func, "RQ");
 
+        // Sigma graph small energy range
+        TGraphErrors gr_sigma_reduced_energy_range((int)energy_shrink.size(), &energy_shrink[0], &sigma_shift_shrink[0], &energy_err_shrink[0], &sigma_shift_err_shrink[0]);
+        gr_sigma_reduced_energy_range.SetName("gr_sigma_reduced_energy_range");
+        gr_sigma_reduced_energy_range.GetXaxis()->SetTitle("Energy [GeV]");
+        !mc ? gr_sigma_reduced_energy_range.GetYaxis()->SetTitle("#sigma_{data}") : gr_sigma_reduced_energy_range.GetYaxis()->SetTitle("#sigma_{electron}");
+        TF1 sigma_fit_func("sigma_fit_func", "[0] + [1]*log10(x)", energy_shrink.front(), energy_shrink.back());
+        gr_sigma_reduced_energy_range.Fit(&sigma_fit_func, "RQ");
+
+        // Write output file
         TFile outfile(output_file, "RECREATE");
         if (outfile.IsZombie()) {
             std::cerr << "\n\nError writing output file [" << output_file << "]" << std::endl;
@@ -235,13 +275,21 @@ void mcShift(
 
         outfile.cd();
 
-        gr_shift_mean.Write();
-        gr_shift_mean_we.Write();
-        gr_shift_rms.Write();
+        gr_mean.Write();
+        gr_mean_we.Write();
+        gr_sigma.Write();
+        gr_sigma_we.Write();
 
-        gr_shift_full_interval.Write();
-        gr_shift.Write();  
-        shift_fit_func.Write(); 
+        gr_mean_full_interval.Write();
+        gr_sigma_full_interval.Write();
+
+        gr_mean_reduced_energy_range.Write();  
+        gr_sigma_reduced_energy_range.Write();
+
+        mean_full_interval_fit_func.Write();
+        mean_fit_func.Write();
+        sigma_full_interval_fit_func.Write(); 
+        sigma_fit_func.Write();
 
         outfile.Close();
     }
@@ -259,21 +307,23 @@ inline std::shared_ptr<TGraphErrors> extractGR(const char* file, const char* nam
     return gr;
 }
 
-void fitPeakPositionDifference(
+std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitPeakPositionDifference(
     const char* mc_file,
     const char* data_file,
-    const char* output_file,
-    const double max_energy_gev = 2500,
-    const bool verbose = true) {
+    const double max_energy_gev = 2500) {
 
-        auto gr_electron_mc = extractGR(mc_file, "gr_shift");
-        auto gr_data = extractGR(data_file, "gr_shift");
+        auto gr_electron_mc = extractGR(mc_file, "gr_mean_full_interval");
+        auto gr_data = extractGR(data_file, "gr_mean_full_interval");
 
-        std::vector<double> energy, energy_err, point_difference, point_difference_err;
+        std::vector<double> energy, energy_err;
+        std::vector<double> bins, bins_err;
+        std::vector<double> point_difference, point_difference_err;
 
         for (int idx_p=0; idx_p<gr_electron_mc->GetN(); ++idx_p) {
             energy.push_back(gr_data->GetPointX(idx_p));
+            bins.push_back(idx_p+1);
             energy_err.push_back(0);
+            bins_err.push_back(0);
             point_difference.push_back(gr_data->GetPointY(idx_p) - gr_electron_mc->GetPointY(idx_p));
             point_difference_err.push_back(sqrt(pow(gr_data->GetErrorY(idx_p), 2) + pow(gr_electron_mc->GetErrorY(idx_p), 2)));
         }
@@ -283,9 +333,18 @@ void fitPeakPositionDifference(
         gr_difference.GetXaxis()->SetTitle("Energy [GeV]");
         gr_difference.GetYaxis()->SetTitle("shift = data peak position - electron peak position");
 
+        TGraphErrors gr_bin_difference(bins.size(), &bins[0], &point_difference[0], &bins_err[0], &point_difference_err[0]);
+        gr_difference.SetName("gr_bin_difference");
+        gr_difference.GetXaxis()->SetTitle("Energy Bin");
+        gr_difference.GetYaxis()->SetTitle("shift = data peak position - electron peak position");
+
         TF1 shift_fit_function("shift_fit_function", "[0]+[1]*log10(x)", energy.front(), energy.back());
         gr_difference.Fit(&shift_fit_function, "Q", "", energy.front(), max_energy_gev);
 
+        TF1 shift_fit_function_bin("shift_fit_function_bin", "pol1", bins.front(), bins.back());
+        gr_bin_difference.Fit(&shift_fit_function_bin, "Q", "", bins.front(), 33);
+
+    #if 0
         TFile outfile(output_file, "RECREATE");
         if (outfile.IsZombie()) {
             std::cerr << "\n\nError writing output file [" << output_file << "]" << std::endl;
@@ -296,5 +355,95 @@ void fitPeakPositionDifference(
         shift_fit_function.Write();
 
         outfile.Close();
+    #endif
 
+        return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_difference, shift_fit_function, gr_bin_difference, shift_fit_function_bin);
+
+    }
+
+std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitSigmaRatio(
+    const char* mc_file,
+    const char* data_file,
+    const double max_energy_gev = 2500) {
+
+        auto gr_electron_mc = extractGR(mc_file, "gr_sigma_full_interval");
+        auto gr_data = extractGR(data_file, "gr_sigma_full_interval");
+
+        std::vector<double> energy, energy_err;
+        std::vector<double> bins, bins_err;
+        std::vector<double> point_ratio, point_ratio_err;
+
+
+        for (int idx_p=0; idx_p<gr_electron_mc->GetN(); ++idx_p) {
+            energy.push_back(gr_data->GetPointX(idx_p));
+            bins.push_back(idx_p+1);
+            energy_err.push_back(0);
+            bins_err.push_back(0);
+            point_ratio.push_back(gr_data->GetPointY(idx_p) / gr_electron_mc->GetPointY(idx_p));
+            point_ratio_err.push_back(sqrt(pow(gr_data->GetErrorY(idx_p), 2) + pow(gr_electron_mc->GetErrorY(idx_p), 2)));
+        }
+
+        TGraphErrors gr_ratio(energy.size(), &energy[0], &point_ratio[0], &energy_err[0], &point_ratio_err[0]);
+        gr_ratio.SetName("gr_ratio");
+        gr_ratio.GetXaxis()->SetTitle("Energy [GeV]");
+        gr_ratio.GetYaxis()->SetTitle("#sigma_{data}/#sigma_{electron}");
+
+        TGraphErrors gr_bin_ratio(bins.size(), &bins[0], &point_ratio[0], &bins_err[0], &point_ratio_err[0]);
+        gr_ratio.SetName("gr_bin_ratio");
+        gr_ratio.GetXaxis()->SetTitle("Energy Bin");
+        gr_ratio.GetYaxis()->SetTitle("#sigma_{data}/#sigma_{electron}");
+
+        TF1 sigma_ratio_fit_function("sigma_ratio_fit_function", "[0]+[1]*log10(x)", energy.front(), energy.back());
+        gr_ratio.Fit(&sigma_ratio_fit_function, "Q", "", energy.front(), max_energy_gev);
+
+        TF1 sigma_ratio_fit_function_bin("sigma_ratio_fit_function_bin", "pol1", bins.front(), bins.back());
+        gr_bin_ratio.Fit(&sigma_ratio_fit_function_bin, "Q", "", bins.front(), 33);
+
+    #if 0
+        TFile outfile(output_file, "RECREATE");
+        if (outfile.IsZombie()) {
+            std::cerr << "\n\nError writing output file [" << output_file << "]" << std::endl;
+            exit(100);
+        }
+
+        gr_ratio.Write();
+        sigma_ratio_fit_function.Write();
+
+        outfile.Close();
+    #endif 
+
+        return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_ratio, sigma_ratio_fit_function, gr_bin_ratio, sigma_ratio_fit_function_bin);
+    }
+
+void calculateCorrection(
+    const char* mc_file,
+    const char* data_file,
+    const char* output_file,
+    const double max_energy_gev = 2500) {
+
+        TGraphErrors gr_shift, gr_sigma_ratio;
+        TGraphErrors gr_shift_bin, gr_sigma_ratio_bin;
+        TF1 shift_fit_func, sigma_ratio_fit_func;
+        TF1 shift_fit_func_bin, sigma_ratio_fit_func_bin;
+
+        std::tie(gr_shift, shift_fit_func, gr_shift_bin, shift_fit_func_bin) = fitPeakPositionDifference(mc_file, data_file, max_energy_gev);
+        std::tie(gr_sigma_ratio, sigma_ratio_fit_func, gr_sigma_ratio_bin, sigma_ratio_fit_func_bin) = fitSigmaRatio(mc_file, data_file, max_energy_gev);
+
+        TFile outfile(output_file, "RECREATE");
+        if (outfile.IsZombie()) {
+            std::cerr << "\n\nError writing output file [" << output_file << "]" << std::endl;
+            exit(100);
+        }
+
+        gr_shift.Write();
+        gr_shift_bin.Write();
+        gr_sigma_ratio.Write();
+        gr_sigma_ratio_bin.Write();
+
+        shift_fit_func.Write();
+        shift_fit_func_bin.Write();
+        sigma_ratio_fit_func.Write();
+        sigma_ratio_fit_func_bin.Write();
+
+        outfile.Close();
     }
