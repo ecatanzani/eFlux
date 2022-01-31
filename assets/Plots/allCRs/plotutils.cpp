@@ -101,8 +101,8 @@ std::vector<std::string> ams02_pbar_filter = {"gr_exp1_errtot"};
 
 const double emin = 1;
 const double emax = 1e+5;
-const double phi_min = 1;
-const double phi_max = 1e+7;
+const double phi_min = 1e-1;
+const double phi_max = 1e+6;
 
 const char* multigraph_name = "flux_mg_E3";
 
@@ -150,7 +150,7 @@ std::shared_ptr<TMultiGraph> buildflux()
     if (AUGER_allparticle) add_to_mg(auger_allparticle_path, kAUGER_allparticle, auger_marker_style, 1.3, auger_allparticle_legendentry, mgE3, auger_filter);
     if (KASCADEgrande_allparticle) add_to_mg(kascadegrande_allparticle_path, kKASCADEgrande_allparticle, kascadegrande_marker_style, 1.3, kascadegrande_allparticle_legendentry, mgE3, kascadegrande_filter);
 
-    mgE3->GetXaxis()->SetTitle("Energy (GeV)");
+    mgE3->GetXaxis()->SetTitle("Kinetic Energy/n (GeV/n)");
     mgE3->GetYaxis()->SetTitle("E^{3} #times #Phi (GeV [m^{2} sr s]^{-1})");
     
     return mgE3;
