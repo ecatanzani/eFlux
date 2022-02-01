@@ -361,6 +361,10 @@ void bin_flux(in_args input_args) {
         exit(1);
     }
 
+    std::string out_dir_name = "energybin_" + std::to_string(input_args.energy_bin);
+    outfile->mkdir(out_dir_name.c_str());
+    outfile->cd(out_dir_name.c_str());
+
     gr_flux_bdt                             ->Write();
     gr_flux_bdt_eff_corr_method1            ->Write();
     gr_flux_bdt_eff_corr_method2            ->Write();
