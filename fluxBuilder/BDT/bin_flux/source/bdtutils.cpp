@@ -66,3 +66,118 @@ std::map<std::string, int> GetTMVAMethods(const std::string mymethod) {
 
     return Use;
 }
+
+void addVariableToReader(std::shared_ptr<TMVA::Reader> tmva_reader, bdt_vars &tmva_vars) {
+    tmva_reader->AddVariable("rmslayer_norm_1", &tmva_vars.rmslayer_norm_1);
+    tmva_reader->AddVariable("rmslayer_norm_2", &tmva_vars.rmslayer_norm_2);
+    tmva_reader->AddVariable("rmslayer_norm_3", &tmva_vars.rmslayer_norm_3);
+    tmva_reader->AddVariable("rmslayer_norm_4", &tmva_vars.rmslayer_norm_4);
+    tmva_reader->AddVariable("rmslayer_norm_5", &tmva_vars.rmslayer_norm_5);
+    tmva_reader->AddVariable("rmslayer_norm_6", &tmva_vars.rmslayer_norm_6);
+    tmva_reader->AddVariable("rmslayer_norm_7", &tmva_vars.rmslayer_norm_7);
+    tmva_reader->AddVariable("rmslayer_norm_8", &tmva_vars.rmslayer_norm_8);
+    tmva_reader->AddVariable("rmslayer_norm_9", &tmva_vars.rmslayer_norm_9);
+    tmva_reader->AddVariable("rmslayer_norm_10", &tmva_vars.rmslayer_norm_10);
+    tmva_reader->AddVariable("rmslayer_norm_11", &tmva_vars.rmslayer_norm_11);
+    tmva_reader->AddVariable("rmslayer_norm_12", &tmva_vars.rmslayer_norm_12);
+    tmva_reader->AddVariable("rmslayer_norm_13", &tmva_vars.rmslayer_norm_13);
+    tmva_reader->AddVariable("rmslayer_norm_14", &tmva_vars.rmslayer_norm_14);
+
+    tmva_reader->AddVariable("fraclayer_norm_1", &tmva_vars.fraclayer_norm_1);
+    tmva_reader->AddVariable("fraclayer_norm_2", &tmva_vars.fraclayer_norm_2);
+    tmva_reader->AddVariable("fraclayer_norm_3", &tmva_vars.fraclayer_norm_3);
+    tmva_reader->AddVariable("fraclayer_norm_4", &tmva_vars.fraclayer_norm_4);
+    tmva_reader->AddVariable("fraclayer_norm_5", &tmva_vars.fraclayer_norm_5);
+    tmva_reader->AddVariable("fraclayer_norm_6", &tmva_vars.fraclayer_norm_6);
+    tmva_reader->AddVariable("fraclayer_norm_7", &tmva_vars.fraclayer_norm_7);
+    tmva_reader->AddVariable("fraclayer_norm_8", &tmva_vars.fraclayer_norm_8);
+    tmva_reader->AddVariable("fraclayer_norm_9", &tmva_vars.fraclayer_norm_9);
+    tmva_reader->AddVariable("fraclayer_norm_10", &tmva_vars.fraclayer_norm_10);
+    tmva_reader->AddVariable("fraclayer_norm_11", &tmva_vars.fraclayer_norm_11);
+    tmva_reader->AddVariable("fraclayer_norm_12", &tmva_vars.fraclayer_norm_12);
+    tmva_reader->AddVariable("fraclayer_norm_13", &tmva_vars.fraclayer_norm_13);
+    tmva_reader->AddVariable("fraclayer_norm_14", &tmva_vars.fraclayer_norm_14);
+
+    tmva_reader->AddVariable("sumrms_norm", &tmva_vars.sumrms_norm);
+    tmva_reader->AddVariable("fraclastlayer_norm", &tmva_vars.fraclastlayer_norm);
+    tmva_reader->AddVariable("xtrl_norm", &tmva_vars.xtrl_norm);
+    tmva_reader->AddSpectator("xtrl", &tmva_vars.xtrl);
+}
+
+void sync_vars(const data_vars &vars, bdt_vars &tmva_vars) {
+    tmva_vars.rmslayer_norm_1 = static_cast<float>(vars.rmslayer_norm_1);
+    tmva_vars.rmslayer_norm_2 = static_cast<float>(vars.rmslayer_norm_2);
+    tmva_vars.rmslayer_norm_3 = static_cast<float>(vars.rmslayer_norm_3);
+    tmva_vars.rmslayer_norm_4 = static_cast<float>(vars.rmslayer_norm_4);
+    tmva_vars.rmslayer_norm_5 = static_cast<float>(vars.rmslayer_norm_5);
+    tmva_vars.rmslayer_norm_6 = static_cast<float>(vars.rmslayer_norm_6);
+    tmva_vars.rmslayer_norm_7 = static_cast<float>(vars.rmslayer_norm_7);
+    tmva_vars.rmslayer_norm_8 = static_cast<float>(vars.rmslayer_norm_8);
+    tmva_vars.rmslayer_norm_9 = static_cast<float>(vars.rmslayer_norm_9);
+    tmva_vars.rmslayer_norm_10 = static_cast<float>(vars.rmslayer_norm_10);
+    tmva_vars.rmslayer_norm_11 = static_cast<float>(vars.rmslayer_norm_11);
+    tmva_vars.rmslayer_norm_12 = static_cast<float>(vars.rmslayer_norm_12);
+    tmva_vars.rmslayer_norm_13 = static_cast<float>(vars.rmslayer_norm_13);
+    tmva_vars.rmslayer_norm_14 = static_cast<float>(vars.rmslayer_norm_14);
+
+    tmva_vars.fraclayer_norm_1 = static_cast<float>(vars.fraclayer_norm_1);
+    tmva_vars.fraclayer_norm_2 = static_cast<float>(vars.fraclayer_norm_2);
+    tmva_vars.fraclayer_norm_3 = static_cast<float>(vars.fraclayer_norm_3);
+    tmva_vars.fraclayer_norm_4 = static_cast<float>(vars.fraclayer_norm_4);
+    tmva_vars.fraclayer_norm_5 = static_cast<float>(vars.fraclayer_norm_5);
+    tmva_vars.fraclayer_norm_6 = static_cast<float>(vars.fraclayer_norm_6);
+    tmva_vars.fraclayer_norm_7 = static_cast<float>(vars.fraclayer_norm_7);
+    tmva_vars.fraclayer_norm_8 = static_cast<float>(vars.fraclayer_norm_8);
+    tmva_vars.fraclayer_norm_9 = static_cast<float>(vars.fraclayer_norm_9);
+    tmva_vars.fraclayer_norm_10 = static_cast<float>(vars.fraclayer_norm_10);
+    tmva_vars.fraclayer_norm_11 = static_cast<float>(vars.fraclayer_norm_11);
+    tmva_vars.fraclayer_norm_12 = static_cast<float>(vars.fraclayer_norm_12);
+    tmva_vars.fraclayer_norm_13 = static_cast<float>(vars.fraclayer_norm_13);
+    tmva_vars.fraclayer_norm_14 = static_cast<float>(vars.fraclayer_norm_14);
+
+    tmva_vars.sumrms_norm = static_cast<float>(vars.sumrms_norm);
+    tmva_vars.fraclastlayer_norm = static_cast<float>(vars.fraclastlayer_norm);
+    tmva_vars.xtrl_norm = static_cast<float>(vars.xtrl_norm);
+    tmva_vars.xtrl = static_cast<float>(vars.xtrl);
+}
+
+void linkTreeVariables(std::shared_ptr<TChain> evtch, data_vars &vars) {
+    evtch->SetBranchAddress("rmslayer_norm_1", &vars.rmslayer_norm_1);
+    evtch->SetBranchAddress("rmslayer_norm_2", &vars.rmslayer_norm_2);
+    evtch->SetBranchAddress("rmslayer_norm_3", &vars.rmslayer_norm_3);
+    evtch->SetBranchAddress("rmslayer_norm_4", &vars.rmslayer_norm_4);
+    evtch->SetBranchAddress("rmslayer_norm_5", &vars.rmslayer_norm_5);
+    evtch->SetBranchAddress("rmslayer_norm_6", &vars.rmslayer_norm_6);
+    evtch->SetBranchAddress("rmslayer_norm_7", &vars.rmslayer_norm_7);
+    evtch->SetBranchAddress("rmslayer_norm_8", &vars.rmslayer_norm_8);
+    evtch->SetBranchAddress("rmslayer_norm_9", &vars.rmslayer_norm_9);
+    evtch->SetBranchAddress("rmslayer_norm_10", &vars.rmslayer_norm_10);
+    evtch->SetBranchAddress("rmslayer_norm_11", &vars.rmslayer_norm_11);
+    evtch->SetBranchAddress("rmslayer_norm_12", &vars.rmslayer_norm_12);
+    evtch->SetBranchAddress("rmslayer_norm_13", &vars.rmslayer_norm_13);
+    evtch->SetBranchAddress("rmslayer_norm_14", &vars.rmslayer_norm_14);
+
+    evtch->SetBranchAddress("fraclayer_norm_1", &vars.fraclayer_norm_1);
+    evtch->SetBranchAddress("fraclayer_norm_2", &vars.fraclayer_norm_2);
+    evtch->SetBranchAddress("fraclayer_norm_3", &vars.fraclayer_norm_3);
+    evtch->SetBranchAddress("fraclayer_norm_4", &vars.fraclayer_norm_4);
+    evtch->SetBranchAddress("fraclayer_norm_5", &vars.fraclayer_norm_5);
+    evtch->SetBranchAddress("fraclayer_norm_6", &vars.fraclayer_norm_6);
+    evtch->SetBranchAddress("fraclayer_norm_7", &vars.fraclayer_norm_7);
+    evtch->SetBranchAddress("fraclayer_norm_8", &vars.fraclayer_norm_8);
+    evtch->SetBranchAddress("fraclayer_norm_9", &vars.fraclayer_norm_9);
+    evtch->SetBranchAddress("fraclayer_norm_10", &vars.fraclayer_norm_10);
+    evtch->SetBranchAddress("fraclayer_norm_11", &vars.fraclayer_norm_11);
+    evtch->SetBranchAddress("fraclayer_norm_12", &vars.fraclayer_norm_12);
+    evtch->SetBranchAddress("fraclayer_norm_13", &vars.fraclayer_norm_13);
+    evtch->SetBranchAddress("fraclayer_norm_14", &vars.fraclayer_norm_14);
+
+    evtch->SetBranchAddress("sumrms_norm", &vars.sumrms_norm);
+    evtch->SetBranchAddress("fraclastlayer_norm", &vars.fraclastlayer_norm);
+    evtch->SetBranchAddress("xtrl_norm", &vars.xtrl_norm);
+    evtch->SetBranchAddress("xtrl", &vars.xtrl);
+
+    evtch->SetBranchAddress("energy_corr", &vars.evt_corr_energy);
+
+    evtch->SetBranchAddress("energy_bin", &vars.energy_bin);
+}

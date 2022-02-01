@@ -1,8 +1,10 @@
 #include "energy_config.h"
 #include "list_parser.h"
-#include "bdtutils.h"
+#include "efficiency.h"
 #include "bin_flux.h"
+#include "bdtutils.h"
 #include "config.h"
+#include "cuts.h"
 
 #include <memory>
 #include <vector>
@@ -11,124 +13,9 @@
 #include "TKey.h"
 #include "TFile.h"
 #include "TGraph.h"
+#include "TGraph2D.h"
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
-
-inline void addVariableToReader(std::shared_ptr<TMVA::Reader> tmva_reader, bdt_vars &tmva_vars) {
-    tmva_reader->AddVariable("rmslayer_norm_1", &tmva_vars.rmslayer_norm_1);
-    tmva_reader->AddVariable("rmslayer_norm_2", &tmva_vars.rmslayer_norm_2);
-    tmva_reader->AddVariable("rmslayer_norm_3", &tmva_vars.rmslayer_norm_3);
-    tmva_reader->AddVariable("rmslayer_norm_4", &tmva_vars.rmslayer_norm_4);
-    tmva_reader->AddVariable("rmslayer_norm_5", &tmva_vars.rmslayer_norm_5);
-    tmva_reader->AddVariable("rmslayer_norm_6", &tmva_vars.rmslayer_norm_6);
-    tmva_reader->AddVariable("rmslayer_norm_7", &tmva_vars.rmslayer_norm_7);
-    tmva_reader->AddVariable("rmslayer_norm_8", &tmva_vars.rmslayer_norm_8);
-    tmva_reader->AddVariable("rmslayer_norm_9", &tmva_vars.rmslayer_norm_9);
-    tmva_reader->AddVariable("rmslayer_norm_10", &tmva_vars.rmslayer_norm_10);
-    tmva_reader->AddVariable("rmslayer_norm_11", &tmva_vars.rmslayer_norm_11);
-    tmva_reader->AddVariable("rmslayer_norm_12", &tmva_vars.rmslayer_norm_12);
-    tmva_reader->AddVariable("rmslayer_norm_13", &tmva_vars.rmslayer_norm_13);
-    tmva_reader->AddVariable("rmslayer_norm_14", &tmva_vars.rmslayer_norm_14);
-
-    tmva_reader->AddVariable("fraclayer_norm_1", &tmva_vars.fraclayer_norm_1);
-    tmva_reader->AddVariable("fraclayer_norm_2", &tmva_vars.fraclayer_norm_2);
-    tmva_reader->AddVariable("fraclayer_norm_3", &tmva_vars.fraclayer_norm_3);
-    tmva_reader->AddVariable("fraclayer_norm_4", &tmva_vars.fraclayer_norm_4);
-    tmva_reader->AddVariable("fraclayer_norm_5", &tmva_vars.fraclayer_norm_5);
-    tmva_reader->AddVariable("fraclayer_norm_6", &tmva_vars.fraclayer_norm_6);
-    tmva_reader->AddVariable("fraclayer_norm_7", &tmva_vars.fraclayer_norm_7);
-    tmva_reader->AddVariable("fraclayer_norm_8", &tmva_vars.fraclayer_norm_8);
-    tmva_reader->AddVariable("fraclayer_norm_9", &tmva_vars.fraclayer_norm_9);
-    tmva_reader->AddVariable("fraclayer_norm_10", &tmva_vars.fraclayer_norm_10);
-    tmva_reader->AddVariable("fraclayer_norm_11", &tmva_vars.fraclayer_norm_11);
-    tmva_reader->AddVariable("fraclayer_norm_12", &tmva_vars.fraclayer_norm_12);
-    tmva_reader->AddVariable("fraclayer_norm_13", &tmva_vars.fraclayer_norm_13);
-    tmva_reader->AddVariable("fraclayer_norm_14", &tmva_vars.fraclayer_norm_14);
-
-    tmva_reader->AddVariable("sumrms_norm", &tmva_vars.sumrms_norm);
-    tmva_reader->AddVariable("fraclastlayer_norm", &tmva_vars.fraclastlayer_norm);
-    tmva_reader->AddVariable("xtrl_norm", &tmva_vars.xtrl_norm);
-    tmva_reader->AddSpectator("xtrl", &tmva_vars.xtrl);
-}
-
-inline void linkTreeVariables(std::shared_ptr<TChain> evtch, data_vars &vars) {
-    evtch->SetBranchAddress("rmslayer_norm_1", &vars.rmslayer_norm_1);
-    evtch->SetBranchAddress("rmslayer_norm_2", &vars.rmslayer_norm_2);
-    evtch->SetBranchAddress("rmslayer_norm_3", &vars.rmslayer_norm_3);
-    evtch->SetBranchAddress("rmslayer_norm_4", &vars.rmslayer_norm_4);
-    evtch->SetBranchAddress("rmslayer_norm_5", &vars.rmslayer_norm_5);
-    evtch->SetBranchAddress("rmslayer_norm_6", &vars.rmslayer_norm_6);
-    evtch->SetBranchAddress("rmslayer_norm_7", &vars.rmslayer_norm_7);
-    evtch->SetBranchAddress("rmslayer_norm_8", &vars.rmslayer_norm_8);
-    evtch->SetBranchAddress("rmslayer_norm_9", &vars.rmslayer_norm_9);
-    evtch->SetBranchAddress("rmslayer_norm_10", &vars.rmslayer_norm_10);
-    evtch->SetBranchAddress("rmslayer_norm_11", &vars.rmslayer_norm_11);
-    evtch->SetBranchAddress("rmslayer_norm_12", &vars.rmslayer_norm_12);
-    evtch->SetBranchAddress("rmslayer_norm_13", &vars.rmslayer_norm_13);
-    evtch->SetBranchAddress("rmslayer_norm_14", &vars.rmslayer_norm_14);
-
-    evtch->SetBranchAddress("fraclayer_norm_1", &vars.fraclayer_norm_1);
-    evtch->SetBranchAddress("fraclayer_norm_2", &vars.fraclayer_norm_2);
-    evtch->SetBranchAddress("fraclayer_norm_3", &vars.fraclayer_norm_3);
-    evtch->SetBranchAddress("fraclayer_norm_4", &vars.fraclayer_norm_4);
-    evtch->SetBranchAddress("fraclayer_norm_5", &vars.fraclayer_norm_5);
-    evtch->SetBranchAddress("fraclayer_norm_6", &vars.fraclayer_norm_6);
-    evtch->SetBranchAddress("fraclayer_norm_7", &vars.fraclayer_norm_7);
-    evtch->SetBranchAddress("fraclayer_norm_8", &vars.fraclayer_norm_8);
-    evtch->SetBranchAddress("fraclayer_norm_9", &vars.fraclayer_norm_9);
-    evtch->SetBranchAddress("fraclayer_norm_10", &vars.fraclayer_norm_10);
-    evtch->SetBranchAddress("fraclayer_norm_11", &vars.fraclayer_norm_11);
-    evtch->SetBranchAddress("fraclayer_norm_12", &vars.fraclayer_norm_12);
-    evtch->SetBranchAddress("fraclayer_norm_13", &vars.fraclayer_norm_13);
-    evtch->SetBranchAddress("fraclayer_norm_14", &vars.fraclayer_norm_14);
-
-    evtch->SetBranchAddress("sumrms_norm", &vars.sumrms_norm);
-    evtch->SetBranchAddress("fraclastlayer_norm", &vars.fraclastlayer_norm);
-    evtch->SetBranchAddress("xtrl_norm", &vars.xtrl_norm);
-    evtch->SetBranchAddress("xtrl", &vars.xtrl);
-
-    evtch->SetBranchAddress("energy_corr", &vars.evt_corr_energy);
-
-    evtch->SetBranchAddress("energy_bin", &vars.energy_bin);
-
-}
-
-inline void sync_vars(const data_vars &vars, bdt_vars &tmva_vars) {
-    tmva_vars.rmslayer_norm_1 = static_cast<float>(vars.rmslayer_norm_1);
-    tmva_vars.rmslayer_norm_2 = static_cast<float>(vars.rmslayer_norm_2);
-    tmva_vars.rmslayer_norm_3 = static_cast<float>(vars.rmslayer_norm_3);
-    tmva_vars.rmslayer_norm_4 = static_cast<float>(vars.rmslayer_norm_4);
-    tmva_vars.rmslayer_norm_5 = static_cast<float>(vars.rmslayer_norm_5);
-    tmva_vars.rmslayer_norm_6 = static_cast<float>(vars.rmslayer_norm_6);
-    tmva_vars.rmslayer_norm_7 = static_cast<float>(vars.rmslayer_norm_7);
-    tmva_vars.rmslayer_norm_8 = static_cast<float>(vars.rmslayer_norm_8);
-    tmva_vars.rmslayer_norm_9 = static_cast<float>(vars.rmslayer_norm_9);
-    tmva_vars.rmslayer_norm_10 = static_cast<float>(vars.rmslayer_norm_10);
-    tmva_vars.rmslayer_norm_11 = static_cast<float>(vars.rmslayer_norm_11);
-    tmva_vars.rmslayer_norm_12 = static_cast<float>(vars.rmslayer_norm_12);
-    tmva_vars.rmslayer_norm_13 = static_cast<float>(vars.rmslayer_norm_13);
-    tmva_vars.rmslayer_norm_14 = static_cast<float>(vars.rmslayer_norm_14);
-
-    tmva_vars.fraclayer_norm_1 = static_cast<float>(vars.fraclayer_norm_1);
-    tmva_vars.fraclayer_norm_2 = static_cast<float>(vars.fraclayer_norm_2);
-    tmva_vars.fraclayer_norm_3 = static_cast<float>(vars.fraclayer_norm_3);
-    tmva_vars.fraclayer_norm_4 = static_cast<float>(vars.fraclayer_norm_4);
-    tmva_vars.fraclayer_norm_5 = static_cast<float>(vars.fraclayer_norm_5);
-    tmva_vars.fraclayer_norm_6 = static_cast<float>(vars.fraclayer_norm_6);
-    tmva_vars.fraclayer_norm_7 = static_cast<float>(vars.fraclayer_norm_7);
-    tmva_vars.fraclayer_norm_8 = static_cast<float>(vars.fraclayer_norm_8);
-    tmva_vars.fraclayer_norm_9 = static_cast<float>(vars.fraclayer_norm_9);
-    tmva_vars.fraclayer_norm_10 = static_cast<float>(vars.fraclayer_norm_10);
-    tmva_vars.fraclayer_norm_11 = static_cast<float>(vars.fraclayer_norm_11);
-    tmva_vars.fraclayer_norm_12 = static_cast<float>(vars.fraclayer_norm_12);
-    tmva_vars.fraclayer_norm_13 = static_cast<float>(vars.fraclayer_norm_13);
-    tmva_vars.fraclayer_norm_14 = static_cast<float>(vars.fraclayer_norm_14);
-
-    tmva_vars.sumrms_norm = static_cast<float>(vars.sumrms_norm);
-    tmva_vars.fraclastlayer_norm = static_cast<float>(vars.fraclastlayer_norm);
-    tmva_vars.xtrl_norm = static_cast<float>(vars.xtrl_norm);
-    tmva_vars.xtrl = static_cast<float>(vars.xtrl);
-}
 
 inline double getAcceptanceInBin(const char* acceptance_file, unsigned int energy_bin, const bool verbose) {
     TFile* infile {TFile::Open(acceptance_file, "READ")};
@@ -149,7 +36,7 @@ inline double getAcceptanceInBin(const char* acceptance_file, unsigned int energ
     }
 
     if (verbose)
-        std::cout << "\nFound acceptance TH1D in input file [" << myhisto->GetName() << "] --> [" << acceptance_file << "]";
+        std::cout << "\nFound acceptance TH1D in input file [" << myhisto->GetName() << "] --> [" << acceptance_file << "]\n\n";
 
     return static_cast<double>(myhisto->GetBinContent(energy_bin));
 }
@@ -184,7 +71,7 @@ void bin_flux(in_args input_args) {
     std::shared_ptr<TMVA::Reader> tmva_ME_reader = std::make_shared<TMVA::Reader>();
     std::shared_ptr<TMVA::Reader> tmva_HE_reader = std::make_shared<TMVA::Reader>();
 
-    // Declare BDT variables
+    // Declare BDT and DATA variables
     bdt_vars tmva_vars;
     data_vars vars;
 
@@ -221,31 +108,15 @@ void bin_flux(in_args input_args) {
         }
     };
 
-    
-    size_t n_cuts {1000};
-    const double bdt_cut_le {-0.6};
-    const double bdt_cut_he {0.6};
-
-    auto get_bdt_cuts = [bdt_cut_le, bdt_cut_he](const size_t size) -> std::vector<std::tuple<double, unsigned int>> {
-        std::vector<std::tuple<double, unsigned int>> bdt_cuts (size);
-        for (unsigned int idx = 0; idx < size; ++idx) {
-            double bdt_cut = bdt_cut_le + (bdt_cut_he - bdt_cut_le) * idx / (size - 1);
-            bdt_cuts[idx] = std::make_tuple(bdt_cut, 0);
-        }
-        return bdt_cuts;
-    };
-
-    auto my_cuts = get_bdt_cuts(n_cuts);
+    std::unique_ptr<cuts> cl_cuts = std::make_unique<cuts>();
+    auto bdt_cuts = cl_cuts->GetBDT();
+    auto xtrl_cuts = cl_cuts->GetXTRL();
+    auto bdt_xtrl_cuts = cl_cuts->GetBDT_XTRL();
 
     double tmva_classifier {-100};
 
-    auto in_energy_bin = [&energy_binning] (const double energy_gev, const unsigned int energy_bin) -> bool {
-        bool in_bin {false};
-        if (energy_gev>=energy_binning[energy_bin-1] && energy_gev<energy_binning[energy_bin]) {
-            in_bin = true;
-        }
-        return in_bin;
-    };
+    if (input_args.verbose)
+        std::cout << "\n *** Computing fluxes for energy bin: " << input_args.energy_bin << " *** \n\n";
 
     for (unsigned int evidx=0; evidx<list_parser->GetEvtTree()->GetEntries(); ++evidx) {
 
@@ -258,56 +129,257 @@ void bin_flux(in_args input_args) {
             evstatus_printer(evidx, kstep, total_events);
 
         // Filter the event to be contained in the selected energy bin
-        if (in_energy_bin(vars.evt_corr_energy*gev, input_args.energy_bin)) {
+        if (vars.energy_bin==(int)input_args.energy_bin) {
 
-            if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100) {
+            if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100)
                 tmva_classifier = tmva_LE_reader->EvaluateMVA(input_args.learning_method.c_str());
-            }
-            else if (vars.evt_corr_energy*gev>=100 && vars.evt_corr_energy*gev<1000) {
+            
+            else if (vars.evt_corr_energy*gev>=100 && vars.evt_corr_energy*gev<1000)
                 tmva_classifier = tmva_ME_reader->EvaluateMVA(input_args.learning_method.c_str());
-            }
-            else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<=10000) {
+            
+            else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<=10000)
                 tmva_classifier = tmva_HE_reader->EvaluateMVA(input_args.learning_method.c_str());
+
+            // Loop over the bdt cuts tuples
+            for (auto &cut : bdt_cuts)
+                if (tmva_classifier > std::get<0>(cut))
+                    std::get<1>(cut) += 1;
+        
+            // Loop over the xtrl cuts tuples 
+            for (auto &cut : xtrl_cuts)
+                if (vars.xtrl < std::get<0>(cut))
+                    std::get<1>(cut) += 1;
+
+            // Loop over the bdt_xtrl cuts tuples
+            for (auto &cut : bdt_xtrl_cuts)
+                if (tmva_classifier > std::get<0>(cut) && vars.xtrl < std::get<1>(cut))
+                    std::get<2>(cut) += 1;
+        }
+    }
+    
+    // Calculate the signal efficiency for the given bdt cuts
+    auto efficiencies = compute_efficiency(
+        bdt_config,
+        input_args.learning_method,
+        bdt_cuts, 
+        input_args.simu_input_list, 
+        input_args.eff_corr_function, 
+        input_args.energy_bin,
+        energy_binning,
+        input_args.verbose, 
+        input_args.threads);
+
+    // Build the final graphs
+    std::unique_ptr<TGraph> gr_flux_bdt                                 = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_bdt_eff_corr_method1                = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_bdt_eff_corr_method2                = std::make_unique<TGraph>();
+
+    std::unique_ptr<TGraph> gr_flux_xtrl                                = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_E3_bdt                              = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_E3_bdt_eff_corr_method1             = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_E3_bdt_eff_corr_method2             = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_E3_xtrl                             = std::make_unique<TGraph>();
+
+    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl                          = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl_eff_corr_method1         = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl_eff_corr_method2         = std::make_unique<TGraph2D>();
+
+    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl                       = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl_eff_corr_method1      = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl_eff_corr_method2      = std::make_unique<TGraph2D>();
+
+    std::unique_ptr<TGraph> gr_efficiency_method1                       = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_efficiency_method2                       = std::make_unique<TGraph>();
+    
+    // Fill graphs
+    for (size_t idx = 0; idx < bdt_cuts.size(); ++idx) {
+
+        // BDT
+        double flux             = std::get<1>(bdt_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
+        double flux_E3          = flux*pow(energy_wtsydp, 3);
+        
+        gr_flux_bdt                         ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux);
+        gr_flux_E3_bdt                      ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3);
+        
+        double eff_method1      = 1-std::get<1>((std::get<0>(efficiencies))[idx]);
+        double eff_method2      = 1-std::get<1>((std::get<1>(efficiencies))[idx]); 
+
+        if (eff_method1) {
+            double flux_ec_1        = flux/eff_method1;
+            double flux_E3_ec_1     = flux_ec_1*pow(energy_wtsydp, 3);
+            gr_flux_bdt_eff_corr_method1        ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec_1);
+            gr_flux_E3_bdt_eff_corr_method1     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec_1);
+        }
+
+        if (eff_method2) {
+            double flux_ec_2        = flux/eff_method2;
+            double flux_E3_ec_2     = flux_ec_2*pow(energy_wtsydp, 3);
+            gr_flux_bdt_eff_corr_method2        ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec_2);
+            gr_flux_E3_bdt_eff_corr_method2     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec_2);
+        }
+
+        gr_efficiency_method1                   ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), eff_method1);
+        gr_efficiency_method2                   ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), eff_method2);
+
+        // XTRL
+        flux                    = std::get<1>(xtrl_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
+        flux_E3                 = flux*pow(energy_wtsydp, 3);
+
+        gr_flux_xtrl                        ->SetPoint((int)idx, std::get<0>(xtrl_cuts[idx]), flux);
+        gr_flux_E3_xtrl                     ->SetPoint((int)idx, std::get<0>(xtrl_cuts[idx]), flux_E3);    
+    }
+    
+    for (size_t idx = 0; idx < bdt_xtrl_cuts.size(); ++idx) {
+
+        double flux             = std::get<2>(bdt_xtrl_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
+        double flux_E3          = flux*pow(energy_wtsydp, 3);
+
+        gr_flux_bdt_xtrl                        ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux);
+        gr_flux_E3_bdt_xtrl                     ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_E3);
+
+        // Get the efficiencies corresponding to the BDT cut
+        double eff_method1 {0}, eff_method2 {0};
+        for (auto&& eff : std::get<0>(efficiencies))
+            if (std::get<0>(bdt_xtrl_cuts[idx]) == std::get<0>(eff)) {
+                eff_method1 = 1-std::get<1>(eff);
+                break;
             }
 
-            // Loop over the cuts tuples
-            for (auto &cut : my_cuts) {
-                if (tmva_classifier > std::get<0>(cut)) {
-                    std::get<1>(cut) += 1;
-                }
+        for (auto&& eff : std::get<1>(efficiencies))
+            if (std::get<0>(bdt_xtrl_cuts[idx]) == std::get<0>(eff)) {
+                eff_method2 = 1-std::get<1>(eff);
+                break;
             }
+
+        if (eff_method1) {
+            double flux_ec_1        = flux/eff_method1;
+            double flux_E3_ec_1     = flux_ec_1*pow(energy_wtsydp, 3);
+
+            gr_flux_bdt_xtrl_eff_corr_method1       ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_ec_1);
+            gr_flux_E3_bdt_xtrl_eff_corr_method1    ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_E3_ec_1);
+        }
+
+        if (eff_method2) {
+            double flux_ec_2        = flux/eff_method2;
+            double flux_E3_ec_2     = flux_ec_2*pow(energy_wtsydp, 3);
+            gr_flux_bdt_xtrl_eff_corr_method2       ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_ec_2);
+            gr_flux_E3_bdt_xtrl_eff_corr_method2    ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_E3_ec_2);
         }
     }
 
-    // Build the fluxes and cuts vectors
-    std::vector<double> fluxes (n_cuts), fluxes_E3 (n_cuts), bdt_cuts (n_cuts);
-    for (size_t idx = 0; idx < n_cuts; ++idx) {
-        fluxes[idx] = std::get<1>(my_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
-        fluxes_E3[idx] = (std::get<1>(my_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width))*pow(energy_wtsydp, 3);
-        bdt_cuts[idx] = std::get<0>(my_cuts[idx]);
-    }
+    // Set graphs properties
+    gr_flux_bdt->SetName((std::string("gr_flux_bdt_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
 
-    TGraph gr_flux(n_cuts, &bdt_cuts[0], &fluxes[0]);
-    gr_flux.SetName((std::string("gr_flux_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux.SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux.GetXaxis()->SetTitle("BDT");
-    gr_flux.GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+    gr_flux_bdt_eff_corr_method1->SetName((std::string("gr_flux_bdt_eff_corr_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_eff_corr_method1->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_eff_corr_method1->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt_eff_corr_method1->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
 
-    TGraph gr_flux_E3(n_cuts, &bdt_cuts[0], &fluxes_E3[0]);
-    gr_flux_E3.SetName((std::string("gr_flux_E3_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3.SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3.GetXaxis()->SetTitle("BDT");
-    gr_flux_E3.GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+    gr_flux_bdt_eff_corr_method2->SetName((std::string("gr_flux_bdt_eff_corr_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_eff_corr_method2->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_eff_corr_method2->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt_eff_corr_method2->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+    
+    gr_flux_xtrl->SetName((std::string("gr_flux_xtrl_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_xtrl->SetTitle((std::string("All-Electron Flux vs. XTRL cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_xtrl->GetXaxis()->SetTitle("XTRL");
+    gr_flux_xtrl->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+    
+    gr_flux_E3_bdt->SetName((std::string("gr_flux_E3_bdt_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
 
+    gr_flux_E3_bdt_eff_corr_method1->SetName((std::string("gr_flux_E3_bdt_eff_corr_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_eff_corr_method1->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_eff_corr_method1->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt_eff_corr_method1->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+
+    gr_flux_E3_bdt_eff_corr_method2->SetName((std::string("gr_flux_E3_bdt_eff_corr_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_eff_corr_method2->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_eff_corr_method2->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt_eff_corr_method2->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+    
+    gr_flux_E3_xtrl->SetName((std::string("gr_flux_E3_xtrl_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_xtrl->SetTitle((std::string("All-Electron Flux vs. XTRL cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_xtrl->GetXaxis()->SetTitle("XTRL");
+    gr_flux_E3_xtrl->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+
+    gr_flux_bdt_xtrl->SetName((std::string("gr_flux_bdt_xtrl_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_xtrl->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_xtrl->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt_xtrl->GetYaxis()->SetTitle("XTRL");
+    gr_flux_bdt_xtrl->GetZaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+
+    gr_flux_bdt_xtrl_eff_corr_method1->SetName((std::string("gr_flux_bdt_xtrl_eff_corr_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_xtrl_eff_corr_method1->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_xtrl_eff_corr_method1->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt_xtrl_eff_corr_method1->GetYaxis()->SetTitle("XTRL");
+    gr_flux_bdt_xtrl_eff_corr_method1->GetZaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+
+    gr_flux_bdt_xtrl_eff_corr_method2->SetName((std::string("gr_flux_bdt_xtrl_eff_corr_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_xtrl_eff_corr_method2->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_xtrl_eff_corr_method2->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt_xtrl_eff_corr_method2->GetYaxis()->SetTitle("XTRL");
+    gr_flux_bdt_xtrl_eff_corr_method2->GetZaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+
+    gr_flux_E3_bdt_xtrl->SetName((std::string("gr_flux_E3_bdt_xtrl_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_xtrl->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_xtrl->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt_xtrl->GetYaxis()->SetTitle("XTRL");
+    gr_flux_E3_bdt_xtrl->GetZaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+
+    gr_flux_E3_bdt_xtrl_eff_corr_method1->SetName((std::string("gr_flux_E3_bdt_xtrl_eff_corr_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_xtrl_eff_corr_method1->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_xtrl_eff_corr_method1->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt_xtrl_eff_corr_method1->GetYaxis()->SetTitle("XTRL");
+    gr_flux_E3_bdt_xtrl_eff_corr_method1->GetZaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+
+    gr_flux_E3_bdt_xtrl_eff_corr_method2->SetName((std::string("gr_flux_E3_bdt_xtrl_eff_corr_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_xtrl_eff_corr_method2->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_xtrl_eff_corr_method2->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt_xtrl_eff_corr_method2->GetYaxis()->SetTitle("XTRL");
+    gr_flux_E3_bdt_xtrl_eff_corr_method2->GetZaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+
+    gr_efficiency_method1->SetName((std::string("gr_efficiency_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_efficiency_method1->SetTitle((std::string("BDT efficiency for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_efficiency_method1->GetXaxis()->SetTitle("BDT");
+    gr_efficiency_method1->GetYaxis()->SetTitle("Efficiency");
+
+    gr_efficiency_method2->SetName((std::string("gr_efficiency_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_efficiency_method2->SetTitle((std::string("BDT efficiency for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_efficiency_method2->GetXaxis()->SetTitle("BDT");
+    gr_efficiency_method2->GetYaxis()->SetTitle("Efficiency");
+
+    // Write to output file
     TFile *outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (outfile->IsZombie()) {
         std::cerr << "Error writing output file " << input_args.output_path << std::endl;
         exit(1);
     }
 
-    gr_flux.Write();
-    gr_flux_E3.Write();
+    gr_flux_bdt                             ->Write();
+    gr_flux_bdt_eff_corr_method1            ->Write();
+    gr_flux_bdt_eff_corr_method2            ->Write();
 
+    gr_flux_xtrl                            ->Write();
+    gr_flux_E3_bdt                          ->Write();
+    gr_flux_E3_bdt_eff_corr_method1         ->Write();
+    gr_flux_E3_bdt_eff_corr_method2         ->Write();
+    gr_flux_E3_xtrl                         ->Write();
+
+    gr_flux_bdt_xtrl                        ->Write();
+    gr_flux_bdt_xtrl_eff_corr_method1       ->Write();
+    gr_flux_bdt_xtrl_eff_corr_method2       ->Write();
+    gr_flux_E3_bdt_xtrl                     ->Write();
+    gr_flux_E3_bdt_xtrl_eff_corr_method1    ->Write();
+    gr_flux_E3_bdt_xtrl_eff_corr_method2    ->Write();
+
+    gr_efficiency_method1                   ->Write();
+    gr_efficiency_method2                   ->Write();
+    
     outfile->Close();
-
 }
