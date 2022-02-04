@@ -7,7 +7,7 @@
 
 #include "config.h"
 
-extern const std::vector<std::tuple<double, double>> compute_efficiency(
+extern const std::vector<std::tuple<double, double, double>> compute_efficiency(
     std::shared_ptr<config> bdt_config,
     const std::string learning_method,
     const std::vector<std::tuple<double, unsigned int>> bdt_cuts,

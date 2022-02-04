@@ -32,7 +32,7 @@ inline std::tuple<std::tuple<std::shared_ptr<TF1>, std::shared_ptr<TF1>>, std::t
         return std::make_tuple(std::make_tuple(tf1_shift, tf1_sigma), std::make_tuple(gr_shift, gr_sigma));
     }
 
-const std::vector<std::tuple<double, double>> compute_efficiency(
+const std::vector<std::tuple<double, double, double>> compute_efficiency(
     std::shared_ptr<config> bdt_config,
     const std::string learning_method,
     const std::vector<std::tuple<double, unsigned int>> bdt_cuts,
@@ -86,10 +86,10 @@ const std::vector<std::tuple<double, double>> compute_efficiency(
         };
 
         // Build the efficiency tuple
-        std::vector<std::tuple<double, double>> efficiency_values (bdt_cuts.size());
+        std::vector<std::tuple<double, double, double>> efficiency_values (bdt_cuts.size());
         
         for (size_t idx=0; idx<efficiency_values.size(); ++idx)
-            efficiency_values[idx] = std::make_tuple(std::get<0>(bdt_cuts[idx]), 0);
+            efficiency_values[idx] = std::make_tuple(std::get<0>(bdt_cuts[idx]), 0, 0);
 
         // Extract the efficiency correction functions
         auto corrections = extractCorrectionFunctions(mc_correction_function);
@@ -156,8 +156,10 @@ const std::vector<std::tuple<double, double>> compute_efficiency(
             }
         }
 
-        for (auto& eff_tuple : efficiency_values)
+        for (auto& eff_tuple : efficiency_values) {
+            std::get<2>(eff_tuple) = sqrt(pow(sqrt(std::get<1>(eff_tuple))/n_total , 2)+pow(std::get<1>(eff_tuple)*sqrt(n_total)/pow(n_total, 2), 2));
             std::get<1>(eff_tuple) /= n_total;
+        }
 
         return efficiency_values;
     }
