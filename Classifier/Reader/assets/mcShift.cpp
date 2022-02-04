@@ -420,9 +420,9 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitSigmaRatio(
         gr_ratio.GetYaxis()->SetTitle("#sigma_{data}/#sigma_{electron}");
 
         TGraphErrors gr_bin_ratio(bins.size(), &bins[0], &point_ratio[0], &bins_err[0], &point_ratio_err[0]);
-        gr_ratio.SetName("gr_bin_ratio");
-        gr_ratio.GetXaxis()->SetTitle("Energy Bin");
-        gr_ratio.GetYaxis()->SetTitle("#sigma_{data}/#sigma_{electron}");
+        gr_bin_ratio.SetName("gr_bin_ratio");
+        gr_bin_ratio.GetXaxis()->SetTitle("Energy Bin");
+        gr_bin_ratio.GetYaxis()->SetTitle("#sigma_{data}/#sigma_{electron}");
 
         TF1 sigma_ratio_fit_function("sigma_ratio_fit_function", "[0]+[1]*log10(x)", energy.front(), energy.back());
         gr_ratio.Fit(&sigma_ratio_fit_function, "Q", "", energy.front(), max_energy_gev);
