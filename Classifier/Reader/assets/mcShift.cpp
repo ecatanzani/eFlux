@@ -142,8 +142,6 @@ void mcShift(
                 le = moda - rms;
                 he = moda + rms;
             }
-            //TF1 gaus_fit("gaus_fit", "gaus", mean-5*rms, mean+3*rms);
-            //TF1 gaus_fit("gaus_fit_lv_1", "gaus", moda-rms, moda+rms);
             TF1 gaus_fit("gaus_fit_lv_1", "gaus", le, he);
             !mc ? it->GetPtr()->Fit(&gaus_fit, "RQLN") : it->GetPtr()->Fit(&gaus_fit, "RQWLN");
             gaus_fit_1[std::distance(std::begin(h_classifier_bin), it)] = gaus_fit;
@@ -178,7 +176,6 @@ void mcShift(
         for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
             mean_shift[bin_idx-1] = gaus_fit_2[bin_idx-1].GetParameter(1);
             rms_shift[bin_idx-1] = gaus_fit_2[bin_idx-1].GetParameter(2);
-            //mean_shift_error[bin_idx -1] = h_classifier_bin[bin_idx-1]->GetEntries() ? rms_shift[bin_idx-1]/sqrt(h_classifier_bin[bin_idx-1]->GetEntries()) : rms_shift[bin_idx-1];
             mean_shift_error[bin_idx -1] = gaus_fit_2[bin_idx-1].GetParError(1);
             rms_shift_error[bin_idx -1] = gaus_fit_2[bin_idx-1].GetParError(2);
         }
@@ -310,7 +307,7 @@ inline std::shared_ptr<TGraphErrors> extractGR(const char* file, const char* nam
 std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitPeakPositionDifference(
     const char* mc_file,
     const char* data_file,
-    const double max_energy_gev = 2500) {
+    const double max_energy_gev = 800) {
 
         auto gr_electron_mc = extractGR(mc_file, "gr_mean_full_interval");
         auto gr_data = extractGR(data_file, "gr_mean_full_interval");
@@ -344,27 +341,61 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitPeakPositionDifference(
         TF1 shift_fit_function_bin("shift_fit_function_bin", "pol1", bins.front(), bins.back());
         gr_bin_difference.Fit(&shift_fit_function_bin, "Q", "", bins.front(), 33);
 
-    #if 0
-        TFile outfile(output_file, "RECREATE");
-        if (outfile.IsZombie()) {
-            std::cerr << "\n\nError writing output file [" << output_file << "]" << std::endl;
-            exit(100);
+        return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_difference, shift_fit_function, gr_bin_difference, shift_fit_function_bin);
+
+    }
+
+std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitShift(
+    const char* mc_file,
+    const char* data_file,
+    const double max_energy_gev = 800) {
+
+        auto gr_mean_electron_mc = extractGR(mc_file, "gr_mean_full_interval");
+        auto gr_mean_data = extractGR(data_file, "gr_mean_full_interval");
+        auto gr_sigma_electron_mc = extractGR(mc_file, "gr_sigma_full_interval");
+        auto gr_sigma_data = extractGR(data_file, "gr_sigma_full_interval");
+
+        std::vector<double> energy, energy_err;
+        std::vector<double> bins, bins_err;
+        std::vector<double> shift, shift_err;
+
+        for (int idx_p=0; idx_p<gr_electron_mc->GetN(); ++idx_p) {
+            energy.push_back(gr_data->GetPointX(idx_p));
+            bins.push_back(idx_p+1);
+            energy_err.push_back(0);
+            bins_err.push_back(0);
+            shift.push_back(gr_data->GetPointY(idx_p) - (gr_sigma_data->GetPointY(idx_p)/gr_sigma_electron_mc->GetPointY(idx-p))*gr_electron_mc->GetPointY(idx_p));
+            point_difference_err.push_back(sqrt(
+                pow(gr_mean_data->GetErrorY(idx_p), 2) + 
+                pow((gr_sigma_data->GetPointY(idx_p)/gr_sigma_electron_mc->GetPointY(idx-p))*gr_mean_electron_mc->GetErrorY(idx_p), 2) +
+                pow((gr_mean_electron_mc->GetPointY(idx_p)/gr_sigma_electron_mc->GetPointY(idx_p))*gr_sigma_data->GetErrorY(idx_p) , 2) + 
+                pow(((gr_sigma_data->GetPointY(idx_p)*gr_mean_electron_mc->GetPointY(idx_p))/gr_sigma_electron_mc->GetPointY(idx_p))*gr_sigma_electron_mc->GetErrorY(idx_p) , 2));
         }
 
-        gr_difference.Write();
-        shift_fit_function.Write();
+        TGraphErrors gr_shift(energy.size(), &energy[0], &shift[0], &energy_err[0], &shift_err[0]);
+        gr_shift.SetName("gr_shift");
+        gr_shift.GetXaxis()->SetTitle("Energy [GeV]");
+        gr_shift.GetYaxis()->SetTitle("shift = data peak position - electron peak position");
 
-        outfile.Close();
-    #endif
+        TGraphErrors gr_bin_shift(bins.size(), &bins[0], &shift[0], &bins_err[0], &shift_err[0]);
+        gr_bin_shift.SetName("gr_bin_shift");
+        gr_bin_shift.GetXaxis()->SetTitle("Energy Bin");
+        gr_bin_shift.GetYaxis()->SetTitle("shift = data peak position - electron peak position");
 
-        return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_difference, shift_fit_function, gr_bin_difference, shift_fit_function_bin);
+        TF1 shift_fit_function("shift_fit_function", "[0]+[1]*log10(x)", energy.front(), energy.back());
+        gr_shift.Fit(&shift_fit_function, "Q", "", energy.front(), max_energy_gev);
+
+        TF1 shift_fit_function_bin("shift_fit_function_bin", "pol1", bins.front(), bins.back());
+        gr_bin_shift.Fit(&shift_fit_function_bin, "Q", "", bins.front(), 33);
+
+        return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_shift, shift_fit_function, gr_bin_shift, shift_fit_function_bin);
 
     }
 
 std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitSigmaRatio(
     const char* mc_file,
     const char* data_file,
-    const double max_energy_gev = 2500) {
+    const double max_energy_gev = 800) {
 
         auto gr_electron_mc = extractGR(mc_file, "gr_sigma_full_interval");
         auto gr_data = extractGR(data_file, "gr_sigma_full_interval");
@@ -399,19 +430,6 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitSigmaRatio(
         TF1 sigma_ratio_fit_function_bin("sigma_ratio_fit_function_bin", "pol1", bins.front(), bins.back());
         gr_bin_ratio.Fit(&sigma_ratio_fit_function_bin, "Q", "", bins.front(), 33);
 
-    #if 0
-        TFile outfile(output_file, "RECREATE");
-        if (outfile.IsZombie()) {
-            std::cerr << "\n\nError writing output file [" << output_file << "]" << std::endl;
-            exit(100);
-        }
-
-        gr_ratio.Write();
-        sigma_ratio_fit_function.Write();
-
-        outfile.Close();
-    #endif 
-
         return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_ratio, sigma_ratio_fit_function, gr_bin_ratio, sigma_ratio_fit_function_bin);
     }
 
@@ -419,14 +437,14 @@ void calculateCorrection(
     const char* mc_file,
     const char* data_file,
     const char* output_file,
-    const double max_energy_gev = 2500) {
+    const double max_energy_gev = 800) {
 
         TGraphErrors gr_shift, gr_sigma_ratio;
         TGraphErrors gr_shift_bin, gr_sigma_ratio_bin;
         TF1 shift_fit_func, sigma_ratio_fit_func;
         TF1 shift_fit_func_bin, sigma_ratio_fit_func_bin;
 
-        std::tie(gr_shift, shift_fit_func, gr_shift_bin, shift_fit_func_bin) = fitPeakPositionDifference(mc_file, data_file, max_energy_gev);
+        std::tie(gr_shift, shift_fit_func, gr_shift_bin, shift_fit_func_bin) = fitShift(mc_file, data_file, max_energy_gev);
         std::tie(gr_sigma_ratio, sigma_ratio_fit_func, gr_sigma_ratio_bin, sigma_ratio_fit_func_bin) = fitSigmaRatio(mc_file, data_file, max_energy_gev);
 
         TFile outfile(output_file, "RECREATE");
