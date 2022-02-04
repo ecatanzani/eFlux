@@ -359,17 +359,17 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitShift(
         std::vector<double> bins, bins_err;
         std::vector<double> shift, shift_err;
 
-        for (int idx_p=0; idx_p<gr_electron_mc->GetN(); ++idx_p) {
-            energy.push_back(gr_data->GetPointX(idx_p));
+        for (int idx_p=0; idx_p<gr_mean_electron_mc->GetN(); ++idx_p) {
+            energy.push_back(gr_mean_data->GetPointX(idx_p));
             bins.push_back(idx_p+1);
             energy_err.push_back(0);
             bins_err.push_back(0);
-            shift.push_back(gr_data->GetPointY(idx_p) - (gr_sigma_data->GetPointY(idx_p)/gr_sigma_electron_mc->GetPointY(idx-p))*gr_electron_mc->GetPointY(idx_p));
-            point_difference_err.push_back(sqrt(
+            shift.push_back(gr_mean_data->GetPointY(idx_p) - (gr_sigma_data->GetPointY(idx_p)/gr_sigma_electron_mc->GetPointY(idx_p))*gr_mean_electron_mc->GetPointY(idx_p));
+            shift_err.push_back(sqrt(
                 pow(gr_mean_data->GetErrorY(idx_p), 2) + 
-                pow((gr_sigma_data->GetPointY(idx_p)/gr_sigma_electron_mc->GetPointY(idx-p))*gr_mean_electron_mc->GetErrorY(idx_p), 2) +
+                pow((gr_sigma_data->GetPointY(idx_p)/gr_sigma_electron_mc->GetPointY(idx_p))*gr_mean_electron_mc->GetErrorY(idx_p), 2) +
                 pow((gr_mean_electron_mc->GetPointY(idx_p)/gr_sigma_electron_mc->GetPointY(idx_p))*gr_sigma_data->GetErrorY(idx_p) , 2) + 
-                pow(((gr_sigma_data->GetPointY(idx_p)*gr_mean_electron_mc->GetPointY(idx_p))/gr_sigma_electron_mc->GetPointY(idx_p))*gr_sigma_electron_mc->GetErrorY(idx_p) , 2));
+                pow(((gr_sigma_data->GetPointY(idx_p)*gr_mean_electron_mc->GetPointY(idx_p))/gr_sigma_electron_mc->GetPointY(idx_p))*gr_sigma_electron_mc->GetErrorY(idx_p) , 2)));
         }
 
         TGraphErrors gr_shift(energy.size(), &energy[0], &shift[0], &energy_err[0], &shift_err[0]);
