@@ -171,25 +171,20 @@ void bin_flux(in_args input_args) {
 
     // Build the final graphs
     std::unique_ptr<TGraph> gr_flux_bdt                                 = std::make_unique<TGraph>();
-    std::unique_ptr<TGraph> gr_flux_bdt_eff_corr_method1                = std::make_unique<TGraph>();
-    std::unique_ptr<TGraph> gr_flux_bdt_eff_corr_method2                = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_bdt_eff_corr                        = std::make_unique<TGraph>();
 
     std::unique_ptr<TGraph> gr_flux_xtrl                                = std::make_unique<TGraph>();
     std::unique_ptr<TGraph> gr_flux_E3_bdt                              = std::make_unique<TGraph>();
-    std::unique_ptr<TGraph> gr_flux_E3_bdt_eff_corr_method1             = std::make_unique<TGraph>();
-    std::unique_ptr<TGraph> gr_flux_E3_bdt_eff_corr_method2             = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_E3_bdt_eff_corr                     = std::make_unique<TGraph>();
     std::unique_ptr<TGraph> gr_flux_E3_xtrl                             = std::make_unique<TGraph>();
 
     std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl                          = std::make_unique<TGraph2D>();
-    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl_eff_corr_method1         = std::make_unique<TGraph2D>();
-    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl_eff_corr_method2         = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl_eff_corr                 = std::make_unique<TGraph2D>();
 
     std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl                       = std::make_unique<TGraph2D>();
-    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl_eff_corr_method1      = std::make_unique<TGraph2D>();
-    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl_eff_corr_method2      = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl_eff_corr              = std::make_unique<TGraph2D>();
 
-    std::unique_ptr<TGraph> gr_efficiency_method1                       = std::make_unique<TGraph>();
-    std::unique_ptr<TGraph> gr_efficiency_method2                       = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_efficiency                               = std::make_unique<TGraph>();
     
     // Fill graphs
     for (size_t idx = 0; idx < bdt_cuts.size(); ++idx) {
@@ -198,35 +193,26 @@ void bin_flux(in_args input_args) {
         double flux             = std::get<1>(bdt_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
         double flux_E3          = flux*pow(energy_wtsydp, 3);
         
-        gr_flux_bdt                         ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux);
-        gr_flux_E3_bdt                      ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3);
+        gr_flux_bdt             ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux);
+        gr_flux_E3_bdt          ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3);
         
-        double eff_method1      = 1-std::get<1>((std::get<0>(efficiencies))[idx]);
-        double eff_method2      = 1-std::get<1>((std::get<1>(efficiencies))[idx]); 
+        double eff              = 1-std::get<1>(efficiencies[idx]);
 
-        if (eff_method1) {
-            double flux_ec_1        = flux/eff_method1;
-            double flux_E3_ec_1     = flux_ec_1*pow(energy_wtsydp, 3);
-            gr_flux_bdt_eff_corr_method1        ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec_1);
-            gr_flux_E3_bdt_eff_corr_method1     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec_1);
+        if (eff) {
+            double flux_ec              = flux/eff;
+            double flux_E3_ec           = flux_ec*pow(energy_wtsydp, 3);
+            gr_flux_bdt_eff_corr        ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec);
+            gr_flux_E3_bdt_eff_corr     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec);
         }
 
-        if (eff_method2) {
-            double flux_ec_2        = flux/eff_method2;
-            double flux_E3_ec_2     = flux_ec_2*pow(energy_wtsydp, 3);
-            gr_flux_bdt_eff_corr_method2        ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec_2);
-            gr_flux_E3_bdt_eff_corr_method2     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec_2);
-        }
-
-        gr_efficiency_method1                   ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), eff_method1);
-        gr_efficiency_method2                   ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), eff_method2);
+        gr_efficiency                   ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), eff);
 
         // XTRL
-        flux                    = std::get<1>(xtrl_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
-        flux_E3                 = flux*pow(energy_wtsydp, 3);
+        flux                            = std::get<1>(xtrl_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
+        flux_E3                         = flux*pow(energy_wtsydp, 3);
 
-        gr_flux_xtrl                        ->SetPoint((int)idx, std::get<0>(xtrl_cuts[idx]), flux);
-        gr_flux_E3_xtrl                     ->SetPoint((int)idx, std::get<0>(xtrl_cuts[idx]), flux_E3);    
+        gr_flux_xtrl                    ->SetPoint((int)idx, std::get<0>(xtrl_cuts[idx]), flux);
+        gr_flux_E3_xtrl                 ->SetPoint((int)idx, std::get<0>(xtrl_cuts[idx]), flux_E3);    
     }
     
     for (size_t idx = 0; idx < bdt_xtrl_cuts.size(); ++idx) {
@@ -238,32 +224,19 @@ void bin_flux(in_args input_args) {
         gr_flux_E3_bdt_xtrl                     ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_E3);
 
         // Get the efficiencies corresponding to the BDT cut
-        double eff_method1 {0}, eff_method2 {0};
-        for (auto&& eff : std::get<0>(efficiencies))
-            if (std::get<0>(bdt_xtrl_cuts[idx]) == std::get<0>(eff)) {
-                eff_method1 = 1-std::get<1>(eff);
+        double eff {0};
+        for (auto&& eff_tuple : efficiencies)
+            if (std::get<0>(bdt_xtrl_cuts[idx]) == std::get<0>(eff_tuple)) {
+                eff = 1-std::get<1>(eff_tuple);
                 break;
             }
 
-        for (auto&& eff : std::get<1>(efficiencies))
-            if (std::get<0>(bdt_xtrl_cuts[idx]) == std::get<0>(eff)) {
-                eff_method2 = 1-std::get<1>(eff);
-                break;
-            }
+        if (eff) {
+            double flux_ec        = flux/eff;
+            double flux_E3_ec     = flux_ec*pow(energy_wtsydp, 3);
 
-        if (eff_method1) {
-            double flux_ec_1        = flux/eff_method1;
-            double flux_E3_ec_1     = flux_ec_1*pow(energy_wtsydp, 3);
-
-            gr_flux_bdt_xtrl_eff_corr_method1       ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_ec_1);
-            gr_flux_E3_bdt_xtrl_eff_corr_method1    ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_E3_ec_1);
-        }
-
-        if (eff_method2) {
-            double flux_ec_2        = flux/eff_method2;
-            double flux_E3_ec_2     = flux_ec_2*pow(energy_wtsydp, 3);
-            gr_flux_bdt_xtrl_eff_corr_method2       ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_ec_2);
-            gr_flux_E3_bdt_xtrl_eff_corr_method2    ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_E3_ec_2);
+            gr_flux_bdt_xtrl_eff_corr       ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_ec);
+            gr_flux_E3_bdt_xtrl_eff_corr    ->SetPoint((int)idx, std::get<0>(bdt_xtrl_cuts[idx]), std::get<1>(bdt_xtrl_cuts[idx]), flux_E3_ec);
         }
     }
 
@@ -273,15 +246,10 @@ void bin_flux(in_args input_args) {
     gr_flux_bdt->GetXaxis()->SetTitle("BDT");
     gr_flux_bdt->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
 
-    gr_flux_bdt_eff_corr_method1->SetName((std::string("gr_flux_bdt_eff_corr_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_bdt_eff_corr_method1->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_bdt_eff_corr_method1->GetXaxis()->SetTitle("BDT");
-    gr_flux_bdt_eff_corr_method1->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
-
-    gr_flux_bdt_eff_corr_method2->SetName((std::string("gr_flux_bdt_eff_corr_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_bdt_eff_corr_method2->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_bdt_eff_corr_method2->GetXaxis()->SetTitle("BDT");
-    gr_flux_bdt_eff_corr_method2->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+    gr_flux_bdt_eff_corr->SetName((std::string("gr_flux_bdt_eff_corr_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_eff_corr->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_eff_corr->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt_eff_corr->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
     
     gr_flux_xtrl->SetName((std::string("gr_flux_xtrl_energybin_") + std::to_string(input_args.energy_bin)).c_str());
     gr_flux_xtrl->SetTitle((std::string("All-Electron Flux vs. XTRL cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
@@ -293,15 +261,10 @@ void bin_flux(in_args input_args) {
     gr_flux_E3_bdt->GetXaxis()->SetTitle("BDT");
     gr_flux_E3_bdt->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
 
-    gr_flux_E3_bdt_eff_corr_method1->SetName((std::string("gr_flux_E3_bdt_eff_corr_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3_bdt_eff_corr_method1->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3_bdt_eff_corr_method1->GetXaxis()->SetTitle("BDT");
-    gr_flux_E3_bdt_eff_corr_method1->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
-
-    gr_flux_E3_bdt_eff_corr_method2->SetName((std::string("gr_flux_E3_bdt_eff_corr_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3_bdt_eff_corr_method2->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3_bdt_eff_corr_method2->GetXaxis()->SetTitle("BDT");
-    gr_flux_E3_bdt_eff_corr_method2->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+    gr_flux_E3_bdt_eff_corr->SetName((std::string("gr_flux_E3_bdt_eff_corr_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_eff_corr->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_eff_corr->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt_eff_corr->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
     
     gr_flux_E3_xtrl->SetName((std::string("gr_flux_E3_xtrl_energybin_") + std::to_string(input_args.energy_bin)).c_str());
     gr_flux_E3_xtrl->SetTitle((std::string("All-Electron Flux vs. XTRL cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
@@ -314,17 +277,11 @@ void bin_flux(in_args input_args) {
     gr_flux_bdt_xtrl->GetYaxis()->SetTitle("XTRL");
     gr_flux_bdt_xtrl->GetZaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
 
-    gr_flux_bdt_xtrl_eff_corr_method1->SetName((std::string("gr_flux_bdt_xtrl_eff_corr_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_bdt_xtrl_eff_corr_method1->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_bdt_xtrl_eff_corr_method1->GetXaxis()->SetTitle("BDT");
-    gr_flux_bdt_xtrl_eff_corr_method1->GetYaxis()->SetTitle("XTRL");
-    gr_flux_bdt_xtrl_eff_corr_method1->GetZaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
-
-    gr_flux_bdt_xtrl_eff_corr_method2->SetName((std::string("gr_flux_bdt_xtrl_eff_corr_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_bdt_xtrl_eff_corr_method2->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_bdt_xtrl_eff_corr_method2->GetXaxis()->SetTitle("BDT");
-    gr_flux_bdt_xtrl_eff_corr_method2->GetYaxis()->SetTitle("XTRL");
-    gr_flux_bdt_xtrl_eff_corr_method2->GetZaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+    gr_flux_bdt_xtrl_eff_corr->SetName((std::string("gr_flux_bdt_xtrl_eff_corr_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_xtrl_eff_corr->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_xtrl_eff_corr->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt_xtrl_eff_corr->GetYaxis()->SetTitle("XTRL");
+    gr_flux_bdt_xtrl_eff_corr->GetZaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
 
     gr_flux_E3_bdt_xtrl->SetName((std::string("gr_flux_E3_bdt_xtrl_energybin_") + std::to_string(input_args.energy_bin)).c_str());
     gr_flux_E3_bdt_xtrl->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
@@ -332,27 +289,16 @@ void bin_flux(in_args input_args) {
     gr_flux_E3_bdt_xtrl->GetYaxis()->SetTitle("XTRL");
     gr_flux_E3_bdt_xtrl->GetZaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
 
-    gr_flux_E3_bdt_xtrl_eff_corr_method1->SetName((std::string("gr_flux_E3_bdt_xtrl_eff_corr_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3_bdt_xtrl_eff_corr_method1->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3_bdt_xtrl_eff_corr_method1->GetXaxis()->SetTitle("BDT");
-    gr_flux_E3_bdt_xtrl_eff_corr_method1->GetYaxis()->SetTitle("XTRL");
-    gr_flux_E3_bdt_xtrl_eff_corr_method1->GetZaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+    gr_flux_E3_bdt_xtrl_eff_corr->SetName((std::string("gr_flux_E3_bdt_xtrl_eff_corr_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_xtrl_eff_corr->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_xtrl_eff_corr->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt_xtrl_eff_corr->GetYaxis()->SetTitle("XTRL");
+    gr_flux_E3_bdt_xtrl_eff_corr->GetZaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
 
-    gr_flux_E3_bdt_xtrl_eff_corr_method2->SetName((std::string("gr_flux_E3_bdt_xtrl_eff_corr_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3_bdt_xtrl_eff_corr_method2->SetTitle((std::string("All-Electron Flux vs. XTRL and BDT cuts for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_flux_E3_bdt_xtrl_eff_corr_method2->GetXaxis()->SetTitle("BDT");
-    gr_flux_E3_bdt_xtrl_eff_corr_method2->GetYaxis()->SetTitle("XTRL");
-    gr_flux_E3_bdt_xtrl_eff_corr_method2->GetZaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
-
-    gr_efficiency_method1->SetName((std::string("gr_efficiency_method1_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_efficiency_method1->SetTitle((std::string("BDT efficiency for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_efficiency_method1->GetXaxis()->SetTitle("BDT");
-    gr_efficiency_method1->GetYaxis()->SetTitle("Efficiency");
-
-    gr_efficiency_method2->SetName((std::string("gr_efficiency_method2_energybin_") + std::to_string(input_args.energy_bin)).c_str());
-    gr_efficiency_method2->SetTitle((std::string("BDT efficiency for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
-    gr_efficiency_method2->GetXaxis()->SetTitle("BDT");
-    gr_efficiency_method2->GetYaxis()->SetTitle("Efficiency");
+    gr_efficiency->SetName((std::string("gr_efficiency_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_efficiency->SetTitle((std::string("BDT efficiency for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_efficiency->GetXaxis()->SetTitle("BDT");
+    gr_efficiency->GetYaxis()->SetTitle("Efficiency");
 
     // Write to output file
     TFile *outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
@@ -366,24 +312,19 @@ void bin_flux(in_args input_args) {
     outfile->cd(out_dir_name.c_str());
 
     gr_flux_bdt                             ->Write();
-    gr_flux_bdt_eff_corr_method1            ->Write();
-    gr_flux_bdt_eff_corr_method2            ->Write();
+    gr_flux_bdt_eff_corr                    ->Write();
 
     gr_flux_xtrl                            ->Write();
     gr_flux_E3_bdt                          ->Write();
-    gr_flux_E3_bdt_eff_corr_method1         ->Write();
-    gr_flux_E3_bdt_eff_corr_method2         ->Write();
+    gr_flux_E3_bdt_eff_corr                 ->Write();
     gr_flux_E3_xtrl                         ->Write();
 
     gr_flux_bdt_xtrl                        ->Write();
-    gr_flux_bdt_xtrl_eff_corr_method1       ->Write();
-    gr_flux_bdt_xtrl_eff_corr_method2       ->Write();
+    gr_flux_bdt_xtrl_eff_corr               ->Write();
     gr_flux_E3_bdt_xtrl                     ->Write();
-    gr_flux_E3_bdt_xtrl_eff_corr_method1    ->Write();
-    gr_flux_E3_bdt_xtrl_eff_corr_method2    ->Write();
+    gr_flux_E3_bdt_xtrl_eff_corr            ->Write();
 
-    gr_efficiency_method1                   ->Write();
-    gr_efficiency_method2                   ->Write();
+    gr_efficiency                           ->Write();
     
     outfile->Close();
 }

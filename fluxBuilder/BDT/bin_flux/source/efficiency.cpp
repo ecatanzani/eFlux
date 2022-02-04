@@ -9,11 +9,14 @@
 #include "TFile.h"
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
+#include "TGraphErrors.h"
 
-inline std::tuple<std::shared_ptr<TF1>, std::shared_ptr<TF1>> extractCorrectionFunctions(
+inline std::tuple<std::tuple<std::shared_ptr<TF1>, std::shared_ptr<TF1>>, std::tuple<std::shared_ptr<TGraphErrors>, std::shared_ptr<TGraphErrors>>> extractCorrectionFunctions(
     const char* file_name, 
     const char* tf1_shift_name="shift_fit_function",
-    const char* tf1_sigma_name="sigma_ratio_fit_function") {
+    const char* tf1_sigma_name="sigma_ratio_fit_function",
+    const char* gr_shift_name="gr_bin_shift",
+    const char* gr_sigma_ratio_name="gr_bin_ratio") {
 
         TFile *infile = TFile::Open(file_name, "READ");
         if (infile->IsZombie()) {
@@ -23,11 +26,13 @@ inline std::tuple<std::shared_ptr<TF1>, std::shared_ptr<TF1>> extractCorrectionF
 
         std::shared_ptr<TF1> tf1_shift = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get(tf1_shift_name)));
         std::shared_ptr<TF1> tf1_sigma = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get(tf1_sigma_name)));
+        std::shared_ptr<TGraphErrors> gr_shift = std::shared_ptr<TGraphErrors>(static_cast<TGraphErrors*>(infile->Get(gr_shift_name)));
+        std::shared_ptr<TGraphErrors> gr_sigma = std::shared_ptr<TGraphErrors>(static_cast<TGraphErrors*>(infile->Get(gr_sigma_ratio_name)));
 
-        return std::tuple<std::shared_ptr<TF1>, std::shared_ptr<TF1>>(tf1_shift, tf1_sigma);
+        return std::make_tuple(std::make_tuple(tf1_shift, tf1_sigma), std::make_tuple(gr_shift, gr_sigma));
     }
 
-const std::tuple<std::vector<std::tuple<double, double>>, std::vector<std::tuple<double, double>>> compute_efficiency(
+const std::vector<std::tuple<double, double>> compute_efficiency(
     std::shared_ptr<config> bdt_config,
     const std::string learning_method,
     const std::vector<std::tuple<double, unsigned int>> bdt_cuts,
@@ -81,17 +86,18 @@ const std::tuple<std::vector<std::tuple<double, double>>, std::vector<std::tuple
         };
 
         // Build the efficiency tuple
-        std::vector<std::tuple<double, double>> efficiency_values_method1 (bdt_cuts.size());
-        std::vector<std::tuple<double, double>> efficiency_values_method2 (bdt_cuts.size());
-
-        for (size_t idx=0; idx<efficiency_values_method1.size(); ++idx) {
-            efficiency_values_method1[idx] = std::make_tuple(std::get<0>(bdt_cuts[idx]), 0);
-            efficiency_values_method2[idx] = std::make_tuple(std::get<0>(bdt_cuts[idx]), 0);
-        }
+        std::vector<std::tuple<double, double>> efficiency_values (bdt_cuts.size());
+        
+        for (size_t idx=0; idx<efficiency_values.size(); ++idx)
+            efficiency_values[idx] = std::make_tuple(std::get<0>(bdt_cuts[idx]), 0);
 
         // Extract the efficiency correction functions
-        std::shared_ptr<TF1> shift_function, sigma_function;
-        std::tie(shift_function, sigma_function) = extractCorrectionFunctions(mc_correction_function);
+        auto corrections = extractCorrectionFunctions(mc_correction_function);
+
+        auto shift_function = std::get<0>(std::get<0>(corrections));
+        auto sigma_function = std::get<1>(std::get<0>(corrections));
+        auto gr_shift = std::get<0>(std::get<1>(corrections));
+        auto gr_sigma = std::get<1>(std::get<1>(corrections));
 
         // Loop on the events
         double gev {0.001};
@@ -105,11 +111,13 @@ const std::tuple<std::vector<std::tuple<double, double>>, std::vector<std::tuple
             }
         };
 
-        auto get_bdt_cut_method1 = [shift_function, sigma_function] (const double cut, const double energy_gev) -> double {
-            return cut - shift_function->Eval(energy_gev)/sigma_function->Eval(energy_gev);
-        };
-        auto get_bdt_cut_method2 = [shift_function, sigma_function] (const double cut, const double energy_gev) -> double {
-            return cut - shift_function->Eval(energy_gev)*sigma_function->Eval(energy_gev);
+        auto get_bdt_cut = [shift_function, sigma_function, gr_shift, gr_sigma] (const double cut, const double energy_gev, const int energy_bin) -> double {
+            double cut_corr {0};
+            if (energy_bin<=33)
+                cut_corr = (cut - gr_shift->GetPointY(energy_bin-1))/gr_sigma->GetPointY(energy_bin-1); 
+            else
+                cut_corr = (cut - shift_function->Eval(energy_gev))/sigma_function->Eval(energy_gev);
+            return cut_corr;
         };
 
         double n_total {0};
@@ -140,22 +148,16 @@ const std::tuple<std::vector<std::tuple<double, double>>, std::vector<std::tuple
                 else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<=10000)
                     tmva_classifier = tmva_HE_reader->EvaluateMVA(learning_method.c_str());
 
-                for (auto &cut : efficiency_values_method1)
-                    if (tmva_classifier < get_bdt_cut_method1(std::get<0>(cut), vars.evt_corr_energy*gev))
-                        std::get<1>(cut) += get_weight(vars.evt_corr_energy*gev);
-                
-                for (auto &cut : efficiency_values_method2)
-                    if (tmva_classifier < get_bdt_cut_method2(std::get<0>(cut), vars.evt_corr_energy*gev))
+                for (auto &cut : efficiency_values)
+                    if (tmva_classifier < get_bdt_cut(std::get<0>(cut), vars.evt_corr_energy*gev, vars.energy_bin))
                         std::get<1>(cut) += get_weight(vars.evt_corr_energy*gev);
             
                 n_total += get_weight(vars.evt_corr_energy*gev);
             }
         }
 
-        for (size_t idx=0; idx<efficiency_values_method1.size(); ++idx) {
-            std::get<1>(efficiency_values_method1[idx]) /= n_total;
-            std::get<1>(efficiency_values_method2[idx]) /= n_total;
-        }
+        for (auto& eff_tuple : efficiency_values)
+            std::get<1>(eff_tuple) /= n_total;
 
-        return std::make_tuple(efficiency_values_method1, efficiency_values_method2);
+        return efficiency_values;
     }
