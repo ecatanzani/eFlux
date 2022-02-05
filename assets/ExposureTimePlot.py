@@ -95,7 +95,7 @@ def main(args=None):
         ROOT.gSystem.Load("libDmpService.so")
         
         # Parse input files per day and compute exposure time
-        info = ParseInputFiles(opts.input, opts.output, opts.verbose)
+        info = ParseInputFiles(opts.input, opts.verbose)
         info.to_csv('{}.csv'.format(opts.output))
     if opts.input_csv:
         info = pd.read_csv(opts.input_csv)
