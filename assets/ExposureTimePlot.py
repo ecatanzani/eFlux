@@ -27,7 +27,7 @@ def extract_seconds_from_file(file, tree_name, verbose):
     for ev_idx in range(evtch.GetEntries()):
         pev = evtch.GetDmpEvent(ev_idx)
         evthdr = pev.pEvtHeader()
-        seconds.append(int(evthdr.GetSecond()))
+        seconds[ev_idx] = int(evthdr.GetSecond())
     
     return np.min(seconds), np.max(seconds)
 
