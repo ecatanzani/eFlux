@@ -17,8 +17,8 @@ def GetROOTTreeName(filename):
             break
     return tree_name
 
-def extract_seconds_from_file(file, verbose):
-    evtch = ROOT.DmpChain("CollectionTree")
+def extract_seconds_from_file(file, tree_name, verbose):
+    evtch = ROOT.DmpChain(tree_name)
     evtch.Add(file)
     if verbose:
         print('Adding {} to the chain...'.format(file))
@@ -58,7 +58,7 @@ def ParseInputFiles(input_dir, verbose):
                 root_tree_name = GetROOTTreeName(root_filename)
 
             # Create new row in DataFrame
-            df = df.append(pd.Series({'Date': date(year, month, day), 'ExposureTime': compute_exposure(extract_seconds_from_file(root_filename, verbose))}))
+            df = df.append(pd.Series({'Date': date(year, month, day), 'ExposureTime': compute_exposure(extract_seconds_from_file(root_filename, root_tree_name, verbose))}))
 
     return df
     
