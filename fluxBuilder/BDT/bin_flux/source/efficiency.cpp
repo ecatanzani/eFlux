@@ -157,8 +157,13 @@ const std::vector<std::tuple<double, double, double>> compute_efficiency(
         }
 
         for (auto& eff_tuple : efficiency_values) {
-            std::get<2>(eff_tuple) = sqrt(pow(sqrt(std::get<1>(eff_tuple))/n_total , 2)+pow(std::get<1>(eff_tuple)*sqrt(n_total)/pow(n_total, 2), 2));
-            std::get<1>(eff_tuple) /= n_total;
+            auto success_try = n_total - std::get<1>(eff_tuple);
+            auto fail_try = std::get<1>(eff_tuple);
+
+            // Compute the error with falt bayesian prior
+            std::get<2>(eff_tuple) = sqrt((success_try+1)*(fail_try+1)/pow(success_try+fail_try+2, 3));
+            // Compute the efficiency
+            std::get<1>(eff_tuple) = 1 - std::get<1>(eff_tuple)/n_total;
         }
 
         return efficiency_values;

@@ -216,7 +216,7 @@ void bin_flux(in_args input_args) {
         gr_flux_E3_bdt_we       ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3);
         gr_flux_E3_bdt_we       ->SetPointError((int)idx, 0, flux_E3_err);
         
-        double eff              = 1-std::get<1>(efficiencies[idx]);
+        double eff              = std::get<1>(efficiencies[idx]);
         double eff_err          = std::get<2>(efficiencies[idx]);
 
         if (eff) {
@@ -274,7 +274,7 @@ void bin_flux(in_args input_args) {
         double eff {0};
         for (auto&& eff_tuple : efficiencies)
             if (std::get<0>(bdt_xtrl_cuts[idx]) == std::get<0>(eff_tuple)) {
-                eff = 1-std::get<1>(eff_tuple);
+                eff = std::get<1>(eff_tuple);
                 break;
             }
 
