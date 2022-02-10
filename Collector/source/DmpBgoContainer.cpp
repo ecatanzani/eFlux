@@ -3,23 +3,6 @@
 #include <cmath>
 #include <iostream>
 
-#define BGO_moliere_radius 22.59 // BGO moliere radius in mm
-
-const bool DmpBgoContainer::compute_energy_in_cone(
-	const double bartmpX,
-	const double bartmpY,
-	const double showeraxisX,
-	const double showeraxisY,
-	const int radius_value)
-{
-	auto effective_radiusX = BGO_moliere_radius * radius_value * cos(slope[0]);
-	auto effective_radiusY = BGO_moliere_radius * radius_value * cos(slope[1]);
-	if ((fabs(bartmpX - showeraxisX) < effective_radiusX) && (fabs(bartmpY - showeraxisY) < effective_radiusY))
-		return true;
-	else
-		return false;
-}
-
 void DmpBgoContainer::scanBGOHits(
 	const std::shared_ptr<DmpEvtBgoHits> bgohits,
 	const std::shared_ptr<DmpEvtBgoRec> bgorec,
@@ -43,16 +26,12 @@ void DmpBgoContainer::scanBGOHits(
 	
 	// Get the number of BGO hits
 	nBgoHits = bgohits->GetHittedBarNumber();
-
-	// Vector of BGO Z values
-	std::vector<double> bgolayersZ(DAMPE_bgo_nLayers, -999);
+	
 	// Scan BGO hits
 	for (int ihit = 0; ihit < nBgoHits; ++ihit)
 	{
 		// Get layer ID
 		auto layerID = bgohits->GetLayerID(ihit);
-		if (bgolayersZ[layerID] == -999)
-			bgolayersZ[layerID] = BGO_TopZ + BGO_layer_displacement * layerID;
 		// Get bar global ID
 		auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
 		layerBarIndex[layerID].push_back(ihit);
@@ -64,56 +43,17 @@ void DmpBgoContainer::scanBGOHits(
 		// Setting default value for maximum bar index and energy for each layer
 		int imax = -1;
 		double maxE = 0;
-
-		/*
-		// Extrapolate the shower axis on that plane
-		const double showeraxisX = slope[0] * bgolayersZ[lay] + intercept[0];
-		const double showeraxisY = slope[1] * bgolayersZ[lay] + intercept[1];
-		*/
 	
 		// Find the maximum of the nergy release in a certain layer, together with the bar ID
-		for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
-		{
-			auto index = std::distance(layerBarNumber[lay].begin(), it);
-			int ihit = layerBarIndex[lay][index];
-			double hitE = (bgohits->fEnergy)[ihit];
-			layerBarEnergy[lay][index] = hitE;
+		for (auto it = std::begin(layerBarIndex[lay]); it != std::end(layerBarIndex[lay]); ++it)
+		{	
+			double hitE = (bgohits->fEnergy)[*it];
+			layerBarEnergy[lay][std::distance(std::begin(layerBarIndex[lay]), it)] = hitE;
 			if (hitE > maxE)
 			{
 				maxE = hitE;
-				imax = ihit;
+				imax = *it;
 			}
-			
-			#if 0
-			std::cout << "\nLayer: " << lay;
-			std::cout << "\nHit: " << ihit;
-			std::cout << "\nHitE: " << hitE;
-			std::cout << "\nHitMeasuresX: " << bgohits->IsHitMeasuringX(ihit);
-			std::cout << "\nHitMeasuresY: " << bgohits->IsHitMeasuringY(ihit);
-			std::cout << "\nTmphitX: " << tmphitX;
-			std::cout << "\nTmphitY: " << tmphitY;
-			std::cout << "\nshoweraxisX: " << showeraxisX;
-			std::cout << "\nshoweraxisY: " << showeraxisY;
-			std::cout << "\n1MR: " << compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 1);
-			std::cout << "\n2MR: " << compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 2);
-			std::cout << "\n3MR: " << compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 3);
-			std::cout << "\n5MR: " << compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 5) << std::endl;
-			#endif
-
-			/*
-			// Compute the energy in 1 moliere radius
-			const double tmphitX = bgohits->GetHitX(ihit);
-			const double tmphitY = bgohits->GetHitY(ihit);
-			
-			if (compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 1))
-				energy_1R_radius[lay] += hitE;
-			if (compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 2))
-				energy_2R_radius[lay] += hitE;
-			if (compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 3))
-				energy_3R_radius[lay] += hitE;
-			if (compute_energy_in_cone(tmphitX, tmphitY, showeraxisX, showeraxisY, 5))
-				energy_5R_radius[lay] += hitE;
-			*/
 		}
 
 		iMaxLayer[lay] = imax;
@@ -134,15 +74,13 @@ void DmpBgoContainer::scanBGOHits(
 			// Consider the nearest bar respect to the max one in order to better interpolate the position
 			if (iBarMax > 0 && iBarMax < 21)
 			{
-				for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
+				for (auto it = std::begin(layerBarIndex[lay]); it != std::end(layerBarIndex[lay]); ++it)
 				{
-					auto index = std::distance(layerBarNumber[lay].begin(), it);
-					int ihit = layerBarIndex[lay][index];
-					auto iBar = ((bgohits->fGlobalBarID)[ihit] >> 6) & 0x1f;
+					auto iBar = ((bgohits->fGlobalBarID)[*it] >> 6) & 0x1f;
 					if (iBar - iBarMax == 1 || iBar - iBarMax == -1)
 					{
-						double hitE = (bgohits->fEnergy)[ihit];
-						double thisCoord = lay % 2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
+						double hitE = (bgohits->fEnergy)[*it];
+						double thisCoord = lay % 2 ? bgohits->GetHitX(*it) : bgohits->GetHitY(*it);
 						eCoreLayer[lay] += hitE;
 						eCoreCoord[lay] += hitE * thisCoord;
 					}
@@ -151,12 +89,10 @@ void DmpBgoContainer::scanBGOHits(
 			// Get the CoG coordinate of the max energy bar cluster
 			eCoreCoord[lay] /= eCoreLayer[lay];
 			// Get the energy RMS of a layer
-			for (auto it = layerBarNumber[lay].begin(); it != layerBarNumber[lay].end(); ++it)
+			for (auto it = std::begin(layerBarIndex[lay]); it != std::end(layerBarIndex[lay]); ++it)
 			{
-				auto index = std::distance(layerBarNumber[lay].begin(), it);
-				int ihit = layerBarIndex[lay][index];
-				auto hitE = (bgohits->fEnergy)[ihit];
-				auto thisCoord = lay % 2 ? bgohits->GetHitX(ihit) : bgohits->GetHitY(ihit);
+				auto hitE = (bgohits->fEnergy)[*it];
+				auto thisCoord = lay % 2 ? bgohits->GetHitX(*it) : bgohits->GetHitY(*it);
 				eLayer[lay] += hitE;
 				rmsLayer[lay] += hitE * (thisCoord - eCoreCoord[lay]) * (thisCoord - eCoreCoord[lay]);
 			}
@@ -181,6 +117,11 @@ void DmpBgoContainer::scanBGOHits(
 std::vector<short> DmpBgoContainer::GetSingleLayerBarNumber(int nLayer)
 {
 	return layerBarNumber[nLayer];
+}
+
+std::vector<short> DmpBgoContainer::GetSingleLayerBarIndex(int nLayer) 
+{
+	return layerBarIndex[nLayer];
 }
 
 std::vector<std::vector<short>> DmpBgoContainer::GetLayerBarNumber()
@@ -289,24 +230,4 @@ const std::vector<double> DmpBgoContainer::FastBGOintercept(const std::shared_pt
 const TVector3 DmpBgoContainer::GetBGOTrajectory2D()
 {
 	return trajectoryDirection2D;
-}
-
-const std::vector<double> DmpBgoContainer::GetEnergy1MR()
-{
-	return energy_1R_radius;
-}
-
-const std::vector<double> DmpBgoContainer::GetEnergy2MR()
-{
-	return energy_2R_radius;
-}
-
-const std::vector<double> DmpBgoContainer::GetEnergy3MR()
-{
-	return energy_3R_radius;
-}
-
-const std::vector<double> DmpBgoContainer::GetEnergy5MR()
-{
-	return energy_5R_radius;
 }

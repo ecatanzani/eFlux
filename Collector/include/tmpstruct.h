@@ -35,10 +35,6 @@ struct _tmp_bgo
 	double energy_fraction_13th_layer;
 	int last_energy_layer;
 	int hits;
-	std::vector<double> energy_1mr;
-	std::vector<double> energy_2mr;
-	std::vector<double> energy_3mr;
-	std::vector<double> energy_5mr;
 };
 
 struct _tmp_nud

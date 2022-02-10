@@ -55,6 +55,9 @@ struct psd_cluster_match
 	std::vector<int> icloPsdClu2_track;
 	std::vector<double> dxCloPsdClu2_track;
 
+	bool X_match {false};
+	bool Y_match {false};
+
 	psd_cluster_match() : icloPsdClu(DAMPE_psd_nLayers, -999),
 						  dxCloPsdClu(DAMPE_psd_nLayers, -999),
 						  icloPsdCluMaxHit(DAMPE_psd_nLayers, -999),
@@ -65,8 +68,8 @@ struct psd_cluster_match
 						  dxCloPsdClu_track(DAMPE_psd_nLayers, -999),
 						  icloPsdClu2_track(DAMPE_psd_nLayers, -999),
 						  dxCloPsdClu2_track(DAMPE_psd_nLayers, -999)
-	{
-	}
+						{
+						}
 };
 
 struct stk_charge
@@ -224,7 +227,7 @@ private:
 		const cuts_conf data_cuts);
 	const bool nBarLayer13_cut(
 		const std::shared_ptr<DmpEvtBgoHits> bgohits,
-		const std::vector<short> layerBarNumber,
+		const std::vector<short> layerBarIndex,
 		const double bgoTotalE);
 	const bool maxRms_cut(
 		const std::vector<double> layer_energy,

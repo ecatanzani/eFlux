@@ -27,6 +27,7 @@ struct cuts_conf
 	double PSD_bar_min_energy_release = -999;
 	double PSD_charge = -999;
 	double PSD_charge_sum = -999;
+	double PSD_charge_no_match = -999;
 	double STK_charge = -999;
 };
 

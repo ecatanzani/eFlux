@@ -29,11 +29,6 @@ std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault)
 	_bgo_res->energy_fraction_13th_layer = bgoVault.GetSingleFracLayer(13);
 	_bgo_res->last_energy_layer = bgoVault.GetLastEnergyLayer();
 	_bgo_res->hits = bgoVault.GetNhits();
-	_bgo_res->energy_1mr = bgoVault.GetEnergy1MR();
-	_bgo_res->energy_2mr = bgoVault.GetEnergy2MR();
-	_bgo_res->energy_3mr = bgoVault.GetEnergy3MR();
-	_bgo_res->energy_5mr = bgoVault.GetEnergy5MR();
-
 	return _bgo_res;
 }
 

@@ -19,10 +19,6 @@ public:
 			   layerBarEnergy(DAMPE_bgo_nLayers, std::vector<double>(DAMPE_bgo_bars_layer, -999)),
 			   rmsLayer(DAMPE_bgo_nLayers, -999),
 			   fracLayer(DAMPE_bgo_nLayers, -999),
-			   energy_1R_radius(DAMPE_bgo_nLayers, -999),
-			   energy_2R_radius(DAMPE_bgo_nLayers, -999),
-			   energy_3R_radius(DAMPE_bgo_nLayers, -999),
-			   energy_5R_radius(DAMPE_bgo_nLayers, -999),
 			   nud_adc(DAMPE_NUD_channels, -999),
 			   STK_plane_clusters(DAMPE_stk_planes, -999){};
 	~ntuple(){};
@@ -48,11 +44,7 @@ protected:
 		const double lastFracLayer,
 		const double frac_layer_13,
 		const int last_bgo_layer,
-		const int bgo_entries,
-		const std::vector<double> &energy_1_moliere_radius,
-		const std::vector<double> &energy_2_moliere_radius,
-		const std::vector<double> &energy_3_moliere_radius,
-		const std::vector<double> &energy_5_moliere_radius);
+		const int bgo_entries);
 	void fill_psdcharge_info(const psd_charge &extracted_psd_charge);
 	void fill_stkcharge_info(const stk_charge &extracted_stk_charge);
 	void fill_classifier_info(const bgo_classifiers &classifier);
@@ -109,10 +101,6 @@ protected:
 	double fracLast_13 = -999;
 	int lastBGOLayer = -999;
 	int nBGOentries = -999;
-	std::vector<double> energy_1R_radius;
-	std::vector<double> energy_2R_radius;
-	std::vector<double> energy_3R_radius;
-	std::vector<double> energy_5R_radius;
 	// PSD
 	double PSD_chargeX = -999;
 	double PSD_chargeY = -999;

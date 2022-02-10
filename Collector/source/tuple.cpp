@@ -60,11 +60,7 @@ void ntuple::fill_bgo_info(
 	const double lastFracLayer,
 	const double frac_layer_13,
 	const int last_bgo_layer,
-	const int bgo_entries,
-	const std::vector<double> &energy_1_moliere_radius,
-	const std::vector<double> &energy_2_moliere_radius,
-	const std::vector<double> &energy_3_moliere_radius,
-	const std::vector<double> &energy_5_moliere_radius)
+	const int bgo_entries)
 {
 	if (evtfilter_correct_bgo_reco)
 	{
@@ -84,10 +80,6 @@ void ntuple::fill_bgo_info(
 		fracLast_13 = frac_layer_13;
 		lastBGOLayer = last_bgo_layer;
 		nBGOentries = bgo_entries;
-		energy_1R_radius = energy_1_moliere_radius;
-		energy_2R_radius = energy_2_moliere_radius;
-		energy_3R_radius = energy_3_moliere_radius;
-		energy_5R_radius = energy_5_moliere_radius;
 	}
 }
 
@@ -200,10 +192,6 @@ void ntuple::core_reset()
 	fracLast_13 = -999;
 	lastBGOLayer = -999;
 	nBGOentries = -999;
-	energy_1R_radius = std::vector<double>(DAMPE_bgo_nLayers, -999);
-	energy_2R_radius = std::vector<double>(DAMPE_bgo_nLayers, -999);
-	energy_3R_radius = std::vector<double>(DAMPE_bgo_nLayers, -999);
-	energy_5R_radius = std::vector<double>(DAMPE_bgo_nLayers, -999);
 	// PSD
 	PSD_chargeX = -999;
 	PSD_chargeY = -999;

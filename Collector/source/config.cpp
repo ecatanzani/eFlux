@@ -121,6 +121,11 @@ void config::get_config_info(std::string parsed_config)
 			input_stream >> tmp_str;
 			cuts.PSD_charge_sum = stod(tmp_str, &sz);
 		}
+		if (!strcmp(tmp_str.c_str(), "PSD_charge_no_match"))
+		{
+			input_stream >> tmp_str;
+			cuts.PSD_charge_no_match = stod(tmp_str, &sz);
+		}
 		if (!strcmp(tmp_str.c_str(), "STK_charge"))
 		{
 			input_stream >> tmp_str;

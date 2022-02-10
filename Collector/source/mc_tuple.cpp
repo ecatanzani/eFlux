@@ -174,18 +174,6 @@ void mc_tuple::branch_tree()
 		"nBGOentries",
 		&nBGOentries,
 		"nBGOentries/I");
-	DmpNtupTree->Branch(
-		"energy_1R_radius",
-		&energy_1R_radius);
-	DmpNtupTree->Branch(
-		"energy_2R_radius",
-		&energy_2R_radius);
-	DmpNtupTree->Branch(
-		"energy_3R_radius",
-		&energy_3R_radius);
-	DmpNtupTree->Branch(
-		"energy_5R_radius",
-		&energy_5R_radius);
 	// Simu
 	DmpNtupTree->Branch(
 		"simu_energy",
@@ -546,11 +534,7 @@ void mc_tuple::Fill(
 		_bgo_res->energy_fraction_last_layer,
 		_bgo_res->energy_fraction_13th_layer,
 		_bgo_res->last_energy_layer,
-		_bgo_res->hits,
-		_bgo_res->energy_1mr,
-		_bgo_res->energy_2mr,
-		_bgo_res->energy_3mr,
-		_bgo_res->energy_5mr);
+		_bgo_res->hits);
 	fill_simu_info(_simu_res, _energy_res);
 	fill_psdcharge_info(_filter_res->evt_psd_charge);
 	fill_stkcharge_info(_filter_res->evt_stk_charge);
