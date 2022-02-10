@@ -41,22 +41,24 @@ void DmpBgoContainer::scanBGOHits(
 	for (int lay = 0; lay < nLayers; ++lay)
 	{
 		// Setting default value for maximum bar index and energy for each layer
-		int imax = -1;
-		double maxE = 0;
+		int max_hit {-1};				// hit of the maximum energy release in a layer
+		size_t max_hit_idx {0};			// hit index relative to the maximum energy release in a layer	
+		double maxE {0};				// maximum energy release in a layer
 	
 		// Find the maximum of the nergy release in a certain layer, together with the bar ID
-		for (auto it = std::begin(layerBarIndex[lay]); it != std::end(layerBarIndex[lay]); ++it)
+		for (size_t layerBar_idx=0; layerBar_idx<layerBarIndex[lay].size(); ++layerBar_idx)
 		{	
-			double hitE = (bgohits->fEnergy)[*it];
-			layerBarEnergy[lay][std::distance(std::begin(layerBarIndex[lay]), it)] = hitE;
+			double hitE = (bgohits->fEnergy)[layerBarIndex[lay][layerBar_idx]];
+			layerBarEnergy[lay][layerBarNumber[lay][layerBar_idx]] = hitE;
 			if (hitE > maxE)
 			{
 				maxE = hitE;
-				imax = *it;
+				max_hit = layerBarIndex[lay][layerBar_idx];
+				max_hit_idx = layerBar_idx;
 			}
 		}
 
-		iMaxLayer[lay] = imax;
+		iMaxLayer[lay] = max_hit;
 		rmsLayer[lay] = 0;
 		fracLayer[lay] = 0;
 		eLayer[lay] = 0;
@@ -64,20 +66,19 @@ void DmpBgoContainer::scanBGOHits(
 		if (maxE > layerMinEnergy)
 		{
 			// Find the bar index regarding the maximum energy release in a certain layer
-			auto iBarMax = ((bgohits->fGlobalBarID)[imax] >> 6) & 0x1f;
-			idxBarMaxLayer[lay] = iBarMax;
+			idxBarMaxLayer[lay] = layerBarNumber[lay][max_hit_idx];
 			// Register the maximum energy release of a layer
 			eCoreLayer[lay] = maxE;
 			// Find the coordinate (weighted by the nergy release) of the bar with the biggest energy release in a certain layer
-			double coordMax = lay % 2 ? bgohits->GetHitX(imax) : bgohits->GetHitY(imax);
+			double coordMax = lay % 2 ? bgohits->GetHitX(max_hit) : bgohits->GetHitY(max_hit);
 			eCoreCoord[lay] = maxE * coordMax;
 			// Consider the nearest bar respect to the max one in order to better interpolate the position
-			if (iBarMax > 0 && iBarMax < 21)
+			if (max_hit_idx > 0 && max_hit_idx < 21)
 			{
 				for (auto it = std::begin(layerBarIndex[lay]); it != std::end(layerBarIndex[lay]); ++it)
 				{
 					auto iBar = ((bgohits->fGlobalBarID)[*it] >> 6) & 0x1f;
-					if (iBar - iBarMax == 1 || iBar - iBarMax == -1)
+					if (fabs(iBar - max_hit_idx) == 1)
 					{
 						double hitE = (bgohits->fEnergy)[*it];
 						double thisCoord = lay % 2 ? bgohits->GetHitX(*it) : bgohits->GetHitY(*it);
@@ -94,7 +95,7 @@ void DmpBgoContainer::scanBGOHits(
 				auto hitE = (bgohits->fEnergy)[*it];
 				auto thisCoord = lay % 2 ? bgohits->GetHitX(*it) : bgohits->GetHitY(*it);
 				eLayer[lay] += hitE;
-				rmsLayer[lay] += hitE * (thisCoord - eCoreCoord[lay]) * (thisCoord - eCoreCoord[lay]);
+				rmsLayer[lay] += hitE * pow((thisCoord - eCoreCoord[lay]), 2);
 			}
 			rmsLayer[lay] = sqrt(rmsLayer[lay] / eLayer[lay]);
 			fracLayer[lay] = eLayer[lay] / bgoTotalE;
@@ -106,7 +107,7 @@ void DmpBgoContainer::scanBGOHits(
 
 	// Find last energy layer
 	if (lastLayer == -999)
-		for (auto it = fracLayer.rbegin(); it != fracLayer.rend(); ++it)
+		for (auto it = std::rbegin(fracLayer); it != std::rend(fracLayer); ++it)
 			if (*it)
 			{
 				lastLayer = fracLayer.size() - 1 - std::distance(fracLayer.rbegin(), it);
