@@ -6,7 +6,7 @@
 
 #include "TClonesArray.h"
 
-#include "DAMPE_geo_structure.h"
+#include "Dmp/DmpGeoStruct.h"
 
 #include "DmpStkSiCluster.h"
 
@@ -19,6 +19,7 @@ public:
 	~DmpStkContainer(){};
 
 	void scanSTKHits(const std::shared_ptr<TClonesArray> stkclusters);
+	void Reset();
 	const std::vector<int> GetNPlaneClusters();
 	
 private:

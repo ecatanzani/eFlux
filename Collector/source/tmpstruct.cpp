@@ -4,6 +4,7 @@ std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter)
 {
 	std::shared_ptr<_tmp_filter> _filter_res = std::make_shared<_tmp_filter>();	
 	_filter_res->output = filter.GetFilterOutput();
+	_filter_res->preselection_output = filter.GetPreselectionOutput();
 	_filter_res->evt_best_track = filter.GetBestTrack();
 	_filter_res->evt_psd_charge = filter.GetPSDCharge();
 	_filter_res->evt_stk_charge = filter.GetSTKCharge();

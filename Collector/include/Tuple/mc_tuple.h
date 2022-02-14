@@ -1,11 +1,10 @@
 #ifndef MC_TUPLE_H
 #define MC_TUPLE_H
 
-#include "mc.h"
-#include "tuple.h"
+#include "MC/mc.h"
 #include "tmpstruct.h"
-#include "mc_tmpstruct.h"
-#include "preselection.h"
+#include "Tuple/tuple.h"
+#include "MC/mc_tmpstruct.h"
 
 #include "TVector3.h"
 
@@ -24,8 +23,7 @@ public:
 		const std::shared_ptr<_tmp_bgo> _bgo_res,
 		const std::shared_ptr<_tmp_simu> _simu_res,
 		const std::shared_ptr<_tmp_energy> _energy_res,
-		const std::shared_ptr<_tmp_nud> _nud_res,
-		const p_cuts &preselection_cuts);
+		const std::shared_ptr<_tmp_nud> _nud_res);
 
 	void Reset();
 

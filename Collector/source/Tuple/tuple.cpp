@@ -1,4 +1,4 @@
-#include "tuple.h"
+#include "Tuple/tuple.h"
 
 void ntuple::set_active_cuts(const active_cuts &acuts)
 {
@@ -19,6 +19,7 @@ void ntuple::fill_trigger_info(const trigger_info &evt_trigger)
 	LET_trigger = evt_trigger.LET;
 	MIP_trigger = evt_trigger.MIP;
 	general_trigger = evt_trigger.general;
+	unbiased_trigger = evt_trigger.unbiased;
 }
 
 void ntuple::fill_stk_info(
@@ -144,6 +145,14 @@ void ntuple::fill_preselectionfilters_info(const p_cuts &preselect) {
 		preselection_psdstkmatch_cut = preselect.psdstkmatch_cut;
 		preselection_psdcharge_cut = preselect.psdcharge_cut;
 		preselection_stkcharge_cut = preselect.stkcharge_cut;
+		preselection_maxelayer_lastcut = preselect.maxelayer_lastcut;
+		preselection_maxbarlayer_lastcut = preselect.maxbarlayer_lastcut;
+		preselection_bgotrack_lastcut = preselect.bgotrack_lastcut;
+		preselection_bgofiducial_lastcut = preselect.bgofiducial_lastcut;
+		preselection_nbarlayer13_lastcut = preselect.nbarlayer13_lastcut;
+		preselection_maxrms_lastcut = preselect.maxrms_lastcut;
+		preselection_trackselection_lastcut = preselect.trackselection_lastcut;
+		preselection_psdstkmatch_lastcut = preselect.psdstkmatch_lastcut;
 	}
 }
 

@@ -1,19 +1,19 @@
-#include "mc.h"
+#include "MC/mc.h"
 #include "utils.h"
 #include "energy.h"
-#include "tmpstruct.h"
-#include "mc_tmpstruct.h"
 #include "config.h"
 #include "particle.h"
-#include "mc_tuple.h"
-#include "preselection.h"
-#include "DmpStkContainer.h"
-#include "DmpBgoContainer.h"
-#include "DmpPsdContainer.h"
-#include "DmpNudContainer.h"
+#include "tmpstruct.h"
+#include "Tuple/mc_tuple.h"
+#include "MC/mc_tmpstruct.h"
 #include "aggregate_events.h"
-#include "DmpFilterContainer.h"
-#include "DAMPE_geo_structure.h"
+
+#include "Dmp/DmpGeoStruct.h"
+#include "Dmp/DmpStkContainer.h"
+#include "Dmp/DmpBgoContainer.h"
+#include "Dmp/DmpPsdContainer.h"
+#include "Dmp/DmpNudContainer.h"
+#include "Dmp/DmpFilterContainer.h"
 
 #include "TClonesArray.h"
 
@@ -105,8 +105,11 @@ void mcLoop(
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
-	// Load preselection class
-	preselection preselect;
+	// Load BGO, PSD and NUD high level classes
+	DmpBgoContainer bgoVault;
+	DmpStkContainer stkVault;
+	DmpPsdContainer psdVault;
+	DmpNudContainer nudVault;
 	// Load output file
 	outFile.cd();
 	// Create MC tuple objects
@@ -125,15 +128,25 @@ void mcLoop(
 	{
 		// Read tree event
 		dmpch->GetEvent(evIdx);
-		// Reset filter event flags
-		filter.Reset();
-		// Reset tuple
-		simu_tuple->Reset();
-		// Build BGO, PSD and NUD vault objects
-		DmpStkContainer stkVault;
-		DmpBgoContainer bgoVault;
-		DmpPsdContainer psdVault;
-		DmpNudContainer nudVault;
+		
+		// Reset classes
+		if (evIdx) {
+			// Reset filter event flags
+			filter.Reset();
+			// Reset tuple
+			simu_tuple->Reset();
+			// Reset energy class
+			evt_energy.Reset();
+			// Reset BGO class
+			bgoVault.Reset();
+			// Reset STK class
+			stkVault.Reset();
+			// Reset PSD class
+			psdVault.Reset();
+			// Reset NUD class
+			nudVault.Reset();
+		}
+
 		// Load particle ID
 		simu_particle.Load(simu_primaries->pvpart_pdg);
 		// Update event counter
@@ -141,11 +154,7 @@ void mcLoop(
 		// Status printout
 		if (_VERBOSE)
 			UpdateProcessStatus(evIdx, kStep, nevents);
-		// Reset energy class
-		if (evIdx) {
-			evt_energy.Reset();
-			preselect.Reset();
-		}
+		
 		// Load energy class
 		evt_energy.SetEnergies(
 			simu_primaries->pvpart_ekin,
@@ -206,8 +215,7 @@ void mcLoop(
 				psdVault,
 				stkclusters,
 				stktracks,
-				mc_config.GetActiveCuts(),
-				preselect);
+				mc_config.GetActiveCuts());
 		}
 		
 		// Fill output structures
@@ -217,8 +225,7 @@ void mcLoop(
 			fillBGOTmpStruct(bgoVault),
 			fillSimuTmpStruct(simu_primaries, simu_trajectories),
 			fillEnergyTmpStruct(evt_energy),
-			fillNUDTmpStruct(nudVault),
-			preselect.GetPreselectionStatus());
+			fillNUDTmpStruct(nudVault));
 	}
 
 	if (_VERBOSE)

@@ -1,4 +1,4 @@
-#include "DmpStkContainer.h"
+#include "Dmp/DmpStkContainer.h"
 
 void DmpStkContainer::scanSTKHits(const std::shared_ptr<TClonesArray> stkclusters)
 {
@@ -9,4 +9,9 @@ void DmpStkContainer::scanSTKHits(const std::shared_ptr<TClonesArray> stkcluster
 const std::vector<int> DmpStkContainer::GetNPlaneClusters()
 {
     return clusters_on_plane;
+}
+
+void DmpStkContainer::Reset()
+{
+    clusters_on_plane = std::vector<int>(DAMPE_stk_planes, 0);
 }

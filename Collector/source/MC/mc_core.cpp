@@ -1,6 +1,6 @@
-#include "data.h"
+#include "MC/mc.h"
 
-void dataCore(in_pars input_pars)
+void mcCore(in_pars input_pars)
 {
 	// Create output TFile
 	if (input_pars.verbose)
@@ -8,11 +8,11 @@ void dataCore(in_pars input_pars)
 	TFile out_file(input_pars.output_path.c_str(), "NEW", "Analysis Output File");
 	if (!out_file.IsOpen())
 	{
-		std::cerr << "\n\nError (100) writing output TFile... [" << input_pars.output_path << "]" << std::endl;
+		std::cerr << "\n\nError writing output TFile: " << input_pars.output_path << std::endl;
 		exit(100);
 	}
 	
-	rawDataLoop(
+	mcLoop(
 		input_pars.input_path,
 		out_file,
 		input_pars.verbose,

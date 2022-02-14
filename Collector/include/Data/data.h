@@ -6,10 +6,10 @@
 #include "main.h"
 #include "energy.h"
 #include "anyoption.h"
-#include "DmpNudContainer.h"
-#include "DmpBgoContainer.h"
 #include "DmpSimuTrajectory.h"
-#include "DmpFilterContainer.h"
+#include "Dmp/DmpNudContainer.h"
+#include "Dmp/DmpBgoContainer.h"
+#include "Dmp/DmpFilterContainer.h"
 
 #include "TFile.h"
 #include "TVector3.h"

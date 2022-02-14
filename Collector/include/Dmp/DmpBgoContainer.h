@@ -6,7 +6,7 @@
 
 #include "DmpEvtBgoRec.h"
 #include "DmpEvtBgoHits.h"
-#include "DAMPE_geo_structure.h"
+#include "Dmp/DmpGeoStruct.h"
 
 #include "TVector3.h"
 
@@ -47,6 +47,9 @@ public:
 		const double layerMinEnergy,
 		const int nLayers = DAMPE_bgo_nLayers);
 
+	// Reset
+	void Reset();
+	
 	// BGO Bars
 	std::vector<short> GetSingleLayerBarNumber(int nLayer);
 	std::vector<short> GetSingleLayerBarIndex(int nLayer);
@@ -78,6 +81,7 @@ public:
 	const int GetNhits();
 
 private:
+	// BGO variables
 	std::vector<std::vector<short>> layerBarIndex;	// arrange BGO hits by layer
 	std::vector<std::vector<short>> layerBarNumber; // arrange BGO bars by layer
 	std::vector<std::vector<double>> layerBarEnergy; // store BGO bars energy

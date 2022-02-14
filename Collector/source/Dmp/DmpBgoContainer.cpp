@@ -1,4 +1,4 @@
-#include "DmpBgoContainer.h"
+#include "Dmp/DmpBgoContainer.h"
 
 #include <cmath>
 #include <iostream>
@@ -231,4 +231,26 @@ const std::vector<double> DmpBgoContainer::FastBGOintercept(const std::shared_pt
 const TVector3 DmpBgoContainer::GetBGOTrajectory2D()
 {
 	return trajectoryDirection2D;
+}
+
+void DmpBgoContainer::Reset()
+{
+	layerBarIndex 			= std::vector<std::vector<short>>(DAMPE_bgo_nLayers, std::vector<short>());
+	layerBarNumber 			= std::vector<std::vector<short>>(DAMPE_bgo_nLayers, std::vector<short>());
+	layerBarEnergy 			= std::vector<std::vector<double>>(DAMPE_bgo_nLayers, std::vector<double>());
+	idxBarMaxLayer 			= std::vector<int>(DAMPE_bgo_nLayers, -1);
+	iMaxLayer				= std::vector<int>(DAMPE_bgo_nLayers, -1);
+	rmsLayer 				= std::vector<double>(DAMPE_bgo_nLayers, 0);
+	fracLayer				= std::vector<double>(DAMPE_bgo_nLayers, 0);
+	eLayer					= std::vector<double>(DAMPE_bgo_nLayers, 0);
+	eCoreLayer				= std::vector<double>(DAMPE_bgo_nLayers, 0);
+	eCoreCoord				= std::vector<double>(DAMPE_bgo_nLayers, 0);
+	slope					= std::vector<double>(2, -999);
+	intercept				= std::vector<double>(2, -999);
+
+	nBgoHits				= -999;
+	lastLayer				= -999;
+	sumRms					= 0;
+
+	trajectoryDirection2D 	= TVector3();
 }

@@ -35,11 +35,11 @@ public:
 	const double GetCorrWeight();
 
 private:
-	double simuEnergy = -999;
-	double bgoTotalE_raw = -999;
-	double bgoTotalE_corr = -999;
-	double simu_energy_w = -999;
-	double corr_energy_w = -999;
+	double simuEnergy 		{-999};
+	double bgoTotalE_raw	{-999};
+	double bgoTotalE_corr	{-999};
+	double simu_energy_w	{-999};
+	double corr_energy_w	{-999};
 };
 
 #endif

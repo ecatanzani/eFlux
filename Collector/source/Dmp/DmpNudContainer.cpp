@@ -1,4 +1,4 @@
-#include "DmpNudContainer.h"
+#include "Dmp/DmpNudContainer.h"
 
 void DmpNudContainer::scanNudHits(const std::shared_ptr<DmpEvtNudRaw> &nudraw)
 {
@@ -37,4 +37,12 @@ const int DmpNudContainer::GetMaxADC()
 const int DmpNudContainer::GetMaxChannelID()
 {
 	return max_channel_id;
+}
+
+void DmpNudContainer::Reset()
+{
+	adc 					= std::vector<int>(DAMPE_NUD_channels, -999);
+	total_adc 				= 0;
+	max_adc 				= -999;
+	max_channel_id 			= -999;
 }

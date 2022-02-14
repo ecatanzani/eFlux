@@ -1,5 +1,9 @@
-#include "DmpFilterContainer.h"
-#include "xtrX_computation.h"
+#include "Dmp/DmpFilterContainer.h"
+
+inline double xtrX_computation(const double sumRms, const double lastFracLayer)
+{
+	return lastFracLayer != -1 ? 0.125e-6 * pow(sumRms, 4) * lastFracLayer : -999;
+}
 
 void DmpFilterContainer::Pipeline(
 	const std::shared_ptr<DmpEvtBgoRec> &bgorec,
@@ -11,122 +15,65 @@ void DmpFilterContainer::Pipeline(
 	DmpPsdContainer &psdVault,
 	const std::shared_ptr<TClonesArray> &stkclusters,
 	const std::shared_ptr<TClonesArray> &stktracks,
-	const active_cuts &acuts,
-	preselection &preselect)
+	const active_cuts &acuts)
 {
 	// **** BGO Fiducial Volume ****
 	// maxElayer_cut
-	output.BGO_fiducial_maxElayer_cut =
-		maxElayer_cut(
-			bgoVault.GetLayerEnergies(),
-			cuts,
-			bgoTotalE);
+	output.BGO_fiducial_maxElayer_cut = maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE);
 	// maxBarLayer_cut
-	output.BGO_fiducial_maxBarLayer_cut =
-		maxBarLayer_cut(
-			bgoVault.GetLayerBarNumber(),
-			bgoVault.GetiMaxLayer(),
-			bgoVault.GetIdxBarMaxLayer());
+	output.BGO_fiducial_maxBarLayer_cut = maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer());
 	// BGOTrackContainment_cut
-	output.BGO_fiducial_BGOTrackContainment_cut =
-		BGOTrackContainment_cut(
-			bgoVault.GetBGOslope(),
-			bgoVault.GetBGOintercept(),
-			cuts);
+	output.BGO_fiducial_BGOTrackContainment_cut = BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts);
 
 	output.BGO_fiducial = output.BGO_fiducial_maxElayer_cut && output.BGO_fiducial_maxBarLayer_cut && output.BGO_fiducial_BGOTrackContainment_cut;
 
-	if (output.BGO_fiducial)
-	{
+	if (output.BGO_fiducial) {
 		output.all_cut = output.BGO_fiducial;
 		// **** nBarLayer13 cut ****
-		if (acuts.nBarLayer13)
-		{
-			output.nBarLayer13_cut = nBarLayer13_cut(
-				bgohits,
-				bgoVault.GetSingleLayerBarIndex(13),
-				bgoTotalE);
+		if (acuts.nBarLayer13) {
+			output.nBarLayer13_cut = nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarIndex(13), bgoTotalE);
 			output.all_cut *= output.nBarLayer13_cut;
 		}
 
-		if (output.all_cut)
-		{
+		if (output.all_cut) {
 			// **** maxRms cut ****
-			if (acuts.maxRms)
-			{
-				output.maxRms_cut = maxRms_cut(
-					bgoVault.GetELayer(),
-					bgoVault.GetRmsLayer(),
-					bgoTotalE,
-					cuts);
+			if (acuts.maxRms) {
+				output.maxRms_cut = maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts);
 				output.all_cut *= output.maxRms_cut;
 			}
 
-			if (output.all_cut)
-			{
+			if (output.all_cut) {
 				// **** track selection cut ****
-				if (acuts.track_selection)
-				{
-					output.track_selection_cut = track_selection_cut(
-						bgorec,
-						bgoVault.GetBGOslope(),
-						bgoVault.GetBGOintercept(),
-						bgohits,
-						stkclusters,
-						stktracks,
-						cuts);
+				if (acuts.track_selection) {
+					output.track_selection_cut = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts);
 					output.all_cut *= output.track_selection_cut;
 				}
 
-				if (output.all_cut)
-				{
+				if (output.all_cut) {
 					// **** psd stk match cut ****
-					if (acuts.psd_stk_match)
-					{
-						output.psd_stk_match_cut = psd_stk_match_cut(
-							bgoVault.GetBGOslope(),
-							bgoVault.GetBGOintercept(),
-							cuts,
-							psdVault.getPsdClusterIdxBegin(),
-							psdVault.getPsdClusterZ(),
-							psdVault.getPsdClusterMaxECoo());
+					if (acuts.psd_stk_match) {
+						output.psd_stk_match_cut = psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo());
 						output.all_cut *= output.psd_stk_match_cut;
 					}
 
-					if (output.all_cut)
-					{
+					if (output.all_cut) {
 						// **** psd charge cut ****
-						if (acuts.psd_charge)
-						{
+						if (acuts.psd_charge) {
 							output.psd_charge_measurement = true;
-							output.psd_charge_cut = psd_charge_cut(
-								psdVault.getPsdClusterMaxE(),
-								psdVault.getPsdClusterIdxMaxE(),
-								psdVault.getHitZ(),
-								psdVault.getGlobalBarID(),
-								cuts);
+							output.psd_charge_cut = psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts);
 							output.all_cut *= output.psd_charge_cut;
 						}
 
 						// **** stk charge cut ****
-						if (acuts.stk_charge)
-						{
+						if (acuts.stk_charge) {
 							output.stk_charge_measurement = true;
-							output.stk_charge_cut = stk_charge_cut(
-								stkclusters,
-								cuts);
+							output.stk_charge_cut = stk_charge_cut(stkclusters, cuts);
 							output.all_cut *= output.stk_charge_cut;
 						}
 
-						if (output.all_cut)
-						{
-							classifier.xtr = xtrX_computation(
-								bgoVault.GetSumRMS(),
-								bgoVault.GetSingleFracLayer(13));
-							classifier.xtrl = xtrX_computation(
-								bgoVault.GetSumRMS(),
-								bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()));
-
+						if (output.all_cut) {
+							classifier.xtr = xtrX_computation(bgoVault.GetSumRMS(), bgoVault.GetSingleFracLayer(13));
+							classifier.xtrl = xtrX_computation(bgoVault.GetSumRMS(), bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()));
 							output.xtrl_tight_cut = xtrl_tight_cut(classifier.xtrl);
 							output.xtrl_loose_cut = xtrl_loose_cut(classifier.xtrl, bgoTotalE_corr);
 							++particle_counter.selected_events;
@@ -138,60 +85,109 @@ void DmpFilterContainer::Pipeline(
 	}
 
 	// Fill preselection class
+	if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+		preselection_cuts.maxelayer_cut = true;
+	if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+		preselection_cuts.maxbarlayer_cut = true;
+	if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+		preselection_cuts.bgotrack_cut = true;
+	
+	if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+		if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+			if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+				preselection_cuts.bgofiducial_cut = true;
+	
+	if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarIndex(13), bgoTotalE))
+		preselection_cuts.nbarlayer13_cut = true;
 
-	if (output.BGO_fiducial_maxElayer_cut) preselect.SetMaxELayerCut(output.BGO_fiducial_maxElayer_cut);
-	if (output.BGO_fiducial_maxBarLayer_cut) preselect.SetMaxBarLayerCut(output.BGO_fiducial_maxBarLayer_cut);
-	if (output.BGO_fiducial_BGOTrackContainment_cut) preselect.SetBGOTrackCut(output.BGO_fiducial_BGOTrackContainment_cut);
-	if (output.BGO_fiducial) preselect.setBGOFiducialCut(output.BGO_fiducial);
+	if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+		preselection_cuts.maxrms_cut = true;
 
-	auto preselect_nbarlayer13_cut = nBarLayer13_cut(
-		bgohits,
-		bgoVault.GetSingleLayerBarNumber(13),
-		bgoTotalE);
-
-	auto preselect_maxrms_cut = maxRms_cut(
-		bgoVault.GetELayer(),
-		bgoVault.GetRmsLayer(),
-		bgoTotalE,
-		cuts);
-
-	if (preselect_nbarlayer13_cut) preselect.SetNBarLayer13Cut(preselect_nbarlayer13_cut);
-	if (preselect_maxrms_cut) preselect.SetMaxRMSCut(preselect_maxrms_cut);
-
-	auto preselect_trackselection_cut = track_selection_cut(
-		bgorec, bgoVault.GetBGOslope(), 
-		bgoVault.GetBGOintercept(), 
-		bgohits, 
-		stkclusters, 
-		stktracks, 
-		cuts);
-
-	if (preselect_trackselection_cut) {
-		
-		auto preselect_psd_stk_match_cut = psd_stk_match_cut(
-			bgoVault.GetBGOslope(),
-			bgoVault.GetBGOintercept(),
-			cuts,
-			psdVault.getPsdClusterIdxBegin(),
-			psdVault.getPsdClusterZ(),
-			psdVault.getPsdClusterMaxECoo());
-
-		auto preselect_psd_charge_cut = psd_charge_cut(
-			psdVault.getPsdClusterMaxE(),
-			psdVault.getPsdClusterIdxMaxE(),
-			psdVault.getHitZ(),
-			psdVault.getGlobalBarID(),
-			cuts);
-		
-		auto preselect_stk_charge_cut = stk_charge_cut(
-			stkclusters,
-			cuts);
-
-		preselect.SetTrackSelectionCut(preselect_trackselection_cut);
-		if (preselect_psd_stk_match_cut) preselect.SetPSDSTKMatchCut(preselect_psd_stk_match_cut);
-		if (preselect_psd_charge_cut) preselect.SetPSDChargeCut(preselect_psd_charge_cut);
-		if (preselect_stk_charge_cut) preselect.SetSTKChargeCut(preselect_stk_charge_cut);
+	if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts)) {
+		preselection_cuts.trackselection_cut = true;
+		if (stk_charge_cut(stkclusters, cuts))
+			preselection_cuts.stkcharge_cut = true;
+		if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo())) {
+			preselection_cuts.psdstkmatch_cut = true;
+			if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+				preselection_cuts.psdcharge_cut = true;
+		}
 	}
+
+	// maxelayer lastcut
+	if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+		if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+			if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+				if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+					if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+						if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+							if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+								preselection_cuts.maxelayer_lastcut = true;
+
+	// maxbarlayer lastcut
+	if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+		if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+			if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+				if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+					if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+						if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+							if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+								preselection_cuts.maxbarlayer_lastcut = true;
+
+	// bgotrack lastcut
+	if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+		if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+			if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+				if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+					if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+						if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+							if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+								preselection_cuts.bgotrack_lastcut = true;
+
+	// BGO fiducial lastcut
+	if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+		if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+			if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+				if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+					if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+						preselection_cuts.bgofiducial_lastcut = true;
+
+	// nbarlayer13 lastcut
+	if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+		if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+			if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+				if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+					if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+						if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+							if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+								preselection_cuts.nbarlayer13_lastcut = true;
+
+	// maxrms lastcut
+	if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+		if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+			if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+				if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+					if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+						if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+							if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+								preselection_cuts.maxrms_lastcut = true;
+	
+	// trackselection lastcut
+	if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+		if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+			if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+				if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+					if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+						preselection_cuts.trackselection_lastcut = true;
+						
+	// psdstkmatch lastcut
+	if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+		if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+			if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+				if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+					if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+						if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+							preselection_cuts.psdstkmatch_lastcut = true;
 
 }
 
@@ -204,33 +200,10 @@ const bool DmpFilterContainer::geometric_cut(const std::shared_ptr<DmpEvtSimuPri
 	orgPosition.SetY(simu_primaries->pv_y);
 	orgPosition.SetZ(simu_primaries->pv_z);
 
-#if 0
-	// **** Directions Cosines Method
-
-	TVector3 dCos;
-	dCos.SetX(simu_primaries->pvpart_cosx);
-	dCos.SetY(simu_primaries->pvpart_cosy);
-	dCos.SetZ(simu_primaries->pvpart_cosz);
-
-	if (dCos.Z())
-	{
-		double ratioZ = (BGO_TopZ - orgPosition.Z()) / dCos.Z();
-		double actual_X = ratioZ * dCos.X() + orgPosition.X();
-		double actual_Y = ratioZ * dCos.Y() + orgPosition.Y();
-		if (fabs(actual_X) < BGO_SideXY && fabs(actual_Y) < BGO_SideXY)
-			passed_geometric_cut = true;
-	}
-
-#else
-	// **** Moments Method
-
 	TVector3 orgMomentum;
 	orgMomentum.SetX(simu_primaries->pvpart_px);
 	orgMomentum.SetY(simu_primaries->pvpart_py);
 	orgMomentum.SetZ(simu_primaries->pvpart_pz);
-
-	//auto orgMomentum_theta = orgMomentum.Theta() * TMath::RadToDeg();
-	//auto orgMomentum_costheta = cos(orgMomentum.Theta());
 
 	std::vector<double> slope(2, 0);
 	std::vector<double> intercept(2, 0);
@@ -246,11 +219,12 @@ const bool DmpFilterContainer::geometric_cut(const std::shared_ptr<DmpEvtSimuPri
 	double actual_bottomX = slope[0] * BGO_BottomZ + intercept[0];
 	double actual_bottomY = slope[1] * BGO_BottomZ + intercept[1];
 
-	if (fabs(actual_topX) < BGO_SideXY && fabs(actual_topY) < BGO_SideXY &&
-		fabs(actual_bottomX) < BGO_SideXY && fabs(actual_bottomY) < BGO_SideXY)
+	if (
+		fabs(actual_topX) < BGO_SideXY && 
+		fabs(actual_topY) < BGO_SideXY &&
+		fabs(actual_bottomX) < BGO_SideXY && 
+		fabs(actual_bottomY) < BGO_SideXY)
 		passed_geometric_cut = true;
-
-#endif
 
 	return passed_geometric_cut;
 }
@@ -891,31 +865,31 @@ void DmpFilterContainer::Reset()
 
 void DmpFilterContainer::reset_stk_best_track()
 {
-	event_best_track.n_points = 0;
-	event_best_track.n_holes = {0, 0};
-	event_best_track.track_slope = {-999, -999};
-	event_best_track.track_intercept = {-999, -999};
-	event_best_track.track_direction.SetXYZ(-999, -999, -999);
-	event_best_track.extr_BGO_topX = -999;
-	event_best_track.extr_BGO_topY = -999;
-	event_best_track.STK_BGO_topX_distance = -999;
-	event_best_track.STK_BGO_topY_distance = -999;
-	event_best_track.angular_distance_STK_BGO = -999;
-	event_best_track.myBestTrack = DmpStkTrack();
+	event_best_track.n_points 						= 0;
+	event_best_track.n_holes 						= {0, 0};
+	event_best_track.track_slope 					= {-999, -999};
+	event_best_track.track_intercept 				= {-999, -999};
+	event_best_track.track_direction				.SetXYZ(-999, -999, -999);
+	event_best_track.extr_BGO_topX 					= -999;
+	event_best_track.extr_BGO_topY 					= -999;
+	event_best_track.STK_BGO_topX_distance 			= -999;
+	event_best_track.STK_BGO_topY_distance 			= -999;
+	event_best_track.angular_distance_STK_BGO 		= -999;
+	event_best_track.myBestTrack 					= DmpStkTrack();
 }
 
 void DmpFilterContainer::reset_psd_clusters()
 {
-	clu_matching.icloPsdClu = std::vector<int>(DAMPE_psd_nLayers, -999);
-	clu_matching.dxCloPsdClu = std::vector<double>(DAMPE_psd_nLayers, -999);
-	clu_matching.icloPsdCluMaxHit = std::vector<int>(DAMPE_psd_nLayers, -999);
-	clu_matching.dxCloPsdCluMaxHit = std::vector<double>(DAMPE_psd_nLayers, -999);
-	clu_matching.icloPsdClu_bgoRec = std::vector<int>(DAMPE_psd_nLayers, -999);
-	clu_matching.dxCloPsdClu_bgoRec = std::vector<double>(DAMPE_psd_nLayers, -999);
-	clu_matching.icloPsdClu_track = std::vector<int>(DAMPE_psd_nLayers, -999);
-	clu_matching.dxCloPsdClu_track = std::vector<double>(DAMPE_psd_nLayers, -999);
-	clu_matching.icloPsdClu2_track = std::vector<int>(DAMPE_psd_nLayers, -999);
-	clu_matching.dxCloPsdClu2_track = std::vector<double>(DAMPE_psd_nLayers, -999);
+	clu_matching.icloPsdClu 			= std::vector<int>(DAMPE_psd_nLayers, -999);
+	clu_matching.dxCloPsdClu 			= std::vector<double>(DAMPE_psd_nLayers, -999);
+	clu_matching.icloPsdCluMaxHit 		= std::vector<int>(DAMPE_psd_nLayers, -999);
+	clu_matching.dxCloPsdCluMaxHit 		= std::vector<double>(DAMPE_psd_nLayers, -999);
+	clu_matching.icloPsdClu_bgoRec 		= std::vector<int>(DAMPE_psd_nLayers, -999);
+	clu_matching.dxCloPsdClu_bgoRec 	= std::vector<double>(DAMPE_psd_nLayers, -999);
+	clu_matching.icloPsdClu_track 		= std::vector<int>(DAMPE_psd_nLayers, -999);
+	clu_matching.dxCloPsdClu_track		= std::vector<double>(DAMPE_psd_nLayers, -999);
+	clu_matching.icloPsdClu2_track 		= std::vector<int>(DAMPE_psd_nLayers, -999);
+	clu_matching.dxCloPsdClu2_track 	= std::vector<double>(DAMPE_psd_nLayers, -999);
 }
 
 void DmpFilterContainer::reset_psd_charges()
@@ -932,33 +906,55 @@ void DmpFilterContainer::reset_stk_charges()
 
 void DmpFilterContainer::reset_classifiers()
 {
-	classifier.xtr = -999;
+	classifier.xtr 	= -999;
 	classifier.xtrl = -999;
 }
 
 void DmpFilterContainer::reset_filter_output()
 {
-	output.out_energy_range = false;
-	output.geometric_before_trigger = false;
-	output.evt_in_saa = false;
-	output.trigger_check = false;
-	output.evt_triggered = false;
-	output.correct_bgo_reco = false;
-	output.good_event = false;
-	output.geometric = false;
-	output.BGO_fiducial = false;
-	output.BGO_fiducial_maxElayer_cut = false;
-	output.BGO_fiducial_maxBarLayer_cut = false;
-	output.BGO_fiducial_BGOTrackContainment_cut = false;
-	output.nBarLayer13_cut = false;
-	output.maxRms_cut = false;
-	output.track_selection_cut = false;
-	output.psd_stk_match_cut = false;
-	output.psd_charge_cut = false;
-	output.stk_charge_cut = false;
-	output.psd_charge_measurement = false;
-	output.stk_charge_measurement = false;
-	output.all_cut = false;
+	output.out_energy_range 						= false;
+	output.geometric_before_trigger 				= false;
+	output.evt_in_saa 								= false;
+	output.trigger_check 							= false;
+	output.evt_triggered 							= false;
+	output.correct_bgo_reco 						= false;
+	output.good_event 								= false;
+	output.geometric 								= false;
+	output.BGO_fiducial 							= false;
+	output.BGO_fiducial_maxElayer_cut 				= false;
+	output.BGO_fiducial_maxBarLayer_cut 			= false;
+	output.BGO_fiducial_BGOTrackContainment_cut 	= false;
+	output.nBarLayer13_cut 							= false;
+	output.maxRms_cut 								= false;
+	output.track_selection_cut 						= false;
+	output.psd_stk_match_cut 						= false;
+	output.psd_charge_cut 							= false;
+	output.stk_charge_cut 							= false;
+	output.psd_charge_measurement 					= false;
+	output.stk_charge_measurement 					= false;
+	output.all_cut 									= false;
+}
+
+void DmpFilterContainer::reset_preselection()
+{
+	preselection_cuts.maxelayer_cut 			= false;
+	preselection_cuts.maxbarlayer_cut 			= false;
+	preselection_cuts.bgotrack_cut 				= false;
+	preselection_cuts.bgofiducial_cut 			= false;
+	preselection_cuts.nbarlayer13_cut 			= false;
+	preselection_cuts.maxrms_cut 				= false;
+	preselection_cuts.trackselection_cut		= false;
+	preselection_cuts.psdstkmatch_cut 			= false;
+	preselection_cuts.psdcharge_cut 			= false;
+	preselection_cuts.stkcharge_cut 			= false;
+	preselection_cuts.maxelayer_lastcut 		= false;
+	preselection_cuts.maxbarlayer_lastcut 		= false;
+	preselection_cuts.bgotrack_lastcut 			= false;
+	preselection_cuts.bgofiducial_lastcut 		= false;
+	preselection_cuts.nbarlayer13_lastcut 		= false;
+	preselection_cuts.maxrms_lastcut 			= false;
+	preselection_cuts.trackselection_lastcut 	= false;
+	preselection_cuts.psdstkmatch_lastcut 		= false;
 }
 
 void DmpFilterContainer::reset_time()
@@ -968,12 +964,12 @@ void DmpFilterContainer::reset_time()
 
 void DmpFilterContainer::reset_trigger()
 {
-	evt_trigger.mip1 = false;
-	evt_trigger.mip2 = false;
-	evt_trigger.MIP = false;
-	evt_trigger.HET = false;
-	evt_trigger.LET = false;
-	evt_trigger.general = false;
+	evt_trigger.mip1 		= false;
+	evt_trigger.mip2		= false;
+	evt_trigger.MIP 		= false;
+	evt_trigger.HET 		= false;
+	evt_trigger.LET			= false;
+	evt_trigger.general 	= false;
 }
 
 void DmpFilterContainer::CheckGeometry(
@@ -999,17 +995,27 @@ void DmpFilterContainer::CheckGeometry(
 
 void DmpFilterContainer::checkBGOreco(
 	const std::vector<double> bgoRec_slope,
-	const std::vector<double> bgoRec_intercept,
-	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
+	const std::vector<double> bgoRec_intercept)
 {
 	bool bgoreco_status {((bgoRec_slope[0] == 0 && bgoRec_intercept[0] == 0) || (bgoRec_slope[1] == 0 && bgoRec_intercept[1] == 0)) ? false : true};
 	output.correct_bgo_reco = bgoreco_status;
 }
 
-void DmpFilterContainer::check_trigger(const std::shared_ptr<DmpEvtHeader> evt_header)
+void DmpFilterContainer::check_trigger(
+	const std::shared_ptr<DmpEvtHeader> evt_header,
+	const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries)
 {
-	evt_trigger.mip1 = evt_header->GeneratedTrigger(1);
-	evt_trigger.mip2 = evt_header->GeneratedTrigger(2);
+	evt_trigger.unbiased = evt_header->GeneratedTrigger(0) && evt_header->EnabledTrigger(0);
+	if (simu_primaries!=nullptr)
+	{
+		evt_trigger.mip1 = evt_header->GeneratedTrigger(1);
+		evt_trigger.mip2 = evt_header->GeneratedTrigger(2);
+	}
+	else 
+	{
+		evt_trigger.mip1 = evt_header->GeneratedTrigger(1) && evt_header->EnabledTrigger(1);
+		evt_trigger.mip2 = evt_header->GeneratedTrigger(2) && evt_header->EnabledTrigger(2);
+	}
 	evt_trigger.HET = evt_header->GeneratedTrigger(3) && evt_header->EnabledTrigger(3);
 	evt_trigger.LET = evt_header->GeneratedTrigger(4) && evt_header->EnabledTrigger(4);
 	evt_trigger.MIP = evt_trigger.mip1 || evt_trigger.mip2;
@@ -1028,8 +1034,8 @@ const bool DmpFilterContainer::CheckIncomingEvent(
 {
 	if (!output.evt_in_saa)
 	{
-		check_trigger(evt_header);
-		checkBGOreco(bgoRec_slope, bgoRec_intercept, simu_primaries);
+		check_trigger(evt_header, simu_primaries);
+		checkBGOreco(bgoRec_slope, bgoRec_intercept);
 		if (output.evt_triggered && output.correct_bgo_reco && !output.out_energy_range)
 			output.good_event = true;
 	}
@@ -1063,6 +1069,11 @@ void DmpFilterContainer::UpdateEvtCounter()
 const filter_output DmpFilterContainer::GetFilterOutput()
 {
 	return output;
+}
+
+const p_cuts DmpFilterContainer::GetPreselectionOutput() 
+{
+	return preselection_cuts;
 }
 
 const psd_charge DmpFilterContainer::GetPSDCharge()

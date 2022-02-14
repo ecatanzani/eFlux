@@ -5,23 +5,23 @@
 #include <memory>
 
 #include "DmpEvtPsdHits.h"
-#include "DAMPE_geo_structure.h"
+#include "Dmp/DmpGeoStruct.h"
 
 class DmpPsdContainer
 {
 public:
-	DmpPsdContainer() : layerBarIndexPsd(DAMPE_bgo_nLayers, std::vector<short>()),
-						layerBarNumberPsd(DAMPE_bgo_nLayers, std::vector<short>()),
-						layerBarEnergyPsd(DAMPE_bgo_nLayers, std::vector<double>()),
-						layerBarUsedPsd(DAMPE_bgo_nLayers, std::vector<short>()),
-						psdCluster_idxBeg(DAMPE_bgo_nLayers, std::vector<short>()),
-						psdCluster_length(DAMPE_bgo_nLayers, std::vector<short>()),
-						psdCluster_idxMaxE(DAMPE_bgo_nLayers, std::vector<short>()),
-						psdCluster_E(DAMPE_bgo_nLayers, std::vector<double>()),
-						psdCluster_maxE(DAMPE_bgo_nLayers, std::vector<double>()),
-						psdCluster_maxEcoordinate(DAMPE_bgo_nLayers, std::vector<double>()),
-						psdCluster_coordinate(DAMPE_bgo_nLayers, std::vector<double>()),
-						psdCluster_Z(DAMPE_bgo_nLayers, std::vector<double>())
+	DmpPsdContainer() : layerBarIndexPsd(DAMPE_psd_nLayers, std::vector<short>()),
+						layerBarNumberPsd(DAMPE_psd_nLayers, std::vector<short>()),
+						layerBarEnergyPsd(DAMPE_psd_nLayers, std::vector<double>()),
+						layerBarUsedPsd(DAMPE_psd_nLayers, std::vector<short>()),
+						psdCluster_idxBeg(DAMPE_psd_nLayers, std::vector<short>()),
+						psdCluster_length(DAMPE_psd_nLayers, std::vector<short>()),
+						psdCluster_idxMaxE(DAMPE_psd_nLayers, std::vector<short>()),
+						psdCluster_E(DAMPE_psd_nLayers, std::vector<double>()),
+						psdCluster_maxE(DAMPE_psd_nLayers, std::vector<double>()),
+						psdCluster_maxEcoordinate(DAMPE_psd_nLayers, std::vector<double>()),
+						psdCluster_coordinate(DAMPE_psd_nLayers, std::vector<double>()),
+						psdCluster_Z(DAMPE_psd_nLayers, std::vector<double>())
 	{
 	}
 
@@ -45,6 +45,7 @@ public:
 		const std::shared_ptr<DmpEvtPsdHits> psdhits,
 		const double PSD_bar_min_energy_release,
 		const int nLayers = DAMPE_psd_nLayers);
+	void Reset();
 	std::vector<std::vector<short>> getPsdClusterIdxBegin();
 	std::vector<std::vector<double>> getPsdClusterZ();
 	std::vector<std::vector<double>> getPsdClusterMaxE();
@@ -79,9 +80,9 @@ private:
 	std::vector<short> globalBarID;
 
 	// PSD clusters
-	unsigned int nPsdClusters;
-	unsigned int nPsdClustersX;
-	unsigned int nPsdClustersY;
+	unsigned int nPsdClusters 		{0};	
+	unsigned int nPsdClustersX		{0};
+	unsigned int nPsdClustersY		{0};
 };
 
 #endif

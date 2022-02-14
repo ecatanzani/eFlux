@@ -1,16 +1,16 @@
-#include "mc_tuple.h"
+#include "Tuple/data_tuple.h"
 
-void mc_tuple::init(const active_cuts &acuts)
+void data_tuple::init(const active_cuts &acuts)
 {
 	// Init Tree
-	DmpNtupTree = std::make_unique<TTree>("DmpMCEvtNtup", "DAMPE MC Event nTuple Tree");
+	DmpNtupTree = std::make_unique<TTree>("DmpEvtNtup", "DAMPE Event nTuple Tree");
 	// Set active cuts
 	set_active_cuts(acuts);
 	// Branch tree
 	branch_tree();
 }
 
-void mc_tuple::branch_tree()
+void data_tuple::branch_tree()
 {
 	// Trigger
 	DmpNtupTree->Branch(
@@ -37,6 +37,15 @@ void mc_tuple::branch_tree()
 		"general_trigger",
 		&general_trigger,
 		"general_trigger/O");
+	DmpNtupTree->Branch(
+		"unbiased_trigger",
+		&unbiased_trigger,
+		"unbiased_trigger/O");
+	// Event time
+	DmpNtupTree->Branch(
+		"second",
+		&second,
+		"second/i");
 	// STK
 	DmpNtupTree->Branch(
 		"STK_bestTrack_npoints",
@@ -108,7 +117,7 @@ void mc_tuple::branch_tree()
 		"STK_charge/D");
 	DmpNtupTree->Branch(
 		"STK_plane_clusters",
-		&STK_plane_clusters);	
+		&STK_plane_clusters);
 	// BGO
 	DmpNtupTree->Branch(
 		"energy",
@@ -118,10 +127,6 @@ void mc_tuple::branch_tree()
 		"energy_corr",
 		&energy_corr,
 		"energy_corr/D");
-	DmpNtupTree->Branch(
-		"energy_corr_w",
-		&energy_corr_w,
-		"energy_corr_w/D");	
 	DmpNtupTree->Branch(
 		"eLayer",
 		&eLayer);
@@ -174,140 +179,6 @@ void mc_tuple::branch_tree()
 		"nBGOentries",
 		&nBGOentries,
 		"nBGOentries/I");
-	// Simu
-	DmpNtupTree->Branch(
-		"simu_energy",
-		&simu_energy,
-		"simu_energy/D");
-	DmpNtupTree->Branch(
-		"simu_energy_w",
-		&simu_energy_w,
-		"simu_energy_w/D");
-	DmpNtupTree->Branch(
-		"simu_position", 
-		"TVector3", 
-		&simu_position);
-	DmpNtupTree->Branch(
-		"simu_momentum", 
-		"TVector3", 
-		&simu_momentum);
-	DmpNtupTree->Branch(
-		"simu_slope_x",
-		&simu_slope_x,
-		"simu_slope_x/D");
-	DmpNtupTree->Branch(
-		"simu_slope_y",
-		&simu_slope_y,
-		"simu_slope_y/D");
-	DmpNtupTree->Branch(
-		"simu_intercept_x",
-		&simu_intercept_x,
-		"simu_intercept_x/D");
-	DmpNtupTree->Branch(
-		"simu_intercept_y",
-		&simu_intercept_y,
-		"simu_intercept_y/D");
-	DmpNtupTree->Branch(
-		"simu_radius",
-		&simu_radius,
-		"simu_radius/D");
-	DmpNtupTree->Branch(
-		"simu_theta",
-		&simu_theta,
-		"simu_theta/D");
-	DmpNtupTree->Branch(
-		"simu_phi",
-		&simu_phi,
-		"simu_phi/D");
-	DmpNtupTree->Branch(
-		"simu_flux_w",
-		&simu_flux_w,
-		"simu_flux_w/D");
-	DmpNtupTree->Branch(
-		"simu_n_particle",
-		&simu_n_particle,
-		"simu_n_particle/I");
-	DmpNtupTree->Branch(
-		"simu_cos_x",
-		&simu_cos_x,
-		"simu_cos_x/D");
-	DmpNtupTree->Branch(
-		"simu_cos_y",
-		&simu_cos_y,
-		"simu_cos_y/D");
-	DmpNtupTree->Branch(
-		"simu_cos_z",
-		&simu_cos_z,
-		"simu_cos_z/D");
-	DmpNtupTree->Branch(
-		"simu_charge",
-		&simu_charge,
-		"simu_charge/D");
-	DmpNtupTree->Branch(
-		"simu_zenith",
-		&simu_zenith,
-		"simu_zenith/D");
-	DmpNtupTree->Branch(
-		"simu_azimuth",
-		&simu_azimuth,
-		"simu_azimuth/D");
-	DmpNtupTree->Branch(
-		"simu_w",
-		&simu_w,
-		"simu_w/D");
-	DmpNtupTree->Branch(
-		"simu_PDG",
-		&simu_PDG,
-		"simu_PDG/D");
-	DmpNtupTree->Branch(
-		"simu_geocut",
-		&simu_geocut,
-		"simu_geocut/D");
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_x",
-		&simu_thruthtrajectory_x);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_y",
-		&simu_thruthtrajectory_y);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_z",
-		&simu_thruthtrajectory_z);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_energy",
-		&simu_thruthtrajectory_energy);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_start_x",
-		&simu_thruthtrajectory_start_x);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_start_y",
-		&simu_thruthtrajectory_start_y);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_start_z",
-		&simu_thruthtrajectory_start_z);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_stop_x",
-		&simu_thruthtrajectory_stop_x);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_stop_y",
-		&simu_thruthtrajectory_stop_y);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_stop_z",
-		&simu_thruthtrajectory_stop_z);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_trackID",
-		&simu_thruthtrajectory_trackID);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_parentID",
-		&simu_thruthtrajectory_parentID);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_charge",
-		&simu_thruthtrajectory_charge);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_PDG",
-		&simu_thruthtrajectory_PDG);
-	DmpNtupTree->Branch(
-		"simu_thruthtrajectory_stop_index",
-		&simu_thruthtrajectory_stop_index);
 	// PSD
 	DmpNtupTree->Branch(
 		"PSD_chargeX",
@@ -346,6 +217,59 @@ void mc_tuple::branch_tree()
 		"xtrl",
 		&xtrl,
 		"xtrl/D");
+	// Attitude
+	DmpNtupTree->Branch(
+		"glat",
+		&glat,
+		"glat/D");
+	DmpNtupTree->Branch(
+		"glon",
+		&glon,
+		"glon/D");
+	DmpNtupTree->Branch(
+		"geo_lat",
+		&geo_lat,
+		"geo_lat/D");
+	DmpNtupTree->Branch(
+		"geo_lon",
+		&geo_lon,
+		"geo_lon/D");
+	DmpNtupTree->Branch(
+		"ra_zenith",
+		&ra_zenith,
+		"ra_zenith/D");
+	DmpNtupTree->Branch(
+		"dec_zenith",
+		&dec_zenith,
+		"dec_zenith/D");
+	DmpNtupTree->Branch(
+		"ra_scz",
+		&ra_scz,
+		"ra_scz/D");
+	DmpNtupTree->Branch(
+		"dec_scz",
+		&dec_scz,
+		"dec_scz/D");
+	DmpNtupTree->Branch(
+		"ra_scx",
+		&ra_scx,
+		"ra_scx/D");
+	DmpNtupTree->Branch(
+		"dec_scx",
+		&dec_scx,
+		"dec_scx/D");
+	DmpNtupTree->Branch(
+		"ra_scy",
+		&ra_scy,
+		"ra_scy/D");
+	DmpNtupTree->Branch(
+		"dec_scy",
+		&dec_scy,
+		"dec_scy/D");
+	DmpNtupTree->Branch(
+		"cutoff",
+		&cutoff,
+		"cutoff/D");
 	// Preselection Cuts
 	DmpNtupTree->Branch(
 		"cut_nBarLayer13",
@@ -381,13 +305,9 @@ void mc_tuple::branch_tree()
 		&evtfilter_out_energy_range,
 		"evtfilter_out_energy_range/O");
 	DmpNtupTree->Branch(
-		"evtfilter_geometric_before_trigger",
-		&evtfilter_geometric_before_trigger,
-		"evtfilter_geometric_before_trigger/O");
-	DmpNtupTree->Branch(
-		"evtfilter_trigger_check",
-		&evtfilter_trigger_check,
-		"evtfilter_trigger_check/O");
+		"evtfilter_evt_in_saa",
+		&evtfilter_evt_in_saa,
+		"evtfilter_evt_in_saa/O");
 	DmpNtupTree->Branch(
 		"evtfilter_evt_triggered",
 		&evtfilter_evt_triggered,
@@ -506,19 +426,20 @@ void mc_tuple::branch_tree()
 		"preselection_stkcharge_cut/O");
 }
 
-void mc_tuple::Fill(
+void data_tuple::Fill(
 	const std::shared_ptr<_tmp_filter> _filter_res,
 	const std::vector<int> _stk_clusters_on_plane,
 	const std::shared_ptr<_tmp_bgo> _bgo_res,
-	const std::shared_ptr<_tmp_simu> _simu_res,
-	const std::shared_ptr<_tmp_energy> _energy_res,
-	const std::shared_ptr<_tmp_nud> _nud_res,
-	const p_cuts &preselection_cuts)
+	const std::shared_ptr<_tmp_energy_data> _energy_res,
+	const std::shared_ptr<DmpEvtAttitude> attitude,
+	const std::shared_ptr<DmpEvtHeader> header,
+	const std::shared_ptr<_tmp_nud> _nud_res)
 {
 	fill_trigger_info(_filter_res->evt_trigger_info);
 	fill_filter_info(_filter_res->output);
+	fill_preselectionfilters_info(_filter_res->preselection_output);
 	fill_stk_info(
-		_filter_res->evt_best_track, 
+		_filter_res->evt_best_track,
 		_stk_clusters_on_plane);
 	fill_bgo_info(
 		_energy_res->raw,
@@ -535,7 +456,7 @@ void mc_tuple::Fill(
 		_bgo_res->energy_fraction_13th_layer,
 		_bgo_res->last_energy_layer,
 		_bgo_res->hits);
-	fill_simu_info(_simu_res, _energy_res);
+	fill_attitude_info(attitude);
 	fill_psdcharge_info(_filter_res->evt_psd_charge);
 	fill_stkcharge_info(_filter_res->evt_stk_charge);
 	fill_classifier_info(_filter_res->evt_bgo_classifier);
@@ -544,15 +465,14 @@ void mc_tuple::Fill(
 		_nud_res->total_adc,
 		_nud_res->max_adc,
 		_nud_res->max_channel_ID);
-	fill_preselectionfilters_info(preselection_cuts);
+	second = (unsigned int)header->GetSecond();
 	DmpNtupTree->Fill();
 }
 
-void mc_tuple::fill_filter_info(const filter_output &output)
+void data_tuple::fill_filter_info(const filter_output &output)
 {
 	evtfilter_out_energy_range = output.out_energy_range;
-	evtfilter_geometric_before_trigger = output.geometric_before_trigger;
-	evtfilter_trigger_check = output.trigger_check;
+	evtfilter_evt_in_saa = output.evt_in_saa;
 	evtfilter_evt_triggered = output.evt_triggered;
 	evtfilter_correct_bgo_reco = output.correct_bgo_reco;
 	evtfilter_good_event = output.good_event;
@@ -574,96 +494,42 @@ void mc_tuple::fill_filter_info(const filter_output &output)
 	evtfilter_all_cut = output.all_cut;
 }
 
-void mc_tuple::fill_simu_info(
-	const std::shared_ptr<_tmp_simu> _simu_res,
-	const std::shared_ptr<_tmp_energy> _energy_res)
+void data_tuple::fill_attitude_info(const std::shared_ptr<DmpEvtAttitude> &attitude)
 {
-	energy_corr_w = _energy_res->correct_w;
-	simu_energy_w = _energy_res->simu_w;
-	simu_position = _simu_res->position;
-	simu_momentum = _simu_res->momentum;
-	simu_energy = _energy_res->simu;
-	simu_slope_x = _simu_res->momentum.Z() ? _simu_res->momentum.X() / _simu_res->momentum.Z() : -999;
-	simu_slope_y = _simu_res->momentum.Z() ? _simu_res->momentum.Y() / _simu_res->momentum.Z() : -999;
-	simu_intercept_x = _simu_res->position.X() - simu_slope_x * _simu_res->position.Z();
-	simu_intercept_y = _simu_res->position.Y() - simu_slope_y * _simu_res->position.Z();
-	simu_radius = _simu_res->radius;
-	simu_theta = _simu_res->theta;
-	simu_phi = _simu_res->phi;
-	simu_flux_w = _simu_res->flux_w;
-	simu_n_particle = _simu_res->n_particle;
-	simu_cos_x = _simu_res->cos_x;
-	simu_cos_y = _simu_res->cos_y;
-	simu_cos_z = _simu_res->cos_z;
-	simu_charge = _simu_res->charge;
-	simu_zenith = _simu_res->zenith;
-	simu_azimuth = _simu_res->azimuth;
-	simu_w = _simu_res->w;
-	simu_PDG = _simu_res->PDG;
-	simu_geocut = _simu_res->geocut;
-	simu_thruthtrajectory_x = _simu_res->thruthtrajectory_x;
-	simu_thruthtrajectory_y = _simu_res->thruthtrajectory_y;
-	simu_thruthtrajectory_z = _simu_res->thruthtrajectory_z;
-	simu_thruthtrajectory_energy = _simu_res->thruthtrajectory_energy;
-	simu_thruthtrajectory_start_x = _simu_res->thruthtrajectory_start_x;
-	simu_thruthtrajectory_start_y = _simu_res->thruthtrajectory_start_y;
-	simu_thruthtrajectory_start_z = _simu_res->thruthtrajectory_start_z;
-	simu_thruthtrajectory_stop_x = _simu_res->thruthtrajectory_stop_x;
-	simu_thruthtrajectory_stop_y = _simu_res->thruthtrajectory_stop_y;
-	simu_thruthtrajectory_stop_z = _simu_res->thruthtrajectory_stop_z;
-	simu_thruthtrajectory_trackID =  _simu_res->thruthtrajectory_trackID;
-	simu_thruthtrajectory_parentID = _simu_res->thruthtrajectory_parentID;
-	simu_thruthtrajectory_charge = _simu_res->thruthtrajectory_charge;
-	simu_thruthtrajectory_PDG = _simu_res->thruthtrajectory_PDG;
-	simu_thruthtrajectory_stop_index = _simu_res->thruthtrajectory_stop_index;
+	glat = attitude->glat;
+	glon = attitude->glon;
+	geo_lat = attitude->lat_geo;
+	geo_lon = attitude->lon_geo;
+	ra_zenith = attitude->ra_zenith;
+	dec_zenith = attitude->dec_zenith;
+	ra_scz = attitude->ra_scz;
+	dec_scz = attitude->dec_scz;
+	ra_scx = attitude->ra_scx;
+	dec_scx = attitude->dec_scx;
+	ra_scy = attitude->ra_scy;
+	dec_scy = attitude->dec_scy;
+	cutoff = attitude->verticalRigidityCutoff;
 }
 
-void mc_tuple::Reset()
+void data_tuple::Reset()
 {
 	core_reset();
-	reset_simu_info();
-}
-
-void mc_tuple::reset_simu_info()
-{
-	simu_energy = -999;
-	simu_energy_w = -999;
-	energy_corr_w = -999;
-	simu_position.SetXYZ(-999, -999, -999);
-	simu_momentum.SetXYZ(-999, -999, -999);
-	simu_slope_x = -999;
-	simu_slope_y = -999;
-	simu_intercept_x = -999;
-	simu_intercept_y = -999;
-	simu_radius = -999;
-	simu_theta = -999;
-	simu_phi = -999;
-	simu_flux_w = -999;
-	simu_n_particle = -999;
-	simu_cos_x = -999;
-	simu_cos_y = -999;
-	simu_cos_z = -999;
-	simu_charge = -999;
-	simu_zenith = -999;
-	simu_azimuth = -999;
-	simu_w = -999;
-	simu_PDG = -999;
-	simu_geocut = -999;
-	simu_thruthtrajectory_x = std::vector<double>();
-	simu_thruthtrajectory_y = std::vector<double>();
-	simu_thruthtrajectory_z = std::vector<double>();
-	simu_thruthtrajectory_energy = std::vector<double>();
-	simu_thruthtrajectory_start_x = std::vector<double>();
-	simu_thruthtrajectory_start_y = std::vector<double>();
-	simu_thruthtrajectory_start_z = std::vector<double>();
-	simu_thruthtrajectory_stop_x = std::vector<double>();
-	simu_thruthtrajectory_stop_y = std::vector<double>();
-	simu_thruthtrajectory_stop_z = std::vector<double>();
-	simu_thruthtrajectory_trackID = std::vector<double>();
-	simu_thruthtrajectory_parentID = std::vector<double>();
-	simu_thruthtrajectory_charge = std::vector<double>();
-	simu_thruthtrajectory_PDG = std::vector<double>();
-	simu_thruthtrajectory_stop_index = std::vector<double>();
-	evtfilter_geometric_before_trigger = false;
-	evtfilter_trigger_check = false;
+	// Event time
+	second = 0;
+	// Attitude
+	glat = -999;
+	glon = -999;
+	geo_lat = -999;
+	geo_lon = -999;
+	ra_zenith = -999;
+	dec_zenith = -999;
+	ra_scz = -999;
+	dec_scz = -999;
+	ra_scx = -999;
+	dec_scx = -999;
+	ra_scy = -999;
+	dec_scy = -999;
+	cutoff = -999;
+	// Filters
+	evtfilter_evt_in_saa = false;
 }

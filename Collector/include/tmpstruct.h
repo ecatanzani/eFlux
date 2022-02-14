@@ -5,15 +5,16 @@
 #include <memory>
 
 #include "anyoption.h"
-#include "DmpNudContainer.h"
-#include "DmpBgoContainer.h"
-#include "DmpFilterContainer.h"
+#include "Dmp/DmpNudContainer.h"
+#include "Dmp/DmpBgoContainer.h"
+#include "Dmp/DmpFilterContainer.h"
 
 #include "TVector3.h"
 
 struct _tmp_filter
 {
 	filter_output output;
+	p_cuts preselection_output;
 	best_track evt_best_track;
 	psd_charge evt_psd_charge;
 	stk_charge evt_stk_charge;

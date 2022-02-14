@@ -1,5 +1,5 @@
-#include "mc.h"
-#include "data.h"
+#include "MC/mc.h"
+#include "Data/data.h"
 #include "main.h"
 #include "utils.h"
 
