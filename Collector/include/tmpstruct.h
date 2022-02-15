@@ -8,6 +8,7 @@
 #include "Dmp/DmpNudContainer.h"
 #include "Dmp/DmpBgoContainer.h"
 #include "Dmp/DmpFilterContainer.h"
+#include "Efficiency/efficiency.h"
 
 #include "TVector3.h"
 
@@ -15,6 +16,7 @@ struct _tmp_filter
 {
 	filter_output output;
 	p_cuts preselection_output;
+	eff_output efficiency_preselection_output;
 	best_track evt_best_track;
 	psd_charge evt_psd_charge;
 	stk_charge evt_stk_charge;
@@ -46,7 +48,7 @@ struct _tmp_nud
 	int max_channel_ID;
 };
 
-extern std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter);
+extern std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter, efficiency &eff_filter);
 extern std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault);
 extern std::shared_ptr<_tmp_nud> fillNUDTmpStruct(DmpNudContainer &nudVault);
 

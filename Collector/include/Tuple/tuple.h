@@ -4,6 +4,7 @@
 #include "config.h"
 #include "Dmp/DmpGeoStruct.h"
 #include "Dmp/DmpFilterContainer.h"
+#include "Efficiency/efficiency.h"
 
 #include "TTree.h"
 #include "TVector3.h"
@@ -55,6 +56,7 @@ protected:
 		const int max_adc,
 		const int max_channel_id);
 	void fill_preselectionfilters_info(const p_cuts &preselect);
+	void fill_preselectionfiltersefficiency_info(const eff_output &eff_preselect);
 	void core_reset();
 
 	// Tree
@@ -163,6 +165,26 @@ protected:
 	bool preselection_maxrms_lastcut							{false};
 	bool preselection_trackselection_lastcut					{false};
 	bool preselection_psdstkmatch_lastcut						{false};
+	// Efficiency Preselection Filters
+	bool trigger_efficiency_preselection                        {false};
+	bool trigger_efficiency_preselection_is_het                 {false};
+	bool trigger_efficiency_preselection_is_let                 {false};
+	bool trigger_efficiency_preselection_is_unb                 {false};
+	bool maxrms_efficiency_preselection                         {false};
+	bool maxrms_efficiency_preselection_accepted                {false};
+	bool maxrms_efficiency_preselection_notaccepted             {false};
+	bool nbarlayer13_efficiency_preselection                    {false};
+	bool nbarlayer13_efficiency_preselection_accepted           {false};
+	bool nbarlayer13_efficiency_preselection_notaccepted        {false};
+	bool track_efficiency_preselection                          {false};
+	bool track_efficiency_preselection_accepted                 {false};
+	bool track_efficiency_preselection_notaccepted              {false};
+	bool psdstkmatch_efficiency_preselection                    {false};
+	bool psdstkmatch_efficiency_preselection_accepted           {false};
+	bool psdstkmatch_efficiency_preselection_notaccepted        {false};
+	bool psdcharge_efficiency_preselection                      {false};
+	bool psdcharge_efficiency_preselection_accepted             {false};
+	bool psdcharge_efficiency_preselection_notaccepted          {false};
 };
 
 #endif

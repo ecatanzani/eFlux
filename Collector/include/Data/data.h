@@ -19,7 +19,7 @@ extern void dataCore(in_pars input_pars);
 extern void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
-	const bool _VERBOSE,
+	const bool verbose,
 	const std::string wd);
 
 #endif

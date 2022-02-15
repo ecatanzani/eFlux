@@ -197,6 +197,7 @@ public:
 		const std::vector<double> bgoRec_slope,
 		const std::vector<double> bgoRec_intercept,
 		const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::shared_ptr<DmpEvtSimuPrimaries>(nullptr));
+	const bool CheckIncomingEventNoTrigger();
 	void EnergyCheck(
 		const cuts_conf &cuts,
 		const double bgoTotalE_corr,
@@ -228,7 +229,7 @@ public:
 		const std::shared_ptr<DmpEvtHeader> evt_header,
 		const std::shared_ptr<DmpFilterOrbit> pFilter);
 
-private:
+protected:
 	const bool geometric_cut(const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries);
 	const bool geometric_cut_data(
 		const std::vector<double> bgoRec_slope,
@@ -260,6 +261,19 @@ private:
 		const std::vector<double> rmsLayer,
 		const double bgoTotalE,
 		const cuts_conf data_cuts);
+	void link_ladders(std::vector<int> &LadderToLayer);
+	void fill_BGO_vectors(
+		TVector3 &bgoRecEntrance,
+		TVector3 &bgoRecDirection,
+		const std::vector<double> bgoRec_slope,
+		const std::vector<double> bgoRec_intercept);
+	void get_track_points(
+		DmpStkTrack *track,
+		const std::shared_ptr<TClonesArray> stkclusters,
+		const std::vector<int> LadderToLayer,
+		std::vector<int> &track_nHoles,
+		best_track &event_best_track,
+		const bool best_track = false);
 	const bool track_selection_cut(
 		const std::shared_ptr<DmpEvtBgoRec> bgorec,
 		const std::vector<double> bgoRec_slope,

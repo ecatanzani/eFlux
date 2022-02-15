@@ -7,6 +7,7 @@
 #include "Tuple/mc_tuple.h"
 #include "MC/mc_tmpstruct.h"
 #include "aggregate_events.h"
+#include "Efficiency/efficiency.h"
 
 #include "Dmp/DmpGeoStruct.h"
 #include "Dmp/DmpStkContainer.h"
@@ -32,7 +33,7 @@
 void mcLoop(
 	const std::string inputPath,
 	TFile &outFile,
-	const bool _VERBOSE,
+	const bool verbose,
 	const std::string wd)
 {
 	bool _MC = true;
@@ -41,7 +42,7 @@ void mcLoop(
 	std::shared_ptr<TChain> dmpch;
 	event_collector collector(
 		inputPath,
-		_VERBOSE,
+		verbose,
 		_MC);
 	if (collector.GetChainStatus())
 		dmpch = collector.GetChain();
@@ -110,6 +111,8 @@ void mcLoop(
 	DmpStkContainer stkVault;
 	DmpPsdContainer psdVault;
 	DmpNudContainer nudVault;
+	// Load efficiency class
+	efficiency cuts_efficiency;
 	// Load output file
 	outFile.cd();
 	// Create MC tuple objects
@@ -117,7 +120,7 @@ void mcLoop(
 	
 	auto nevents = dmpch->GetEntries();
 	int kStep = 10;
-	if (_VERBOSE)
+	if (verbose)
 	{
 		mc_config.PrintActiveFilters();
 		filter.PrintDataInfo(dmpch, _MC);
@@ -152,7 +155,7 @@ void mcLoop(
 		// Update event counter
 		filter.UpdateEvtCounter();
 		// Status printout
-		if (_VERBOSE)
+		if (verbose)
 			UpdateProcessStatus(evIdx, kStep, nevents);
 		
 		// Load energy class
@@ -177,33 +180,24 @@ void mcLoop(
 			evt_energy.GetCorrEnergy(),
 			mc_config.GetMinEnergyRange(),
 			mc_config.GetMaxEnergyRange());
+		
+		// Load sub-detectors high level class
+		// Load STK class
+		stkVault.scanSTKHits(stkclusters);
+		// Load BGO class
+		bgoVault.scanBGOHits(bgohits, bgorec, evt_energy.GetRawEnergy(), mc_config.GetBGOLayerMinEnergy());
+		// Load PSD class
+		psdVault.scanPSDHits(psdhits, mc_config.GetPSDBarMinEnergy());
+		// Load NUD class
+		nudVault.scanNudHits(nudraw);
+		
 		// Check BGO geometry before trigger
 		filter.CheckGeometry(simu_primaries);
 		// Check current event (Trigger and BGO reco)
-		auto _good_evt =
-			filter.CheckIncomingEvent(
-				evt_header,
-				bgoVault.FastBGOslope(bgorec),
-				bgoVault.FastBGOintercept(bgorec),
-				simu_primaries);
-		if (_good_evt)
+		if (filter.CheckIncomingEvent(evt_header, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), simu_primaries))
 		{
 			// Check BGO geometry after trigger
 			filter.CheckGeometry(simu_primaries);
-			// Load STK class
-			stkVault.scanSTKHits(stkclusters);
-			// Load BGO class
-			bgoVault.scanBGOHits(
-				bgohits,
-				bgorec,
-				evt_energy.GetRawEnergy(),
-				mc_config.GetBGOLayerMinEnergy());
-			// Load PSD class
-			psdVault.scanPSDHits(
-				psdhits,
-				mc_config.GetPSDBarMinEnergy());
-			// Load NUD class
-			nudVault.scanNudHits(nudraw);
 			// Filter event
 			filter.Pipeline(
 				bgorec,
@@ -218,9 +212,23 @@ void mcLoop(
 				mc_config.GetActiveCuts());
 		}
 		
+		// Efficiency pipeline
+		if (filter.CheckIncomingEventNoTrigger())
+			cuts_efficiency.Pipeline(
+				bgorec,
+				bgohits,
+				mc_config.GetCutsConfigValues(),
+				evt_energy.GetRawEnergy(),
+				evt_energy.GetCorrEnergy(),
+				bgoVault,
+				psdVault,
+				stkclusters,
+				stktracks,
+				mc_config.GetActiveCuts());
+
 		// Fill output structures
 		simu_tuple->Fill(
-			fillFilterTmpStruct(filter),
+			fillFilterTmpStruct(filter, cuts_efficiency),
 			stkVault.GetNPlaneClusters(),
 			fillBGOTmpStruct(bgoVault),
 			fillSimuTmpStruct(simu_primaries, simu_trajectories),
@@ -228,7 +236,7 @@ void mcLoop(
 			fillNUDTmpStruct(nudVault));
 	}
 
-	if (_VERBOSE)
+	if (verbose)
 	{
 		std::cout << "\n\n ****** \n\n";
 		std::cout << "Generated events: " << filter.GetStatEvtCounter() << std::endl;

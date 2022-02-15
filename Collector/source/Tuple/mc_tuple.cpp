@@ -171,6 +171,7 @@ void mc_tuple::Fill(
 	fill_trigger_info(_filter_res->evt_trigger_info);
 	fill_filter_info(_filter_res->output);
 	fill_preselectionfilters_info(_filter_res->preselection_output);
+	fill_preselectionfiltersefficiency_info(_filter_res->efficiency_preselection_output);
 	fill_stk_info(
 		_filter_res->evt_best_track, 
 		_stk_clusters_on_plane);

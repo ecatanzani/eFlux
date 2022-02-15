@@ -14,7 +14,7 @@ extern void mcCore(in_pars input_pars);
 extern void mcLoop(
 	const std::string inputPath,
 	TFile &outFile,
-	const bool _VERBOSE,
+	const bool verbose,
 	const std::string wd);
 
 #endif

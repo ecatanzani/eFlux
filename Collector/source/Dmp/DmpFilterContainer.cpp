@@ -359,7 +359,7 @@ const bool DmpFilterContainer::maxRms_cut(
 	return passed_maxRms_cut;
 }
 
-inline void link_ladders(std::vector<int> &LadderToLayer)
+void DmpFilterContainer::link_ladders(std::vector<int> &LadderToLayer)
 {
 	for (int ilad = 0; ilad < nSTKladders; ++ilad)
 	{
@@ -372,7 +372,7 @@ inline void link_ladders(std::vector<int> &LadderToLayer)
 	}
 }
 
-inline void fill_BGO_vectors(
+void DmpFilterContainer::fill_BGO_vectors(
 	TVector3 &bgoRecEntrance,
 	TVector3 &bgoRecDirection,
 	const std::vector<double> bgoRec_slope,
@@ -427,13 +427,13 @@ inline void fill_BGO_vectors(
 	bgoRecEntrance[2] = topZ;
 }
 
-inline void get_track_points(
+void DmpFilterContainer::get_track_points(
 	DmpStkTrack *track,
 	const std::shared_ptr<TClonesArray> stkclusters,
 	const std::vector<int> LadderToLayer,
 	std::vector<int> &track_nHoles,
 	best_track &event_best_track,
-	const bool best_track = false)
+	const bool best_track)
 {
 	std::vector<int> prevHole(2, -2);
 	std::vector<int> firstLayer(2, -1);
@@ -1040,6 +1040,14 @@ const bool DmpFilterContainer::CheckIncomingEvent(
 			output.good_event = true;
 	}
 	return output.good_event;
+}
+
+const bool DmpFilterContainer::CheckIncomingEventNoTrigger()
+{
+	if (!output.evt_in_saa)
+		return output.correct_bgo_reco;
+	else
+		return false;
 }
 
 void DmpFilterContainer::EnergyCheck(

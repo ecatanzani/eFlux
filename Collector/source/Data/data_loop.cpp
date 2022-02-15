@@ -6,6 +6,7 @@
 #include "Tuple/data_tuple.h"
 #include "aggregate_events.h"
 #include "Data/data_tmpstruct.h"
+#include "Efficiency/efficiency.h"
 
 #include "Dmp/DmpStkContainer.h"
 #include "Dmp/DmpBgoContainer.h"
@@ -32,7 +33,7 @@
 void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
-	const bool _VERBOSE,
+	const bool verbose,
 	const std::string wd)
 {
 	bool _MC = false;
@@ -40,7 +41,7 @@ void rawDataLoop(
 	std::shared_ptr<TChain> dmpch;
 	event_collector collector(
 		inputPath,
-		_VERBOSE,
+		verbose,
 		_MC);
 	if (collector.GetChainStatus())
 		dmpch = collector.GetChain();
@@ -107,6 +108,13 @@ void rawDataLoop(
 	energy evt_energy;
 	// Load filter class
 	DmpFilterContainer filter;
+	// Load BGO, PSD and NUD high level classes
+	DmpBgoContainer bgoVault;
+	DmpStkContainer stkVault;
+	DmpPsdContainer psdVault;
+	DmpNudContainer nudVault;
+	// Load efficiency class
+	efficiency cuts_efficiency;
 	// Load output file
 	outFile.cd();
 	// Create DATA tuple objects
@@ -116,7 +124,7 @@ void rawDataLoop(
 	int kStep = 10;
 	// Update event time
 	filter.UpdateEvtTime(dmpch, evt_header);
-	if (_VERBOSE)
+	if (verbose)
 	{
 		data_config.PrintActiveFilters();
 		filter.PrintDataInfo(dmpch, _MC);
@@ -127,24 +135,31 @@ void rawDataLoop(
 	{
 		// Read tree event
 		dmpch->GetEvent(evIdx);
-		// Reset filter event flags
-		filter.Reset();
-		// Reset tuple
-		tuple->Reset();
-		// Build BGO and PSD vault objects
-		DmpStkContainer stkVault;
-		DmpBgoContainer bgoVault;
-		DmpPsdContainer psdVault;
-		DmpNudContainer nudVault;
+
+		// Reset classes
+		if (evIdx) {
+			// Reset filter event flags
+			filter.Reset();
+			// Reset tuple
+			tuple->Reset();
+			// Reset energy class
+			evt_energy.Reset();
+			// Reset BGO class
+			bgoVault.Reset();
+			// Reset STK class
+			stkVault.Reset();
+			// Reset PSD class
+			psdVault.Reset();
+			// Reset NUD class
+			nudVault.Reset();
+		}
+		
 		// Update event counter
 		filter.UpdateEvtCounter();
 		// Status printout
-		if (_VERBOSE)
+		if (verbose)
 			UpdateProcessStatus(evIdx, kStep, nevents);
-		// Reset energy class
-		if (evIdx) {
-			evt_energy.Reset();
-		}
+
 		// Load energy class
 		evt_energy.SetRawEnergy(bgorec->GetTotalEnergy());
 		evt_energy.SetCorrEnergy(bgorec->GetElectronEcor());
@@ -156,33 +171,26 @@ void rawDataLoop(
 			evt_energy.GetCorrEnergy(),
 			data_config.GetMinEnergyRange(),
 			data_config.GetMaxEnergyRange());
+
+		// Load sub-detectors high level class
+		// Load STK class
+		stkVault.scanSTKHits(stkclusters);
+		// Load BGO class
+		bgoVault.scanBGOHits(bgohits, bgorec, evt_energy.GetRawEnergy(), data_config.GetBGOLayerMinEnergy());
+		// Load PSD class
+		psdVault.scanPSDHits(psdhits, data_config.GetPSDBarMinEnergy());
+		// Load NUD class
+		nudVault.scanNudHits(nudraw);
+
+
 		// Check current event (Trigger and BGO reco)
-		auto _good_evt =
-			filter.CheckIncomingEvent(
-				evt_header,
-				bgoVault.FastBGOslope(bgorec),
-				bgoVault.FastBGOintercept(bgorec));
-		if (_good_evt)
+		if (filter.CheckIncomingEvent(evt_header, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept()))
 		{
 			// Check BGO geometry after trigger
 			filter.CheckGeometry(
 				std::shared_ptr<DmpEvtSimuPrimaries>(nullptr),
 				bgoVault.FastBGOslope(bgorec),
 				bgoVault.FastBGOintercept(bgorec));
-			// Load STK class
-			stkVault.scanSTKHits(stkclusters);
-			// Load BGO class
-			bgoVault.scanBGOHits(
-				bgohits,
-				bgorec,
-				evt_energy.GetRawEnergy(),
-				data_config.GetBGOLayerMinEnergy());
-			// Load PSD class
-			psdVault.scanPSDHits(
-				psdhits,
-				data_config.GetPSDBarMinEnergy());
-			// Load NUD class
-			nudVault.scanNudHits(nudraw);
 			// Filter event
 			filter.Pipeline(
 				bgorec,
@@ -197,9 +205,23 @@ void rawDataLoop(
 				data_config.GetActiveCuts());
 		}
 		
+		// Efficiency pipeline
+		if (filter.CheckIncomingEventNoTrigger())
+			cuts_efficiency.Pipeline(
+				bgorec,
+				bgohits,
+				data_config.GetCutsConfigValues(),
+				evt_energy.GetRawEnergy(),
+				evt_energy.GetCorrEnergy(),
+				bgoVault,
+				psdVault,
+				stkclusters,
+				stktracks,
+				data_config.GetActiveCuts());
+
 		// Fill output structures
 		tuple->Fill(
-			fillFilterTmpStruct(filter),
+			fillFilterTmpStruct(filter, cuts_efficiency),
 			stkVault.GetNPlaneClusters(),
 			fillBGOTmpStruct(bgoVault),
 			fillDataEnergyTmpStruct(evt_energy),
@@ -208,7 +230,7 @@ void rawDataLoop(
 			fillNUDTmpStruct(nudVault));
 	}
 
-	if (_VERBOSE)
+	if (verbose)
 	{
 		std::cout << "\n\n ****** \n\n";
 		std::cout << "Triggered events: " << filter.GetStatiEvtTrigger() << std::endl;
