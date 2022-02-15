@@ -158,6 +158,26 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch("preselection_maxrms_lastcut", &preselection_maxrms_lastcut, "preselection_maxrms_lastcut/O");
 	DmpNtupTree->Branch("preselection_trackselection_lastcut", &preselection_trackselection_lastcut, "preselection_trackselection_lastcut/O");
 	DmpNtupTree->Branch("preselection_psdstkmatch_lastcut", &preselection_psdstkmatch_lastcut, "preselection_psdstkmatch_lastcut/O");
+	// Efficiency Preselection Filters
+	DmpNtupTree->Branch("trigger_efficiency_preselection", &trigger_efficiency_preselection, "trigger_efficiency_preselection/O");
+	DmpNtupTree->Branch("trigger_efficiency_preselection_is_het", &trigger_efficiency_preselection_is_het, "trigger_efficiency_preselection_is_het/O");
+	DmpNtupTree->Branch("trigger_efficiency_preselection_is_let", &trigger_efficiency_preselection_is_let, "trigger_efficiency_preselection_is_let/O");
+	DmpNtupTree->Branch("trigger_efficiency_preselection_is_unb", &trigger_efficiency_preselection_is_unb, "trigger_efficiency_preselection_is_unb/O");
+	DmpNtupTree->Branch("maxrms_efficiency_preselection", &maxrms_efficiency_preselection, "maxrms_efficiency_preselection/O");
+	DmpNtupTree->Branch("maxrms_efficiency_preselection_accepted", &maxrms_efficiency_preselection_accepted, "maxrms_efficiency_preselection_accepted/O");
+	DmpNtupTree->Branch("maxrms_efficiency_preselection_notaccepted", &maxrms_efficiency_preselection_notaccepted, "maxrms_efficiency_preselection_notaccepted/O");
+	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection", &nbarlayer13_efficiency_preselection, "nbarlayer13_efficiency_preselection/O");
+	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_accepted", &nbarlayer13_efficiency_preselection_accepted, "nbarlayer13_efficiency_preselection_accepted/O");
+	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_notaccepted", &nbarlayer13_efficiency_preselection_notaccepted, "nbarlayer13_efficiency_preselection_notaccepted/O");
+	DmpNtupTree->Branch("track_efficiency_preselection", &track_efficiency_preselection, "track_efficiency_preselection/O");
+	DmpNtupTree->Branch("track_efficiency_preselection_accepted", &track_efficiency_preselection_accepted, "track_efficiency_preselection_accepted/O");
+	DmpNtupTree->Branch("track_efficiency_preselection_notaccepted", &track_efficiency_preselection_notaccepted, "track_efficiency_preselection_notaccepted/O");
+	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection", &psdstkmatch_efficiency_preselection, "psdstkmatch_efficiency_preselection/O");
+	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection_accepted", &psdstkmatch_efficiency_preselection_accepted, "psdstkmatch_efficiency_preselection_accepted/O");
+	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection_notaccepted", &psdstkmatch_efficiency_preselection_notaccepted, "psdstkmatch_efficiency_preselection_notaccepted/O");
+	DmpNtupTree->Branch("psdcharge_efficiency_preselection", &psdcharge_efficiency_preselection, "psdcharge_efficiency_preselection/O");
+	DmpNtupTree->Branch("psdcharge_efficiency_preselection_accepted", &psdcharge_efficiency_preselection_accepted, "psdcharge_efficiency_preselection_accepted/O");
+	DmpNtupTree->Branch("psdcharge_efficiency_preselection_notaccepted", &psdcharge_efficiency_preselection_notaccepted, "psdcharge_efficiency_preselection_notaccepted/O");
 }
 
 void mc_tuple::Fill(

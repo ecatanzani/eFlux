@@ -683,9 +683,9 @@ const bool DmpFilterContainer::psd_charge_cut(
 	const std::vector<short> globalBarID,
 	const cuts_conf cuts)
 {
-	bool passed_psd_charge_cut = false;
-	bool passed_psd_charge_sum = false;
-	bool passed_psd_He_cut = false;
+	bool passed_psd_charge_cut 	{false};
+	bool passed_psd_charge_sum 	{false};
+	bool passed_psd_He_cut		{false};
 
 	double psd_chargeX, psd_chargeY;
 	double psd_chargeX_ecor, psd_chargeY_ecor;
@@ -859,6 +859,7 @@ void DmpFilterContainer::Reset()
 	reset_stk_charges();
 	reset_classifiers();
 	reset_filter_output();
+	reset_preselection_output();
 	reset_time();
 	reset_trigger();
 }
@@ -935,26 +936,26 @@ void DmpFilterContainer::reset_filter_output()
 	output.all_cut 									= false;
 }
 
-void DmpFilterContainer::reset_preselection()
+void DmpFilterContainer::reset_preselection_output()
 {
-	preselection_cuts.maxelayer_cut 			= false;
-	preselection_cuts.maxbarlayer_cut 			= false;
-	preselection_cuts.bgotrack_cut 				= false;
-	preselection_cuts.bgofiducial_cut 			= false;
-	preselection_cuts.nbarlayer13_cut 			= false;
-	preselection_cuts.maxrms_cut 				= false;
-	preselection_cuts.trackselection_cut		= false;
-	preselection_cuts.psdstkmatch_cut 			= false;
-	preselection_cuts.psdcharge_cut 			= false;
-	preselection_cuts.stkcharge_cut 			= false;
-	preselection_cuts.maxelayer_lastcut 		= false;
-	preselection_cuts.maxbarlayer_lastcut 		= false;
-	preselection_cuts.bgotrack_lastcut 			= false;
-	preselection_cuts.bgofiducial_lastcut 		= false;
-	preselection_cuts.nbarlayer13_lastcut 		= false;
-	preselection_cuts.maxrms_lastcut 			= false;
-	preselection_cuts.trackselection_lastcut 	= false;
-	preselection_cuts.psdstkmatch_lastcut 		= false;
+	preselection_cuts.maxelayer_cut 				= false;
+	preselection_cuts.maxbarlayer_cut 				= false;
+	preselection_cuts.bgotrack_cut 					= false;
+	preselection_cuts.bgofiducial_cut 				= false;
+	preselection_cuts.nbarlayer13_cut 				= false;
+	preselection_cuts.maxrms_cut 					= false;
+	preselection_cuts.trackselection_cut			= false;
+	preselection_cuts.psdstkmatch_cut 				= false;
+	preselection_cuts.psdcharge_cut 				= false;
+	preselection_cuts.stkcharge_cut 				= false;
+	preselection_cuts.maxelayer_lastcut 			= false;
+	preselection_cuts.maxbarlayer_lastcut 			= false;
+	preselection_cuts.bgotrack_lastcut 				= false;
+	preselection_cuts.bgofiducial_lastcut 			= false;
+	preselection_cuts.nbarlayer13_lastcut 			= false;
+	preselection_cuts.maxrms_lastcut 				= false;
+	preselection_cuts.trackselection_lastcut 		= false;
+	preselection_cuts.psdstkmatch_lastcut 			= false;
 }
 
 void DmpFilterContainer::reset_time()

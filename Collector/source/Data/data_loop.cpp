@@ -140,6 +140,8 @@ void rawDataLoop(
 		if (evIdx) {
 			// Reset filter event flags
 			filter.Reset();
+			// Reset efficiency filter event flags
+			cuts_efficiency.Reset();
 			// Reset tuple
 			tuple->Reset();
 			// Reset energy class

@@ -311,7 +311,7 @@ protected:
 	void reset_stk_charges();
 	void reset_classifiers();
 	void reset_filter_output();
-	void reset_preselection();
+	void reset_preselection_output();
 	void reset_time();
 	void reset_trigger();
 

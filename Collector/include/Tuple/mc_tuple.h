@@ -37,31 +37,31 @@ private:
 	void reset_simu_info();
 
 	// Simu
-	double simu_energy = -999;
-	double simu_energy_w = -999;
-	double energy_corr_w = -999;
-	TVector3 simu_position{-999, -999, -999};
-	TVector3 simu_momentum{-999, -999, -999};
-	double simu_slope_x = -999;
-	double simu_slope_y = -999;
-	double simu_intercept_x = -999;
-	double simu_intercept_y = -999;
+	double simu_energy 			{999};
+	double simu_energy_w 		{-999};
+	double energy_corr_w 		{-999};
+	TVector3 simu_position		{-999, -999, -999};
+	TVector3 simu_momentum		{-999, -999, -999};
+	double simu_slope_x 		{-999};
+	double simu_slope_y 		{-999};
+	double simu_intercept_x 	{-999};
+	double simu_intercept_y 	{-999};
 
 	// Generation info
-	double simu_radius = -999;
-	double simu_theta = -999;
-	double simu_phi = -999;
-	double simu_flux_w = -999;
-	int simu_n_particle = -999;
-	double simu_cos_x = -999;
-	double simu_cos_y = -999;
-	double simu_cos_z = -999;
-	double simu_charge = -999;
-	double simu_zenith = -999;
-	double simu_azimuth = -999;
-	double simu_w = -999;
-	long simu_PDG = -999;
-	int simu_geocut = -999;
+	double simu_radius 			{-999};
+	double simu_theta 			{-999};
+	double simu_phi 			{-999};
+	double simu_flux_w 			{-999};
+	int simu_n_particle 		{-999};
+	double simu_cos_x 			{-999};
+	double simu_cos_y 			{-999};
+	double simu_cos_z			{-999};
+	double simu_charge 			{-999};
+	double simu_zenith 			{-999};
+	double simu_azimuth 		{-999};
+	double simu_w 				{-999};
+	long simu_PDG				{-999};
+	int simu_geocut				{-999};
 
 	// Simu Truth Trajectories
 	std::vector<double> simu_thruthtrajectory_x;
@@ -81,8 +81,8 @@ private:
 	std::vector<double> simu_thruthtrajectory_stop_index;
 
 	// Filters
-	bool evtfilter_geometric_before_trigger = false;
-	bool evtfilter_trigger_check = false;
+	bool evtfilter_geometric_before_trigger 	{false};
+	bool evtfilter_trigger_check				{false};
 };
 
 #endif

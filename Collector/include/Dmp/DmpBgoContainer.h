@@ -13,16 +13,16 @@
 class DmpBgoContainer
 {
 public:
-	DmpBgoContainer() : layerBarIndex(DAMPE_bgo_nLayers, std::vector<short>()),
-						layerBarNumber(DAMPE_bgo_nLayers, std::vector<short>()),
-						layerBarEnergy(DAMPE_bgo_nLayers, std::vector<double> (DAMPE_bgo_bars_layer, -999)),
-						idxBarMaxLayer(DAMPE_bgo_nLayers, -1),
-						iMaxLayer(DAMPE_bgo_nLayers, -1),
-						rmsLayer(DAMPE_bgo_nLayers, 0),
-						fracLayer(DAMPE_bgo_nLayers, 0),
-						eLayer(DAMPE_bgo_nLayers, 0),
-						eCoreLayer(DAMPE_bgo_nLayers, 0),
-						eCoreCoord(DAMPE_bgo_nLayers, 0)
+	DmpBgoContainer() : layerBarIndex		(DAMPE_bgo_nLayers, std::vector<short>()),
+						layerBarNumber		(DAMPE_bgo_nLayers, std::vector<short>()),
+						layerBarEnergy		(DAMPE_bgo_nLayers, std::vector<double> (DAMPE_bgo_bars_layer, -999)),
+						idxBarMaxLayer		(DAMPE_bgo_nLayers, -1),
+						iMaxLayer			(DAMPE_bgo_nLayers, -1),
+						rmsLayer			(DAMPE_bgo_nLayers, 0),
+						fracLayer			(DAMPE_bgo_nLayers, 0),
+						eLayer				(DAMPE_bgo_nLayers, 0),
+						eCoreLayer			(DAMPE_bgo_nLayers, 0),
+						eCoreCoord			(DAMPE_bgo_nLayers, 0)
 	{
 	}
 

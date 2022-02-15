@@ -34,23 +34,23 @@ private:
 	void fill_attitude_info(const std::shared_ptr<DmpEvtAttitude> &attitude);
 
 	// Event time
-	unsigned int second = 0;
+	unsigned int second 		{0};
 	// Attitude
-	double glat = -999;
-	double glon = -999;
-	double geo_lat = -999;
-	double geo_lon = -999;
-	double ra_zenith = -999;
-	double dec_zenith = -999;
-	double ra_scz = -999;
-	double dec_scz = -999;
-	double ra_scx = -999;
-	double dec_scx = -999;
-	double ra_scy = -999;
-	double dec_scy = -999;
-	double cutoff = -999;
+	double glat 				{-999};
+	double glon					{-999};
+	double geo_lat				{-999};
+	double geo_lon				{-999};
+	double ra_zenith			{-999};
+	double dec_zenith			{-999};
+	double ra_scz				{-999};
+	double dec_scz				{-999};
+	double ra_scx				{-999};
+	double dec_scx 				{-999};
+	double ra_scy				{-999};
+	double dec_scy				{-999};
+	double cutoff				{-999};
 	// Filters
-	bool evtfilter_evt_in_saa = false;
+	bool evtfilter_evt_in_saa 	{false};
 };
 
 #endif

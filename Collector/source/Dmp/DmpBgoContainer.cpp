@@ -41,9 +41,9 @@ void DmpBgoContainer::scanBGOHits(
 	for (int lay = 0; lay < nLayers; ++lay)
 	{
 		// Setting default value for maximum bar index and energy for each layer
-		int max_hit {-1};				// hit of the maximum energy release in a layer
-		size_t max_hit_idx {0};			// hit index relative to the maximum energy release in a layer	
-		double maxE {0};				// maximum energy release in a layer
+		int max_hit 			{-1};			// hit of the maximum energy release in a layer
+		size_t max_hit_idx 		{0};			// hit index relative to the maximum energy release in a layer	
+		double maxE 			{0};			// maximum energy release in a layer
 	
 		// Find the maximum of the nergy release in a certain layer, together with the bar ID
 		for (size_t layerBar_idx=0; layerBar_idx<layerBarIndex[lay].size(); ++layerBar_idx)
@@ -58,10 +58,12 @@ void DmpBgoContainer::scanBGOHits(
 			}
 		}
 
-		iMaxLayer[lay] = max_hit;
-		rmsLayer[lay] = 0;
-		fracLayer[lay] = 0;
-		eLayer[lay] = 0;
+		iMaxLayer[lay] 	= max_hit;
+		rmsLayer[lay] 	= 0;
+		fracLayer[lay] 	= 0;
+		eLayer[lay] 	= 0;
+
+		continue;
 
 		if (maxE > layerMinEnergy)
 		{
@@ -69,7 +71,7 @@ void DmpBgoContainer::scanBGOHits(
 			idxBarMaxLayer[lay] = layerBarNumber[lay][max_hit_idx];
 			// Register the maximum energy release of a layer
 			eCoreLayer[lay] = maxE;
-			// Find the coordinate (weighted by the nergy release) of the bar with the biggest energy release in a certain layer
+			// Find the coordinate (weighted by the energy release) of the bar with the biggest energy release in a certain layer
 			double coordMax = lay % 2 ? bgohits->GetHitX(max_hit) : bgohits->GetHitY(max_hit);
 			eCoreCoord[lay] = maxE * coordMax;
 			// Consider the nearest bar respect to the max one in order to better interpolate the position
@@ -237,7 +239,7 @@ void DmpBgoContainer::Reset()
 {
 	layerBarIndex 			= std::vector<std::vector<short>>(DAMPE_bgo_nLayers, std::vector<short>());
 	layerBarNumber 			= std::vector<std::vector<short>>(DAMPE_bgo_nLayers, std::vector<short>());
-	layerBarEnergy 			= std::vector<std::vector<double>>(DAMPE_bgo_nLayers, std::vector<double>());
+	layerBarEnergy 			= std::vector<std::vector<double>>(DAMPE_bgo_nLayers, std::vector<double> (DAMPE_bgo_bars_layer, -999));
 	idxBarMaxLayer 			= std::vector<int>(DAMPE_bgo_nLayers, -1);
 	iMaxLayer				= std::vector<int>(DAMPE_bgo_nLayers, -1);
 	rmsLayer 				= std::vector<double>(DAMPE_bgo_nLayers, 0);

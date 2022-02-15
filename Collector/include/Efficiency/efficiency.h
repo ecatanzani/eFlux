@@ -52,8 +52,10 @@ class efficiency: public DmpFilterContainer
             const active_cuts &acuts);
 
         const eff_output GetEfficiencyOutput();
+        void Reset();
     
     private:
+            void reset_efficiency_output();
             eff_output output;
         
 };

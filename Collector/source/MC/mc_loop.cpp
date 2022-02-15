@@ -136,6 +136,8 @@ void mcLoop(
 		if (evIdx) {
 			// Reset filter event flags
 			filter.Reset();
+			// Reset efficiency filter event flags
+			cuts_efficiency.Reset();
 			// Reset tuple
 			simu_tuple->Reset();
 			// Reset energy class

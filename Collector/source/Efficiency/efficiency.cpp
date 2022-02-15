@@ -110,3 +110,44 @@ const eff_output efficiency::GetEfficiencyOutput()
 {
     return output;
 }
+
+void efficiency::reset_efficiency_output()
+{
+    output.trigger_efficiency_preselection                       = false;
+    output.trigger_efficiency_preselection_is_het                = false;
+    output.trigger_efficiency_preselection_is_let                = false;
+    output.trigger_efficiency_preselection_is_unb                = false;
+
+    output.maxrms_efficiency_preselection                        = false;
+    output.maxrms_efficiency_preselection_accepted               = false;
+    output.maxrms_efficiency_preselection_notaccepted            = false;
+
+    output.nbarlayer13_efficiency_preselection                   = false;
+    output.nbarlayer13_efficiency_preselection_accepted          = false;
+    output.nbarlayer13_efficiency_preselection_notaccepted       = false;
+
+    output.track_efficiency_preselection                         = false;
+    output.track_efficiency_preselection_accepted                = false;
+    output.track_efficiency_preselection_notaccepted             = false;
+
+    output.psdstkmatch_efficiency_preselection                   = false;
+    output.psdstkmatch_efficiency_preselection_accepted          = false;
+    output.psdstkmatch_efficiency_preselection_notaccepted       = false;
+
+    output.psdcharge_efficiency_preselection                     = false;
+    output.psdcharge_efficiency_preselection_accepted            = false;
+    output.psdcharge_efficiency_preselection_notaccepted         = false;
+}
+
+void efficiency::Reset()
+{
+    reset_stk_best_track();
+	reset_psd_clusters();
+	reset_psd_charges();
+	reset_stk_charges();
+	reset_classifiers();
+	reset_filter_output();
+	reset_time();
+	reset_trigger();
+    reset_efficiency_output();
+}
