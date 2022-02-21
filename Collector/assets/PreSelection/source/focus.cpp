@@ -37,8 +37,8 @@
 #include "TTree.h"
 
 // Event display parameters
-#define _BEST_TRACK         true
-#define _BGO_EDGE           false
+#define _BEST_TRACK         false
+#define _BGO_EDGE           true
 #define _OUTSIDE_BGO        false
 #define _N_BAR_LAST_LAYER   false
 #define _PERC_35_LAYER      false
