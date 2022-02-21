@@ -29,7 +29,7 @@ void DmpPsdContainer::scanPSDHits(
 			if (first_hit)
 			{
 				eMaxBarPsd[layerID] = hitE;
-				iMaxBarPsd[layerID] = layerBarIndexPsd[layerID].size() - 1;
+				iMaxBarPsd[layerID] = layerBarIndexPsd[layerID].size() -1;
 				first_hit = false;
 			}
 			else
@@ -37,7 +37,7 @@ void DmpPsdContainer::scanPSDHits(
 				if (hitE > eMaxBarPsd[layerID])
 				{
 					eMaxBarPsd[layerID] = hitE;
-					iMaxBarPsd[layerID] = layerBarIndexPsd[layerID].size() - 1;
+					iMaxBarPsd[layerID] = layerBarIndexPsd[layerID].size() -1;
 				}
 			}
 		}

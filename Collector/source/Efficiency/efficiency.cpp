@@ -10,7 +10,8 @@ void efficiency::Pipeline(
 		DmpPsdContainer &psdVault,
 		const std::shared_ptr<TClonesArray> &stkclusters,
 		const std::shared_ptr<TClonesArray> &stktracks,
-		const active_cuts &acuts)
+		const active_cuts &acuts,
+        const trigger_info &evt_trigger_info)
     {
         // Trigger efficiency
         if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
@@ -23,9 +24,9 @@ void efficiency::Pipeline(
 							        if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
                                     {
                                         output.trigger_efficiency_preselection = true;
-                                        if (evt_trigger.HET) output.trigger_efficiency_preselection_is_het = true;
-                                        if (evt_trigger.LET) output.trigger_efficiency_preselection_is_let = true;
-                                        if (evt_trigger.unbiased) output.trigger_efficiency_preselection_is_unb = true;
+                                        if (evt_trigger_info.HET) output.trigger_efficiency_preselection_is_het = true;
+                                        if (evt_trigger_info.LET) output.trigger_efficiency_preselection_is_let = true;
+                                        if (evt_trigger_info.unbiased) output.trigger_efficiency_preselection_is_unb = true;
                                     }
 
         // MaxRms efficiency
@@ -59,6 +60,21 @@ void efficiency::Pipeline(
                                     else
                                         output.nbarlayer13_efficiency_preselection_notaccepted = true;
                                 }
+
+        // MaxRms && nbarlayer13 efficiency
+        if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+            if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+                if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+                    if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                        if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                            if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+                            {
+                                output.maxrms_and_nbarlayer13_efficiency_preselection = true;
+                                if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts) && nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+                                    output.maxrms_and_nbarlayer13_efficiency_preselection_accepted = true;
+                                else
+                                    output.maxrms_and_nbarlayer13_efficiency_preselection_notaccepted = true;
+                            }
 
         // track selection efficiency
         if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
@@ -113,30 +129,34 @@ const eff_output efficiency::GetEfficiencyOutput()
 
 void efficiency::reset_efficiency_output()
 {
-    output.trigger_efficiency_preselection                       = false;
-    output.trigger_efficiency_preselection_is_het                = false;
-    output.trigger_efficiency_preselection_is_let                = false;
-    output.trigger_efficiency_preselection_is_unb                = false;
+    output.trigger_efficiency_preselection                                  = false;
+    output.trigger_efficiency_preselection_is_het                           = false;
+    output.trigger_efficiency_preselection_is_let                           = false;
+    output.trigger_efficiency_preselection_is_unb                           = false;
 
-    output.maxrms_efficiency_preselection                        = false;
-    output.maxrms_efficiency_preselection_accepted               = false;
-    output.maxrms_efficiency_preselection_notaccepted            = false;
+    output.maxrms_efficiency_preselection                                   = false;
+    output.maxrms_efficiency_preselection_accepted                          = false;
+    output.maxrms_efficiency_preselection_notaccepted                       = false;
 
-    output.nbarlayer13_efficiency_preselection                   = false;
-    output.nbarlayer13_efficiency_preselection_accepted          = false;
-    output.nbarlayer13_efficiency_preselection_notaccepted       = false;
+    output.nbarlayer13_efficiency_preselection                              = false;
+    output.nbarlayer13_efficiency_preselection_accepted                     = false;
+    output.nbarlayer13_efficiency_preselection_notaccepted                  = false;
 
-    output.track_efficiency_preselection                         = false;
-    output.track_efficiency_preselection_accepted                = false;
-    output.track_efficiency_preselection_notaccepted             = false;
+    output.maxrms_and_nbarlayer13_efficiency_preselection                   = false;
+    output.maxrms_and_nbarlayer13_efficiency_preselection_accepted          = false;
+    output.maxrms_and_nbarlayer13_efficiency_preselection_notaccepted       = false;
 
-    output.psdstkmatch_efficiency_preselection                   = false;
-    output.psdstkmatch_efficiency_preselection_accepted          = false;
-    output.psdstkmatch_efficiency_preselection_notaccepted       = false;
+    output.track_efficiency_preselection                                    = false;
+    output.track_efficiency_preselection_accepted                           = false;
+    output.track_efficiency_preselection_notaccepted                        = false;
 
-    output.psdcharge_efficiency_preselection                     = false;
-    output.psdcharge_efficiency_preselection_accepted            = false;
-    output.psdcharge_efficiency_preselection_notaccepted         = false;
+    output.psdstkmatch_efficiency_preselection                              = false;
+    output.psdstkmatch_efficiency_preselection_accepted                     = false;
+    output.psdstkmatch_efficiency_preselection_notaccepted                  = false;
+
+    output.psdcharge_efficiency_preselection                                = false;
+    output.psdcharge_efficiency_preselection_accepted                       = false;
+    output.psdcharge_efficiency_preselection_notaccepted                    = false;
 }
 
 void efficiency::Reset()

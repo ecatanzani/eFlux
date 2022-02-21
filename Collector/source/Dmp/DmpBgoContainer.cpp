@@ -63,8 +63,6 @@ void DmpBgoContainer::scanBGOHits(
 		fracLayer[lay] 	= 0;
 		eLayer[lay] 	= 0;
 
-		continue;
-
 		if (maxE > layerMinEnergy)
 		{
 			// Find the bar index regarding the maximum energy release in a certain layer

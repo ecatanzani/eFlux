@@ -1,5 +1,7 @@
 #include "MC/mc.h"
 
+#include <memory>
+
 void mcCore(in_pars input_pars)
 {
 	// Create output TFile

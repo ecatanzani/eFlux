@@ -26,16 +26,16 @@ public:
 	{
 	}
 
-	DmpBgoContainer(int m_size) : layerBarIndex(m_size, std::vector<short>()),
-								  layerBarNumber(m_size, std::vector<short>()),
-								  layerBarEnergy(m_size, std::vector<double> (DAMPE_bgo_bars_layer, -999)),
-								  idxBarMaxLayer(m_size, -1),
-								  iMaxLayer(m_size, -1),
-								  rmsLayer(m_size, 0),
-								  fracLayer(m_size, 0),
-								  eLayer(m_size, 0),
-								  eCoreLayer(m_size, 0),
-								  eCoreCoord(m_size, 0)
+	DmpBgoContainer(int m_size) : layerBarIndex		(m_size, std::vector<short>()),
+								  layerBarNumber	(m_size, std::vector<short>()),
+								  layerBarEnergy	(m_size, std::vector<double> (DAMPE_bgo_bars_layer, -999)),
+								  idxBarMaxLayer	(m_size, -1),
+								  iMaxLayer			(m_size, -1),
+								  rmsLayer			(m_size, 0),
+								  fracLayer			(m_size, 0),
+								  eLayer			(m_size, 0),
+								  eCoreLayer		(m_size, 0),
+								  eCoreCoord		(m_size, 0)
 	{
 	}
 
@@ -82,9 +82,9 @@ public:
 
 private:
 	// BGO variables
-	std::vector<std::vector<short>> layerBarIndex;	// arrange BGO hits by layer
-	std::vector<std::vector<short>> layerBarNumber; // arrange BGO bars by layer
-	std::vector<std::vector<double>> layerBarEnergy; // store BGO bars energy
+	std::vector<std::vector<short>> layerBarIndex;		// arrange BGO hits by layer
+	std::vector<std::vector<short>> layerBarNumber; 	// arrange BGO bars by layer
+	std::vector<std::vector<double>> layerBarEnergy; 	// store BGO bars energy
 	std::vector<int> idxBarMaxLayer;
 	std::vector<double> rmsLayer;
 	std::vector<double> fracLayer;
@@ -92,11 +92,11 @@ private:
 	std::vector<double> eCoreLayer;
 	std::vector<double> eCoreCoord;
 	std::vector<int> iMaxLayer;
-	int nBgoHits = -999;
-	int lastLayer = -999;
-	double sumRms = 0;
-	std::vector<double> slope{-999, -999};
-	std::vector<double> intercept{-999, -999};
+	int nBgoHits 										{-999};
+	int lastLayer										{-999};
+	double sumRms										{0};
+	std::vector<double> slope							{-999, -999};
+	std::vector<double> intercept						{-999, -999};
 	TVector3 trajectoryDirection2D;
 };
 

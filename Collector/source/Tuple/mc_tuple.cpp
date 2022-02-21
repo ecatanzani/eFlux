@@ -169,6 +169,9 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection", &nbarlayer13_efficiency_preselection, "nbarlayer13_efficiency_preselection/O");
 	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_accepted", &nbarlayer13_efficiency_preselection_accepted, "nbarlayer13_efficiency_preselection_accepted/O");
 	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_notaccepted", &nbarlayer13_efficiency_preselection_notaccepted, "nbarlayer13_efficiency_preselection_notaccepted/O");
+	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection", &maxrms_and_nbarlayer13_efficiency_preselection, "maxrms_and_nbarlayer13_efficiency_preselection/O");
+	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection_accepted", &maxrms_and_nbarlayer13_efficiency_preselection_accepted, "maxrms_and_nbarlayer13_efficiency_preselection_accepted/O");
+	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection_notaccepted", &maxrms_and_nbarlayer13_efficiency_preselection_notaccepted, "maxrms_and_nbarlayer13_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("track_efficiency_preselection", &track_efficiency_preselection, "track_efficiency_preselection/O");
 	DmpNtupTree->Branch("track_efficiency_preselection_accepted", &track_efficiency_preselection_accepted, "track_efficiency_preselection_accepted/O");
 	DmpNtupTree->Branch("track_efficiency_preselection_notaccepted", &track_efficiency_preselection_notaccepted, "track_efficiency_preselection_notaccepted/O");

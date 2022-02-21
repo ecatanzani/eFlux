@@ -162,25 +162,28 @@ void ntuple::fill_preselectionfiltersefficiency_info(const eff_output &eff_prese
 {
 	if (evtfilter_correct_bgo_reco)
 	{
-		trigger_efficiency_preselection = eff_preselect.trigger_efficiency_preselection;
-		trigger_efficiency_preselection_is_het = eff_preselect.trigger_efficiency_preselection_is_het;
-		trigger_efficiency_preselection_is_let = eff_preselect.trigger_efficiency_preselection_is_let;
-		trigger_efficiency_preselection_is_unb = eff_preselect.trigger_efficiency_preselection_is_unb;
-		maxrms_efficiency_preselection = eff_preselect.maxrms_efficiency_preselection;
-		maxrms_efficiency_preselection_accepted = eff_preselect.maxrms_efficiency_preselection_accepted;
-		maxrms_efficiency_preselection_notaccepted = eff_preselect.maxrms_efficiency_preselection_notaccepted;
-		nbarlayer13_efficiency_preselection = eff_preselect.nbarlayer13_efficiency_preselection;
-		nbarlayer13_efficiency_preselection_accepted = eff_preselect.nbarlayer13_efficiency_preselection_accepted;
-		nbarlayer13_efficiency_preselection_notaccepted = eff_preselect.nbarlayer13_efficiency_preselection_notaccepted;
-		track_efficiency_preselection = eff_preselect.track_efficiency_preselection;
-		track_efficiency_preselection_accepted = eff_preselect.track_efficiency_preselection_accepted;
-		track_efficiency_preselection_notaccepted = eff_preselect.track_efficiency_preselection_notaccepted;
-		psdstkmatch_efficiency_preselection = eff_preselect.psdstkmatch_efficiency_preselection;
-		psdstkmatch_efficiency_preselection_accepted = eff_preselect.psdstkmatch_efficiency_preselection_accepted;
-		psdstkmatch_efficiency_preselection_notaccepted = eff_preselect.psdstkmatch_efficiency_preselection_notaccepted;
-		psdcharge_efficiency_preselection = eff_preselect.psdcharge_efficiency_preselection;
-		psdcharge_efficiency_preselection_accepted = eff_preselect.psdcharge_efficiency_preselection_accepted;
-		psdcharge_efficiency_preselection_notaccepted = eff_preselect.psdcharge_efficiency_preselection_notaccepted;
+		trigger_efficiency_preselection 								= eff_preselect.trigger_efficiency_preselection;
+		trigger_efficiency_preselection_is_het 							= eff_preselect.trigger_efficiency_preselection_is_het;
+		trigger_efficiency_preselection_is_let 							= eff_preselect.trigger_efficiency_preselection_is_let;
+		trigger_efficiency_preselection_is_unb 							= eff_preselect.trigger_efficiency_preselection_is_unb;
+		maxrms_efficiency_preselection 									= eff_preselect.maxrms_efficiency_preselection;
+		maxrms_efficiency_preselection_accepted 						= eff_preselect.maxrms_efficiency_preselection_accepted;
+		maxrms_efficiency_preselection_notaccepted 						= eff_preselect.maxrms_efficiency_preselection_notaccepted;
+		nbarlayer13_efficiency_preselection 							= eff_preselect.nbarlayer13_efficiency_preselection;
+		nbarlayer13_efficiency_preselection_accepted 					= eff_preselect.nbarlayer13_efficiency_preselection_accepted;
+		nbarlayer13_efficiency_preselection_notaccepted 				= eff_preselect.nbarlayer13_efficiency_preselection_notaccepted;
+		maxrms_and_nbarlayer13_efficiency_preselection 					= eff_preselect.maxrms_and_nbarlayer13_efficiency_preselection;
+		maxrms_and_nbarlayer13_efficiency_preselection_accepted 		= eff_preselect.maxrms_and_nbarlayer13_efficiency_preselection_accepted;
+		maxrms_and_nbarlayer13_efficiency_preselection_notaccepted 		= eff_preselect.maxrms_and_nbarlayer13_efficiency_preselection_notaccepted;
+		track_efficiency_preselection 									= eff_preselect.track_efficiency_preselection;
+		track_efficiency_preselection_accepted 							= eff_preselect.track_efficiency_preselection_accepted;
+		track_efficiency_preselection_notaccepted 						= eff_preselect.track_efficiency_preselection_notaccepted;
+		psdstkmatch_efficiency_preselection 							= eff_preselect.psdstkmatch_efficiency_preselection;
+		psdstkmatch_efficiency_preselection_accepted 					= eff_preselect.psdstkmatch_efficiency_preselection_accepted;
+		psdstkmatch_efficiency_preselection_notaccepted 				= eff_preselect.psdstkmatch_efficiency_preselection_notaccepted;
+		psdcharge_efficiency_preselection 								= eff_preselect.psdcharge_efficiency_preselection;
+		psdcharge_efficiency_preselection_accepted 						= eff_preselect.psdcharge_efficiency_preselection_accepted;
+		psdcharge_efficiency_preselection_notaccepted 					= eff_preselect.psdcharge_efficiency_preselection_notaccepted;
 	}
 }
 
