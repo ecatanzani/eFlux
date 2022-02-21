@@ -1,281 +1,483 @@
+#include <memory>
+#include <string>
+#include <vector>
+#include <cstring>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 
-#include "TH1D.h"
+#include "TKey.h"
 #include "TFile.h"
+#include "TChain.h"
 #include "TEfficiency.h"
+#include <ROOT/RDataFrame.hxx>
 
-void buildMCEfficiency(const char* input_file_path, const char* output_file_path);
-void buildDATAEfficiency(const char* input_file_path, const char* output_file_path);
-
-void buildMCEfficiency(const char* input_file_path, const char* output_file_path)
-{
-    TFile *input_file = TFile::Open(input_file_path, "READ");
-    if (!input_file->IsOpen())
-    {
-        std::cerr << "\n\nError opening input ROOT file [" << input_file_path << "]\n\n";
-        exit(100);
+struct energy_config {
+    std::size_t n_bins;
+    double min_event_energy {-999};
+    double max_event_energy {-999};
+    std::vector<float> energy_binning;
+    
+    void createLogBinning() {
+        energy_binning = std::vector<float>(n_bins + 1, 0);
+        double log_interval {(log10(max_event_energy)-log10(min_event_energy))/n_bins};
+        for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
+            energy_binning[bIdx] = pow(10, log10(min_event_energy) + bIdx * log_interval);
     }
-    
-    auto h_geometric = static_cast<TH1D*>(input_file->Get("h_geometric"));
-    auto h_geometric_trigger = static_cast<TH1D*>(input_file->Get("h_geometric_trigger"));
-    auto h_trigger = static_cast<TH1D*>(input_file->Get("h_trigger"));
-    auto h_maxElayer = static_cast<TH1D*>(input_file->Get("h_maxElayer"));
-    auto h_maxBarlayer = static_cast<TH1D*>(input_file->Get("h_maxBarlayer"));
-    auto h_BGOTrackContainment = static_cast<TH1D*>(input_file->Get("h_BGOTrackContainment"));
-    auto h_bgo_fiducial = static_cast<TH1D*>(input_file->Get("h_bgo_fiducial"));
-    auto h_nbarlayer13 = static_cast<TH1D*>(input_file->Get("h_nbarlayer13"));
-    auto h_maxrms = static_cast<TH1D*>(input_file->Get("h_maxrms"));
-    auto h_track_selection = static_cast<TH1D*>(input_file->Get("h_track_selection"));
-    auto h_psd_stk_match = static_cast<TH1D*>(input_file->Get("h_psd_stk_match"));
-    auto h_psd_charge = static_cast<TH1D*>(input_file->Get("h_psd_charge"));
-    auto h_stk_charge = static_cast<TH1D*>(input_file->Get("h_stk_charge"));
-    auto h_all_cuts = static_cast<TH1D*>(input_file->Get("h_all_cuts"));
+};
 
-    h_geometric->SetDirectory(0);
-    h_geometric_trigger->SetDirectory(0);
-    h_trigger->SetDirectory(0);
-    h_maxElayer->SetDirectory(0);
-    h_maxBarlayer->SetDirectory(0);
-    h_BGOTrackContainment->SetDirectory(0);
-    h_bgo_fiducial->SetDirectory(0);
-    h_nbarlayer13->SetDirectory(0);
-    h_maxrms->SetDirectory(0);
-    h_track_selection->SetDirectory(0);
-    h_psd_stk_match->SetDirectory(0);
-    h_psd_charge->SetDirectory(0);
-    h_stk_charge->SetDirectory(0);
-    h_all_cuts->SetDirectory(0);
-
-    input_file->Close();
-
-    std::unique_ptr<TEfficiency> trigger_eff;
-    std::unique_ptr<TEfficiency> maxElayer_eff;
-    std::unique_ptr<TEfficiency> maxBarLayer_eff;
-    std::unique_ptr<TEfficiency> BGOTrackContainment_eff;
-    std::unique_ptr<TEfficiency> bgo_fiducial_eff;
-    std::unique_ptr<TEfficiency> nbarlayer13_eff;
-    std::unique_ptr<TEfficiency> maxrms_eff;
-    std::unique_ptr<TEfficiency> track_selection_eff;
-    std::unique_ptr<TEfficiency> psd_stk_match_eff;
-    std::unique_ptr<TEfficiency> psd_charge_eff;
-    std::unique_ptr<TEfficiency> stk_charge_eff;
-    std::unique_ptr<TEfficiency> all_cuts_eff;
-
-    if (TEfficiency::CheckConsistency(*h_geometric_trigger, *h_geometric))
-        trigger_eff = std::make_unique<TEfficiency>(*h_geometric_trigger, *h_geometric);
-    if (TEfficiency::CheckConsistency(*h_maxElayer, *h_trigger))
-        maxElayer_eff = std::make_unique<TEfficiency>(*h_maxElayer, *h_trigger);
-    if (TEfficiency::CheckConsistency(*h_maxBarlayer, *h_trigger))
-        maxBarLayer_eff = std::make_unique<TEfficiency>(*h_maxBarlayer, *h_trigger);
-    if (TEfficiency::CheckConsistency(*h_BGOTrackContainment, *h_trigger))
-        BGOTrackContainment_eff = std::make_unique<TEfficiency>(*h_BGOTrackContainment, *h_trigger);
-    if (TEfficiency::CheckConsistency(*h_bgo_fiducial, *h_trigger))
-        bgo_fiducial_eff = std::make_unique<TEfficiency>(*h_bgo_fiducial, *h_trigger);
-    if (TEfficiency::CheckConsistency(*h_nbarlayer13, *h_bgo_fiducial))
-        nbarlayer13_eff = std::make_unique<TEfficiency>(*h_nbarlayer13, *h_bgo_fiducial);
-    if (TEfficiency::CheckConsistency(*h_maxrms, *h_nbarlayer13))
-        maxrms_eff = std::make_unique<TEfficiency>(*h_maxrms, *h_nbarlayer13);
-    if (TEfficiency::CheckConsistency(*h_track_selection, *h_maxrms))
-        track_selection_eff = std::make_unique<TEfficiency>(*h_track_selection, *h_maxrms);
-    if (TEfficiency::CheckConsistency(*h_psd_stk_match, *h_track_selection))
-        psd_stk_match_eff = std::make_unique<TEfficiency>(*h_psd_stk_match, *h_track_selection);
-    if (TEfficiency::CheckConsistency(*h_psd_charge, *h_psd_stk_match))
-        psd_charge_eff = std::make_unique<TEfficiency>(*h_psd_charge, *h_psd_stk_match);
-    if (TEfficiency::CheckConsistency(*h_stk_charge, *h_psd_stk_match))
-        stk_charge_eff = std::make_unique<TEfficiency>(*h_stk_charge, *h_psd_stk_match);
-    if (TEfficiency::CheckConsistency(*h_all_cuts, *h_trigger))
-        all_cuts_eff = std::make_unique<TEfficiency>(*h_all_cuts, *h_trigger);
-
-    trigger_eff->SetStatisticOption(TEfficiency::kBUniform);
-    maxElayer_eff->SetStatisticOption(TEfficiency::kBUniform);
-    maxBarLayer_eff->SetStatisticOption(TEfficiency::kBUniform);
-    BGOTrackContainment_eff->SetStatisticOption(TEfficiency::kBUniform);
-    bgo_fiducial_eff->SetStatisticOption(TEfficiency::kBUniform);
-    nbarlayer13_eff->SetStatisticOption(TEfficiency::kBUniform);
-    maxrms_eff->SetStatisticOption(TEfficiency::kBUniform);
-    track_selection_eff->SetStatisticOption(TEfficiency::kBUniform);
-    psd_stk_match_eff->SetStatisticOption(TEfficiency::kBUniform);
-    psd_charge_eff->SetStatisticOption(TEfficiency::kBUniform);
-    stk_charge_eff->SetStatisticOption(TEfficiency::kBUniform);
-    all_cuts_eff->SetStatisticOption(TEfficiency::kBUniform);
-    
-    trigger_eff->SetName("trigger_eff");
-    maxElayer_eff->SetName("maxElayer_eff");
-    maxBarLayer_eff->SetName("maxBarLayer_eff");
-    BGOTrackContainment_eff->SetName("BGOTrackContainment_eff");
-    bgo_fiducial_eff->SetName("bgo_fiducial_eff");
-    nbarlayer13_eff->SetName("nbarlayer13_eff");
-    maxrms_eff->SetName("maxrms_eff");
-    track_selection_eff->SetName("track_selection_eff");
-    psd_stk_match_eff->SetName("psd_stk_match_eff");
-    psd_charge_eff->SetName("psd_charge_eff");
-    stk_charge_eff->SetName("stk_charge_eff");
-    all_cuts_eff->SetName("all_cuts_eff");
-
-    trigger_eff->SetTitle("Trigger efficiency");
-    maxElayer_eff->SetTitle("maxElayer efficiency");
-    maxBarLayer_eff->SetTitle("maxBarLayer efficiency");
-    BGOTrackContainment_eff->SetTitle("BGO track containment efficiency");
-    bgo_fiducial_eff->SetTitle("BGO fiducial volume efficiency");
-    nbarlayer13_eff->SetTitle("nbarlayer13 efficiency");
-    maxrms_eff->SetTitle("maxrms efficiency");
-    track_selection_eff->SetTitle("Track selection efficiency");
-    psd_stk_match_eff->SetTitle("PSD/STK match efficiency");
-    psd_charge_eff->SetTitle("PSD charge efficiency");
-    stk_charge_eff->SetTitle("STK charge efficiency");
-    all_cuts_eff->SetTitle("All cuts efficiency");
-    
-    TFile *output_file = TFile::Open(output_file_path, "RECREATE");
-    if (!output_file->IsOpen())
-    {
-        std::cerr << "\n\nError opening output ROOT file [" << output_file_path << "]\n\n";
-        exit(100);
-    }
-
-    trigger_eff->Write();
-    maxElayer_eff->Write();
-    maxBarLayer_eff->Write();
-    BGOTrackContainment_eff->Write();
-    bgo_fiducial_eff->Write();
-    nbarlayer13_eff->Write();
-    maxrms_eff->Write();
-    track_selection_eff->Write();
-    psd_stk_match_eff->Write();
-    psd_charge_eff->Write();
-    stk_charge_eff->Write();
-    all_cuts_eff->Write();
-    
-    output_file->Write();
-    output_file->Close();
+inline std::string parse_config_file(const char* config_file) {
+	std::ifstream input_file(config_file);
+	if (!input_file.is_open()) {
+		std::cerr << "\nInput config file not found [" << config_file << "]\n\n";
+		exit(100);
+	}
+	std::string input_string(
+		(std::istreambuf_iterator<char>(input_file)),
+		(std::istreambuf_iterator<char>()));
+	input_file.close();
+	return input_string;
 }
 
-void buildDATAEfficiency(const char* input_file_path, const char* output_file_path)
-{
-    TFile *input_file = TFile::Open(input_file_path, "READ");
-    if (!input_file->IsOpen())
-    {
-        std::cerr << "\n\nError opening input ROOT file [" << input_file_path << "]\n\n";
-        exit(100);
-    }
-    
-    auto h_trigger = static_cast<TH1D*>(input_file->Get("h_trigger"));
-    auto h_maxElayer = static_cast<TH1D*>(input_file->Get("h_maxElayer"));
-    auto h_maxBarlayer = static_cast<TH1D*>(input_file->Get("h_maxBarlayer"));
-    auto h_BGOTrackContainment = static_cast<TH1D*>(input_file->Get("h_BGOTrackContainment"));
-    auto h_bgo_fiducial = static_cast<TH1D*>(input_file->Get("h_bgo_fiducial"));
-    auto h_nbarlayer13 = static_cast<TH1D*>(input_file->Get("h_nbarlayer13"));
-    auto h_maxrms = static_cast<TH1D*>(input_file->Get("h_maxrms"));
-    auto h_track_selection = static_cast<TH1D*>(input_file->Get("h_track_selection"));
-    auto h_psd_stk_match = static_cast<TH1D*>(input_file->Get("h_psd_stk_match"));
-    auto h_psd_charge = static_cast<TH1D*>(input_file->Get("h_psd_charge"));
-    auto h_stk_charge = static_cast<TH1D*>(input_file->Get("h_stk_charge"));
-    auto h_all_cuts = static_cast<TH1D*>(input_file->Get("h_all_cuts"));
-    
-    h_trigger->SetDirectory(0);
-    h_maxElayer->SetDirectory(0);
-    h_maxBarlayer->SetDirectory(0);
-    h_BGOTrackContainment->SetDirectory(0);
-    h_bgo_fiducial->SetDirectory(0);
-    h_nbarlayer13->SetDirectory(0);
-    h_maxrms->SetDirectory(0);
-    h_track_selection->SetDirectory(0);
-    h_psd_stk_match->SetDirectory(0);
-    h_psd_charge->SetDirectory(0);
-    h_stk_charge->SetDirectory(0);
-    h_all_cuts->SetDirectory(0);
-
-    input_file->Close();
-
-    std::unique_ptr<TEfficiency> maxElayer_eff;
-    std::unique_ptr<TEfficiency> maxBarLayer_eff;
-    std::unique_ptr<TEfficiency> BGOTrackContainment_eff;
-    std::unique_ptr<TEfficiency> bgo_fiducial_eff;
-    std::unique_ptr<TEfficiency> nbarlayer13_eff;
-    std::unique_ptr<TEfficiency> maxrms_eff;
-    std::unique_ptr<TEfficiency> track_selection_eff;
-    std::unique_ptr<TEfficiency> psd_stk_match_eff;
-    std::unique_ptr<TEfficiency> psd_charge_eff;
-    std::unique_ptr<TEfficiency> stk_charge_eff;
-    std::unique_ptr<TEfficiency> all_cuts_eff;
-    
-    if (TEfficiency::CheckConsistency(*h_maxElayer, *h_trigger))
-        maxElayer_eff = std::make_unique<TEfficiency>(*h_maxElayer, *h_trigger);
-    if (TEfficiency::CheckConsistency(*h_maxBarlayer, *h_trigger))
-        maxBarLayer_eff = std::make_unique<TEfficiency>(*h_maxBarlayer, *h_trigger);
-    if (TEfficiency::CheckConsistency(*h_BGOTrackContainment, *h_trigger))
-        BGOTrackContainment_eff = std::make_unique<TEfficiency>(*h_BGOTrackContainment, *h_trigger);
-    if (TEfficiency::CheckConsistency(*h_bgo_fiducial, *h_trigger))
-        bgo_fiducial_eff = std::make_unique<TEfficiency>(*h_bgo_fiducial, *h_trigger);
-    if (TEfficiency::CheckConsistency(*h_nbarlayer13, *h_bgo_fiducial))
-        nbarlayer13_eff = std::make_unique<TEfficiency>(*h_nbarlayer13, *h_bgo_fiducial);
-    if (TEfficiency::CheckConsistency(*h_maxrms, *h_nbarlayer13))
-        maxrms_eff = std::make_unique<TEfficiency>(*h_maxrms, *h_nbarlayer13);
-    if (TEfficiency::CheckConsistency(*h_track_selection, *h_maxrms))
-        track_selection_eff = std::make_unique<TEfficiency>(*h_track_selection, *h_maxrms);
-    if (TEfficiency::CheckConsistency(*h_psd_stk_match, *h_track_selection))
-        psd_stk_match_eff = std::make_unique<TEfficiency>(*h_psd_stk_match, *h_track_selection);
-    if (TEfficiency::CheckConsistency(*h_psd_charge, *h_psd_stk_match))
-        psd_charge_eff = std::make_unique<TEfficiency>(*h_psd_charge, *h_psd_stk_match);
-    if (TEfficiency::CheckConsistency(*h_stk_charge, *h_psd_stk_match))
-        stk_charge_eff = std::make_unique<TEfficiency>(*h_stk_charge, *h_psd_stk_match);
-    if (TEfficiency::CheckConsistency(*h_all_cuts, *h_trigger))
-        all_cuts_eff = std::make_unique<TEfficiency>(*h_all_cuts, *h_trigger);
-
-    maxElayer_eff->SetStatisticOption(TEfficiency::kBUniform);
-    maxBarLayer_eff->SetStatisticOption(TEfficiency::kBUniform);
-    BGOTrackContainment_eff->SetStatisticOption(TEfficiency::kBUniform);
-    bgo_fiducial_eff->SetStatisticOption(TEfficiency::kBUniform);
-    nbarlayer13_eff->SetStatisticOption(TEfficiency::kBUniform);
-    maxrms_eff->SetStatisticOption(TEfficiency::kBUniform);
-    track_selection_eff->SetStatisticOption(TEfficiency::kBUniform);
-    psd_stk_match_eff->SetStatisticOption(TEfficiency::kBUniform);
-    psd_charge_eff->SetStatisticOption(TEfficiency::kBUniform);
-    stk_charge_eff->SetStatisticOption(TEfficiency::kBUniform);
-    all_cuts_eff->SetStatisticOption(TEfficiency::kBUniform);
-
-    maxElayer_eff->SetName("maxElayer_eff");
-    maxBarLayer_eff->SetName("maxBarLayer_eff");
-    BGOTrackContainment_eff->SetName("BGOTrackContainment_eff");
-    bgo_fiducial_eff->SetName("bgo_fiducial_eff");
-    nbarlayer13_eff->SetName("nbarlayer13_eff");
-    maxrms_eff->SetName("maxrms_eff");
-    track_selection_eff->SetName("track_selection_eff");
-    psd_stk_match_eff->SetName("psd_stk_match_eff");
-    psd_charge_eff->SetName("psd_charge_eff");
-    stk_charge_eff->SetName("stk_charge_eff");
-    all_cuts_eff->SetName("all_cuts_eff");
-    
-    maxElayer_eff->SetTitle("maxElayer efficiency");
-    maxBarLayer_eff->SetTitle("maxBarLayer efficiency");
-    BGOTrackContainment_eff->SetTitle("BGO track containment efficiency");
-    bgo_fiducial_eff->SetTitle("BGO fiducial volume efficiency");
-    nbarlayer13_eff->SetTitle("nbarlayer13 efficiency");
-    maxrms_eff->SetTitle("maxrms efficiency");
-    track_selection_eff->SetTitle("Track selection efficiency");
-    psd_stk_match_eff->SetTitle("PSD/STK match efficiency");
-    psd_charge_eff->SetTitle("PSD charge efficiency");
-    stk_charge_eff->SetTitle("STK charge efficiency");
-    all_cuts_eff->SetTitle("All cuts efficiency");
-    
-    TFile *output_file = TFile::Open(output_file_path, "RECREATE");
-    if (!output_file->IsOpen())
-    {
-        std::cerr << "\n\nError opening output ROOT file [" << output_file_path << "]\n\n";
-        exit(100);
-    }
-    
-    maxElayer_eff->Write();
-    maxBarLayer_eff->Write();
-    BGOTrackContainment_eff->Write();
-    bgo_fiducial_eff->Write();
-    nbarlayer13_eff->Write();
-    maxrms_eff->Write();
-    track_selection_eff->Write();
-    psd_stk_match_eff->Write();
-    psd_charge_eff->Write();
-    stk_charge_eff->Write();
-    all_cuts_eff->Write();
-    
-    output_file->Write();
-    output_file->Close();
+inline energy_config get_config_info(const std::string parsed_config) {
+	energy_config config_pars;
+    std::string tmp_str;
+	std::istringstream input_stream(parsed_config);
+	std::string::size_type sz;
+	while (input_stream >> tmp_str)
+	{
+		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
+			input_stream >> config_pars.n_bins;
+		if (!strcmp(tmp_str.c_str(), "min_event_energy")) {
+			input_stream >> tmp_str;
+			config_pars.min_event_energy = stod(tmp_str, &sz);
+		}
+		if (!strcmp(tmp_str.c_str(), "max_event_energy")) {
+			input_stream >> tmp_str;
+			config_pars.max_event_energy = stod(tmp_str, &sz);
+		}
+	}
+    config_pars.createLogBinning();
+    return config_pars;
 }
+
+inline std::vector<float> parse_energy_config(const char* config_file) {
+    return get_config_info(parse_config_file(config_file)).energy_binning;
+}
+
+std::vector<float> createLogBinning(const double eMin, const double eMax, const std::size_t n_bins) {
+	std::vector<float> binning(n_bins + 1, 0);
+	double log_interval = (log10(eMax) - log10(eMin)) / n_bins;
+	for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
+		binning[bIdx] = pow(10, log10(eMin) + bIdx * log_interval);
+	return binning;
+}
+
+std::vector<float> createLinearBinning(float a, float b, std::size_t N) {
+	float h = (b - a) / static_cast<float>(N);
+	std::vector<float> xs(N + 1);
+	std::vector<float>::iterator x;
+	float val;
+	for (x = xs.begin(), val = a; x != xs.end(); ++x, val += h)
+		*x = val;
+	return xs;
+}
+
+inline const std::string get_tree_name(const std::string stream) {
+    const std::string file = stream.substr(0, stream.find('\n'));
+    TFile* input_file = TFile::Open(file.c_str(), "READ");
+    if (!input_file->IsOpen()) {
+        std::cerr << "\n\nError reading input file [" << file << "]\n\n";
+        exit(100);
+    }
+    std::string tree_name;
+    for (TObject* keyAsObject : *input_file->GetListOfKeys()) {
+        auto key = dynamic_cast<TKey*>(keyAsObject);
+        if (!strcmp(key->GetClassName(), "TTree"))
+            tree_name = static_cast<std::string>(key->GetName());
+    }
+    input_file->Close();
+    return tree_name;
+}
+
+void buildEfficiency(
+    const char* input_file,
+    const char* output_file,
+    const char* energy_config_file,
+    const bool verbose,
+    const unsigned int threads=1) {
+
+        // Extract energy binning from config file
+        auto energy_binning = parse_energy_config(energy_config_file);
+        auto energy_nbins = (int)energy_binning.size() - 1;
+
+        // Chain input files
+        TFile *infile = TFile::Open(input_file, "READ");
+        if (!infile->IsOpen()) {
+            std::cerr << "\n\nError reading input file [" << input_file << "]\n\n";
+            exit(100);
+        }
+
+        // Trigger histos
+        auto h_trigger_efficiency_accepted_het_tight_xtrl = static_cast<TH1D*>(infile->Get("h_trigger_efficiency_accepted_het_tight_xtrl"));
+        auto h_trigger_efficiency_accepted_het_let_tight_xtrl = static_cast<TH1D*>(infile->Get("h_trigger_efficiency_accepted_het_let_tight_xtrl"));
+        auto h_trigger_efficiency_accepted_het_bdt = static_cast<TH1D*>(infile->Get("h_trigger_efficiency_accepted_het_bdt"));
+        auto h_trigger_efficiency_accepted_het_let_bdt = static_cast<TH1D*>(infile->Get("h_trigger_efficiency_accepted_het_let_bdt"));
+         
+        auto h_trigger_efficiency_accepted_het_loose_xtrl = static_cast<TH1D*>(infile->Get("h_trigger_efficiency_accepted_het_loose_xtrl"));
+        auto h_trigger_efficiency_accepted_het_let_loose_xtrl = static_cast<TH1D*>(infile->Get("h_trigger_efficiency_accepted_het_let_loose_xtrl"));
+
+        h_trigger_efficiency_accepted_het_tight_xtrl->SetDirectory(0);
+        h_trigger_efficiency_accepted_het_let_tight_xtrl->SetDirectory(0);
+        h_trigger_efficiency_accepted_het_bdt->SetDirectory(0);
+        h_trigger_efficiency_accepted_het_let_bdt->SetDirectory(0);
+
+        h_trigger_efficiency_accepted_het_loose_xtrl->SetDirectory(0);
+        h_trigger_efficiency_accepted_het_let_loose_xtrl->SetDirectory(0);
+
+        // MaxRMS histos
+        auto h_maxrms_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_maxrms_efficiency_accepted_tight_xtrl"));
+        auto h_maxrms_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_maxrms_efficiency_total_tight_xtrl"));
+        auto h_maxrms_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_maxrms_efficiency_accepted_bdt"));
+        auto h_maxrms_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_maxrms_efficiency_total_bdt"));
+
+        auto h_maxrms_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_maxrms_efficiency_accepted_loose_xtrl"));
+        auto h_maxrms_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_maxrms_efficiency_total_loose_xtrl"));
+
+        h_maxrms_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_maxrms_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_maxrms_efficiency_accepted_bdt->SetDirectory(0);
+        h_maxrms_efficiency_total_bdt->SetDirectory(0);
+        
+        h_maxrms_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_maxrms_efficiency_total_loose_xtrl->SetDirectory(0);
+
+        // nbarlayer13 histos
+        auto h_nbarlayer13_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_nbarlayer13_efficiency_accepted_tight_xtrl"));
+        auto h_nbarlayer13_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_nbarlayer13_efficiency_total_tight_xtrl"));
+        auto h_nbarlayer13_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_nbarlayer13_efficiency_accepted_bdt"));
+        auto h_nbarlayer13_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_nbarlayer13_efficiency_total_bdt"));
+
+        auto h_nbarlayer13_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_nbarlayer13_efficiency_accepted_loose_xtrl"));
+        auto h_nbarlayer13_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_nbarlayer13_efficiency_total_loose_xtrl"));
+
+        h_nbarlayer13_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_nbarlayer13_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_nbarlayer13_efficiency_accepted_bdt->SetDirectory(0);
+        h_nbarlayer13_efficiency_total_bdt->SetDirectory(0);
+        
+        h_nbarlayer13_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_nbarlayer13_efficiency_total_loose_xtrl->SetDirectory(0);
+
+        // MaxRMS and nbarlayer13 histos
+        auto h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl"));
+        auto h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl"));
+        auto h_maxrms_and_nbarlayer13_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_maxrms_and_nbarlayer13_efficiency_accepted_bdt"));
+        auto h_maxrms_and_nbarlayer13_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_maxrms_and_nbarlayer13_efficiency_total_bdt"));
+
+        auto h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl"));
+        auto h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl"));
+
+        h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_maxrms_and_nbarlayer13_efficiency_accepted_bdt->SetDirectory(0);
+        h_maxrms_and_nbarlayer13_efficiency_total_bdt->SetDirectory(0);
+        
+        h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl->SetDirectory(0);
+
+        // Track Selection histos
+        auto h_track_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_track_efficiency_accepted_tight_xtrl"));
+        auto h_track_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_track_efficiency_total_tight_xtrl"));
+        auto h_track_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_track_efficiency_accepted_bdt"));
+        auto h_track_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_track_efficiency_total_bdt"));
+
+        auto h_track_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_track_efficiency_accepted_loose_xtrl"));
+        auto h_track_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_track_efficiency_total_loose_xtrl"));
+
+        h_track_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_track_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_track_efficiency_accepted_bdt->SetDirectory(0);
+        h_track_efficiency_total_bdt->SetDirectory(0);
+        
+        h_track_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_track_efficiency_total_loose_xtrl->SetDirectory(0);
+
+        // PSD-STK match histos
+        auto h_psdstkmatch_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_psdstkmatch_efficiency_accepted_tight_xtrl"));
+        auto h_psdstkmatch_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_psdstkmatch_efficiency_total_tight_xtrl"));
+        auto h_psdstkmatch_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_psdstkmatch_efficiency_accepted_bdt"));
+        auto h_psdstkmatch_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_psdstkmatch_efficiency_total_bdt"));
+
+        auto h_psdstkmatch_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_psdstkmatch_efficiency_accepted_loose_xtrl"));
+        auto h_psdstkmatch_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_psdstkmatch_efficiency_total_loose_xtrl"));
+
+        h_psdstkmatch_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_psdstkmatch_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_psdstkmatch_efficiency_accepted_bdt->SetDirectory(0);
+        h_psdstkmatch_efficiency_total_bdt->SetDirectory(0);
+        
+        h_psdstkmatch_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_psdstkmatch_efficiency_total_loose_xtrl->SetDirectory(0);
+
+        // PSD charge histos
+        auto h_psdcharge_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_psdcharge_efficiency_accepted_tight_xtrl"));
+        auto h_psdcharge_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_psdcharge_efficiency_total_tight_xtrl"));
+        auto h_psdcharge_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_psdcharge_efficiency_accepted_bdt"));
+        auto h_psdcharge_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_psdcharge_efficiency_total_bdt"));
+
+        auto h_psdcharge_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_psdcharge_efficiency_accepted_loose_xtrl"));
+        auto h_psdcharge_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_psdcharge_efficiency_total_loose_xtrl"));
+
+        h_psdcharge_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_psdcharge_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_psdcharge_efficiency_accepted_bdt->SetDirectory(0);
+        h_psdcharge_efficiency_total_bdt->SetDirectory(0);
+        
+        h_psdcharge_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_psdcharge_efficiency_total_loose_xtrl->SetDirectory(0);
+
+        infile->Close();
+
+        // Build efficiencies
+        std::unique_ptr<TEfficiency> trigger_eff_het_xtrl_tight;
+        std::unique_ptr<TEfficiency> maxrms_eff_xtrl_tight;
+        std::unique_ptr<TEfficiency> nbarlayer13_eff_xtrl_tight;
+        std::unique_ptr<TEfficiency> maxrms_and_nbarlayer13_eff_xtrl_tight;
+        std::unique_ptr<TEfficiency> track_selection_eff_xtrl_tight;
+        std::unique_ptr<TEfficiency> psd_stk_match_eff_xtrl_tight;
+        std::unique_ptr<TEfficiency> psd_charge_eff_xtrl_tight;
+
+        std::unique_ptr<TEfficiency> trigger_eff_het_xtrl_loose;
+        std::unique_ptr<TEfficiency> maxrms_eff_xtrl_loose;
+        std::unique_ptr<TEfficiency> nbarlayer13_eff_xtrl_loose;
+        std::unique_ptr<TEfficiency> maxrms_and_nbarlayer13_eff_xtrl_loose;
+        std::unique_ptr<TEfficiency> track_selection_eff_xtrl_loose;
+        std::unique_ptr<TEfficiency> psd_stk_match_eff_xtrl_loose;
+        std::unique_ptr<TEfficiency> psd_charge_eff_xtrl_loose;
+
+        std::unique_ptr<TEfficiency> trigger_eff_het_bdt;
+        std::unique_ptr<TEfficiency> maxrms_eff_bdt;
+        std::unique_ptr<TEfficiency> nbarlayer13_eff_bdt;
+        std::unique_ptr<TEfficiency> maxrms_and_nbarlayer13_eff_bdt;
+        std::unique_ptr<TEfficiency> track_selection_eff_bdt;
+        std::unique_ptr<TEfficiency> psd_stk_match_eff_bdt;
+        std::unique_ptr<TEfficiency> psd_charge_eff_bdt;
+
+        if (TEfficiency::CheckConsistency(*h_trigger_efficiency_accepted_het_tight_xtrl, *h_trigger_efficiency_accepted_het_let_tight_xtrl))
+            trigger_eff_het_xtrl_tight = std::make_unique<TEfficiency>(*h_trigger_efficiency_accepted_het_tight_xtrl, *h_trigger_efficiency_accepted_het_let_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_maxrms_efficiency_accepted_tight_xtrl, *h_maxrms_efficiency_total_tight_xtrl))
+            maxrms_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_maxrms_efficiency_accepted_tight_xtrl, *h_maxrms_efficiency_total_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_nbarlayer13_efficiency_accepted_tight_xtrl, *h_nbarlayer13_efficiency_total_tight_xtrl))
+            nbarlayer13_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_nbarlayer13_efficiency_accepted_tight_xtrl, *h_nbarlayer13_efficiency_total_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl))
+            maxrms_and_nbarlayer13_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_track_efficiency_accepted_tight_xtrl, *h_track_efficiency_total_tight_xtrl))
+            track_selection_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_track_efficiency_accepted_tight_xtrl, *h_track_efficiency_total_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_psdstkmatch_efficiency_accepted_tight_xtrl, *h_psdstkmatch_efficiency_total_tight_xtrl))
+            psd_stk_match_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_psdstkmatch_efficiency_accepted_tight_xtrl, *h_psdstkmatch_efficiency_total_tight_xtrl);
+        
+        if (TEfficiency::CheckConsistency(*h_psdcharge_efficiency_accepted_tight_xtrl, *h_psdcharge_efficiency_total_tight_xtrl))
+            psd_charge_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_psdcharge_efficiency_accepted_tight_xtrl, *h_psdcharge_efficiency_total_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_trigger_efficiency_accepted_het_loose_xtrl, *h_trigger_efficiency_accepted_het_let_loose_xtrl))
+            trigger_eff_het_xtrl_loose = std::make_unique<TEfficiency>(*h_trigger_efficiency_accepted_het_loose_xtrl, *h_trigger_efficiency_accepted_het_let_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_maxrms_efficiency_accepted_loose_xtrl, *h_maxrms_efficiency_total_loose_xtrl))
+            maxrms_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_maxrms_efficiency_accepted_loose_xtrl, *h_maxrms_efficiency_total_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_nbarlayer13_efficiency_accepted_loose_xtrl, *h_nbarlayer13_efficiency_total_loose_xtrl))
+            nbarlayer13_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_nbarlayer13_efficiency_accepted_loose_xtrl, *h_nbarlayer13_efficiency_total_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl))
+            maxrms_and_nbarlayer13_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_track_efficiency_accepted_loose_xtrl, *h_track_efficiency_total_loose_xtrl))
+            track_selection_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_track_efficiency_accepted_loose_xtrl, *h_track_efficiency_total_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_psdstkmatch_efficiency_accepted_loose_xtrl, *h_psdstkmatch_efficiency_total_loose_xtrl))
+            psd_stk_match_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_psdstkmatch_efficiency_accepted_loose_xtrl, *h_psdstkmatch_efficiency_total_loose_xtrl);
+        
+        if (TEfficiency::CheckConsistency(*h_psdcharge_efficiency_accepted_loose_xtrl, *h_psdcharge_efficiency_total_loose_xtrl))
+            psd_charge_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_psdcharge_efficiency_accepted_loose_xtrl, *h_psdcharge_efficiency_total_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_trigger_efficiency_accepted_het_bdt, *h_trigger_efficiency_accepted_het_let_bdt))
+            trigger_eff_het_bdt = std::make_unique<TEfficiency>(*h_trigger_efficiency_accepted_het_bdt, *h_trigger_efficiency_accepted_het_let_bdt);
+        
+        if (TEfficiency::CheckConsistency(*h_maxrms_efficiency_accepted_bdt, *h_maxrms_efficiency_total_bdt))
+            maxrms_eff_bdt = std::make_unique<TEfficiency>(*h_maxrms_efficiency_accepted_bdt, *h_maxrms_efficiency_total_bdt);
+
+        if (TEfficiency::CheckConsistency(*h_nbarlayer13_efficiency_accepted_bdt, *h_nbarlayer13_efficiency_total_bdt))
+            nbarlayer13_eff_bdt = std::make_unique<TEfficiency>(*h_nbarlayer13_efficiency_accepted_bdt, *h_nbarlayer13_efficiency_total_bdt);
+
+        if (TEfficiency::CheckConsistency(*h_maxrms_and_nbarlayer13_efficiency_accepted_bdt, *h_maxrms_and_nbarlayer13_efficiency_total_bdt))
+            maxrms_and_nbarlayer13_eff_bdt = std::make_unique<TEfficiency>(*h_maxrms_and_nbarlayer13_efficiency_accepted_bdt, *h_maxrms_and_nbarlayer13_efficiency_total_bdt);
+
+        if (TEfficiency::CheckConsistency(*h_track_efficiency_accepted_bdt, *h_track_efficiency_total_bdt))
+            track_selection_eff_bdt = std::make_unique<TEfficiency>(*h_track_efficiency_accepted_bdt, *h_track_efficiency_total_bdt);
+
+        if (TEfficiency::CheckConsistency(*h_psdstkmatch_efficiency_accepted_bdt, *h_psdstkmatch_efficiency_total_bdt))
+            psd_stk_match_eff_bdt = std::make_unique<TEfficiency>(*h_psdstkmatch_efficiency_accepted_bdt, *h_psdstkmatch_efficiency_total_bdt);
+
+        if (TEfficiency::CheckConsistency(*h_psdcharge_efficiency_accepted_bdt, *h_psdcharge_efficiency_total_bdt))
+            psd_charge_eff_bdt = std::make_unique<TEfficiency>(*h_psdcharge_efficiency_accepted_bdt, *h_psdcharge_efficiency_total_bdt);
+
+        trigger_eff_het_xtrl_tight                  ->SetStatisticOption(TEfficiency::kBUniform);
+        maxrms_eff_xtrl_tight                       ->SetStatisticOption(TEfficiency::kBUniform);
+        nbarlayer13_eff_xtrl_tight                  ->SetStatisticOption(TEfficiency::kBUniform);
+        maxrms_and_nbarlayer13_eff_xtrl_tight       ->SetStatisticOption(TEfficiency::kBUniform);
+        track_selection_eff_xtrl_tight              ->SetStatisticOption(TEfficiency::kBUniform);
+        psd_stk_match_eff_xtrl_tight                ->SetStatisticOption(TEfficiency::kBUniform);
+        psd_charge_eff_xtrl_tight                   ->SetStatisticOption(TEfficiency::kBUniform);
+        trigger_eff_het_xtrl_loose                  ->SetStatisticOption(TEfficiency::kBUniform);
+        maxrms_eff_xtrl_loose                       ->SetStatisticOption(TEfficiency::kBUniform);
+        nbarlayer13_eff_xtrl_loose                  ->SetStatisticOption(TEfficiency::kBUniform);
+        maxrms_and_nbarlayer13_eff_xtrl_loose       ->SetStatisticOption(TEfficiency::kBUniform);
+        track_selection_eff_xtrl_loose              ->SetStatisticOption(TEfficiency::kBUniform);
+        psd_stk_match_eff_xtrl_loose                ->SetStatisticOption(TEfficiency::kBUniform);
+        psd_charge_eff_xtrl_loose                   ->SetStatisticOption(TEfficiency::kBUniform);
+
+        trigger_eff_het_bdt                         ->SetStatisticOption(TEfficiency::kBUniform);
+        maxrms_eff_bdt                              ->SetStatisticOption(TEfficiency::kBUniform);
+        nbarlayer13_eff_bdt                         ->SetStatisticOption(TEfficiency::kBUniform);
+        maxrms_and_nbarlayer13_eff_bdt              ->SetStatisticOption(TEfficiency::kBUniform);
+        track_selection_eff_bdt                     ->SetStatisticOption(TEfficiency::kBUniform);
+        psd_stk_match_eff_bdt                       ->SetStatisticOption(TEfficiency::kBUniform);
+        psd_charge_eff_bdt                          ->SetStatisticOption(TEfficiency::kBUniform);
+
+        trigger_eff_het_xtrl_tight                  ->SetName("trigger_eff_het_xtrl_tight");
+        maxrms_eff_xtrl_tight                       ->SetName("maxrms_eff_xtrl_tight");
+        nbarlayer13_eff_xtrl_tight                  ->SetName("nbarlayer13_eff_xtrl_tight");
+        maxrms_and_nbarlayer13_eff_xtrl_tight       ->SetName("maxrms_and_nbarlayer13_eff_xtrl_tight");
+        track_selection_eff_xtrl_tight              ->SetName("track_selection_eff_xtrl_tight");
+        psd_stk_match_eff_xtrl_tight                ->SetName("psd_stk_match_eff_xtrl_tight");
+        psd_charge_eff_xtrl_tight                   ->SetName("psd_charge_eff_xtrl_tight");
+        trigger_eff_het_xtrl_loose                  ->SetName("trigger_eff_het_xtrl_loose");
+        maxrms_eff_xtrl_loose                       ->SetName("maxrms_eff_xtrl_loose");
+        nbarlayer13_eff_xtrl_loose                  ->SetName("nbarlayer13_eff_xtrl_loose");
+        maxrms_and_nbarlayer13_eff_xtrl_loose       ->SetName("maxrms_and_nbarlayer13_eff_xtrl_loose");
+        track_selection_eff_xtrl_loose              ->SetName("track_selection_eff_xtrl_loose");
+        psd_stk_match_eff_xtrl_loose                ->SetName("psd_stk_match_eff_xtrl_loose");
+        psd_charge_eff_xtrl_loose                   ->SetName("psd_charge_eff_xtrl_loose");
+
+        trigger_eff_het_xtrl_tight                  ->SetTitle("trigger_eff_het_xtrl_tight");
+        maxrms_eff_xtrl_tight                       ->SetTitle("maxrms_eff_xtrl_tight");
+        nbarlayer13_eff_xtrl_tight                  ->SetTitle("nbarlayer13_eff_xtrl_tight");
+        maxrms_and_nbarlayer13_eff_xtrl_tight       ->SetTitle("maxrms_and_nbarlayer13_eff_xtrl_tight");
+        track_selection_eff_xtrl_tight              ->SetTitle("track_selection_eff_xtrl_tight");
+        psd_stk_match_eff_xtrl_tight                ->SetTitle("psd_stk_match_eff_xtrl_tight");
+        psd_charge_eff_xtrl_tight                   ->SetTitle("psd_charge_eff_xtrl_tight");
+        trigger_eff_het_xtrl_loose                  ->SetTitle("trigger_eff_het_xtrl_loose");
+        maxrms_eff_xtrl_loose                       ->SetTitle("maxrms_eff_xtrl_loose");
+        nbarlayer13_eff_xtrl_loose                  ->SetTitle("nbarlayer13_eff_xtrl_loose");
+        maxrms_and_nbarlayer13_eff_xtrl_loose       ->SetTitle("maxrms_and_nbarlayer13_eff_xtrl_loose");
+        track_selection_eff_xtrl_loose              ->SetTitle("track_selection_eff_xtrl_loose");
+        psd_stk_match_eff_xtrl_loose                ->SetTitle("psd_stk_match_eff_xtrl_loose");
+        psd_charge_eff_xtrl_loose                   ->SetTitle("psd_charge_eff_xtrl_loose");
+
+        trigger_eff_het_bdt                         ->SetName("trigger_eff_het_bdt");
+        maxrms_eff_bdt                              ->SetName("maxrms_eff_bdt");
+        nbarlayer13_eff_bdt                         ->SetName("nbarlayer13_eff_bdt");
+        maxrms_and_nbarlayer13_eff_bdt              ->SetName("maxrms_and_nbarlayer13_eff_bdt");
+        track_selection_eff_bdt                     ->SetName("track_selection_eff_bdt");
+        psd_stk_match_eff_bdt                       ->SetName("psd_stk_match_eff_bdt");
+        psd_charge_eff_bdt                          ->SetName("psd_charge_eff_bdt");
+
+        trigger_eff_het_bdt                         ->SetTitle("trigger_eff_het_bdt");
+        maxrms_eff_bdt                              ->SetTitle("maxrms_eff_bdt");
+        nbarlayer13_eff_bdt                         ->SetTitle("nbarlayer13_eff_bdt");
+        maxrms_and_nbarlayer13_eff_bdt              ->SetTitle("maxrms_and_nbarlayer13_eff_bdt");
+        track_selection_eff_bdt                     ->SetTitle("track_selection_eff_bdt");
+        psd_stk_match_eff_bdt                       ->SetTitle("psd_stk_match_eff_bdt");
+        psd_charge_eff_bdt                          ->SetTitle("psd_charge_eff_bdt");
+
+        // Write output TFile
+        TFile* outfile = TFile::Open(output_file, "RECREATE");
+        if (outfile->IsZombie()) {
+            std::cerr << "Error writing output ROOT file [" << output_file << "] \n\n";
+            exit(100);
+        }
+
+        outfile->mkdir("efficiencies");
+        outfile->cd("efficiencies");
+
+        trigger_eff_het_xtrl_tight                  ->Write();
+        maxrms_eff_xtrl_tight                       ->Write();
+        nbarlayer13_eff_xtrl_tight                  ->Write();
+        maxrms_and_nbarlayer13_eff_xtrl_tight       ->Write();
+        track_selection_eff_xtrl_tight              ->Write();
+        psd_stk_match_eff_xtrl_tight                ->Write();
+        psd_charge_eff_xtrl_tight                   ->Write();
+        trigger_eff_het_xtrl_loose                  ->Write();
+        maxrms_eff_xtrl_loose                       ->Write();
+        nbarlayer13_eff_xtrl_loose                  ->Write();
+        maxrms_and_nbarlayer13_eff_xtrl_loose       ->Write();
+        track_selection_eff_xtrl_loose              ->Write();
+        psd_stk_match_eff_xtrl_loose                ->Write();
+        psd_charge_eff_xtrl_loose                   ->Write();
+
+        trigger_eff_het_bdt                         ->Write();
+        maxrms_eff_bdt                              ->Write();
+        nbarlayer13_eff_bdt                         ->Write();
+        maxrms_and_nbarlayer13_eff_bdt              ->Write();
+        track_selection_eff_bdt                     ->Write();
+        psd_stk_match_eff_bdt                       ->Write();
+        psd_charge_eff_bdt                          ->Write();
+
+        outfile->mkdir("histos");
+        outfile->cd("histos");
+
+        h_trigger_efficiency_accepted_het_tight_xtrl                ->Write();
+        h_trigger_efficiency_accepted_het_let_tight_xtrl            ->Write();
+        h_maxrms_efficiency_accepted_tight_xtrl                     ->Write();
+        h_maxrms_efficiency_total_tight_xtrl                        ->Write();
+        h_nbarlayer13_efficiency_accepted_tight_xtrl                ->Write();
+        h_nbarlayer13_efficiency_total_tight_xtrl                   ->Write();
+        h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl     ->Write();
+        h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl        ->Write();
+        h_track_efficiency_accepted_tight_xtrl                      ->Write();
+        h_track_efficiency_total_tight_xtrl                         ->Write();
+        h_psdstkmatch_efficiency_accepted_tight_xtrl                ->Write();
+        h_psdstkmatch_efficiency_total_tight_xtrl                   ->Write();
+        h_psdcharge_efficiency_accepted_tight_xtrl                  ->Write();
+        h_psdcharge_efficiency_total_tight_xtrl                     ->Write();
+        h_trigger_efficiency_accepted_het_loose_xtrl                ->Write();
+        h_trigger_efficiency_accepted_het_let_loose_xtrl            ->Write();
+        h_maxrms_efficiency_accepted_loose_xtrl                     ->Write();
+        h_maxrms_efficiency_total_loose_xtrl                        ->Write();
+        h_nbarlayer13_efficiency_accepted_loose_xtrl                ->Write();
+        h_nbarlayer13_efficiency_total_loose_xtrl                   ->Write();
+        h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl     ->Write();
+        h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl        ->Write();
+        h_track_efficiency_accepted_loose_xtrl                      ->Write();
+        h_track_efficiency_total_loose_xtrl                         ->Write();
+        h_psdstkmatch_efficiency_accepted_loose_xtrl                ->Write();
+        h_psdstkmatch_efficiency_total_loose_xtrl                   ->Write();
+        h_psdcharge_efficiency_accepted_loose_xtrl                  ->Write();
+        h_psdcharge_efficiency_total_loose_xtrl                     ->Write();
+
+        h_trigger_efficiency_accepted_het_bdt                       ->Write();
+        h_trigger_efficiency_accepted_het_let_bdt                   ->Write();
+        h_maxrms_efficiency_accepted_bdt                            ->Write();
+        h_maxrms_efficiency_total_bdt                               ->Write();
+        h_nbarlayer13_efficiency_accepted_bdt                       ->Write();
+        h_nbarlayer13_efficiency_total_bdt                          ->Write();
+        h_maxrms_and_nbarlayer13_efficiency_accepted_bdt            ->Write();
+        h_maxrms_and_nbarlayer13_efficiency_total_bdt               ->Write();
+        h_track_efficiency_accepted_bdt                             ->Write();
+        h_track_efficiency_total_bdt                                ->Write();
+        h_psdstkmatch_efficiency_accepted_bdt                       ->Write();
+        h_psdstkmatch_efficiency_total_bdt                          ->Write();
+        h_psdcharge_efficiency_accepted_bdt                         ->Write();    
+        h_psdcharge_efficiency_total_bdt                            ->Write();
+
+        outfile->Close();
+
+        if (verbose)
+            std::cout << "\n\nOutput file has been written: [" << output_file << "]\n\n";
+    }

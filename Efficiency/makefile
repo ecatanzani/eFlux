@@ -49,7 +49,7 @@ LDFLAGS :=
 #add dips
 ifneq ($(DIPS_INCLUDE),)
 	CC_FLAGS += -I$(DIPS_INCLUDE) -I$(ANYOPT_INC)
-	LDFLAGS += $(DIPS_LIBS)
+	LDFLAGS += $(DIPS_LIBS) -lTMVA
 endif
 
 ####################################################

@@ -12,11 +12,14 @@
 struct in_args
 {
     // Vars
-    std::string wd;
 	std::string input_list;
+	std::string bdt_config_file;
 	std::string output_path;
-	bool verbose = false;
-	bool mc = false;
+	std::string energy_config_file;
+	std::string bdt_learning_method;
+	std::string cosine_regularize_path;
+	std::string box_cox_regularize_path;
+	bool verbose {false};
 
 	// Tasks
 	unsigned int threads = 1;
