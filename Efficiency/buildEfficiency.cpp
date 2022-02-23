@@ -104,8 +104,7 @@ void buildEfficiency(
     const char* input_file,
     const char* output_file,
     const char* energy_config_file,
-    const bool verbose,
-    const unsigned int threads=1) {
+    const bool verbose) {
 
         // Extract energy binning from config file
         auto energy_binning = parse_energy_config(energy_config_file);
