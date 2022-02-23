@@ -322,6 +322,18 @@ void buildEfficiency(const in_args input_args)
                                             .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
                                             .Histo1D({"h_psdcharge_efficiency_total_loose_xtrl", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
+    // XTRL vs STK cosine histo
+    auto h_xtrl_stk_cosine = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
+                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                            .Histo2D({"h_xtrl_stk_cosine", "XTRL vs STK direction; cosine STK direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 300}, "STK_bestTrack_costheta", "cos_xtrl_stk");
+    
+    auto h_xtrl_bgo_cosine = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
+                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                            .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                            .Histo2D({"h_xtrl_bgo_cosine", "XTRL vs BGO direction; cosine BGO direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 300}, "bgorec_cosine", "cos_xtrl_stk");
+
     TFile *output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
         std::cerr << "Error writing output ROOT file [" << input_args.output_path << "]\n\n";
@@ -370,6 +382,9 @@ void buildEfficiency(const in_args input_args)
     h_psdstkmatch_efficiency_total_loose_xtrl                           ->Write();
     h_psdcharge_efficiency_accepted_loose_xtrl                          ->Write();
     h_psdcharge_efficiency_total_loose_xtrl                             ->Write();
+
+    h_xtrl_stk_cosine                                                   ->Write();
+    h_xtrl_bgo_cosine                                                   ->Write();
 
     output_file->Close();
 }   
