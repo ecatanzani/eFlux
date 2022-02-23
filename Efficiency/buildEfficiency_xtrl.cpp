@@ -189,7 +189,7 @@ void buildEfficiency(
                                                 .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                                 .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                                 .Histo1D({"h_nbarlayer13_efficiency_total_tight_xtrl", "HET Trigger + nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
+        
         // MaxRms && nbarlayer13 histos
         auto h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1 && maxrms_and_nbarlayer13_efficiency_preselection_accepted==1 && HET_trigger==1")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -201,7 +201,7 @@ void buildEfficiency(
                                                 .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                                 .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                                 .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl", "HET Trigger + maxrms & nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
+       
         // Track Selection histos
         auto h_track_efficiency_accepted_tight_xtrl = fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1 && HET_trigger==1")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -274,7 +274,7 @@ void buildEfficiency(
                                                 .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                                 .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
                                                 .Histo1D({"h_nbarlayer13_efficiency_total_loose_xtrl", "HET Trigger + nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-                                                
+                                            
         // MaxRms && nbarlayer13 histos
         auto h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1 && maxrms_and_nbarlayer13_efficiency_preselection_accepted==1 && HET_trigger==1")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -323,6 +323,17 @@ void buildEfficiency(
                                                 .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
                                                 .Histo1D({"h_psdcharge_efficiency_total_loose_xtrl", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
+        // XTRL vs STK cosine histo
+        auto h_xtrl_stk_cosine = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
+                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                .Histo2D({"h_xtrl_stk_cosine", "XTRL vs STK direction; cosine STK direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 300}, "STK_bestTrack_costheta", "cos_xtrl_stk");
+        
+        auto h_xtrl_bgo_cosine = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
+                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                                .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                .Histo2D({"h_xtrl_bgo_cosine", "XTRL vs BGO direction; cosine BGO direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 300}, "bgorec_cosine", "cos_xtrl_stk");
 
         // Build efficiencies
         std::unique_ptr<TEfficiency> trigger_eff_het_xtrl_tight;
@@ -349,7 +360,7 @@ void buildEfficiency(
 
         if (TEfficiency::CheckConsistency(*h_nbarlayer13_efficiency_accepted_tight_xtrl, *h_nbarlayer13_efficiency_total_tight_xtrl))
             nbarlayer13_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_nbarlayer13_efficiency_accepted_tight_xtrl, *h_nbarlayer13_efficiency_total_tight_xtrl);
-
+        
         if (TEfficiency::CheckConsistency(*h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl))
             maxrms_and_nbarlayer13_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl);
 
@@ -370,7 +381,7 @@ void buildEfficiency(
 
         if (TEfficiency::CheckConsistency(*h_nbarlayer13_efficiency_accepted_loose_xtrl, *h_nbarlayer13_efficiency_total_loose_xtrl))
             nbarlayer13_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_nbarlayer13_efficiency_accepted_loose_xtrl, *h_nbarlayer13_efficiency_total_loose_xtrl);
-
+        
         if (TEfficiency::CheckConsistency(*h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl))
             maxrms_and_nbarlayer13_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl);
 
@@ -485,6 +496,9 @@ void buildEfficiency(
         h_psdstkmatch_efficiency_total_loose_xtrl                   ->Write();
         h_psdcharge_efficiency_accepted_loose_xtrl                  ->Write();
         h_psdcharge_efficiency_total_loose_xtrl                     ->Write();
+
+        h_xtrl_stk_cosine                                           ->Write();
+        h_xtrl_bgo_cosine                                           ->Write();
 
         outfile->Close();
 
