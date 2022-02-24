@@ -145,7 +145,7 @@ def main(args=None):
     # Prepare job folders
     for idx, days_info in enumerate(splitted_days_info):
         create_job_folder(days_info, opts.script, opts.output, idx, opts.verbose)
-        #submit_job(opts.output, idx, opts.verbose)
+        submit_job(opts.output, idx, opts.verbose)
 
 if __name__ == '__main__':
     main()
