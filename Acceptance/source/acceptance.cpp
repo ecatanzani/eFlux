@@ -39,7 +39,7 @@ void buildAcceptance(const in_args input_args)
         return status; 
     };
 
-    auto _data_fr_selected = _data_fr.Filter(energyFilter, {"simu_energy"}).Filter("evtfilter_correct_bgo_reco==1");
+    auto _data_fr_selected = _data_fr.Filter(energyFilter, {"simu_energy"});
 
     // Build acceptance histos
     auto h_gen = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
