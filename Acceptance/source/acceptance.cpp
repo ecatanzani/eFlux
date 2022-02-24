@@ -39,7 +39,7 @@ void buildAcceptance(const in_args input_args)
         return status; 
     };
 
-    auto _data_fr_selected = _data_fr.Filter(energyFilter, {"simu_energy"});
+    auto _data_fr_selected = _data_fr.Filter(energyFilter, {"simu_energy"}).Filter("evtfilter_correct_bgo_reco==1");
 
     // Build acceptance histos
     auto h_gen = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
@@ -48,9 +48,9 @@ void buildAcceptance(const in_args input_args)
                                             .Filter("evtfilter_geometric_before_trigger==true")
                                             .Histo1D({"h_geometric", "generated events - geometric cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
     auto h_geometric_trigger = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
-                                            .Filter("evtfilter_geometric_before_trigger==true")
-                                            .Filter("evtfilter_evt_triggered==true")
-                                            .Histo1D({"h_geometric_trigger", "generated events - geometric cut + trigger; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");                                        
+                                                .Filter("evtfilter_geometric_before_trigger==true")
+                                                .Filter("evtfilter_evt_triggered==true")
+                                                .Histo1D({"h_geometric_trigger", "generated events - geometric cut + trigger; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");                                        
     auto h_bgo_fiducial = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_BGO_fiducial==true")
                                                 .Histo1D({"h_bgo_fiducial", "generated events - BGO fiducial cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
