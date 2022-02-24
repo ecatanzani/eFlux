@@ -82,12 +82,14 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/64.");
+                                            .Define("trigger_w", []() -> double {return 1/64.;})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
     auto h_trigger_efficiency_accepted_het_over_unb_tight_xtrl = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/2048.");
+                                            .Define("trigger_w", []() -> double {return 1/2048.;})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     auto h_trigger_efficiency_accepted_het_let_tight_xtrl = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -106,12 +108,14 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Filter(bdt_cut, {"bdt_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/64.");
+                                            .Define("trigger_w", []() -> double {return 1/64.;})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
      auto h_trigger_efficiency_accepted_het_over_unb_bdt = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Filter(bdt_cut, {"bdt_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/2048.");
+                                            .Define("trigger_w", []() -> double {return 1/2048.;})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     auto h_trigger_efficiency_accepted_het_let_bdt = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -269,12 +273,14 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/64.");
+                                            .Define("trigger_w", []() -> double {return 1/64.;})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
     auto h_trigger_efficiency_accepted_het_over_unb_loose_xtrl = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/2048.");
+                                            .Define("trigger_w", []() -> double {return 1/2048.;})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
 
     auto h_trigger_efficiency_accepted_het_let_loose_xtrl = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
