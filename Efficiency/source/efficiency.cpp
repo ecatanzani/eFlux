@@ -376,7 +376,7 @@ void buildEfficiency(const in_args input_args)
     auto h_xtrl_stk_cosine_zoom = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
                             .Define("corr_energy_gev", "energy_corr * 0.001")
                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                            .Histo2D({"h_xtrl_stk_cosine_zoom", "XTRL vs STK direction; cosine STK direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 50}, "STK_bestTrack_costheta", "xtrl_evt");
+                            .Histo2D({"h_xtrl_stk_cosine_zoom", "XTRL vs STK direction; cosine STK direction #cos(#theta); xtrl", 100, 0, 1, 100, 0, 10}, "STK_bestTrack_costheta", "xtrl_evt");
     
     auto h_xtrl_bgo_cosine = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -388,7 +388,7 @@ void buildEfficiency(const in_args input_args)
                             .Define("corr_energy_gev", "energy_corr * 0.001")
                             .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                            .Histo2D({"h_xtrl_bgo_cosine_zoom", "XTRL vs BGO direction; cosine BGO direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 50}, "bgorec_cosine", "xtrl_evt");
+                            .Histo2D({"h_xtrl_bgo_cosine_zoom", "XTRL vs BGO direction; cosine BGO direction #cos(#theta); xtrl", 100, 0, 1, 100, 0, 10}, "bgorec_cosine", "xtrl_evt");
 
     TFile *output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
