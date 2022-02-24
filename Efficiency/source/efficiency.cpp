@@ -78,27 +78,53 @@ void buildEfficiency(const in_args input_args)
         std::cout << "\n\nAnalysis running\n\n";
         
     // Trigger histos
-    auto h_trigger_efficiency_accepted_het_tight_xtrl = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
+    auto h_trigger_efficiency_accepted_het_over_let_tight_xtrl = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_trigger_efficiency_accepted_het_let_tight_xtrl = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let)")
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/64.");
+    auto h_trigger_efficiency_accepted_het_over_unb_tight_xtrl = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_tight_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/2048.");
+
+    auto h_trigger_efficiency_accepted_het_let_tight_xtrl = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/64.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_tight_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
+    auto h_trigger_efficiency_accepted_het_unb_tight_xtrl = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/2048.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_unb_tight_xtrl", "UNB + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
     
-    auto h_trigger_efficiency_accepted_het_bdt = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
+    auto h_trigger_efficiency_accepted_het_over_let_bdt = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Filter(bdt_cut, {"bdt_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_trigger_efficiency_accepted_het_let_bdt = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let)")
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/64.");
+     auto h_trigger_efficiency_accepted_het_over_unb_bdt = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Filter(bdt_cut, {"bdt_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/2048.");
+
+    auto h_trigger_efficiency_accepted_het_let_bdt = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/64.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Filter(bdt_cut, {"bdt_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
+    auto h_trigger_efficiency_accepted_het_unb_bdt = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/2048.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Filter(bdt_cut, {"bdt_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_unb_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     // MaxRMS histos
     auto h_maxrms_efficiency_accepted_tight_xtrl = fr.Filter("maxrms_efficiency_preselection==1 && maxrms_efficiency_preselection_accepted==1 && HET_trigger==1")
@@ -239,17 +265,30 @@ void buildEfficiency(const in_args input_args)
                                             .Histo1D({"h_psdcharge_efficiency_total_bdt", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // Trigger histos
-    auto h_trigger_efficiency_accepted_het_loose_xtrl = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
+    auto h_trigger_efficiency_accepted_het_over_let_loose_xtrl = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_trigger_efficiency_accepted_het_let_loose_xtrl = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let)")
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/64.");
+    auto h_trigger_efficiency_accepted_het_over_unb_loose_xtrl = fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "1/2048.");
 
+
+    auto h_trigger_efficiency_accepted_het_let_loose_xtrl = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/64.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
+    auto h_trigger_efficiency_accepted_het_unb_loose_xtrl = fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/2048.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Filter(xtrl_loose_cut, {"energy", "xtrl_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_unb_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
     // MaxRMS histos
     auto h_maxrms_efficiency_accepted_loose_xtrl = fr.Filter("maxrms_efficiency_preselection==1 && maxrms_efficiency_preselection_accepted==1 && HET_trigger==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -327,6 +366,11 @@ void buildEfficiency(const in_args input_args)
                             .Define("corr_energy_gev", "energy_corr * 0.001")
                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                             .Histo2D({"h_xtrl_stk_cosine", "XTRL vs STK direction; cosine STK direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 300}, "STK_bestTrack_costheta", "xtrl_evt");
+
+    auto h_xtrl_stk_cosine_zoom = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
+                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                            .Histo2D({"h_xtrl_stk_cosine_zoom", "XTRL vs STK direction; cosine STK direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 50}, "STK_bestTrack_costheta", "xtrl_evt");
     
     auto h_xtrl_bgo_cosine = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -334,16 +378,26 @@ void buildEfficiency(const in_args input_args)
                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                             .Histo2D({"h_xtrl_bgo_cosine", "XTRL vs BGO direction; cosine BGO direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 300}, "bgorec_cosine", "xtrl_evt");
 
+    auto h_xtrl_bgo_cosine_zoom = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
+                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                            .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                            .Histo2D({"h_xtrl_bgo_cosine_zoom", "XTRL vs BGO direction; cosine BGO direction #cos(#theta); xtrl", 100, 0, 1, 300, 0, 50}, "bgorec_cosine", "xtrl_evt");
+
     TFile *output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
         std::cerr << "Error writing output ROOT file [" << input_args.output_path << "]\n\n";
         exit(100);
     }
 
-    h_trigger_efficiency_accepted_het_tight_xtrl                        ->Write();
+    h_trigger_efficiency_accepted_het_over_let_tight_xtrl               ->Write();
+    h_trigger_efficiency_accepted_het_over_unb_tight_xtrl               ->Write();
     h_trigger_efficiency_accepted_het_let_tight_xtrl                    ->Write();
-    h_trigger_efficiency_accepted_het_bdt                               ->Write();
+    h_trigger_efficiency_accepted_het_unb_tight_xtrl                    ->Write();
+    h_trigger_efficiency_accepted_het_over_let_bdt                      ->Write();
+    h_trigger_efficiency_accepted_het_over_unb_bdt                      ->Write();
     h_trigger_efficiency_accepted_het_let_bdt                           ->Write();
+    h_trigger_efficiency_accepted_het_unb_bdt                           ->Write();
     h_maxrms_efficiency_accepted_tight_xtrl                             ->Write();
     h_maxrms_efficiency_total_tight_xtrl                                ->Write();
     h_maxrms_efficiency_accepted_bdt                                    ->Write();
@@ -368,8 +422,10 @@ void buildEfficiency(const in_args input_args)
     h_psdcharge_efficiency_total_tight_xtrl                             ->Write();
     h_psdcharge_efficiency_accepted_bdt                                 ->Write();
     h_psdcharge_efficiency_total_bdt                                    ->Write();
-    h_trigger_efficiency_accepted_het_loose_xtrl                        ->Write();
+    h_trigger_efficiency_accepted_het_over_let_loose_xtrl               ->Write();
+    h_trigger_efficiency_accepted_het_over_unb_loose_xtrl               ->Write();
     h_trigger_efficiency_accepted_het_let_loose_xtrl                    ->Write();
+    h_trigger_efficiency_accepted_het_unb_loose_xtrl                    ->Write();
     h_maxrms_efficiency_accepted_loose_xtrl                             ->Write();
     h_maxrms_efficiency_total_loose_xtrl                                ->Write();
     h_nbarlayer13_efficiency_accepted_loose_xtrl                        ->Write();
@@ -385,6 +441,8 @@ void buildEfficiency(const in_args input_args)
 
     h_xtrl_stk_cosine                                                   ->Write();
     h_xtrl_bgo_cosine                                                   ->Write();
+    h_xtrl_stk_cosine_zoom                                              ->Write();
+    h_xtrl_bgo_cosine_zoom                                              ->Write();
 
     output_file->Close();
 }   
