@@ -113,13 +113,14 @@ void efficiency::Pipeline(
                         if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
                             if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
                                 if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
-                                {
-                                    output.psdcharge_efficiency_preselection = true;
-                                    if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
-                                        output.psdcharge_efficiency_preselection_accepted = true;
-                                    else
-                                        output.psdcharge_efficiency_preselection_notaccepted = true;
-                                }
+                                    if (stk_charge_cut(stkclusters, 11))
+                                    {
+                                        output.psdcharge_efficiency_preselection = true;
+                                        if (psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts))
+                                            output.psdcharge_efficiency_preselection_accepted = true;
+                                        else
+                                            output.psdcharge_efficiency_preselection_notaccepted = true;
+                                    }
     }
 
 const eff_output efficiency::GetEfficiencyOutput()

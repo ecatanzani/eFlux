@@ -298,7 +298,7 @@ protected:
 		const cuts_conf data_cuts);
 	const bool stk_charge_cut(
 		const std::shared_ptr<TClonesArray> stkclusters,
-		const cuts_conf data_cuts);
+		const double charge_cut);
 	const bool xtrl_tight_cut(
 		const double input_xtrl,
 		const double cut_value = 8.5);

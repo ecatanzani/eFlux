@@ -67,7 +67,7 @@ void DmpFilterContainer::Pipeline(
 						// **** stk charge cut ****
 						if (acuts.stk_charge) {
 							output.stk_charge_measurement = true;
-							output.stk_charge_cut = stk_charge_cut(stkclusters, cuts);
+							output.stk_charge_cut = stk_charge_cut(stkclusters, cuts.STK_charge);
 							output.all_cut *= output.stk_charge_cut;
 						}
 
@@ -105,7 +105,7 @@ void DmpFilterContainer::Pipeline(
 
 	if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts)) {
 		preselection_cuts.trackselection_cut = true;
-		if (stk_charge_cut(stkclusters, cuts))
+		if (stk_charge_cut(stkclusters, cuts.STK_charge))
 			preselection_cuts.stkcharge_cut = true;
 		if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo())) {
 			preselection_cuts.psdstkmatch_cut = true;
@@ -831,7 +831,7 @@ const bool DmpFilterContainer::psd_charge_cut(
 
 const bool DmpFilterContainer::stk_charge_cut(
 	const std::shared_ptr<TClonesArray> stkclusters,
-	const cuts_conf cuts)
+	const double charge_cut)
 {
 	bool passed_stk_charge_cut = false;
 
@@ -864,7 +864,7 @@ const bool DmpFilterContainer::stk_charge_cut(
 	auto mean_charge = 0.5 * (cluster_chargeX + cluster_chargeY);
 
 	// Check STK charge to select electrons
-	if (mean_charge < cuts.STK_charge)
+	if (mean_charge < charge_cut)
 		passed_stk_charge_cut = true;
 
 	return passed_stk_charge_cut;
