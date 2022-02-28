@@ -554,10 +554,6 @@ const bool DmpFilterContainer::track_selection_cut(
 		// Get the track
 		auto track = static_cast<DmpStkTrack *>(stktracks->ConstructedAt(trIdx));
 
-		// Reject tracks with not enough X and Y clusters
-		if (track->getNhitX() < cuts.track_X_clusters || track->getNhitY() < cuts.track_Y_clusters)
-			continue;
-
 		get_track_points(
 			track,
 			stkclusters,
@@ -565,33 +561,59 @@ const bool DmpFilterContainer::track_selection_cut(
 			track_nHoles,
 			event_best_track);
 
-		if (track_nHoles[0] > 1 || track_nHoles[1] > 1)
-			continue;
+		// Reject tracks with not enough X and Y clusters
+		if (track->getNhitX() < cuts.track_X_clusters || track->getNhitY() < cuts.track_Y_clusters) 
+		{
+			// At least 4 clusters track
+			if (track_nHoles[0] > 1 || track_nHoles[1] > 1)
+				continue;
 
-		// Find slope and intercept
-		track_slope[0] = track->getTrackParams().getSlopeX();
-		track_slope[1] = track->getTrackParams().getSlopeY();
-		track_intercept[0] = track->getTrackParams().getInterceptX();
-		track_intercept[1] = track->getTrackParams().getInterceptY();
-		TVector3 trackDirection = (track->getDirection()).Unit();
+			// Find slope and intercept
+			track_slope[0] = track->getTrackParams().getSlopeX();
+			track_slope[1] = track->getTrackParams().getSlopeY();
+			track_intercept[0] = track->getTrackParams().getInterceptX();
+			track_intercept[1] = track->getTrackParams().getInterceptY();
+			TVector3 trackDirection = (track->getDirection()).Unit();
 
-		// Extrapolate to the top of BGO
-		for (int coord = 0; coord < 2; ++coord)
-			extr_BGO_top[coord] = track_slope[coord] * BGO_TopZ + track_intercept[coord];
+			// Extrapolate to the top of BGO
+			for (int coord = 0; coord < 2; ++coord)
+				extr_BGO_top[coord] = track_slope[coord] * BGO_TopZ + track_intercept[coord];
 
-		// Evaluate distance between Top STK and BGO points
-		double dxTop = extr_BGO_top[0] - bgoRecEntrance[0];
-		double dyTop = extr_BGO_top[1] - bgoRecEntrance[1];
-		double drTop = sqrt(pow(dxTop, 2) + pow(dyTop, 2));
-		// Evaluate angular distance between STK track and BGO Rec track
-		double dAngleTrackBgoRec = trackDirection.Angle(bgoRecDirection) * TMath::RadToDeg();
+			// Evaluate distance between Top STK and BGO points
+			double dxTop = extr_BGO_top[0] - bgoRecEntrance[0];
+			double dyTop = extr_BGO_top[1] - bgoRecEntrance[1];
+			double drTop = sqrt(pow(dxTop, 2) + pow(dyTop, 2));
+			// Evaluate angular distance between STK track and BGO Rec track
+			double dAngleTrackBgoRec = trackDirection.Angle(bgoRecDirection) * TMath::RadToDeg();
 
-		if (drTop > cuts.STK_BGO_delta_position)
-			continue;
-		if (dAngleTrackBgoRec > cuts.STK_BGO_delta_track)
-			continue;
+			if (drTop > cuts.STK_BGO_delta_position)
+				continue;
+			if (dAngleTrackBgoRec > cuts.STK_BGO_delta_track)
+				continue;
 
-		selectedTracks.push_back(track);
+			selectedTracks.push_back(track);
+		}
+		else 
+		{
+			output.three_cluster_only_track = true;
+			// Special threatment for 3 clusters track
+			if (track->getNhitX() < cuts.track_X_clusters)
+				if (track_nHoles[0])
+					continue;
+			
+			if (track->getNhitY() < cuts.track_Y_clusters)
+				if (track_nHoles[1])
+					continue;
+			
+			unsigned int unmatched_hit {0};
+			for (int ip=0; ip < track->GetNPoints(); ++ip)
+				if (!(track->getHitMeasX(ip) > -99999 && track->getHitMeasY(ip) > -99999))
+					++unmatched_hit;
+
+			if (unmatched_hit>1)
+				continue;				
+		}
+		
 	}
 
 	// Sort selected tracks vector
@@ -667,10 +689,29 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 		}
 	}
 
-	if (fabs(clu_matching.dxCloPsdClu_track[0]) < cuts.STK_PSD_delta_position)
-		clu_matching.Y_match = true;
-	if (fabs(clu_matching.dxCloPsdClu_track[1]) < cuts.STK_PSD_delta_position)
-		clu_matching.X_match = true;
+	if (output.three_cluster_only_track)
+	{
+		if (fabs(clu_matching.dxCloPsdClu_track[0]) < 60)
+		{
+			clu_matching.Y_match = true;
+		}
+		if (fabs(clu_matching.dxCloPsdClu_track[1]) < 60)
+		{
+			clu_matching.X_match = true;
+		}
+	}
+	else 
+	{
+		if (fabs(clu_matching.dxCloPsdClu_track[0]) < cuts.STK_PSD_delta_position)
+		{
+			clu_matching.Y_match = true;
+		}
+
+		if (fabs(clu_matching.dxCloPsdClu_track[1]) < cuts.STK_PSD_delta_position)
+		{
+			clu_matching.X_match = true;
+		}
+	}
 
 	passed_stk_psd_match = clu_matching.X_match || clu_matching.Y_match ? true : false;
 	return passed_stk_psd_match;

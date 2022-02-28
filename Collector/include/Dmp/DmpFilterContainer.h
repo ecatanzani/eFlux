@@ -116,6 +116,7 @@ struct filter_output
 	bool nBarLayer13_cut 							{false};
 	bool maxRms_cut 								{false};
 	bool track_selection_cut 						{false};
+	bool three_cluster_only_track					{false};
 	bool psd_stk_match_cut 							{false};
 	bool psd_charge_cut 							{false};
 	bool stk_charge_cut 							{false};
