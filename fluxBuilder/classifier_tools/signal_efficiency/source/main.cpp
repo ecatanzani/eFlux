@@ -1,6 +1,6 @@
 #include "main.h"
-#include "bdt.h"
 #include "utils.h"
+#include "signal.h"
 
 int main(int argc, char **argv)
 {
@@ -13,6 +13,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -h  --help                  .......... Prints this help");
 	opt.addUsage(" -i  --input                 .......... <path_to_input_list>                                 .......... (*) Input file list");
 	opt.addUsage(" -c  --config                .......... <path_to_software_config_dir>                        .......... (*) eFlux energy config file");
+	opt.addUsage(" -f  --function              .......... <path_to_ROOT_correction_file>                       .......... (*) ROOT efficiency correction file");
 	opt.addUsage(" -o  --output                .......... <path_to_output_TFile>                               .......... Output ROOT TFile");
 	opt.addUsage(" -d  --outputdir             .......... <path_to_output_TFile_dir>                           .......... Output ROOT TFile directory");
 	opt.addUsage(" -v  --verbose               .......... Verbose output");
@@ -26,6 +27,7 @@ int main(int argc, char **argv)
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
 	opt.setOption("config", 'c');
+	opt.setOption("function", 'f');
 	opt.setOption("output", 'o');
 	opt.setOption("outputdir", 'd');
 	opt.setFlag("verbose", 'v');
@@ -50,6 +52,8 @@ int main(int argc, char **argv)
 		input_args.input_list = opt.getValue('i');
 	if (opt.getValue("config") || opt.getValue('c'))
 		input_args.energy_config_file = opt.getValue('c');
+	if (opt.getValue("function") || opt.getValue('f'))
+		input_args.eff_corr_function = opt.getValue('f');
 	if (opt.getValue("output") || opt.getValue('o'))
 		input_args.output_path = expand_output_path(opt, opt.getValue('o'));
 	if (opt.getValue("outputdir") || opt.getValue('d'))
@@ -60,7 +64,7 @@ int main(int argc, char **argv)
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 
 	if (!input_args.output_path.empty())
-		bdt_selection(input_args);
+		signal_efficiency(input_args);
 	else
 	{
 		std::cerr << "\n\nError ! No output path has been specified...\n\n";
