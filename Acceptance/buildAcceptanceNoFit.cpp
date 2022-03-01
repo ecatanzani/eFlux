@@ -126,6 +126,11 @@ void buildAcceptance(
         exit(100);
     }
 
+    h_geometric_factor->Write();
+    h_acc_geometric_trigger->Write();
+    h_acc_bgo_fiducial->Write();
+    h_acc_all_cut->Write();
+
     gr_geometric_factor.Write();
     gr_acc_geometric_trigger.Write();
     gr_acc_bgo_fiducial.Write();

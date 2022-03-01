@@ -24,8 +24,8 @@ ANYOPT_INC = $(TOP)/../../../deps/AnyOption
 
 DEBUG_DIR    = Debug/obj
 RELEASE_DIR  = Release/obj
-DEBUG_PROG   = Debug/bdtSelection
-RELEASE_PROG = Release/bdtSelection
+DEBUG_PROG   = Debug/signalSelection
+RELEASE_PROG = Release/signalSelection
 
 # Don't compile specific files
 FILTER := 

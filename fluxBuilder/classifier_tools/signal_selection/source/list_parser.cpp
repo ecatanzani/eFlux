@@ -14,7 +14,7 @@ inline const std::string get_tree_name(const std::string stream) {
     for (TObject* keyAsObject : *input_file->GetListOfKeys()) {
         auto key = dynamic_cast<TKey*>(keyAsObject);
         if (!strcmp(key->GetClassName(), "TTree")) {
-            if (!strcmp(key->GetName(), "electron_tree")) {
+            if (!strcmp(key->GetName(), "total_tree")) {
                 tree_name = static_cast<std::string>(key->GetName());
                 break;
             }

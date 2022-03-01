@@ -1,6 +1,6 @@
 #include "main.h"
-#include "bdt.h"
 #include "utils.h"
+#include "signal.h"
 
 int main(int argc, char **argv)
 {
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 		input_args.threads =  std::stoul(opt.getValue('p'), nullptr, 0);
 
 	if (!input_args.output_path.empty())
-		bdt_selection(input_args);
+		signal_selection(input_args);
 	else
 	{
 		std::cerr << "\n\nError ! No output path has been specified...\n\n";

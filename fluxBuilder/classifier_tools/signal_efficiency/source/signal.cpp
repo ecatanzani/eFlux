@@ -80,6 +80,10 @@ void signal_efficiency(in_args input_args) {
         return cut_corr;
     };
 
+    auto xtrl_loose_cut = [] (const double raw_energy_gev) -> double {
+        return 3*pow(log10(raw_energy_gev/200), 2) + 12;
+    };
+
     const double signal_spectral_index = -3;
     auto get_weight = [signal_spectral_index, &energy_binning] (const double energy_gev) -> double {
         return std::pow(energy_gev, signal_spectral_index+1)*std::pow(energy_binning[0], fabs(signal_spectral_index+1));
@@ -87,17 +91,31 @@ void signal_efficiency(in_args input_args) {
 
     if (input_args.verbose) std::cout << "\n\nAnlysis running...\n\n";
 
-    auto h_signal_not_passed = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
+    auto h_bdt_signal_not_passed = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
                                     .Define("simu_energy_gev", "simu_energy * 0.001")
                                     .Define("evt_w", get_weight, {"simu_energy_gev"})
                                     .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                     .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"tmva_classifier", "bdt_cut"})
-                                    .Histo1D<double, double>({"h_signal_not_passed", "BDT selected events; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "evt_w");
+                                    .Histo1D<double, double>({"h_bdt_signal_not_passed", "BDT event selection; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "evt_w");
+
+    auto h_xtrl_tight_signal_not_passed = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("simu_energy_gev", "simu_energy * 0.001")
+                                    .Define("evt_w", get_weight, {"simu_energy_gev"})
+                                    .Filter("xtrl>8.5")
+                                    .Histo1D<double, double>({"h_xtrl_tight_signal_not_passed", "Event Selection - not XTRL tight; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "evt_w");
+
+    auto h_xtrl_loose_signal_not_passed = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("simu_energy_gev", "simu_energy * 0.001")
+                                    .Define("evt_w", get_weight, {"simu_energy_gev"})
+                                    .Define("raw_energy_gev", "energy * 0.001")
+                                    .Define("xtrl_loose_cut", xtrl_loose_cut, {"raw_energy_gev"})
+                                    .Filter("xtrl>xtrl_loose_cut")
+                                    .Histo1D<double, double>({"h_xtrl_loose_signal_not_passed", "Event Selection - not XTRL loose; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "evt_w"); 
 
     auto h_signal = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
                             .Define("simu_energy_gev", "simu_energy * 0.001")
                             .Define("evt_w", get_weight, {"simu_energy_gev"})
-                            .Histo1D<double>({"h_signal", "BDT selected events; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "evt_w");
+                            .Histo1D<double>({"h_signal", "Signal Total Events; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "evt_w");
 
     TFile* outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (!outfile->IsOpen()) {
@@ -105,8 +123,10 @@ void signal_efficiency(in_args input_args) {
         exit(100);
     }
 
-    h_signal_not_passed->Write();
-    h_signal->Write();
+    h_bdt_signal_not_passed             ->Write();
+    h_xtrl_tight_signal_not_passed      ->Write();
+    h_xtrl_loose_signal_not_passed      ->Write();
+    h_signal                            ->Write();
     
     outfile->Close();
 }
