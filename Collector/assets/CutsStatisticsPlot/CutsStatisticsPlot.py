@@ -16,7 +16,7 @@ def GetROOTTreeName(filename: str) -> str:
     return tree_name
 
 
-def BuildPlot(input_dir: str, output_file: str, verbose: bool):
+def BuildPlot(input_dir: str, output_file: str, raw_only: bool, verbose: bool):
     stats = {
         'dates': [],
         'raw_events': [],
@@ -61,16 +61,19 @@ def BuildPlot(input_dir: str, output_file: str, verbose: bool):
     # build the histo
     rcParams.update({'figure.autolayout': True})
     plt.plot(stats['dates'], stats['raw_events'], label="total counts", color="dimgray")
-    plt.plot(stats['dates'], stats['bgo_fiducial'], label="BGO fiducial cut", color="cornflowerblue")
-    plt.plot(stats['dates'], stats['nbarlayer13'], label="nBarLayer13 cut", color="darkorange")
-    plt.plot(stats['dates'], stats['maxrms'], label="max RMS cut", color="forestgreen")
-    plt.plot(stats['dates'], stats['track_selection'], label="Track Selection cut", color="crimson")
-    plt.plot(stats['dates'], stats['psd_stk_match'], label="PSD/STK match cut", color="blueviolet")
-    plt.plot(stats['dates'], stats['psd_charge'], label="PSD charge cut", color="saddlebrown")
-
+    if not raw_only:
+        plt.plot(stats['dates'], stats['bgo_fiducial'], label="BGO fiducial cut", color="cornflowerblue")
+        plt.plot(stats['dates'], stats['nbarlayer13'], label="nBarLayer13 cut", color="darkorange")
+        plt.plot(stats['dates'], stats['maxrms'], label="max RMS cut", color="forestgreen")
+        plt.plot(stats['dates'], stats['track_selection'], label="Track Selection cut", color="crimson")
+        plt.plot(stats['dates'], stats['psd_stk_match'], label="PSD/STK match cut", color="blueviolet")
+        plt.plot(stats['dates'], stats['psd_charge'], label="PSD charge cut", color="saddlebrown")
+        
+        plt.yscale('log')
+        plt.ylim(10, 1e+8)
+    else:
+        plt.ylim(0, 1e+7)
     plt.legend(bbox_to_anchor=(1.05, 0.5), loc='center left')
-    plt.yscale('log')
-    plt.ylim(10, 1e+8)
     plt.ylabel("counts/day")
     plt.savefig(output_file)
     
@@ -82,12 +85,14 @@ def main(args=None):
                         dest='input', help='input directory')
     parser.add_argument("-o", "--output", type=str,
                         dest='output', help='output file name')
+    parser.add_argument("-r", "--raw-only", dest='raw_only', default=False,
+                        action='store_true', help='Build plot with only RAW event counts')
     parser.add_argument("-v", "--verbose", dest='verbose', default=False,
                         action='store_true', help='run in high verbosity mode')
 
     opts = parser.parse_args(args)
     
-    BuildPlot(opts.input, opts.output, opts.verbose)
+    BuildPlot(opts.input, opts.output, opts.raw_only, opts.verbose)
 
 if __name__ == '__main__':
     main()
