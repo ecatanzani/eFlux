@@ -22,18 +22,28 @@ inline std::shared_ptr<TH1D> GetHistoFromFile(const char* path, const char* hist
 
 void buildBackgrounndEstimation(
     const char* rejected_proton_data,
-    const char* background_proton_fraction,
+    const char* bdt_background_fraction,
+    const char* xtrl_tight_background_fraction,
+    const char* xtrl_loose_background_fraction,
     const char* output_file,
     const bool verbose) {
 
         if (verbose)
             std::cout << "\n\nReading input files... " << std::endl;
 
-        auto h_proton_fraction = GetHistoFromFile(background_proton_fraction, "h_proton_fraction", verbose);
-        auto h_proton_rejected = GetHistoFromFile(rejected_proton_data, "h_proton_not_passed", verbose);
+        auto h_bdt_proton_fraction              = GetHistoFromFile(bdt_background_fraction, "h_bdt_proton_fraction", verbose);
+        auto h_xtrl_tight_proton_fraction       = GetHistoFromFile(xtrl_tight_background_fraction, "h_xtrl_tight_proton_fraction", verbose);
+        auto h_xtrl_loose_proton_fraction       = GetHistoFromFile(xtrl_loose_background_fraction, "h_xtrl_loose_proton_fraction", verbose);
+        auto h_bdt_proton_not_passed            = GetHistoFromFile(rejected_proton_data, "h_proton_not_passed", verbose);
+        auto h_xtrl_proton_not_passed           = GetHistoFromFile(rejected_proton_data, "h_xtrl_proton_not_passed", verbose);
+        
+        auto h_bdt_background                   = static_cast<TH1D*>(h_bdt_proton_not_passed->Clone("h_bdt_background"));
+        auto h_xtrl_tight_background            = static_cast<TH1D*>(h_xtrl_proton_not_passed->Clone("h_xtrl_tight_background"));
+        auto h_xtrl_loose_background            = static_cast<TH1D*>(h_xtrl_proton_not_passed->Clone("h_xtrl_loose_background"));
 
-        auto h_background = static_cast<TH1D*>(h_proton_rejected->Clone("h_background"));
-        h_background->Multiply(h_proton_fraction.get());
+        h_bdt_background                        ->Multiply(h_bdt_proton_fraction.get());
+        h_xtrl_tight_background                 ->Multiply(h_xtrl_tight_proton_fraction.get());
+        h_xtrl_loose_background                 ->Multiply(h_xtrl_loose_proton_fraction.get());
 
         TFile* outfile = TFile::Open(output_file, "RECREATE");
         if (!outfile->IsOpen()) {
@@ -41,9 +51,9 @@ void buildBackgrounndEstimation(
             exit(100);
         }
         
-        h_proton_fraction->Write();
-        h_proton_rejected->Write();
-        h_background->Write();
+        h_bdt_background                        ->Write();
+        h_xtrl_tight_background                 ->Write();
+        h_xtrl_loose_background                 ->Write();
 
         outfile->Close();
 
