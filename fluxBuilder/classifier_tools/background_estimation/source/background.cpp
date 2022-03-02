@@ -42,7 +42,7 @@ void background_estimation(in_args input_args) {
     auto h_bdt_proton_not_passed = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
                                         .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev"})
                                         .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"tmva_classifier", "bdt_cut"})
-                                        .Histo1D<double>({"h_proton_not_passed", "BDT selected events; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev");
+                                        .Histo1D<double>({"h_bdt_proton_not_passed", "BDT selected events; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev");
 
     auto h_xtrl_proton_not_passed = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
                                         .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev"})
