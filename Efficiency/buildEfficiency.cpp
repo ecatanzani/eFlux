@@ -396,22 +396,22 @@ void buildEfficiency(
         psd_stk_match_eff_xtrl_loose                ->SetName("psd_stk_match_eff_xtrl_loose");
         psd_charge_eff_xtrl_loose                   ->SetName("psd_charge_eff_xtrl_loose");
 
-        trigger_eff_het_over_let_xtrl_tight         ->SetTitle("trigger_eff_het_over_let_xtrl_tight");
-        trigger_eff_het_over_unb_xtrl_tight         ->SetTitle("trigger_eff_het_over_unb_xtrl_tight");
-        maxrms_eff_xtrl_tight                       ->SetTitle("maxrms_eff_xtrl_tight");
-        nbarlayer13_eff_xtrl_tight                  ->SetTitle("nbarlayer13_eff_xtrl_tight");
-        maxrms_and_nbarlayer13_eff_xtrl_tight       ->SetTitle("maxrms_and_nbarlayer13_eff_xtrl_tight");
-        track_selection_eff_xtrl_tight              ->SetTitle("track_selection_eff_xtrl_tight");
-        psd_stk_match_eff_xtrl_tight                ->SetTitle("psd_stk_match_eff_xtrl_tight");
-        psd_charge_eff_xtrl_tight                   ->SetTitle("psd_charge_eff_xtrl_tight");
-        trigger_eff_het_over_let_xtrl_loose         ->SetTitle("trigger_eff_het_over_let_xtrl_loose");
-        trigger_eff_het_over_unb_xtrl_loose         ->SetTitle("trigger_eff_het_over_unb_xtrl_loose");
-        maxrms_eff_xtrl_loose                       ->SetTitle("maxrms_eff_xtrl_loose");
-        nbarlayer13_eff_xtrl_loose                  ->SetTitle("nbarlayer13_eff_xtrl_loose");
-        maxrms_and_nbarlayer13_eff_xtrl_loose       ->SetTitle("maxrms_and_nbarlayer13_eff_xtrl_loose");
-        track_selection_eff_xtrl_loose              ->SetTitle("track_selection_eff_xtrl_loose");
-        psd_stk_match_eff_xtrl_loose                ->SetTitle("psd_stk_match_eff_xtrl_loose");
-        psd_charge_eff_xtrl_loose                   ->SetTitle("psd_charge_eff_xtrl_loose");
+        trigger_eff_het_over_let_xtrl_tight         ->SetTitle("trigger_eff_het_over_let_xtrl_tight; Energy [GeV]; efficiency");
+        trigger_eff_het_over_unb_xtrl_tight         ->SetTitle("trigger_eff_het_over_unb_xtrl_tight; Energy [GeV]; efficiency");
+        maxrms_eff_xtrl_tight                       ->SetTitle("maxrms_eff_xtrl_tight; Energy [GeV]; efficiency");
+        nbarlayer13_eff_xtrl_tight                  ->SetTitle("nbarlayer13_eff_xtrl_tight; Energy [GeV]; efficiency");
+        maxrms_and_nbarlayer13_eff_xtrl_tight       ->SetTitle("maxrms_and_nbarlayer13_eff_xtrl_tight; Energy [GeV]; efficiency");
+        track_selection_eff_xtrl_tight              ->SetTitle("track_selection_eff_xtrl_tight; Energy [GeV]; efficiency");
+        psd_stk_match_eff_xtrl_tight                ->SetTitle("psd_stk_match_eff_xtrl_tight; Energy [GeV]; efficiency");
+        psd_charge_eff_xtrl_tight                   ->SetTitle("psd_charge_eff_xtrl_tight; Energy [GeV]; efficiency");
+        trigger_eff_het_over_let_xtrl_loose         ->SetTitle("trigger_eff_het_over_let_xtrl_loose; Energy [GeV]; efficiency");
+        trigger_eff_het_over_unb_xtrl_loose         ->SetTitle("trigger_eff_het_over_unb_xtrl_loose; Energy [GeV]; efficiency");
+        maxrms_eff_xtrl_loose                       ->SetTitle("maxrms_eff_xtrl_loose; Energy [GeV]; efficiency");
+        nbarlayer13_eff_xtrl_loose                  ->SetTitle("nbarlayer13_eff_xtrl_loose; Energy [GeV]; efficiency");
+        maxrms_and_nbarlayer13_eff_xtrl_loose       ->SetTitle("maxrms_and_nbarlayer13_eff_xtrl_loose; Energy [GeV]; efficiency");
+        track_selection_eff_xtrl_loose              ->SetTitle("track_selection_eff_xtrl_loose; Energy [GeV]; efficiency");
+        psd_stk_match_eff_xtrl_loose                ->SetTitle("psd_stk_match_eff_xtrl_loose; Energy [GeV]; efficiency");
+        psd_charge_eff_xtrl_loose                   ->SetTitle("psd_charge_eff_xtrl_loose; Energy [GeV]; efficiency");
 
         trigger_eff_het_over_let_bdt                ->SetName("trigger_eff_het_over_let_bdt");
         trigger_eff_het_over_unb_bdt                ->SetName("trigger_eff_het_over_unb_bdt");
@@ -422,14 +422,14 @@ void buildEfficiency(
         psd_stk_match_eff_bdt                       ->SetName("psd_stk_match_eff_bdt");
         psd_charge_eff_bdt                          ->SetName("psd_charge_eff_bdt");
 
-        trigger_eff_het_over_let_bdt                ->SetTitle("trigger_eff_het_over_let_bdt");
-        trigger_eff_het_over_unb_bdt                ->SetTitle("trigger_eff_het_over_unb_bdt");
-        maxrms_eff_bdt                              ->SetTitle("maxrms_eff_bdt");
-        nbarlayer13_eff_bdt                         ->SetTitle("nbarlayer13_eff_bdt");
-        maxrms_and_nbarlayer13_eff_bdt              ->SetTitle("maxrms_and_nbarlayer13_eff_bdt");
-        track_selection_eff_bdt                     ->SetTitle("track_selection_eff_bdt");
-        psd_stk_match_eff_bdt                       ->SetTitle("psd_stk_match_eff_bdt");
-        psd_charge_eff_bdt                          ->SetTitle("psd_charge_eff_bdt");
+        trigger_eff_het_over_let_bdt                ->SetTitle("trigger_eff_het_over_let_bdt; Energy [GeV]; efficiency");
+        trigger_eff_het_over_unb_bdt                ->SetTitle("trigger_eff_het_over_unb_bdt; Energy [GeV]; efficiency");
+        maxrms_eff_bdt                              ->SetTitle("maxrms_eff_bdt; Energy [GeV]; efficiency");
+        nbarlayer13_eff_bdt                         ->SetTitle("nbarlayer13_eff_bdt; Energy [GeV]; efficiency");
+        maxrms_and_nbarlayer13_eff_bdt              ->SetTitle("maxrms_and_nbarlayer13_eff_bdt; Energy [GeV]; efficiency");
+        track_selection_eff_bdt                     ->SetTitle("track_selection_eff_bdt; Energy [GeV]; efficiency");
+        psd_stk_match_eff_bdt                       ->SetTitle("psd_stk_match_eff_bdt; Energy [GeV]; efficiency");
+        psd_charge_eff_bdt                          ->SetTitle("psd_charge_eff_bdt; Energy [GeV]; efficiency");
 
         // Write output TFile
         TFile* outfile = TFile::Open(output_file, "RECREATE");
