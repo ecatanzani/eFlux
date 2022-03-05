@@ -54,18 +54,33 @@ void buildAcceptance(const in_args input_args)
     auto h_bgo_fiducial = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_BGO_fiducial==true")
                                                 .Histo1D({"h_bgo_fiducial", "generated events - BGO fiducial cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
-    
+    auto h_nBarLayer13 = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_nBarLayer13_cut==true")
+                                                .Histo1D({"h_nBarLayer13", "generated events - nBarLayer13 cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+    auto h_maxrms = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_maxRms_cut==true")
+                                                .Histo1D({"h_maxrms", "generated events - max RMS cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+    auto h_trackselection = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_track_selection_cut==true")
+                                                .Histo1D({"h_trackselection", "generated events - Track Selection cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+    auto h_psdstkmatch = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_psd_stk_match_cut==true")
+                                                .Histo1D({"h_psdstkmatch", "generated events - PSD/STK match cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
     auto h_all_cut = _NO_STK_CHARGE ? _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_psd_charge_cut==true")
                                                 .Histo1D({"h_all_cut", "generated events - all cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev") :  _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_all_cut==true")
                                                 .Histo1D({"h_all_cut", "generated events - all cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
 
-    h_gen->Sumw2();
-    h_geometric->Sumw2();
-    h_geometric_trigger->Sumw2();
-    h_bgo_fiducial->Sumw2();
-    h_all_cut->Sumw2();
+    h_gen                   ->Sumw2();
+    h_geometric             ->Sumw2();
+    h_geometric_trigger     ->Sumw2();
+    h_bgo_fiducial          ->Sumw2();
+    h_nBarLayer13           ->Sumw2();
+    h_maxrms                ->Sumw2();
+    h_trackselection        ->Sumw2();
+    h_psdstkmatch           ->Sumw2();
+    h_all_cut               ->Sumw2();
 
     TFile* outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (outfile->IsZombie())
@@ -74,11 +89,15 @@ void buildAcceptance(const in_args input_args)
         exit(100);
     }
 
-    h_gen->Write();
-    h_geometric->Write();
-    h_geometric_trigger->Write();
-    h_bgo_fiducial->Write();
-    h_all_cut->Write();
+    h_gen                   ->Write();
+    h_geometric             ->Write();
+    h_geometric_trigger     ->Write();
+    h_bgo_fiducial          ->Write();
+    h_nBarLayer13           ->Write();
+    h_maxrms                ->Write();
+    h_trackselection        ->Write();
+    h_psdstkmatch           ->Write();
+    h_all_cut               ->Write();
 
     outfile->Close();
 
