@@ -590,8 +590,6 @@ const bool DmpFilterContainer::track_selection_cut(
 				continue;
 			if (dAngleTrackBgoRec > cuts.STK_BGO_delta_track)
 				continue;
-
-			selectedTracks.push_back(track);
 		}
 		else 
 		{
@@ -614,6 +612,8 @@ const bool DmpFilterContainer::track_selection_cut(
 				continue;				
 		}
 		
+		selectedTracks.push_back(track);
+	
 	}
 
 	// Sort selected tracks vector
@@ -766,7 +766,7 @@ const bool DmpFilterContainer::psd_charge_cut(
 			psd_chargeX_ecor = sqrt(energy_ClusterXPsdECor * track_correction * PsdEC_tmp);
 		}
 
-		// Fill PSD ccharge struct
+		// Fill PSD charge struct
 		extracted_psd_charge.chargeX = psd_chargeX;
 		extracted_psd_charge.chargeY = psd_chargeY;
 
