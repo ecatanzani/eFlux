@@ -393,6 +393,8 @@ void buildEfficiency(const in_args input_args)
     // PSD charge after STK cut
     auto h_psd_charge_after_stk_cut = fr.Filter("HET_trigger==1 && psdcharge_efficiency_preselection==1")
                             .Histo1D({"h_psd_charge_after_stk_cut", "PSD charge after STK cut; PSD Charge; entries", 100, 0, 40}, "PSD_charge");
+    auto h_stk_charge_after_stk_cut = fr.Filter("HET_trigger==1 && psdcharge_efficiency_preselection==1")
+                            .Histo1D({"h_stk_charge_after_stk_cut", "STK charge after STK cut; STK Charge; entries", 100, 0, 40}, "STK_charge");
 
     TFile *output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
@@ -454,6 +456,7 @@ void buildEfficiency(const in_args input_args)
     h_xtrl_stk_cosine_zoom                                              ->Write();
     h_xtrl_bgo_cosine_zoom                                              ->Write();
     h_psd_charge_after_stk_cut                                          ->Write();
+    h_stk_charge_after_stk_cut                                          ->Write();
 
     output_file->Close();
 }   
