@@ -27,6 +27,10 @@ void DmpFilterContainer::Pipeline(
 
 	output.BGO_fiducial = output.BGO_fiducial_maxElayer_cut && output.BGO_fiducial_maxBarLayer_cut && output.BGO_fiducial_BGOTrackContainment_cut;
 
+	// Filling classifier struct
+	classifier.xtr = xtrX_computation(bgoVault.GetSumRMS(), bgoVault.GetSingleFracLayer(13));
+	classifier.xtrl = xtrX_computation(bgoVault.GetSumRMS(), bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()));
+
 	if (output.BGO_fiducial) {
 		output.all_cut = output.BGO_fiducial;
 		// **** nBarLayer13 cut ****
@@ -72,8 +76,6 @@ void DmpFilterContainer::Pipeline(
 						}
 
 						if (output.all_cut) {
-							classifier.xtr = xtrX_computation(bgoVault.GetSumRMS(), bgoVault.GetSingleFracLayer(13));
-							classifier.xtrl = xtrX_computation(bgoVault.GetSumRMS(), bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()));
 							output.xtrl_tight_cut = xtrl_tight_cut(classifier.xtrl);
 							output.xtrl_loose_cut = xtrl_loose_cut(classifier.xtrl, bgoTotalE_corr);
 							++particle_counter.selected_events;

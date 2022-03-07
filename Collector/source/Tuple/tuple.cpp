@@ -86,24 +86,16 @@ void ntuple::fill_bgo_info(
 
 void ntuple::fill_psdcharge_info(const psd_charge &extracted_psd_charge)
 {
-	if (evtfilter_psd_charge_measurement)
-		if (extracted_psd_charge.chargeX != -999 && extracted_psd_charge.chargeY != -999)
-		{
-			PSD_chargeX = extracted_psd_charge.chargeX;
-			PSD_chargeY = extracted_psd_charge.chargeY;
-			PSD_charge = 0.5 * (extracted_psd_charge.chargeX + extracted_psd_charge.chargeY);
-		}
+	PSD_chargeX = extracted_psd_charge.chargeX;
+	PSD_chargeY = extracted_psd_charge.chargeY;
+	PSD_charge = 0.5 * (extracted_psd_charge.chargeX + extracted_psd_charge.chargeY);		
 }
 
 void ntuple::fill_stkcharge_info(const stk_charge &extracted_stk_charge)
 {
-	if (evtfilter_stk_charge_measurement)
-		if (extracted_stk_charge.chargeX != -999 && extracted_stk_charge.chargeY != -999)
-		{
-			STK_chargeX = extracted_stk_charge.chargeX;
-			STK_chargeY = extracted_stk_charge.chargeY;
-			STK_charge = 0.5 * (extracted_stk_charge.chargeX + extracted_stk_charge.chargeY);
-		}
+	STK_chargeX = extracted_stk_charge.chargeX;
+	STK_chargeY = extracted_stk_charge.chargeY;
+	STK_charge = 0.5 * (extracted_stk_charge.chargeX + extracted_stk_charge.chargeY);		
 }
 
 void ntuple::fill_classifier_info(const bgo_classifiers &classifier)
