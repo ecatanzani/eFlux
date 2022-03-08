@@ -623,7 +623,7 @@ const bool DmpFilterContainer::track_selection_cut(
 				continue;
 			}
 		}
-		
+
 		selectedTracks.push_back(track);
 	
 	}
@@ -975,6 +975,7 @@ void DmpFilterContainer::reset_filter_output()
 	output.good_event 								= false;
 	output.geometric 								= false;
 	output.BGO_fiducial 							= false;
+	output.BGO_fiducial_HET 						= false;
 	output.BGO_fiducial_maxElayer_cut 				= false;
 	output.BGO_fiducial_maxBarLayer_cut 			= false;
 	output.BGO_fiducial_BGOTrackContainment_cut 	= false;
