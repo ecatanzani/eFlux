@@ -51,6 +51,7 @@ void DmpFilterContainer::Pipeline(
 				// **** track selection cut ****
 				if (acuts.track_selection) {
 					output.track_selection_cut = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts);
+					output.track_selection_cut_no_3hit_recover = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts, false);
 					output.all_cut *= output.track_selection_cut;
 				}
 
@@ -982,6 +983,7 @@ void DmpFilterContainer::reset_filter_output()
 	output.nBarLayer13_cut 							= false;
 	output.maxRms_cut 								= false;
 	output.track_selection_cut 						= false;
+	output.track_selection_cut_no_3hit_recover 		= false;
 	output.three_cluster_only_track 				= false;
 	output.psd_stk_match_cut 						= false;
 	output.psd_charge_cut 							= false;

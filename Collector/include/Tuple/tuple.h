@@ -131,6 +131,7 @@ protected:
 	bool evtfilter_nBarLayer13_cut 											{false};
 	bool evtfilter_maxRms_cut 												{false};
 	bool evtfilter_track_selection_cut 										{false};
+	bool evtfilter_track_selection_cut_no_3hit_recover 						{false};
 	bool evtfilter_psd_stk_match_cut 										{false};
 	bool evtfilter_psd_charge_cut 											{false};
 	bool evtfilter_stk_charge_cut 											{false};
