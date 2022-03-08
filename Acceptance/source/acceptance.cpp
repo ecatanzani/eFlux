@@ -54,6 +54,9 @@ void buildAcceptance(const in_args input_args)
     auto h_bgo_fiducial = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_BGO_fiducial==true")
                                                 .Histo1D({"h_bgo_fiducial", "generated events - BGO fiducial cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+    auto h_bgo_fiducial_het = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_BGO_fiducial_HET==true")
+                                                .Histo1D({"h_bgo_fiducial_het", "generated events - BGO fiducial cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
     auto h_nBarLayer13 = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_nBarLayer13_cut==true")
                                                 .Histo1D({"h_nBarLayer13", "generated events - nBarLayer13 cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
@@ -76,6 +79,7 @@ void buildAcceptance(const in_args input_args)
     h_geometric             ->Sumw2();
     h_geometric_trigger     ->Sumw2();
     h_bgo_fiducial          ->Sumw2();
+    h_bgo_fiducial_het      ->Sumw2();
     h_nBarLayer13           ->Sumw2();
     h_maxrms                ->Sumw2();
     h_trackselection        ->Sumw2();
@@ -93,6 +97,7 @@ void buildAcceptance(const in_args input_args)
     h_geometric             ->Write();
     h_geometric_trigger     ->Write();
     h_bgo_fiducial          ->Write();
+    h_bgo_fiducial_het      ->Write();
     h_nBarLayer13           ->Write();
     h_maxrms                ->Write();
     h_trackselection        ->Write();
