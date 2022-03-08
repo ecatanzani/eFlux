@@ -124,6 +124,7 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch("evtfilter_good_event", &evtfilter_good_event, "evtfilter_good_event/O");
 	DmpNtupTree->Branch("evtfilter_geometric", &evtfilter_geometric, "evtfilter_geometric/O");
 	DmpNtupTree->Branch("evtfilter_BGO_fiducial", &evtfilter_BGO_fiducial, "evtfilter_BGO_fiducial/O");
+	DmpNtupTree->Branch("evtfilter_BGO_fiducial_HET", &evtfilter_BGO_fiducial_HET, "evtfilter_BGO_fiducial_HET/O");
 	DmpNtupTree->Branch("evtfilter_BGO_fiducial_maxElayer_cut", &evtfilter_BGO_fiducial_maxElayer_cut, "evtfilter_BGO_fiducial_maxElayer_cut/O");
 	DmpNtupTree->Branch("evtfilter_BGO_fiducial_maxBarLayer_cut", &evtfilter_BGO_fiducial_maxBarLayer_cut, "evtfilter_BGO_fiducial_maxBarLayer_cut/O");
 	DmpNtupTree->Branch("evtfilter_BGO_fiducial_BGOTrackContainment_cut", &evtfilter_BGO_fiducial_BGOTrackContainment_cut, "evtfilter_BGO_fiducial_BGOTrackContainment_cut/O");
@@ -235,6 +236,7 @@ void mc_tuple::fill_filter_info(const filter_output &output)
 	evtfilter_good_event = output.good_event;
 	evtfilter_geometric = output.geometric;
 	evtfilter_BGO_fiducial = output.BGO_fiducial;
+	evtfilter_BGO_fiducial_HET = output.BGO_fiducial_HET;
 	evtfilter_BGO_fiducial_maxElayer_cut = output.BGO_fiducial_maxElayer_cut;
 	evtfilter_BGO_fiducial_maxBarLayer_cut = output.BGO_fiducial_maxBarLayer_cut;
 	evtfilter_BGO_fiducial_BGOTrackContainment_cut = output.BGO_fiducial_BGOTrackContainment_cut;

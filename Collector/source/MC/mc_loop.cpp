@@ -201,6 +201,7 @@ void mcLoop(
 			{
 				// Check BGO geometry after trigger
 				filter.CheckGeometry(simu_primaries);
+				
 				// Filter event
 				filter.Pipeline(
 					bgorec,
@@ -213,10 +214,8 @@ void mcLoop(
 					stkclusters,
 					stktracks,
 					mc_config.GetActiveCuts());
-			}
 			
-			// Efficiency pipeline
-			if (filter.CheckIncomingEventNoTrigger())
+				// Efficiency pipeline
 				cuts_efficiency.Pipeline(
 					bgorec,
 					bgohits,
@@ -229,6 +228,7 @@ void mcLoop(
 					stktracks,
 					mc_config.GetActiveCuts(),
 					filter.GetTrigger());
+			}
 
 			// Fill output structures
 			simu_tuple->Fill(

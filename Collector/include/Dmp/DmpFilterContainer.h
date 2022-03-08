@@ -110,6 +110,7 @@ struct filter_output
 	bool good_event 								{false};
 	bool geometric 									{false};
 	bool BGO_fiducial 								{false};
+	bool BGO_fiducial_HET 							{false};
 	bool BGO_fiducial_maxElayer_cut 				{false};
 	bool BGO_fiducial_maxBarLayer_cut 				{false};
 	bool BGO_fiducial_BGOTrackContainment_cut 		{false};
@@ -198,7 +199,7 @@ public:
 		const std::vector<double> bgoRec_slope,
 		const std::vector<double> bgoRec_intercept,
 		const std::shared_ptr<DmpEvtSimuPrimaries> simu_primaries = std::shared_ptr<DmpEvtSimuPrimaries>(nullptr));
-	const bool CheckIncomingEventNoTrigger();
+	//const bool CheckIncomingEventNoTrigger();
 	void EnergyCheck(
 		const cuts_conf &cuts,
 		const double bgoTotalE_corr,

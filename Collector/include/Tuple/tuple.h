@@ -124,6 +124,7 @@ protected:
 	bool evtfilter_good_event 												{false};
 	bool evtfilter_geometric 												{false};
 	bool evtfilter_BGO_fiducial 											{false};
+	bool evtfilter_BGO_fiducial_HET 										{false};
 	bool evtfilter_BGO_fiducial_maxElayer_cut 								{false};
 	bool evtfilter_BGO_fiducial_maxBarLayer_cut 							{false};
 	bool evtfilter_BGO_fiducial_BGOTrackContainment_cut 					{false};

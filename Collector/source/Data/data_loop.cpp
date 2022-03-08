@@ -193,6 +193,7 @@ void rawDataLoop(
 					std::shared_ptr<DmpEvtSimuPrimaries>(nullptr),
 					bgoVault.FastBGOslope(bgorec),
 					bgoVault.FastBGOintercept(bgorec));
+					
 				// Filter event
 				filter.Pipeline(
 					bgorec,
@@ -205,10 +206,8 @@ void rawDataLoop(
 					stkclusters,
 					stktracks,
 					data_config.GetActiveCuts());
-			}
 			
-			// Efficiency pipeline
-			if (filter.CheckIncomingEventNoTrigger())
+				// Efficiency pipeline
 				cuts_efficiency.Pipeline(
 					bgorec,
 					bgohits,
@@ -221,6 +220,7 @@ void rawDataLoop(
 					stktracks,
 					data_config.GetActiveCuts(),
 					filter.GetTrigger());
+			}
 
 			// Fill output structures
 			tuple->Fill(
