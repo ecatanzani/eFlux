@@ -566,7 +566,7 @@ const bool DmpFilterContainer::track_selection_cut(
 			event_best_track);
 
 		// Reject tracks with not enough X and Y clusters
-		if (track->getNhitX() < cuts.track_X_clusters || track->getNhitY() < cuts.track_Y_clusters) 
+		if (track->getNhitX() >= cuts.track_X_clusters && track->getNhitY() >= cuts.track_Y_clusters) 
 		{
 			// At least 4 clusters track
 			if (track_nHoles[0] > 1 || track_nHoles[1] > 1)
@@ -597,8 +597,8 @@ const bool DmpFilterContainer::track_selection_cut(
 		}
 		else 
 		{
-			output.three_cluster_only_track = true;
 			// Special threatment for 3 clusters track
+			output.three_cluster_only_track = true;
 			if (track->getNhitX() < cuts.track_X_clusters)
 				if (track_nHoles[0])
 					continue;
