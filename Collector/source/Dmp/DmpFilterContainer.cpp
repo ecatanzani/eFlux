@@ -529,7 +529,8 @@ const bool DmpFilterContainer::track_selection_cut(
 	const std::shared_ptr<DmpEvtBgoHits> bgohits,
 	const std::shared_ptr<TClonesArray> stkclusters,
 	const std::shared_ptr<TClonesArray> stktracks,
-	const cuts_conf cuts)
+	const cuts_conf cuts,
+	const bool recover_3_hits_tracks)
 {
 	bool passed_track_selection_cut = false;
 
@@ -595,25 +596,32 @@ const bool DmpFilterContainer::track_selection_cut(
 			if (dAngleTrackBgoRec > cuts.STK_BGO_delta_track)
 				continue;
 		}
-		else 
+		else
 		{
-			// Special threatment for 3 clusters track
-			output.three_cluster_only_track = true;
-			if (track->getNhitX() < cuts.track_X_clusters)
-				if (track_nHoles[0])
-					continue;
-			
-			if (track->getNhitY() < cuts.track_Y_clusters)
-				if (track_nHoles[1])
-					continue;
-			
-			unsigned int unmatched_hit {0};
-			for (int ip=0; ip < track->GetNPoints(); ++ip)
-				if (!(track->getHitMeasX(ip) > -99999 && track->getHitMeasY(ip) > -99999))
-					++unmatched_hit;
+			if (recover_3_hits_tracks)
+			{
+				// Special threatment for 3 clusters track
+				output.three_cluster_only_track = true;
+				if (track->getNhitX() < cuts.track_X_clusters)
+					if (track_nHoles[0])
+						continue;
+				
+				if (track->getNhitY() < cuts.track_Y_clusters)
+					if (track_nHoles[1])
+						continue;
+				
+				unsigned int unmatched_hit {0};
+				for (int ip=0; ip < track->GetNPoints(); ++ip)
+					if (!(track->getHitMeasX(ip) > -99999 && track->getHitMeasY(ip) > -99999))
+						++unmatched_hit;
 
-			if (unmatched_hit>1)
-				continue;				
+				if (unmatched_hit>1)
+					continue;				
+			}
+			else
+			{
+				continue;
+			}
 		}
 		
 		selectedTracks.push_back(track);
@@ -973,6 +981,7 @@ void DmpFilterContainer::reset_filter_output()
 	output.nBarLayer13_cut 							= false;
 	output.maxRms_cut 								= false;
 	output.track_selection_cut 						= false;
+	output.three_cluster_only_track 				= false;
 	output.psd_stk_match_cut 						= false;
 	output.psd_charge_cut 							= false;
 	output.stk_charge_cut 							= false;

@@ -283,7 +283,8 @@ protected:
 		const std::shared_ptr<DmpEvtBgoHits> bgohits,
 		const std::shared_ptr<TClonesArray> stkclusters,
 		const std::shared_ptr<TClonesArray> stktracks,
-		const cuts_conf data_cuts);
+		const cuts_conf data_cuts,
+		const bool recover_3_hits_tracks = true);
 	const bool psd_stk_match_cut(
 		const std::vector<double> bgoRec_slope,
 		const std::vector<double> bgoRec_intercept,
