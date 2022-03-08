@@ -66,6 +66,9 @@ void buildAcceptance(const in_args input_args)
     auto h_trackselection = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_track_selection_cut==true")
                                                 .Histo1D({"h_trackselection", "generated events - Track Selection cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+    auto h_trackselection_no_3hit_recover = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_track_selection_cut_no_3hit_recover==true")
+                                                .Histo1D({"h_trackselection_no_3hit_recover", "generated events - Track Selection cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
     auto h_psdstkmatch = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_psd_stk_match_cut==true")
                                                 .Histo1D({"h_psdstkmatch", "generated events - PSD/STK match cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
@@ -75,16 +78,17 @@ void buildAcceptance(const in_args input_args)
                                                 .Filter("evtfilter_all_cut==true")
                                                 .Histo1D({"h_all_cut", "generated events - all cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
 
-    h_gen                   ->Sumw2();
-    h_geometric             ->Sumw2();
-    h_geometric_trigger     ->Sumw2();
-    h_bgo_fiducial          ->Sumw2();
-    h_bgo_fiducial_het      ->Sumw2();
-    h_nBarLayer13           ->Sumw2();
-    h_maxrms                ->Sumw2();
-    h_trackselection        ->Sumw2();
-    h_psdstkmatch           ->Sumw2();
-    h_all_cut               ->Sumw2();
+    h_gen                                       ->Sumw2();
+    h_geometric                                 ->Sumw2();
+    h_geometric_trigger                         ->Sumw2();
+    h_bgo_fiducial                              ->Sumw2();
+    h_bgo_fiducial_het                          ->Sumw2();
+    h_nBarLayer13                               ->Sumw2();
+    h_maxrms                                    ->Sumw2();
+    h_trackselection                            ->Sumw2();
+    h_trackselection_no_3hit_recover            ->Sumw2();
+    h_psdstkmatch                               ->Sumw2();
+    h_all_cut                                   ->Sumw2();
 
     TFile* outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (outfile->IsZombie())
@@ -93,16 +97,17 @@ void buildAcceptance(const in_args input_args)
         exit(100);
     }
 
-    h_gen                   ->Write();
-    h_geometric             ->Write();
-    h_geometric_trigger     ->Write();
-    h_bgo_fiducial          ->Write();
-    h_bgo_fiducial_het      ->Write();
-    h_nBarLayer13           ->Write();
-    h_maxrms                ->Write();
-    h_trackselection        ->Write();
-    h_psdstkmatch           ->Write();
-    h_all_cut               ->Write();
+    h_gen                                       ->Write();
+    h_geometric                                 ->Write();
+    h_geometric_trigger                         ->Write();
+    h_bgo_fiducial                              ->Write();
+    h_bgo_fiducial_het                          ->Write();
+    h_nBarLayer13                               ->Write();
+    h_maxrms                                    ->Write();
+    h_trackselection                            ->Write();
+    h_trackselection_no_3hit_recover            ->Write();
+    h_psdstkmatch                               ->Write();
+    h_all_cut                                   ->Write();
 
     outfile->Close();
 
