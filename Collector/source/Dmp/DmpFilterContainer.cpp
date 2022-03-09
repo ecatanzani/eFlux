@@ -709,29 +709,13 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 		}
 	}
 
-	if (output.three_cluster_only_track)
-	{
-		if (fabs(clu_matching.dxCloPsdClu_track[0]) < 60)
-		{
-			clu_matching.Y_match = true;
-		}
-		if (fabs(clu_matching.dxCloPsdClu_track[1]) < 60)
-		{
-			clu_matching.X_match = true;
-		}
-	}
-	else 
-	{
-		if (fabs(clu_matching.dxCloPsdClu_track[0]) < cuts.STK_PSD_delta_position)
-		{
-			clu_matching.Y_match = true;
-		}
+	const double STK_PSD_delta_position_lim = !output.three_cluster_only_track ? cuts.STK_PSD_delta_position : 60;
 
-		if (fabs(clu_matching.dxCloPsdClu_track[1]) < cuts.STK_PSD_delta_position)
-		{
-			clu_matching.X_match = true;
-		}
-	}
+	if (fabs(clu_matching.dxCloPsdClu_track[0]) < STK_PSD_delta_position_lim)
+		clu_matching.Y_match = true;
+
+	if (fabs(clu_matching.dxCloPsdClu_track[1]) < STK_PSD_delta_position_lim)
+		clu_matching.X_match = true;
 
 	output.psd_stk_match_cut_x = clu_matching.X_match;
 	output.psd_stk_match_cut_y = clu_matching.Y_match;
