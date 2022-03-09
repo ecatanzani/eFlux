@@ -603,7 +603,6 @@ const bool DmpFilterContainer::track_selection_cut(
 			if (recover_3_hits_tracks)
 			{
 				// Special threatment for 3 clusters track
-				output.three_cluster_only_track = true;
 				if (track->getNhitX() < cuts.track_X_clusters)
 					if (track_nHoles[0])
 						continue;
@@ -647,6 +646,9 @@ const bool DmpFilterContainer::track_selection_cut(
 			track_nHoles,
 			event_best_track,
 			true);
+
+		if (!(selected_track->getNhitX() >= cuts.track_X_clusters && selected_track->getNhitY() >= cuts.track_Y_clusters))
+			output.three_cluster_only_track = true;
 
 		event_best_track.extr_BGO_topX = event_best_track.track_slope[0] * BGO_TopZ + event_best_track.track_intercept[0];
 		event_best_track.extr_BGO_topY = event_best_track.track_slope[1] * BGO_TopZ + event_best_track.track_intercept[1];
