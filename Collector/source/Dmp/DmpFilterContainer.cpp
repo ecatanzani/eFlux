@@ -679,6 +679,7 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 	const std::vector<std::vector<double>> psdCluster_maxEcoordinate)
 {
 	bool passed_stk_psd_match = false;
+	const double PSD_fiducial = 410;
 
 	for (int nLayer = 0; nLayer < DAMPE_psd_nLayers; ++nLayer)
 	{
@@ -700,6 +701,10 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 			// Get distance between actual coordinate and best track coordinate
 			double projCoord_track = IsMeasuringX ? event_best_track.track_slope[0] * hitZ + event_best_track.track_intercept[0] : event_best_track.track_slope[1] * hitZ + event_best_track.track_intercept[1];
 			double dX_track = thisCoord - projCoord_track;
+
+			// Evaluate PSD fiducial volume
+			if (fabs(projCoord_track) <= PSD_fiducial)
+				output.psd_stk_match_cut_psd_fiducial_volume = true;
 
 			if (fabs(dX_track) < fabs(clu_matching.dxCloPsdClu_track[nLayer]))
 			{
@@ -996,6 +1001,7 @@ void DmpFilterContainer::reset_filter_output()
 	output.track_selection_cut_no_3hit_recover 		= false;
 	output.three_cluster_only_track 				= false;
 	output.psd_stk_match_cut 						= false;
+	output.psd_stk_match_cut_psd_fiducial_volume 	= false;
 	output.psd_stk_match_cut_x 						= false;
 	output.psd_stk_match_cut_y 						= false;
 	output.psd_charge_cut 							= false;

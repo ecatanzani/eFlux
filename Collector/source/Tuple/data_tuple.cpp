@@ -111,6 +111,7 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut", &evtfilter_psd_stk_match_cut, "evtfilter_psd_stk_match_cut/O");
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_X_view", &evtfilter_psd_stk_match_cut_X_view, "evtfilter_psd_stk_match_cut_X_view/O");
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_Y_view", &evtfilter_psd_stk_match_cut_Y_view, "evtfilter_psd_stk_match_cut_Y_view/O");
+	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_psd_fiducial_volume", &evtfilter_psd_stk_match_cut_psd_fiducial_volume, "evtfilter_psd_stk_match_cut_psd_fiducial_volume/O");
 	DmpNtupTree->Branch("evtfilter_psd_charge_cut", &evtfilter_psd_charge_cut, "evtfilter_psd_charge_cut/O");
 	DmpNtupTree->Branch("evtfilter_psd_charge_cut_no_single_view_recover", &evtfilter_psd_charge_cut_no_single_view_recover, "evtfilter_psd_charge_cut_no_single_view_recover/O");
 	DmpNtupTree->Branch("evtfilter_stk_charge_cut", &evtfilter_stk_charge_cut, "evtfilter_stk_charge_cut/O");
@@ -229,6 +230,7 @@ void data_tuple::fill_filter_info(const filter_output &output)
 	evtfilter_psd_stk_match_cut = output.psd_stk_match_cut;
 	evtfilter_psd_stk_match_cut_X_view = output.psd_stk_match_cut_x;
 	evtfilter_psd_stk_match_cut_Y_view = output.psd_stk_match_cut_y;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume = output.psd_stk_match_cut_psd_fiducial_volume;
 	evtfilter_psd_charge_cut = output.psd_charge_cut;
 	evtfilter_psd_charge_cut_no_single_view_recover = output.psd_charge_cut_no_single_view_recover;
 	evtfilter_stk_charge_cut = output.stk_charge_cut;

@@ -120,6 +120,7 @@ struct filter_output
 	bool track_selection_cut_no_3hit_recover 		{false};
 	bool three_cluster_only_track					{false};
 	bool psd_stk_match_cut 							{false};
+	bool psd_stk_match_cut_psd_fiducial_volume 		{false};
 	bool psd_stk_match_cut_x 						{false};
 	bool psd_stk_match_cut_y 						{false};
 	bool psd_charge_cut 							{false};
