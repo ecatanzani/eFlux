@@ -729,7 +729,7 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 
 	output.psd_stk_match_cut_x = clu_matching.X_match;
 	output.psd_stk_match_cut_y = clu_matching.Y_match;
-	
+
 	passed_stk_psd_match = clu_matching.X_match || clu_matching.Y_match ? true : false;
 	return passed_stk_psd_match;
 }
@@ -997,6 +997,8 @@ void DmpFilterContainer::reset_filter_output()
 	output.track_selection_cut_no_3hit_recover 		= false;
 	output.three_cluster_only_track 				= false;
 	output.psd_stk_match_cut 						= false;
+	output.psd_stk_match_cut_x 						= false;
+	output.psd_stk_match_cut_y 						= false;
 	output.psd_charge_cut 							= false;
 	output.psd_charge_cut_no_single_view_recover 	= false;
 	output.stk_charge_cut 							= false;
