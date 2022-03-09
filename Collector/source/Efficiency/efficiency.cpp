@@ -30,7 +30,7 @@ void efficiency::Pipeline(
                                     }
 
         // MaxRms efficiency
-        if (output.evt_triggered)
+        if (evt_trigger_info.HET)
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
@@ -47,7 +47,7 @@ void efficiency::Pipeline(
                                     }
 
         // nbarlayer13 efficiency
-        if (output.evt_triggered)
+        if (evt_trigger_info.HET)
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
@@ -64,7 +64,7 @@ void efficiency::Pipeline(
                                     }
 
         // MaxRms && nbarlayer13 efficiency
-        if (output.evt_triggered)
+        if (evt_trigger_info.HET)
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
@@ -80,7 +80,7 @@ void efficiency::Pipeline(
                                 }
 
         // track selection efficiency
-        if (output.evt_triggered)
+        if (evt_trigger_info.HET)
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
@@ -95,7 +95,7 @@ void efficiency::Pipeline(
                             }
                                         
         // psd_stk_match efficiency
-        if (output.evt_triggered)
+        if (evt_trigger_info.HET)
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
@@ -111,7 +111,7 @@ void efficiency::Pipeline(
                                 }
 
         // psd_charge efficiency
-        if (output.evt_triggered)
+        if (evt_trigger_info.HET)
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
