@@ -959,8 +959,8 @@ void DmpFilterContainer::reset_psd_clusters()
 	clu_matching.icloPsdClu2_track 		= std::vector<int>(DAMPE_psd_nLayers, -999);
 	clu_matching.dxCloPsdClu2_track 	= std::vector<double>(DAMPE_psd_nLayers, -999);
 
-	X_match 							= false;
-	Y_match 							= false;
+	clu_matching.X_match 				= false;
+	clu_matching.Y_match 				= false;
 }
 
 void DmpFilterContainer::reset_psd_charges()
