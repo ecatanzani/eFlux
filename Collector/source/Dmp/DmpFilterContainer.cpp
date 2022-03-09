@@ -933,8 +933,8 @@ void DmpFilterContainer::Reset()
 
 void DmpFilterContainer::reset_stk_best_track()
 {
-	event_best_track.n_points 						= 0;
-	event_best_track.n_holes 						= {0, 0};
+	event_best_track.n_points 						= -999;
+	event_best_track.n_holes 						= {-999, -999};
 	event_best_track.track_slope 					= {-999, -999};
 	event_best_track.track_intercept 				= {-999, -999};
 	event_best_track.track_direction				.SetXYZ(-999, -999, -999);
@@ -958,6 +958,9 @@ void DmpFilterContainer::reset_psd_clusters()
 	clu_matching.dxCloPsdClu_track		= std::vector<double>(DAMPE_psd_nLayers, -999);
 	clu_matching.icloPsdClu2_track 		= std::vector<int>(DAMPE_psd_nLayers, -999);
 	clu_matching.dxCloPsdClu2_track 	= std::vector<double>(DAMPE_psd_nLayers, -999);
+
+	X_match 							= false;
+	Y_match 							= false;
 }
 
 void DmpFilterContainer::reset_psd_charges()
@@ -1044,6 +1047,7 @@ void DmpFilterContainer::reset_trigger()
 	evt_trigger.HET 		= false;
 	evt_trigger.LET			= false;
 	evt_trigger.general 	= false;
+	evt_trigger.unbiased 	= false;
 }
 
 void DmpFilterContainer::CheckGeometry(
