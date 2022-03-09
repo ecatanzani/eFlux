@@ -9,6 +9,7 @@
 #include "TH1D.h"
 #include "TFile.h"
 #include "TMath.h"
+#include "TGraph.h"
 #include "TGraphErrors.h"
 
 const double generation_vertex_radius = 1.381976597885342;
@@ -137,6 +138,9 @@ void buildAcceptance(
     std::vector<double> energy                                  (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> energy_err                              (h_geometric_factor->GetNbinsX(), 0);
 
+    std::vector<double> ratio_trackselection_no_3hit_recover_trackselection     (h_geometric_factor->GetNbinsX(), 0);
+    std::vector<double> ratio_psdcharge_no_one_view_recover_psdcharge           (h_geometric_factor->GetNbinsX(), 0);
+
     for (unsigned int idx=0; idx<energy.size(); ++idx)
     {
         energy[idx]                                     = wtsydp(energy_binning[idx], energy_binning[idx+1], -2.7);
@@ -162,6 +166,9 @@ void buildAcceptance(
         acc_psdcharge_no_one_view_recover_err[idx]      = h_acc_psdcharge_no_one_view_recover->GetBinError(idx+1);
         acc_all_cut[idx]                                = h_acc_all_cut->GetBinContent(idx+1);
         acc_all_cut_err[idx]                            = h_acc_all_cut->GetBinError(idx+1);
+
+        ratio_trackselection_no_3hit_recover_trackselection[idx] = acc_trackselection[idx] ? (acc_trackselection_no_3hit_recover[idx]/acc_trackselection[idx])*100 : 0;
+        ratio_psdcharge_no_one_view_recover_psdcharge[idx]       = acc_all_cut[idx] ? (acc_psdcharge_no_one_view_recover[idx]/acc_all_cut[idx])*100 : 0;
     }
     
     TGraphErrors gr_geometric_factor                        ((int)geometric_factor.size(), &energy[0], &geometric_factor[0], &energy_err[0], &geometric_factor_err[0]);
@@ -173,8 +180,11 @@ void buildAcceptance(
     TGraphErrors gr_acc_trackselection                      ((int)geometric_factor.size(), &energy[0], &acc_trackselection[0], &energy_err[0], &acc_trackselection_err[0]);
     TGraphErrors gr_acc_trackselection_no_3hit_recover      ((int)geometric_factor.size(), &energy[0], &acc_trackselection_no_3hit_recover[0], &energy_err[0], &acc_trackselection_no_3hit_recover_err[0]);
     TGraphErrors gr_acc_psdstkmatch                         ((int)geometric_factor.size(), &energy[0], &acc_psdstkmatch[0], &energy_err[0], &acc_psdstkmatch_err[0]);
-    TGraphErrors gr_acc_psdcharge_no_one_view_recover        ((int)geometric_factor.size(), &energy[0], &acc_psdcharge_no_one_view_recover[0], &energy_err[0], &acc_psdcharge_no_one_view_recover_err[0]);
+    TGraphErrors gr_acc_psdcharge_no_one_view_recover       ((int)geometric_factor.size(), &energy[0], &acc_psdcharge_no_one_view_recover[0], &energy_err[0], &acc_psdcharge_no_one_view_recover_err[0]);
     TGraphErrors gr_acc_all_cut                             ((int)geometric_factor.size(), &energy[0], &acc_all_cut[0], &energy_err[0], &acc_all_cut_err[0]);
+
+    TGraph gr_ratio_trackselection_no_3hit_recover_trackselection (int(energy.size()), &energy[0], &ratio_trackselection_no_3hit_recover_trackselection[0]);
+    TGraph gr_ratio_psdcharge_no_one_view_recover_psdcharge       (int(energy.size()), &energy[0], &ratio_psdcharge_no_one_view_recover_psdcharge[0]);
 
     gr_geometric_factor                     .SetName("gr_geometric_factor");
     gr_acc_geometric_trigger                .SetName("gr_acc_geometric_trigger");
@@ -188,6 +198,9 @@ void buildAcceptance(
     gr_acc_psdcharge_no_one_view_recover    .SetName("gr_acc_psdcharge_no_one_view_recover");
     gr_acc_all_cut                          .SetName("gr_acc_all_cut");
 
+    gr_ratio_trackselection_no_3hit_recover_trackselection      .SetName("gr_ratio_trackselection_no_3hit_recover_trackselection");
+    gr_ratio_psdcharge_no_one_view_recover_psdcharge            .SetName("gr_ratio_psdcharge_no_one_view_recover_psdcharge");
+
     gr_geometric_factor                     .SetTitle("Geometric Factor");
     gr_acc_geometric_trigger                .SetTitle("Acceptance - geometric + trigger");
     gr_acc_bgo_fiducial                     .SetTitle("Acceptance - BGO fiducial");
@@ -199,6 +212,9 @@ void buildAcceptance(
     gr_acc_psdstkmatch                      .SetTitle("Acceptance - PSD-STK match");
     gr_acc_psdcharge_no_one_view_recover    .SetTitle("Acceptance - PSD charge - no one view recover");
     gr_acc_all_cut                          .SetTitle("Acceptance - all cuts");
+
+    gr_ratio_trackselection_no_3hit_recover_trackselection      .SetTitle("Ratio - track selection - no 3 hit recover / track selection");
+    gr_ratio_psdcharge_no_one_view_recover_psdcharge            .SetTitle("Ratio - PSD charge - no one view recover / PSD charge");
 
     gr_geometric_factor                     .GetXaxis()->SetTitle("Energy [GeV]");
     gr_acc_geometric_trigger                .GetXaxis()->SetTitle("Energy [GeV]");
@@ -212,6 +228,9 @@ void buildAcceptance(
     gr_acc_psdcharge_no_one_view_recover    .GetXaxis()->SetTitle("Energy [GeV]");
     gr_acc_all_cut                          .GetXaxis()->SetTitle("Energy [GeV]");
 
+    gr_ratio_trackselection_no_3hit_recover_trackselection      .GetXaxis()->SetTitle("Energy [GeV]");
+    gr_ratio_psdcharge_no_one_view_recover_psdcharge            .GetXaxis()->SetTitle("Energy [GeV]");
+
     gr_geometric_factor                     .GetYaxis()->SetTitle("geometric factor [m^{2} sr]");
     gr_acc_geometric_trigger                .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     gr_acc_bgo_fiducial                     .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
@@ -223,6 +242,9 @@ void buildAcceptance(
     gr_acc_psdstkmatch                      .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     gr_acc_psdcharge_no_one_view_recover    .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     gr_acc_all_cut                          .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
+
+    gr_ratio_trackselection_no_3hit_recover_trackselection      .GetYaxis()->SetTitle("track selection_{no 3 hit recover} / track selection (percentage)");
+    gr_ratio_psdcharge_no_one_view_recover_psdcharge            .GetYaxis()->SetTitle("PSD charge_{no one view recover} / PSD charge (percentage)");
 
     TFile* outfile = TFile::Open(output_file, "RECREATE");
     if (outfile->IsZombie())
@@ -254,6 +276,9 @@ void buildAcceptance(
     gr_acc_psdstkmatch                      .Write();
     gr_acc_psdcharge_no_one_view_recover    .Write();
     gr_acc_all_cut                          .Write();
+
+    gr_ratio_trackselection_no_3hit_recover_trackselection      .Write();
+    gr_ratio_psdcharge_no_one_view_recover_psdcharge            .Write();
 
     outfile->Close();
 
