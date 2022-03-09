@@ -89,8 +89,8 @@ void DmpFilterContainer::Pipeline(
 		}
 	}
 
+	// Fill preselection class
 	if (output.evt_triggered) {
-		// Fill preselection class
 		if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
 			preselection_cuts.maxelayer_cut = true;
 		if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
@@ -727,6 +727,9 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 		}
 	}
 
+	output.psd_stk_match_cut_x = clu_matching.X_match;
+	output.psd_stk_match_cut_y = clu_matching.Y_match;
+	
 	passed_stk_psd_match = clu_matching.X_match || clu_matching.Y_match ? true : false;
 	return passed_stk_psd_match;
 }

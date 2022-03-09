@@ -184,8 +184,7 @@ void rawDataLoop(
 			// Load NUD class
 			nudVault.scanNudHits(nudraw);
 
-
-			// Check current event (Trigger and BGO reco)
+			// Check current event (BGO reco)
 			if (filter.CheckIncomingEvent(evt_header, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept()))
 			{
 				// Check BGO geometry after trigger

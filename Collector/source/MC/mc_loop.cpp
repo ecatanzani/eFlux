@@ -196,12 +196,12 @@ void mcLoop(
 			
 			// Check BGO geometry before trigger
 			filter.CheckGeometry(simu_primaries);
-			// Check current event (Trigger and BGO reco)
+			// Check current event (BGO reco)
 			if (filter.CheckIncomingEvent(evt_header, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), simu_primaries))
 			{
 				// Check BGO geometry after trigger
 				filter.CheckGeometry(simu_primaries);
-				
+
 				// Filter event
 				filter.Pipeline(
 					bgorec,
