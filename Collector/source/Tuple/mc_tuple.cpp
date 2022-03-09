@@ -134,6 +134,7 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch("evtfilter_track_selection_cut_no_3hit_recover", &evtfilter_track_selection_cut_no_3hit_recover, "evtfilter_track_selection_cut_no_3hit_recover/O");
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut", &evtfilter_psd_stk_match_cut, "evtfilter_psd_stk_match_cut/O");
 	DmpNtupTree->Branch("evtfilter_psd_charge_cut", &evtfilter_psd_charge_cut, "evtfilter_psd_charge_cut/O");
+	DmpNtupTree->Branch("evtfilter_psd_charge_cut_no_single_view_recover", &evtfilter_psd_charge_cut_no_single_view_recover, "evtfilter_psd_charge_cut_no_single_view_recover/O");
 	DmpNtupTree->Branch("evtfilter_stk_charge_cut", &evtfilter_stk_charge_cut, "evtfilter_stk_charge_cut/O");
 	DmpNtupTree->Branch("evtfilter_psd_charge_measurement", &evtfilter_psd_charge_measurement, "evtfilter_psd_charge_measurement/O");
 	DmpNtupTree->Branch("evtfilter_stk_charge_measurement", &evtfilter_stk_charge_measurement, "evtfilter_stk_charge_measurement/O");
@@ -247,6 +248,7 @@ void mc_tuple::fill_filter_info(const filter_output &output)
 	evtfilter_track_selection_cut_no_3hit_recover = output.track_selection_cut_no_3hit_recover;
 	evtfilter_psd_stk_match_cut = output.psd_stk_match_cut;
 	evtfilter_psd_charge_cut = output.psd_charge_cut;
+	evtfilter_psd_charge_cut_no_single_view_recover = output.psd_charge_cut_no_single_view_recover;
 	evtfilter_stk_charge_cut = output.stk_charge_cut;
 	evtfilter_psd_charge_measurement = output.psd_charge_measurement;
 	evtfilter_stk_charge_measurement = output.stk_charge_measurement;

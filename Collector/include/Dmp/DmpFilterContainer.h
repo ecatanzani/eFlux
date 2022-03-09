@@ -121,6 +121,7 @@ struct filter_output
 	bool three_cluster_only_track					{false};
 	bool psd_stk_match_cut 							{false};
 	bool psd_charge_cut 							{false};
+	bool psd_charge_cut_no_single_view_recover		{false};
 	bool stk_charge_cut 							{false};
 	bool psd_charge_measurement 					{false};
 	bool stk_charge_measurement 					{false};
@@ -298,7 +299,8 @@ protected:
 		const std::vector<std::vector<short>> psdCluster_idxMaxE,
 		const std::vector<double> hitZ,
 		const std::vector<short> globalBarID,
-		const cuts_conf data_cuts);
+		const cuts_conf data_cuts,
+		const bool recover_one_view = true);
 	const bool stk_charge_cut(
 		const std::shared_ptr<TClonesArray> stkclusters,
 		const double charge_cut);
