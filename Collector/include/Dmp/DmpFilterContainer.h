@@ -288,7 +288,8 @@ protected:
 		const std::shared_ptr<TClonesArray> stkclusters,
 		const std::shared_ptr<TClonesArray> stktracks,
 		const cuts_conf data_cuts,
-		const bool recover_3_hits_tracks = true);
+		const bool recover_3_hits_tracks = true,
+		const bool update_struct = true);
 	const bool psd_stk_match_cut(
 		const std::vector<double> bgoRec_slope,
 		const std::vector<double> bgoRec_intercept,
@@ -302,7 +303,8 @@ protected:
 		const std::vector<double> hitZ,
 		const std::vector<short> globalBarID,
 		const cuts_conf data_cuts,
-		const bool recover_one_view = true);
+		const bool recover_one_view = true,
+		const bool update_struct = true);
 	const bool stk_charge_cut(
 		const std::shared_ptr<TClonesArray> stkclusters,
 		const double charge_cut);

@@ -51,7 +51,7 @@ void DmpFilterContainer::Pipeline(
 				// **** track selection cut ****
 				if (acuts.track_selection) {
 					output.track_selection_cut = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts);
-					output.track_selection_cut_no_3hit_recover = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts, false);
+					output.track_selection_cut_no_3hit_recover = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts, false, false);
 					output.all_cut *= output.track_selection_cut;
 				}
 
@@ -67,7 +67,7 @@ void DmpFilterContainer::Pipeline(
 						if (acuts.psd_charge) {
 							output.psd_charge_measurement = true;
 							output.psd_charge_cut = psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts);
-							output.psd_charge_cut_no_single_view_recover = psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts, false);
+							output.psd_charge_cut_no_single_view_recover = psd_charge_cut(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID(), cuts, false, false);
 							output.all_cut *= output.psd_charge_cut;
 						}
 
@@ -532,7 +532,8 @@ const bool DmpFilterContainer::track_selection_cut(
 	const std::shared_ptr<TClonesArray> stkclusters,
 	const std::shared_ptr<TClonesArray> stktracks,
 	const cuts_conf cuts,
-	const bool recover_3_hits_tracks)
+	const bool recover_3_hits_tracks,
+	const bool update_struct)
 {
 	bool passed_track_selection_cut = false;
 
@@ -635,30 +636,33 @@ const bool DmpFilterContainer::track_selection_cut(
 
 	if (selectedTracks.size() > 0)
 	{
-		DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
-		std::vector<int> track_nHoles(2, 0);
+		if (update_struct)
+		{
+			DmpStkTrack *selected_track = static_cast<DmpStkTrack *>(selectedTracks[0]);
+			std::vector<int> track_nHoles(2, 0);
 
-		// Fill best track structure
-		get_track_points(
-			selected_track,
-			stkclusters,
-			LadderToLayer,
-			track_nHoles,
-			event_best_track,
-			true);
+			// Fill best track structure
+			get_track_points(
+				selected_track,
+				stkclusters,
+				LadderToLayer,
+				track_nHoles,
+				event_best_track,
+				true);
 
-		if (!(selected_track->getNhitX() >= cuts.track_X_clusters && selected_track->getNhitY() >= cuts.track_Y_clusters))
-			output.three_cluster_only_track = true;
+			if (!(selected_track->getNhitX() >= cuts.track_X_clusters && selected_track->getNhitY() >= cuts.track_Y_clusters))
+				output.three_cluster_only_track = true;
 
-		event_best_track.extr_BGO_topX = event_best_track.track_slope[0] * BGO_TopZ + event_best_track.track_intercept[0];
-		event_best_track.extr_BGO_topY = event_best_track.track_slope[1] * BGO_TopZ + event_best_track.track_intercept[1];
+			event_best_track.extr_BGO_topX = event_best_track.track_slope[0] * BGO_TopZ + event_best_track.track_intercept[0];
+			event_best_track.extr_BGO_topY = event_best_track.track_slope[1] * BGO_TopZ + event_best_track.track_intercept[1];
 
-		event_best_track.STK_BGO_topX_distance = event_best_track.extr_BGO_topX - bgoRecEntrance[0];
-		event_best_track.STK_BGO_topY_distance = event_best_track.extr_BGO_topY - bgoRecEntrance[1];
-		event_best_track.angular_distance_STK_BGO = event_best_track.track_direction.Angle(bgoRecDirection) * TMath::RadToDeg();
-		event_best_track.STK_BGO_topY_distance = sqrt(pow(event_best_track.STK_BGO_topX_distance, 2) + pow(event_best_track.STK_BGO_topY_distance, 2));
+			event_best_track.STK_BGO_topX_distance = event_best_track.extr_BGO_topX - bgoRecEntrance[0];
+			event_best_track.STK_BGO_topY_distance = event_best_track.extr_BGO_topY - bgoRecEntrance[1];
+			event_best_track.angular_distance_STK_BGO = event_best_track.track_direction.Angle(bgoRecDirection) * TMath::RadToDeg();
+			event_best_track.STK_BGO_topY_distance = sqrt(pow(event_best_track.STK_BGO_topX_distance, 2) + pow(event_best_track.STK_BGO_topY_distance, 2));
 
-		event_best_track.myBestTrack = static_cast<DmpStkTrack>(*selected_track);
+			event_best_track.myBestTrack = static_cast<DmpStkTrack>(*selected_track);
+		}
 
 		passed_track_selection_cut = true;
 	}
@@ -742,7 +746,8 @@ const bool DmpFilterContainer::psd_charge_cut(
 	const std::vector<double> hitZ,
 	const std::vector<short> globalBarID,
 	const cuts_conf cuts,
-	const bool recover_one_view)
+	const bool recover_one_view,
+	const bool update_struct)
 {
 	bool passed_psd_charge_cut 	{false};
 	bool passed_psd_charge_sum 	{false};
@@ -787,8 +792,11 @@ const bool DmpFilterContainer::psd_charge_cut(
 		}
 
 		// Fill PSD charge struct
-		extracted_psd_charge.chargeX = psd_chargeX;
-		extracted_psd_charge.chargeY = psd_chargeY;
+		if (update_struct)
+		{
+			extracted_psd_charge.chargeX = psd_chargeX;
+			extracted_psd_charge.chargeY = psd_chargeY;
+		}
 
 		if ((psd_chargeX + psd_chargeY) < cuts.PSD_charge_sum)
 			passed_psd_charge_sum = true;
@@ -819,8 +827,9 @@ const bool DmpFilterContainer::psd_charge_cut(
 					psd_chargeX_ecor = sqrt(energy_ClusterXPsdECor * track_correction * PsdEC_tmp);
 				}
 
-				// Fill PSD ccharge struct
-				extracted_psd_charge.chargeX = psd_chargeX;
+				// Fill PSD charge struct
+				if (update_struct)
+					extracted_psd_charge.chargeX = psd_chargeX;
 
 				if (psd_chargeX < cuts.PSD_charge_no_match)
 					passed_psd_charge_cut = true;
@@ -843,8 +852,9 @@ const bool DmpFilterContainer::psd_charge_cut(
 					psd_chargeY_ecor = sqrt(energy_ClusterYPsdECor * track_correction * PsdEC_tmp);
 				}
 
-				// Fill PSD ccharge struct
-				extracted_psd_charge.chargeY = psd_chargeY;
+				// Fill PSD charge struct
+				if (update_struct)
+					extracted_psd_charge.chargeY = psd_chargeY;
 
 				if (psd_chargeY < cuts.PSD_charge_no_match)
 					passed_psd_charge_cut = true;
