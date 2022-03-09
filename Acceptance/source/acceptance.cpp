@@ -72,6 +72,9 @@ void buildAcceptance(const in_args input_args)
     auto h_psdstkmatch = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_psd_stk_match_cut==true")
                                                 .Histo1D({"h_psdstkmatch", "generated events - PSD/STK match cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+    auto h_psdcharge_no_one_view_recover = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_psd_charge_cut_no_single_view_recover==true")
+                                                .Histo1D({"h_psdcharge_no_one_view_recover", "generated events - PSD Charge cut - no one view only recover; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");                                            
     auto h_all_cut = _NO_STK_CHARGE ? _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_psd_charge_cut==true")
                                                 .Histo1D({"h_all_cut", "generated events - all cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev") :  _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
@@ -88,6 +91,7 @@ void buildAcceptance(const in_args input_args)
     h_trackselection                            ->Sumw2();
     h_trackselection_no_3hit_recover            ->Sumw2();
     h_psdstkmatch                               ->Sumw2();
+    h_psdcharge_no_one_view_recover             ->Sumw2();
     h_all_cut                                   ->Sumw2();
 
     TFile* outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
@@ -107,6 +111,7 @@ void buildAcceptance(const in_args input_args)
     h_trackselection                            ->Write();
     h_trackselection_no_3hit_recover            ->Write();
     h_psdstkmatch                               ->Write();
+    h_psdcharge_no_one_view_recover             ->Write();
     h_all_cut                                   ->Write();
 
     outfile->Close();
