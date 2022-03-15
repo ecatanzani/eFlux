@@ -102,7 +102,10 @@ def createDATAlist(pars, opts):
 	# Write output file
 	with open(data_list_path, "w") as outList:
 		for elm in dList:
-			outList.write(pars['farmAddress'] + elm + "\n")
+			if pars['UseLocalStorage']:
+				outList.write(elm + "\n")
+			else:
+				outList.write(pars['farmAddress'] + elm + "\n")
 
 
 def createSkimmedDATAlist(pars, opts):
