@@ -69,6 +69,14 @@ void buildAcceptance(const in_args input_args)
     auto h_trackselection_no_3hit_recover = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_track_selection_cut_no_3hit_recover==true")
                                                 .Histo1D({"h_trackselection_no_3hit_recover", "generated events - Track Selection cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+    auto h_bgo_stk_selection_inside_psd_fvolume = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Histo1D({"h_bgo_stk_selection_inside_psd_fvolume", "generated events - BGO + Track Selection cut - events within PSD fiducial volume; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+    auto h_bgo_stk_selection_outside_psd_fvolume = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Histo1D({"h_bgo_stk_selection_outside_psd_fvolume", "generated events - BGO + Track Selection cut - events outside PSD fiducial volume; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
     auto h_psdstkmatch = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_psd_stk_match_cut==true")
                                                 .Histo1D({"h_psdstkmatch", "generated events - PSD/STK match cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
@@ -90,6 +98,8 @@ void buildAcceptance(const in_args input_args)
     h_maxrms                                    ->Sumw2();
     h_trackselection                            ->Sumw2();
     h_trackselection_no_3hit_recover            ->Sumw2();
+    h_bgo_stk_selection_inside_psd_fvolume      ->Sumw2();
+    h_bgo_stk_selection_outside_psd_fvolume     ->Sumw2();
     h_psdstkmatch                               ->Sumw2();
     h_psdcharge_no_one_view_recover             ->Sumw2();
     h_all_cut                                   ->Sumw2();
@@ -110,6 +120,8 @@ void buildAcceptance(const in_args input_args)
     h_maxrms                                    ->Write();
     h_trackselection                            ->Write();
     h_trackselection_no_3hit_recover            ->Write();
+    h_bgo_stk_selection_inside_psd_fvolume      ->Write();
+    h_bgo_stk_selection_outside_psd_fvolume     ->Write();
     h_psdstkmatch                               ->Write();
     h_psdcharge_no_one_view_recover             ->Write();
     h_all_cut                                   ->Write();
