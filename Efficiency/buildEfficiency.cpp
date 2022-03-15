@@ -251,8 +251,8 @@ void buildEfficiency(
         infile->Close();
 
         // Build efficiencies
-        std::unique_ptr<TEfficiency> trigger_eff_het_over_let_xtrl_tight = std::make_unique<TEfficiency>();
-        std::unique_ptr<TEfficiency> trigger_eff_het_over_unb_xtrl_tight = std::make_unique<TEfficiency>();
+        std::unique_ptr<TEfficiency> trigger_eff_het_over_let_xtrl_tight;
+        std::unique_ptr<TEfficiency> trigger_eff_het_over_unb_xtrl_tight;
 
         std::unique_ptr<TEfficiency> maxrms_eff_xtrl_tight;
         std::unique_ptr<TEfficiency> nbarlayer13_eff_xtrl_tight;
