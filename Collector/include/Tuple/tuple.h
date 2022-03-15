@@ -5,6 +5,7 @@
 #include "Dmp/DmpGeoStruct.h"
 #include "Dmp/DmpFilterContainer.h"
 #include "Efficiency/efficiency.h"
+#include "Preselection/preselection.h"
 
 #include "TTree.h"
 #include "TVector3.h"
@@ -29,6 +30,11 @@ public:
 protected:
 	void set_active_cuts(const active_cuts &acuts);
 	void fill_trigger_info(const trigger_info &evt_trigger);
+	void fill_psd_info(
+		const double psdstkmatch_x,
+		const double psdstkmatch_y,
+		const double psdstkmatch_x_fiducial,
+		const double psdstkmatch_y_fiducial);
 	void fill_stk_info(
 		const best_track &event_best_track,
 		const std::vector<int> _stk_clusters_on_plane);
@@ -55,7 +61,7 @@ protected:
 		const int total_adc,
 		const int max_adc,
 		const int max_channel_id);
-	void fill_preselectionfilters_info(const p_cuts &preselect);
+	void fill_preselectionfilters_info(const presel_output &preselect);
 	void fill_preselectionfiltersefficiency_info(const eff_output &eff_preselect);
 	void core_reset();
 
@@ -109,6 +115,10 @@ protected:
 	double PSD_chargeX 														{-999};
 	double PSD_chargeY 														{-999};
 	double PSD_charge 														{-999};
+	double SPD_STK_match_X_distance											{-999};
+	double SPD_STK_match_Y_distance											{-999};
+	double SPD_STK_match_X_distance_fiducial_volume							{-999};
+	double SPD_STK_match_Y_distance_fiducial_volume							{-999};
 	// NUD
 	std::vector<int> nud_adc;
 	int nud_total_adc														{-999};
@@ -136,6 +146,8 @@ protected:
 	bool evtfilter_psd_stk_match_cut_X_view 								{false};
 	bool evtfilter_psd_stk_match_cut_Y_view 								{false};
 	bool evtfilter_psd_stk_match_cut_psd_fiducial_volume					{false};
+	bool evtfilter_psd_stk_match_cut_psd_fiducial_volume_X					{false};
+	bool evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y					{false};
 	bool evtfilter_psd_charge_cut 											{false};
 	bool evtfilter_psd_charge_cut_no_single_view_recover					{false};
 	bool evtfilter_stk_charge_cut 											{false};
@@ -178,22 +190,16 @@ protected:
 	bool trigger_efficiency_preselection_is_unb                 			{false};
 	bool maxrms_efficiency_preselection                         			{false};
 	bool maxrms_efficiency_preselection_accepted                			{false};
-	bool maxrms_efficiency_preselection_notaccepted             			{false};
 	bool nbarlayer13_efficiency_preselection                    			{false};
 	bool nbarlayer13_efficiency_preselection_accepted           			{false};
-	bool nbarlayer13_efficiency_preselection_notaccepted        			{false};
 	bool maxrms_and_nbarlayer13_efficiency_preselection						{false};
 	bool maxrms_and_nbarlayer13_efficiency_preselection_accepted 			{false};
-	bool maxrms_and_nbarlayer13_efficiency_preselection_notaccepted 		{false};
 	bool track_efficiency_preselection                          			{false};
 	bool track_efficiency_preselection_accepted                 			{false};
-	bool track_efficiency_preselection_notaccepted              			{false};
 	bool psdstkmatch_efficiency_preselection                    			{false};
 	bool psdstkmatch_efficiency_preselection_accepted           			{false};
-	bool psdstkmatch_efficiency_preselection_notaccepted        			{false};
 	bool psdcharge_efficiency_preselection                      			{false};
 	bool psdcharge_efficiency_preselection_accepted             			{false};
-	bool psdcharge_efficiency_preselection_notaccepted          			{false};
 };
 
 #endif

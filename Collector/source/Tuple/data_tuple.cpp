@@ -62,6 +62,10 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch("PSD_chargeX", &PSD_chargeX, "PSD_chargeX/D");
 	DmpNtupTree->Branch("PSD_chargeY", &PSD_chargeY, "PSD_chargeY/D");
 	DmpNtupTree->Branch("PSD_charge", &PSD_charge, "PSD_charge/D");
+	DmpNtupTree->Branch("SPD_STK_match_X_distance", &SPD_STK_match_X_distance, "SPD_STK_match_X_distance/D");
+	DmpNtupTree->Branch("SPD_STK_match_Y_distance", &SPD_STK_match_Y_distance, "SPD_STK_match_Y_distance/D");
+	DmpNtupTree->Branch("SPD_STK_match_X_distance_fiducial_volume", &SPD_STK_match_X_distance_fiducial_volume, "SPD_STK_match_X_distance_fiducial_volume/D");
+	DmpNtupTree->Branch("SPD_STK_match_Y_distance_fiducial_volume", &SPD_STK_match_Y_distance_fiducial_volume, "SPD_STK_match_Y_distance_fiducial_volume/D");
 	// NUD
 	DmpNtupTree->Branch("nud_adc", &nud_adc);
 	DmpNtupTree->Branch("nud_total_adc", &nud_total_adc, "nud_total_adc/I");
@@ -112,6 +116,8 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_X_view", &evtfilter_psd_stk_match_cut_X_view, "evtfilter_psd_stk_match_cut_X_view/O");
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_Y_view", &evtfilter_psd_stk_match_cut_Y_view, "evtfilter_psd_stk_match_cut_Y_view/O");
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_psd_fiducial_volume", &evtfilter_psd_stk_match_cut_psd_fiducial_volume, "evtfilter_psd_stk_match_cut_psd_fiducial_volume/O");
+	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_psd_fiducial_volume_X", &evtfilter_psd_stk_match_cut_psd_fiducial_volume_X, "evtfilter_psd_stk_match_cut_psd_fiducial_volume_X/O");
+	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y", &evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y, "evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y/O");
 	DmpNtupTree->Branch("evtfilter_psd_charge_cut", &evtfilter_psd_charge_cut, "evtfilter_psd_charge_cut/O");
 	DmpNtupTree->Branch("evtfilter_psd_charge_cut_no_single_view_recover", &evtfilter_psd_charge_cut_no_single_view_recover, "evtfilter_psd_charge_cut_no_single_view_recover/O");
 	DmpNtupTree->Branch("evtfilter_stk_charge_cut", &evtfilter_stk_charge_cut, "evtfilter_stk_charge_cut/O");
@@ -148,27 +154,22 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch("trigger_efficiency_preselection_is_unb", &trigger_efficiency_preselection_is_unb, "trigger_efficiency_preselection_is_unb/O");
 	DmpNtupTree->Branch("maxrms_efficiency_preselection", &maxrms_efficiency_preselection, "maxrms_efficiency_preselection/O");
 	DmpNtupTree->Branch("maxrms_efficiency_preselection_accepted", &maxrms_efficiency_preselection_accepted, "maxrms_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("maxrms_efficiency_preselection_notaccepted", &maxrms_efficiency_preselection_notaccepted, "maxrms_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection", &nbarlayer13_efficiency_preselection, "nbarlayer13_efficiency_preselection/O");
 	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_accepted", &nbarlayer13_efficiency_preselection_accepted, "nbarlayer13_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_notaccepted", &nbarlayer13_efficiency_preselection_notaccepted, "nbarlayer13_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection", &maxrms_and_nbarlayer13_efficiency_preselection, "maxrms_and_nbarlayer13_efficiency_preselection/O");
 	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection_accepted", &maxrms_and_nbarlayer13_efficiency_preselection_accepted, "maxrms_and_nbarlayer13_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection_notaccepted", &maxrms_and_nbarlayer13_efficiency_preselection_notaccepted, "maxrms_and_nbarlayer13_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("track_efficiency_preselection", &track_efficiency_preselection, "track_efficiency_preselection/O");
 	DmpNtupTree->Branch("track_efficiency_preselection_accepted", &track_efficiency_preselection_accepted, "track_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("track_efficiency_preselection_notaccepted", &track_efficiency_preselection_notaccepted, "track_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection", &psdstkmatch_efficiency_preselection, "psdstkmatch_efficiency_preselection/O");
 	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection_accepted", &psdstkmatch_efficiency_preselection_accepted, "psdstkmatch_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection_notaccepted", &psdstkmatch_efficiency_preselection_notaccepted, "psdstkmatch_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("psdcharge_efficiency_preselection", &psdcharge_efficiency_preselection, "psdcharge_efficiency_preselection/O");
 	DmpNtupTree->Branch("psdcharge_efficiency_preselection_accepted", &psdcharge_efficiency_preselection_accepted, "psdcharge_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("psdcharge_efficiency_preselection_notaccepted", &psdcharge_efficiency_preselection_notaccepted, "psdcharge_efficiency_preselection_notaccepted/O");
 }
 
 void data_tuple::Fill(
 	const std::shared_ptr<_tmp_filter> _filter_res,
 	const std::vector<int> _stk_clusters_on_plane,
+	const std::shared_ptr<_tmp_psd> _psd_res,
 	const std::shared_ptr<_tmp_bgo> _bgo_res,
 	const std::shared_ptr<_tmp_energy_data> _energy_res,
 	const std::shared_ptr<DmpEvtAttitude> attitude,
@@ -178,7 +179,12 @@ void data_tuple::Fill(
 	fill_trigger_info(_filter_res->evt_trigger_info);
 	fill_filter_info(_filter_res->output);
 	fill_preselectionfilters_info(_filter_res->preselection_output);
-	fill_preselectionfiltersefficiency_info(_filter_res->efficiency_preselection_output);
+	fill_preselectionfiltersefficiency_info(_filter_res->efficiency_output);
+	fill_psd_info(
+		_psd_res->SPD_STK_match_X_distance,
+		_psd_res->SPD_STK_match_Y_distance,
+		_psd_res->SPD_STK_match_X_distance_fiducial_volume,
+		_psd_res->SPD_STK_match_Y_distance_fiducial_volume);
 	fill_stk_info(
 		_filter_res->evt_best_track,
 		_stk_clusters_on_plane);
@@ -212,71 +218,73 @@ void data_tuple::Fill(
 
 void data_tuple::fill_filter_info(const filter_output &output)
 {
-	evtfilter_out_energy_range = output.out_energy_range;
-	evtfilter_evt_in_saa = output.evt_in_saa;
-	evtfilter_evt_triggered = output.evt_triggered;
-	evtfilter_correct_bgo_reco = output.correct_bgo_reco;
-	evtfilter_good_event = output.good_event;
-	evtfilter_geometric = output.geometric;
-	evtfilter_BGO_fiducial = output.BGO_fiducial;
-	evtfilter_BGO_fiducial_HET = output.BGO_fiducial_HET;
-	evtfilter_BGO_fiducial_maxElayer_cut = output.BGO_fiducial_maxElayer_cut;
-	evtfilter_BGO_fiducial_maxBarLayer_cut = output.BGO_fiducial_maxBarLayer_cut;
-	evtfilter_BGO_fiducial_BGOTrackContainment_cut = output.BGO_fiducial_BGOTrackContainment_cut;
-	evtfilter_nBarLayer13_cut = output.nBarLayer13_cut;
-	evtfilter_maxRms_cut = output.maxRms_cut;
-	evtfilter_track_selection_cut = output.track_selection_cut;
-	evtfilter_track_selection_cut_no_3hit_recover = output.track_selection_cut_no_3hit_recover;
-	evtfilter_psd_stk_match_cut = output.psd_stk_match_cut;
-	evtfilter_psd_stk_match_cut_X_view = output.psd_stk_match_cut_x;
-	evtfilter_psd_stk_match_cut_Y_view = output.psd_stk_match_cut_y;
-	evtfilter_psd_stk_match_cut_psd_fiducial_volume = output.psd_stk_match_cut_psd_fiducial_volume;
-	evtfilter_psd_charge_cut = output.psd_charge_cut;
-	evtfilter_psd_charge_cut_no_single_view_recover = output.psd_charge_cut_no_single_view_recover;
-	evtfilter_stk_charge_cut = output.stk_charge_cut;
-	evtfilter_psd_charge_measurement = output.psd_charge_measurement;
-	evtfilter_stk_charge_measurement = output.stk_charge_measurement;
-	evtfilter_xtrl_tight_cut = output.xtrl_tight_cut;
-	evtfilter_xtrl_loose_cut = output.xtrl_loose_cut;
-	evtfilter_all_cut = output.all_cut;
+	evtfilter_out_energy_range 								= output.out_energy_range;
+	evtfilter_evt_in_saa 									= output.evt_in_saa;
+	evtfilter_evt_triggered 								= output.evt_triggered;
+	evtfilter_correct_bgo_reco 								= output.correct_bgo_reco;
+	evtfilter_good_event 									= output.good_event;
+	evtfilter_geometric 									= output.geometric;
+	evtfilter_BGO_fiducial 									= output.BGO_fiducial;
+	evtfilter_BGO_fiducial_HET 								= output.BGO_fiducial_HET;
+	evtfilter_BGO_fiducial_maxElayer_cut 					= output.BGO_fiducial_maxElayer_cut;
+	evtfilter_BGO_fiducial_maxBarLayer_cut 					= output.BGO_fiducial_maxBarLayer_cut;
+	evtfilter_BGO_fiducial_BGOTrackContainment_cut 			= output.BGO_fiducial_BGOTrackContainment_cut;
+	evtfilter_nBarLayer13_cut 								= output.nBarLayer13_cut;
+	evtfilter_maxRms_cut 									= output.maxRms_cut;
+	evtfilter_track_selection_cut 							= output.track_selection_cut;
+	evtfilter_track_selection_cut_no_3hit_recover 			= output.track_selection_cut_no_3hit_recover;
+	evtfilter_psd_stk_match_cut 							= output.psd_stk_match_cut;
+	evtfilter_psd_stk_match_cut_X_view 						= output.psd_stk_match_cut_x;
+	evtfilter_psd_stk_match_cut_Y_view 						= output.psd_stk_match_cut_y;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume 		= output.psd_stk_match_cut_psd_fiducial_volume;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume_X 		= output.psd_stk_match_cut_psd_fiducial_volume_X;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y 		= output.psd_stk_match_cut_psd_fiducial_volume_Y;
+	evtfilter_psd_charge_cut 								= output.psd_charge_cut;
+	evtfilter_psd_charge_cut_no_single_view_recover 		= output.psd_charge_cut_no_single_view_recover;
+	evtfilter_stk_charge_cut 								= output.stk_charge_cut;
+	evtfilter_psd_charge_measurement 						= output.psd_charge_measurement;
+	evtfilter_stk_charge_measurement 						= output.stk_charge_measurement;
+	evtfilter_xtrl_tight_cut 								= output.xtrl_tight_cut;
+	evtfilter_xtrl_loose_cut 								= output.xtrl_loose_cut;
+	evtfilter_all_cut 										= output.all_cut;
 }
 
 void data_tuple::fill_attitude_info(const std::shared_ptr<DmpEvtAttitude> &attitude)
 {
-	glat = attitude->glat;
-	glon = attitude->glon;
-	geo_lat = attitude->lat_geo;
-	geo_lon = attitude->lon_geo;
-	ra_zenith = attitude->ra_zenith;
-	dec_zenith = attitude->dec_zenith;
-	ra_scz = attitude->ra_scz;
-	dec_scz = attitude->dec_scz;
-	ra_scx = attitude->ra_scx;
-	dec_scx = attitude->dec_scx;
-	ra_scy = attitude->ra_scy;
-	dec_scy = attitude->dec_scy;
-	cutoff = attitude->verticalRigidityCutoff;
+	glat			= attitude->glat;
+	glon 			= attitude->glon;
+	geo_lat 		= attitude->lat_geo;
+	geo_lon 		= attitude->lon_geo;
+	ra_zenith 		= attitude->ra_zenith;
+	dec_zenith 		= attitude->dec_zenith;
+	ra_scz 			= attitude->ra_scz;
+	dec_scz 		= attitude->dec_scz;
+	ra_scx 			= attitude->ra_scx;
+	dec_scx 		= attitude->dec_scx;
+	ra_scy 			= attitude->ra_scy;
+	dec_scy 		= attitude->dec_scy;
+	cutoff 			= attitude->verticalRigidityCutoff;
 }
 
 void data_tuple::Reset()
 {
 	core_reset();
 	// Event time
-	second = 0;
+	second 				= 0;
 	// Attitude
-	glat = -999;
-	glon = -999;
-	geo_lat = -999;
-	geo_lon = -999;
-	ra_zenith = -999;
-	dec_zenith = -999;
-	ra_scz = -999;
-	dec_scz = -999;
-	ra_scx = -999;
-	dec_scx = -999;
-	ra_scy = -999;
-	dec_scy = -999;
-	cutoff = -999;
+	glat 				= -999;
+	glon 				= -999;
+	geo_lat 			= -999;
+	geo_lon 			= -999;
+	ra_zenith 			= -999;
+	dec_zenith 			= -999;
+	ra_scz 				= -999;
+	dec_scz 			= -999;
+	ra_scx 				= -999;
+	dec_scx 			= -999;
+	ra_scy 				= -999;
+	dec_scy 			= -999;
+	cutoff 				= -999;
 	// Filters
 	evtfilter_evt_in_saa = false;
 }

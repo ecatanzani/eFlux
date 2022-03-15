@@ -7,6 +7,7 @@
 #include "aggregate_events.h"
 #include "Data/data_tmpstruct.h"
 #include "Efficiency/efficiency.h"
+#include "Preselection/preselection.h"
 
 #include "Dmp/DmpStkContainer.h"
 #include "Dmp/DmpBgoContainer.h"
@@ -115,6 +116,8 @@ void rawDataLoop(
 		DmpNudContainer nudVault;
 		// Load efficiency class
 		efficiency cuts_efficiency;
+		// Load preselection class
+		preselection cuts_preselection;
 		// Load output file
 		outFile.cd();
 		// Create DATA tuple objects
@@ -142,6 +145,8 @@ void rawDataLoop(
 				filter.Reset();
 				// Reset efficiency filter event flags
 				cuts_efficiency.Reset();
+				// Reset preselection filter event flags
+				cuts_preselection.Reset();
 				// Reset tuple
 				tuple->Reset();
 				// Reset energy class
@@ -205,7 +210,21 @@ void rawDataLoop(
 					stkclusters,
 					stktracks,
 					data_config.GetActiveCuts());
-			
+					
+				// Preselection pipeline
+				cuts_preselection.Pipeline(
+					bgorec,
+					bgohits,
+					data_config.GetCutsConfigValues(),
+					evt_energy.GetRawEnergy(),
+					evt_energy.GetCorrEnergy(),
+					bgoVault,
+					psdVault,
+					stkclusters,
+					stktracks,
+					data_config.GetActiveCuts(),
+					filter.GetTrigger());
+
 				// Efficiency pipeline
 				cuts_efficiency.Pipeline(
 					bgorec,
@@ -223,8 +242,9 @@ void rawDataLoop(
 
 			// Fill output structures
 			tuple->Fill(
-				fillFilterTmpStruct(filter, cuts_efficiency),
+				fillFilterTmpStruct(filter, cuts_efficiency, cuts_preselection),
 				stkVault.GetNPlaneClusters(),
+				fillPSDTmpStruct(filter),
 				fillBGOTmpStruct(bgoVault),
 				fillDataEnergyTmpStruct(evt_energy),
 				attitude,

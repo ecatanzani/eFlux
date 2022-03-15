@@ -1,6 +1,7 @@
 #ifndef TMPSTRUCT_H
 #define TMPSTRUCT_H
 
+#include <tuple>
 #include <vector>
 #include <memory>
 
@@ -9,14 +10,15 @@
 #include "Dmp/DmpBgoContainer.h"
 #include "Dmp/DmpFilterContainer.h"
 #include "Efficiency/efficiency.h"
+#include "Preselection/preselection.h"
 
 #include "TVector3.h"
 
 struct _tmp_filter
 {
 	filter_output output;
-	p_cuts preselection_output;
-	eff_output efficiency_preselection_output;
+	presel_output preselection_output;
+	eff_output efficiency_output;
 	best_track evt_best_track;
 	psd_charge evt_psd_charge;
 	stk_charge evt_stk_charge;
@@ -24,6 +26,13 @@ struct _tmp_filter
 	trigger_info evt_trigger_info;
 };
 
+struct _tmp_psd
+{
+	double SPD_STK_match_X_distance; 					
+	double SPD_STK_match_Y_distance; 					
+	double SPD_STK_match_X_distance_fiducial_volume;	
+	double SPD_STK_match_Y_distance_fiducial_volume;
+};
 struct _tmp_bgo
 {
 	std::vector<double> layer_energies;
@@ -48,7 +57,8 @@ struct _tmp_nud
 	int max_channel_ID;
 };
 
-extern std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter, efficiency &eff_filter);
+extern std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter, efficiency &eff_filter, preselection &presel_filter);
+extern std::shared_ptr<_tmp_psd> fillPSDTmpStruct(DmpFilterContainer &filter);
 extern std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault);
 extern std::shared_ptr<_tmp_nud> fillNUDTmpStruct(DmpNudContainer &nudVault);
 

@@ -9,6 +9,7 @@
 #include "MC/mc_tmpstruct.h"
 #include "aggregate_events.h"
 #include "Efficiency/efficiency.h"
+#include "Preselection/preselection.h"
 
 #include "Dmp/DmpGeoStruct.h"
 #include "Dmp/DmpStkContainer.h"
@@ -114,6 +115,8 @@ void mcLoop(
 		DmpNudContainer nudVault;
 		// Load efficiency class
 		efficiency cuts_efficiency;
+		// Load preselection class
+		preselection cuts_preselection;
 		// Load output file
 		outFile.cd();
 		// Create MC tuple objects
@@ -139,6 +142,8 @@ void mcLoop(
 				filter.Reset();
 				// Reset efficiency filter event flags
 				cuts_efficiency.Reset();
+				// Reset preselection filter event flags
+				cuts_preselection.Reset();
 				// Reset tuple
 				simu_tuple->Reset();
 				// Reset energy class
@@ -214,7 +219,21 @@ void mcLoop(
 					stkclusters,
 					stktracks,
 					mc_config.GetActiveCuts());
-			
+				
+				// Preselection pipeline
+				cuts_preselection.Pipeline(
+					bgorec,
+					bgohits,
+					mc_config.GetCutsConfigValues(),
+					evt_energy.GetRawEnergy(),
+					evt_energy.GetCorrEnergy(),
+					bgoVault,
+					psdVault,
+					stkclusters,
+					stktracks,
+					mc_config.GetActiveCuts(),
+					filter.GetTrigger());
+
 				// Efficiency pipeline
 				cuts_efficiency.Pipeline(
 					bgorec,
@@ -232,8 +251,9 @@ void mcLoop(
 
 			// Fill output structures
 			simu_tuple->Fill(
-				fillFilterTmpStruct(filter, cuts_efficiency),
+				fillFilterTmpStruct(filter, cuts_efficiency, cuts_preselection),
 				stkVault.GetNPlaneClusters(),
+				fillPSDTmpStruct(filter),
 				fillBGOTmpStruct(bgoVault),
 				fillSimuTmpStruct(simu_primaries, simu_trajectories),
 				fillEnergyTmpStruct(evt_energy),

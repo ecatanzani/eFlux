@@ -1,6 +1,7 @@
 #ifndef DMPFILTERCONTAINER_H
 #define DMPFILTERCONTAINER_H
 
+#include <tuple>
 #include <vector>
 #include <memory>
 
@@ -50,23 +51,23 @@ struct psd_cluster_match
 	std::vector<int> icloPsdClu_bgoRec;
 	std::vector<double> dxCloPsdClu_bgoRec;
 	std::vector<int> icloPsdClu_track;
+	std::vector<int> icloPsdClu_track_fiducial;
 	std::vector<double> dxCloPsdClu_track;
-	std::vector<int> icloPsdClu2_track;
-	std::vector<double> dxCloPsdClu2_track;
+	std::vector<double> dxCloPsdClu_track_fiducial;
 
 	bool X_match {false};
 	bool Y_match {false};
 
-	psd_cluster_match() : icloPsdClu			(DAMPE_psd_nLayers, -999),
-						  dxCloPsdClu			(DAMPE_psd_nLayers, -999),
-						  icloPsdCluMaxHit		(DAMPE_psd_nLayers, -999),
-						  dxCloPsdCluMaxHit		(DAMPE_psd_nLayers, -999),
-						  icloPsdClu_bgoRec		(DAMPE_psd_nLayers, -999),
-						  dxCloPsdClu_bgoRec	(DAMPE_psd_nLayers, -999),
-						  icloPsdClu_track		(DAMPE_psd_nLayers, -999),
-						  dxCloPsdClu_track		(DAMPE_psd_nLayers, -999),
-						  icloPsdClu2_track		(DAMPE_psd_nLayers, -999),
-						  dxCloPsdClu2_track	(DAMPE_psd_nLayers, -999)
+	psd_cluster_match() : icloPsdClu					(DAMPE_psd_nLayers, -999),
+						  dxCloPsdClu					(DAMPE_psd_nLayers, -999),
+						  icloPsdCluMaxHit				(DAMPE_psd_nLayers, -999),
+						  dxCloPsdCluMaxHit				(DAMPE_psd_nLayers, -999),
+						  icloPsdClu_bgoRec				(DAMPE_psd_nLayers, -999),
+						  dxCloPsdClu_bgoRec			(DAMPE_psd_nLayers, -999),
+						  icloPsdClu_track				(DAMPE_psd_nLayers, -999),
+						  icloPsdClu_track_fiducial		(DAMPE_psd_nLayers, -999),
+						  dxCloPsdClu_track				(DAMPE_psd_nLayers, -999),
+						  dxCloPsdClu_track_fiducial 	(DAMPE_psd_nLayers, -999)
 						{
 						}
 };
@@ -121,6 +122,8 @@ struct filter_output
 	bool three_cluster_only_track					{false};
 	bool psd_stk_match_cut 							{false};
 	bool psd_stk_match_cut_psd_fiducial_volume 		{false};
+	bool psd_stk_match_cut_psd_fiducial_volume_X 	{false};
+	bool psd_stk_match_cut_psd_fiducial_volume_Y 	{false};
 	bool psd_stk_match_cut_x 						{false};
 	bool psd_stk_match_cut_y 						{false};
 	bool psd_charge_cut 							{false};
@@ -141,31 +144,6 @@ struct statistics
 	unsigned int triggered_events 		{0};
 	unsigned int selected_events 		{0};
 	unsigned int events_in_saa 			{0};
-};
-
-struct p_cuts {
-
-    // Cut variables
-    bool maxelayer_cut          {false};
-    bool maxbarlayer_cut        {false};
-    bool bgotrack_cut           {false};
-    bool bgofiducial_cut        {false};
-    bool nbarlayer13_cut        {false};
-    bool maxrms_cut             {false};
-    bool trackselection_cut     {false};
-    bool psdstkmatch_cut        {false};
-    bool psdcharge_cut          {false};
-    bool stkcharge_cut          {false};
-    
-    // Last Cut variables
-    bool maxelayer_lastcut          {false};        // All cuts exect maxelayer
-    bool maxbarlayer_lastcut        {false};        // All cuts except maxbarlayer
-    bool bgotrack_lastcut           {false};        // All cuts except bgotrack
-    bool bgofiducial_lastcut        {false};        // All cuts except BGO fiducial ones
-    bool nbarlayer13_lastcut        {false};        // All cuts except nbarlayer13
-    bool maxrms_lastcut             {false};        // All cuts except maxrms
-    bool trackselection_lastcut     {false};        // All cuts except trackselection (and the related ones)
-    bool psdstkmatch_lastcut        {false};        // All cuts except psd-stk matching (and the related ones)
 };
 
 struct data_evt_time
@@ -212,8 +190,8 @@ public:
 		const double max_energy);
 	void UpdateEvtCounter();
 	const filter_output GetFilterOutput();
-	const p_cuts GetPreselectionOutput();
 	const psd_charge GetPSDCharge();
+	const std::tuple<double, double, double, double> GetPSDSTKMatchDistances();
 	const stk_charge GetSTKCharge();
 	const best_track GetBestTrack();
 	DmpStkTrack GetBestTrackObj();
@@ -298,17 +276,19 @@ protected:
 		const std::vector<std::vector<short>> psdCluster_idxBeg,
 		const std::vector<std::vector<double>> psdCluster_Z,
 		const std::vector<std::vector<double>> psdCluster_maxEcoordinate);
-	const bool psd_charge_cut(
+	void psd_charge_measurement(
 		const std::vector<std::vector<double>> psdCluster_maxE,
 		const std::vector<std::vector<short>> psdCluster_idxMaxE,
 		const std::vector<double> hitZ,
 		const std::vector<short> globalBarID,
-		const cuts_conf data_cuts,
-		const bool recover_one_view = true,
 		const bool update_struct = true);
-	const bool stk_charge_cut(
+	void stk_charge_measurement(
 		const std::shared_ptr<TClonesArray> stkclusters,
-		const double charge_cut);
+		const bool update_struct = true);
+	const bool psd_charge_cut(
+		const cuts_conf data_cuts,
+		const bool recover_one_view = true);
+	const bool stk_charge_cut(const double charge_cut);
 	const bool xtrl_tight_cut(
 		const double input_xtrl,
 		const double cut_value = 8.5);
@@ -322,7 +302,6 @@ protected:
 	void reset_stk_charges();
 	void reset_classifiers();
 	void reset_filter_output();
-	void reset_preselection_output();
 	void reset_time();
 	void reset_trigger();
 
@@ -332,7 +311,6 @@ protected:
 	stk_charge extracted_stk_charge;
 	bgo_classifiers classifier;
 	filter_output output;
-	p_cuts preselection_cuts;
 	statistics particle_counter;
 	data_evt_time time;
 	trigger_info evt_trigger;

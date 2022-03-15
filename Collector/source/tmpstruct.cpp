@@ -1,11 +1,11 @@
 #include "tmpstruct.h"
 
-std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter, efficiency &eff_filter)
+std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter, efficiency &eff_filter, preselection &presel_filter)
 {
 	std::shared_ptr<_tmp_filter> _filter_res = std::make_shared<_tmp_filter>();	
 	_filter_res->output = filter.GetFilterOutput();
-	_filter_res->efficiency_preselection_output = eff_filter.GetEfficiencyOutput();
-	_filter_res->preselection_output = filter.GetPreselectionOutput();
+	_filter_res->preselection_output = presel_filter.GetPreselectionOutput();
+	_filter_res->efficiency_output = eff_filter.GetEfficiencyOutput();
 	_filter_res->evt_best_track = filter.GetBestTrack();
 	_filter_res->evt_psd_charge = filter.GetPSDCharge();
 	_filter_res->evt_stk_charge = filter.GetSTKCharge();
@@ -13,6 +13,18 @@ std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter, eff
 	_filter_res->evt_trigger_info = filter.GetTrigger();
 
 	return _filter_res;
+}
+
+std::shared_ptr<_tmp_psd> fillPSDTmpStruct(DmpFilterContainer &filter)
+{
+	std::shared_ptr<_tmp_psd> _psd_res = std::make_shared<_tmp_psd>();
+	auto distances = filter.GetPSDSTKMatchDistances();
+	_psd_res->SPD_STK_match_X_distance = std::get<0>(distances);
+	_psd_res->SPD_STK_match_Y_distance = std::get<1>(distances);
+	_psd_res->SPD_STK_match_X_distance_fiducial_volume = std::get<2>(distances);
+	_psd_res->SPD_STK_match_Y_distance_fiducial_volume = std::get<3>(distances);
+
+	return _psd_res;
 }
 
 std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault)

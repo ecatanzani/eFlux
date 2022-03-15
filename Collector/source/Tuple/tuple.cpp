@@ -22,6 +22,21 @@ void ntuple::fill_trigger_info(const trigger_info &evt_trigger)
 	unbiased_trigger = evt_trigger.unbiased;
 }
 
+void ntuple::fill_psd_info(
+	const double psdstkmatch_x,
+	const double psdstkmatch_y,
+	const double psdstkmatch_x_fiducial,
+	const double psdstkmatch_y_fiducial)
+	{
+		if (evtfilter_track_selection_cut)
+		{
+			SPD_STK_match_X_distance = psdstkmatch_x;
+			SPD_STK_match_Y_distance = psdstkmatch_y;
+			SPD_STK_match_X_distance_fiducial_volume = psdstkmatch_x_fiducial;
+			SPD_STK_match_Y_distance_fiducial_volume = psdstkmatch_y_fiducial;
+		}
+	}
+
 void ntuple::fill_stk_info(
 	const best_track &event_best_track,
 	const std::vector<int> _stk_clusters_on_plane)
@@ -125,7 +140,7 @@ void ntuple::fill_nud_info(
 	}
 }
 
-void ntuple::fill_preselectionfilters_info(const p_cuts &preselect) 
+void ntuple::fill_preselectionfilters_info(const presel_output &preselect) 
 {
 	if (evtfilter_good_event) 
 	{
@@ -160,22 +175,16 @@ void ntuple::fill_preselectionfiltersefficiency_info(const eff_output &eff_prese
 		trigger_efficiency_preselection_is_unb 							= eff_preselect.trigger_efficiency_preselection_is_unb;
 		maxrms_efficiency_preselection 									= eff_preselect.maxrms_efficiency_preselection;
 		maxrms_efficiency_preselection_accepted 						= eff_preselect.maxrms_efficiency_preselection_accepted;
-		maxrms_efficiency_preselection_notaccepted 						= eff_preselect.maxrms_efficiency_preselection_notaccepted;
 		nbarlayer13_efficiency_preselection 							= eff_preselect.nbarlayer13_efficiency_preselection;
 		nbarlayer13_efficiency_preselection_accepted 					= eff_preselect.nbarlayer13_efficiency_preselection_accepted;
-		nbarlayer13_efficiency_preselection_notaccepted 				= eff_preselect.nbarlayer13_efficiency_preselection_notaccepted;
 		maxrms_and_nbarlayer13_efficiency_preselection 					= eff_preselect.maxrms_and_nbarlayer13_efficiency_preselection;
 		maxrms_and_nbarlayer13_efficiency_preselection_accepted 		= eff_preselect.maxrms_and_nbarlayer13_efficiency_preselection_accepted;
-		maxrms_and_nbarlayer13_efficiency_preselection_notaccepted 		= eff_preselect.maxrms_and_nbarlayer13_efficiency_preselection_notaccepted;
 		track_efficiency_preselection 									= eff_preselect.track_efficiency_preselection;
 		track_efficiency_preselection_accepted 							= eff_preselect.track_efficiency_preselection_accepted;
-		track_efficiency_preselection_notaccepted 						= eff_preselect.track_efficiency_preselection_notaccepted;
 		psdstkmatch_efficiency_preselection 							= eff_preselect.psdstkmatch_efficiency_preselection;
 		psdstkmatch_efficiency_preselection_accepted 					= eff_preselect.psdstkmatch_efficiency_preselection_accepted;
-		psdstkmatch_efficiency_preselection_notaccepted 				= eff_preselect.psdstkmatch_efficiency_preselection_notaccepted;
 		psdcharge_efficiency_preselection 								= eff_preselect.psdcharge_efficiency_preselection;
 		psdcharge_efficiency_preselection_accepted 						= eff_preselect.psdcharge_efficiency_preselection_accepted;
-		psdcharge_efficiency_preselection_notaccepted 					= eff_preselect.psdcharge_efficiency_preselection_notaccepted;
 	}
 }
 
@@ -229,6 +238,10 @@ void ntuple::core_reset()
 	PSD_chargeX 										= -999;
 	PSD_chargeY 										= -999;
 	PSD_charge 											= -999;
+	SPD_STK_match_X_distance							= -999;
+	SPD_STK_match_Y_distance							= -999;
+	SPD_STK_match_X_distance_fiducial_volume			= -999;
+	SPD_STK_match_Y_distance_fiducial_volume			= -999;
 	// Classifiers
 	xtr 												= -999;
 	xtrl 												= -999;
@@ -244,14 +257,22 @@ void ntuple::core_reset()
 	evtfilter_good_event 								= false;
 	evtfilter_geometric 								= false;
 	evtfilter_BGO_fiducial 								= false;
+	evtfilter_BGO_fiducial_HET 							= false;
 	evtfilter_BGO_fiducial_maxElayer_cut 				= false;
 	evtfilter_BGO_fiducial_maxBarLayer_cut 				= false;
 	evtfilter_BGO_fiducial_BGOTrackContainment_cut 		= false;
 	evtfilter_nBarLayer13_cut 							= false;
 	evtfilter_maxRms_cut 								= false;
 	evtfilter_track_selection_cut 						= false;
+	evtfilter_track_selection_cut_no_3hit_recover 		= false;
 	evtfilter_psd_stk_match_cut 						= false;
+	evtfilter_psd_stk_match_cut_X_view 					= false;
+	evtfilter_psd_stk_match_cut_Y_view 					= false;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume 	= false;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume_X	= false;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y	= false;
 	evtfilter_psd_charge_cut 							= false;
+	evtfilter_psd_charge_cut_no_single_view_recover 	= false;
 	evtfilter_stk_charge_cut					 		= false;
 	evtfilter_psd_charge_measurement 					= false;
 	evtfilter_stk_charge_measurement 					= false;
@@ -286,23 +307,20 @@ void ntuple::core_reset()
 	preselection_trackselection_lastcut					= false;
 	preselection_psdstkmatch_lastcut					= false;
 	// Efficiency Preselection Filters
-	trigger_efficiency_preselection                     = false;
-	trigger_efficiency_preselection_is_het              = false;
-	trigger_efficiency_preselection_is_let              = false;
-	trigger_efficiency_preselection_is_unb              = false;
-	maxrms_efficiency_preselection                      = false;
-	maxrms_efficiency_preselection_accepted             = false;
-	maxrms_efficiency_preselection_notaccepted          = false;
-	nbarlayer13_efficiency_preselection                 = false;
-	nbarlayer13_efficiency_preselection_accepted        = false;
-	nbarlayer13_efficiency_preselection_notaccepted     = false;
-	track_efficiency_preselection                       = false;
-	track_efficiency_preselection_accepted              = false;
-	track_efficiency_preselection_notaccepted           = false;
-	psdstkmatch_efficiency_preselection                 = false;
-	psdstkmatch_efficiency_preselection_accepted        = false;
-	psdstkmatch_efficiency_preselection_notaccepted     = false;
-	psdcharge_efficiency_preselection                   = false;
-	psdcharge_efficiency_preselection_accepted          = false;
-	psdcharge_efficiency_preselection_notaccepted       = false;
+	trigger_efficiency_preselection                     		= false;
+	trigger_efficiency_preselection_is_het              		= false;
+	trigger_efficiency_preselection_is_let              		= false;
+	trigger_efficiency_preselection_is_unb              		= false;
+	maxrms_efficiency_preselection                      		= false;
+	maxrms_efficiency_preselection_accepted             		= false;
+	nbarlayer13_efficiency_preselection                 		= false;
+	nbarlayer13_efficiency_preselection_accepted        		= false;
+	maxrms_and_nbarlayer13_efficiency_preselection	  			= false;
+	maxrms_and_nbarlayer13_efficiency_preselection_accepted		= false;
+	track_efficiency_preselection                       		= false;
+	track_efficiency_preselection_accepted              		= false;
+	psdstkmatch_efficiency_preselection                 		= false;
+	psdstkmatch_efficiency_preselection_accepted        		= false;
+	psdcharge_efficiency_preselection                   		= false;
+	psdcharge_efficiency_preselection_accepted          		= false;
 }

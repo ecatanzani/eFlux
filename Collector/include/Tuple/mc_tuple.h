@@ -20,6 +20,7 @@ public:
 	void Fill(
 		const std::shared_ptr<_tmp_filter> _filter_res,
 		const std::vector<int> _stk_clusters_on_plane,
+		const std::shared_ptr<_tmp_psd> _psd_res,
 		const std::shared_ptr<_tmp_bgo> _bgo_res,
 		const std::shared_ptr<_tmp_simu> _simu_res,
 		const std::shared_ptr<_tmp_energy> _energy_res,

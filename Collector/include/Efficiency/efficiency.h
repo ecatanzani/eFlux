@@ -1,8 +1,6 @@
 #ifndef EFFICIENCY_H
 #define EFFICIENCY_H
 
-#include <vector>
-
 #include "Dmp/DmpFilterContainer.h"
 
 struct eff_output 
@@ -14,27 +12,21 @@ struct eff_output
 
     bool maxrms_efficiency_preselection                                     {false};
     bool maxrms_efficiency_preselection_accepted                            {false};
-    bool maxrms_efficiency_preselection_notaccepted                         {false};
 
     bool nbarlayer13_efficiency_preselection                                {false};
     bool nbarlayer13_efficiency_preselection_accepted                       {false};
-    bool nbarlayer13_efficiency_preselection_notaccepted                    {false};
 
     bool maxrms_and_nbarlayer13_efficiency_preselection                     {false};
     bool maxrms_and_nbarlayer13_efficiency_preselection_accepted            {false};
-    bool maxrms_and_nbarlayer13_efficiency_preselection_notaccepted         {false};
 
     bool track_efficiency_preselection                                      {false};
     bool track_efficiency_preselection_accepted                             {false};
-    bool track_efficiency_preselection_notaccepted                          {false};
 
     bool psdstkmatch_efficiency_preselection                                {false};
     bool psdstkmatch_efficiency_preselection_accepted                       {false};
-    bool psdstkmatch_efficiency_preselection_notaccepted                    {false};
 
     bool psdcharge_efficiency_preselection                                  {false};
     bool psdcharge_efficiency_preselection_accepted                         {false};
-    bool psdcharge_efficiency_preselection_notaccepted                      {false};
 };
 
 class efficiency: public DmpFilterContainer
@@ -60,8 +52,9 @@ class efficiency: public DmpFilterContainer
         void Reset();
     
     private:
-            void reset_efficiency_output();
-            eff_output output;
+        void reset_cuts_results();
+        void reset_efficiency_output();
+        eff_output output;
         
 };
 

@@ -99,6 +99,10 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch("PSD_chargeX", &PSD_chargeX, "PSD_chargeX/D");
 	DmpNtupTree->Branch("PSD_chargeY", &PSD_chargeY, "PSD_chargeY/D");
 	DmpNtupTree->Branch("PSD_charge", &PSD_charge, "PSD_charge/D");
+	DmpNtupTree->Branch("SPD_STK_match_X_distance", &SPD_STK_match_X_distance, "SPD_STK_match_X_distance/D");
+	DmpNtupTree->Branch("SPD_STK_match_Y_distance", &SPD_STK_match_Y_distance, "SPD_STK_match_Y_distance/D");
+	DmpNtupTree->Branch("SPD_STK_match_X_distance_fiducial_volume", &SPD_STK_match_X_distance_fiducial_volume, "SPD_STK_match_X_distance_fiducial_volume/D");
+	DmpNtupTree->Branch("SPD_STK_match_Y_distance_fiducial_volume", &SPD_STK_match_Y_distance_fiducial_volume, "SPD_STK_match_Y_distance_fiducial_volume/D");
 	// NUD
 	DmpNtupTree->Branch("nud_adc", &nud_adc);
 	DmpNtupTree->Branch("nud_total_adc", &nud_total_adc, "nud_total_adc/I");
@@ -136,6 +140,8 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_X_view", &evtfilter_psd_stk_match_cut_X_view, "evtfilter_psd_stk_match_cut_X_view/O");
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_Y_view", &evtfilter_psd_stk_match_cut_Y_view, "evtfilter_psd_stk_match_cut_Y_view/O");
 	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_psd_fiducial_volume", &evtfilter_psd_stk_match_cut_psd_fiducial_volume, "evtfilter_psd_stk_match_cut_psd_fiducial_volume/O");
+	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_psd_fiducial_volume_X", &evtfilter_psd_stk_match_cut_psd_fiducial_volume_X, "evtfilter_psd_stk_match_cut_psd_fiducial_volume_X/O");
+	DmpNtupTree->Branch("evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y", &evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y, "evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y/O");
 	DmpNtupTree->Branch("evtfilter_psd_charge_cut", &evtfilter_psd_charge_cut, "evtfilter_psd_charge_cut/O");
 	DmpNtupTree->Branch("evtfilter_psd_charge_cut_no_single_view_recover", &evtfilter_psd_charge_cut_no_single_view_recover, "evtfilter_psd_charge_cut_no_single_view_recover/O");
 	DmpNtupTree->Branch("evtfilter_stk_charge_cut", &evtfilter_stk_charge_cut, "evtfilter_stk_charge_cut/O");
@@ -171,27 +177,22 @@ void mc_tuple::branch_tree()
 	DmpNtupTree->Branch("trigger_efficiency_preselection_is_unb", &trigger_efficiency_preselection_is_unb, "trigger_efficiency_preselection_is_unb/O");
 	DmpNtupTree->Branch("maxrms_efficiency_preselection", &maxrms_efficiency_preselection, "maxrms_efficiency_preselection/O");
 	DmpNtupTree->Branch("maxrms_efficiency_preselection_accepted", &maxrms_efficiency_preselection_accepted, "maxrms_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("maxrms_efficiency_preselection_notaccepted", &maxrms_efficiency_preselection_notaccepted, "maxrms_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection", &nbarlayer13_efficiency_preselection, "nbarlayer13_efficiency_preselection/O");
 	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_accepted", &nbarlayer13_efficiency_preselection_accepted, "nbarlayer13_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_notaccepted", &nbarlayer13_efficiency_preselection_notaccepted, "nbarlayer13_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection", &maxrms_and_nbarlayer13_efficiency_preselection, "maxrms_and_nbarlayer13_efficiency_preselection/O");
 	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection_accepted", &maxrms_and_nbarlayer13_efficiency_preselection_accepted, "maxrms_and_nbarlayer13_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection_notaccepted", &maxrms_and_nbarlayer13_efficiency_preselection_notaccepted, "maxrms_and_nbarlayer13_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("track_efficiency_preselection", &track_efficiency_preselection, "track_efficiency_preselection/O");
 	DmpNtupTree->Branch("track_efficiency_preselection_accepted", &track_efficiency_preselection_accepted, "track_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("track_efficiency_preselection_notaccepted", &track_efficiency_preselection_notaccepted, "track_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection", &psdstkmatch_efficiency_preselection, "psdstkmatch_efficiency_preselection/O");
 	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection_accepted", &psdstkmatch_efficiency_preselection_accepted, "psdstkmatch_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection_notaccepted", &psdstkmatch_efficiency_preselection_notaccepted, "psdstkmatch_efficiency_preselection_notaccepted/O");
 	DmpNtupTree->Branch("psdcharge_efficiency_preselection", &psdcharge_efficiency_preselection, "psdcharge_efficiency_preselection/O");
 	DmpNtupTree->Branch("psdcharge_efficiency_preselection_accepted", &psdcharge_efficiency_preselection_accepted, "psdcharge_efficiency_preselection_accepted/O");
-	DmpNtupTree->Branch("psdcharge_efficiency_preselection_notaccepted", &psdcharge_efficiency_preselection_notaccepted, "psdcharge_efficiency_preselection_notaccepted/O");
 }
 
 void mc_tuple::Fill(
 	const std::shared_ptr<_tmp_filter> _filter_res,
 	const std::vector<int> _stk_clusters_on_plane,
+	const std::shared_ptr<_tmp_psd> _psd_res,
 	const std::shared_ptr<_tmp_bgo> _bgo_res,
 	const std::shared_ptr<_tmp_simu> _simu_res,
 	const std::shared_ptr<_tmp_energy> _energy_res,
@@ -200,7 +201,12 @@ void mc_tuple::Fill(
 	fill_trigger_info(_filter_res->evt_trigger_info);
 	fill_filter_info(_filter_res->output);
 	fill_preselectionfilters_info(_filter_res->preselection_output);
-	fill_preselectionfiltersefficiency_info(_filter_res->efficiency_preselection_output);
+	fill_preselectionfiltersefficiency_info(_filter_res->efficiency_output);
+	fill_psd_info(
+		_psd_res->SPD_STK_match_X_distance,
+		_psd_res->SPD_STK_match_Y_distance,
+		_psd_res->SPD_STK_match_X_distance_fiducial_volume,
+		_psd_res->SPD_STK_match_Y_distance_fiducial_volume);
 	fill_stk_info(
 		_filter_res->evt_best_track, 
 		_stk_clusters_on_plane);
@@ -233,78 +239,80 @@ void mc_tuple::Fill(
 
 void mc_tuple::fill_filter_info(const filter_output &output)
 {
-	evtfilter_out_energy_range = output.out_energy_range;
-	evtfilter_geometric_before_trigger = output.geometric_before_trigger;
-	evtfilter_trigger_check = output.trigger_check;
-	evtfilter_evt_triggered = output.evt_triggered;
-	evtfilter_correct_bgo_reco = output.correct_bgo_reco;
-	evtfilter_good_event = output.good_event;
-	evtfilter_geometric = output.geometric;
-	evtfilter_BGO_fiducial = output.BGO_fiducial;
-	evtfilter_BGO_fiducial_HET = output.BGO_fiducial_HET;
-	evtfilter_BGO_fiducial_maxElayer_cut = output.BGO_fiducial_maxElayer_cut;
-	evtfilter_BGO_fiducial_maxBarLayer_cut = output.BGO_fiducial_maxBarLayer_cut;
-	evtfilter_BGO_fiducial_BGOTrackContainment_cut = output.BGO_fiducial_BGOTrackContainment_cut;
-	evtfilter_nBarLayer13_cut = output.nBarLayer13_cut;
-	evtfilter_maxRms_cut = output.maxRms_cut;
-	evtfilter_track_selection_cut = output.track_selection_cut;
-	evtfilter_track_selection_cut_no_3hit_recover = output.track_selection_cut_no_3hit_recover;
-	evtfilter_psd_stk_match_cut = output.psd_stk_match_cut;
-	evtfilter_psd_stk_match_cut_X_view = output.psd_stk_match_cut_x;
-	evtfilter_psd_stk_match_cut_Y_view = output.psd_stk_match_cut_y;
-	evtfilter_psd_stk_match_cut_psd_fiducial_volume = output.psd_stk_match_cut_psd_fiducial_volume;
-	evtfilter_psd_charge_cut = output.psd_charge_cut;
-	evtfilter_psd_charge_cut_no_single_view_recover = output.psd_charge_cut_no_single_view_recover;
-	evtfilter_stk_charge_cut = output.stk_charge_cut;
-	evtfilter_psd_charge_measurement = output.psd_charge_measurement;
-	evtfilter_stk_charge_measurement = output.stk_charge_measurement;
-	evtfilter_xtrl_tight_cut = output.xtrl_tight_cut;
-	evtfilter_xtrl_loose_cut = output.xtrl_loose_cut;
-	evtfilter_all_cut = output.all_cut;
+	evtfilter_out_energy_range 								= output.out_energy_range;
+	evtfilter_geometric_before_trigger 						= output.geometric_before_trigger;
+	evtfilter_trigger_check 								= output.trigger_check;
+	evtfilter_evt_triggered 								= output.evt_triggered;
+	evtfilter_correct_bgo_reco 								= output.correct_bgo_reco;
+	evtfilter_good_event 									= output.good_event;
+	evtfilter_geometric 									= output.geometric;
+	evtfilter_BGO_fiducial 									= output.BGO_fiducial;
+	evtfilter_BGO_fiducial_HET 								= output.BGO_fiducial_HET;
+	evtfilter_BGO_fiducial_maxElayer_cut 					= output.BGO_fiducial_maxElayer_cut;
+	evtfilter_BGO_fiducial_maxBarLayer_cut 					= output.BGO_fiducial_maxBarLayer_cut;
+	evtfilter_BGO_fiducial_BGOTrackContainment_cut 			= output.BGO_fiducial_BGOTrackContainment_cut;
+	evtfilter_nBarLayer13_cut 								= output.nBarLayer13_cut;
+	evtfilter_maxRms_cut 									= output.maxRms_cut;
+	evtfilter_track_selection_cut 							= output.track_selection_cut;
+	evtfilter_track_selection_cut_no_3hit_recover 			= output.track_selection_cut_no_3hit_recover;
+	evtfilter_psd_stk_match_cut 							= output.psd_stk_match_cut;
+	evtfilter_psd_stk_match_cut_X_view 						= output.psd_stk_match_cut_x;
+	evtfilter_psd_stk_match_cut_Y_view 						= output.psd_stk_match_cut_y;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume	 		= output.psd_stk_match_cut_psd_fiducial_volume;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume_X 		= output.psd_stk_match_cut_psd_fiducial_volume_X;
+	evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y 		= output.psd_stk_match_cut_psd_fiducial_volume_Y;
+	evtfilter_psd_charge_cut 								= output.psd_charge_cut;
+	evtfilter_psd_charge_cut_no_single_view_recover 		= output.psd_charge_cut_no_single_view_recover;
+	evtfilter_stk_charge_cut 								= output.stk_charge_cut;
+	evtfilter_psd_charge_measurement 						= output.psd_charge_measurement;
+	evtfilter_stk_charge_measurement 						= output.stk_charge_measurement;
+	evtfilter_xtrl_tight_cut 								= output.xtrl_tight_cut;
+	evtfilter_xtrl_loose_cut 								= output.xtrl_loose_cut;
+	evtfilter_all_cut 										= output.all_cut;
 }
 
 void mc_tuple::fill_simu_info(
 	const std::shared_ptr<_tmp_simu> _simu_res,
 	const std::shared_ptr<_tmp_energy> _energy_res)
 {
-	energy_corr_w = _energy_res->correct_w;
-	simu_energy_w = _energy_res->simu_w;
-	simu_position = _simu_res->position;
-	simu_momentum = _simu_res->momentum;
-	simu_energy = _energy_res->simu;
-	simu_slope_x = _simu_res->momentum.Z() ? _simu_res->momentum.X() / _simu_res->momentum.Z() : -999;
-	simu_slope_y = _simu_res->momentum.Z() ? _simu_res->momentum.Y() / _simu_res->momentum.Z() : -999;
-	simu_intercept_x = _simu_res->position.X() - simu_slope_x * _simu_res->position.Z();
-	simu_intercept_y = _simu_res->position.Y() - simu_slope_y * _simu_res->position.Z();
-	simu_radius = _simu_res->radius;
-	simu_theta = _simu_res->theta;
-	simu_phi = _simu_res->phi;
-	simu_flux_w = _simu_res->flux_w;
-	simu_n_particle = _simu_res->n_particle;
-	simu_cos_x = _simu_res->cos_x;
-	simu_cos_y = _simu_res->cos_y;
-	simu_cos_z = _simu_res->cos_z;
-	simu_charge = _simu_res->charge;
-	simu_zenith = _simu_res->zenith;
-	simu_azimuth = _simu_res->azimuth;
-	simu_w = _simu_res->w;
-	simu_PDG = _simu_res->PDG;
-	simu_geocut = _simu_res->geocut;
-	simu_thruthtrajectory_x = _simu_res->thruthtrajectory_x;
-	simu_thruthtrajectory_y = _simu_res->thruthtrajectory_y;
-	simu_thruthtrajectory_z = _simu_res->thruthtrajectory_z;
-	simu_thruthtrajectory_energy = _simu_res->thruthtrajectory_energy;
-	simu_thruthtrajectory_start_x = _simu_res->thruthtrajectory_start_x;
-	simu_thruthtrajectory_start_y = _simu_res->thruthtrajectory_start_y;
-	simu_thruthtrajectory_start_z = _simu_res->thruthtrajectory_start_z;
-	simu_thruthtrajectory_stop_x = _simu_res->thruthtrajectory_stop_x;
-	simu_thruthtrajectory_stop_y = _simu_res->thruthtrajectory_stop_y;
-	simu_thruthtrajectory_stop_z = _simu_res->thruthtrajectory_stop_z;
-	simu_thruthtrajectory_trackID =  _simu_res->thruthtrajectory_trackID;
-	simu_thruthtrajectory_parentID = _simu_res->thruthtrajectory_parentID;
-	simu_thruthtrajectory_charge = _simu_res->thruthtrajectory_charge;
-	simu_thruthtrajectory_PDG = _simu_res->thruthtrajectory_PDG;
-	simu_thruthtrajectory_stop_index = _simu_res->thruthtrajectory_stop_index;
+	energy_corr_w 						= _energy_res->correct_w;
+	simu_energy_w 						= _energy_res->simu_w;
+	simu_position 						= _simu_res->position;
+	simu_momentum 						= _simu_res->momentum;
+	simu_energy 						= _energy_res->simu;
+	simu_slope_x 						= _simu_res->momentum.Z() ? _simu_res->momentum.X() / _simu_res->momentum.Z() : -999;
+	simu_slope_y 						= _simu_res->momentum.Z() ? _simu_res->momentum.Y() / _simu_res->momentum.Z() : -999;
+	simu_intercept_x 					= _simu_res->position.X() - simu_slope_x * _simu_res->position.Z();
+	simu_intercept_y 					= _simu_res->position.Y() - simu_slope_y * _simu_res->position.Z();
+	simu_radius 						= _simu_res->radius;
+	simu_theta 							= _simu_res->theta;
+	simu_phi 							= _simu_res->phi;
+	simu_flux_w 						= _simu_res->flux_w;
+	simu_n_particle 					= _simu_res->n_particle;
+	simu_cos_x 							= _simu_res->cos_x;
+	simu_cos_y 							= _simu_res->cos_y;
+	simu_cos_z 							= _simu_res->cos_z;
+	simu_charge 						= _simu_res->charge;
+	simu_zenith 						= _simu_res->zenith;
+	simu_azimuth 						= _simu_res->azimuth;
+	simu_w 								= _simu_res->w;
+	simu_PDG 							= _simu_res->PDG;
+	simu_geocut 						= _simu_res->geocut;
+	simu_thruthtrajectory_x 			= _simu_res->thruthtrajectory_x;
+	simu_thruthtrajectory_y 			= _simu_res->thruthtrajectory_y;
+	simu_thruthtrajectory_z 			= _simu_res->thruthtrajectory_z;
+	simu_thruthtrajectory_energy 		= _simu_res->thruthtrajectory_energy;
+	simu_thruthtrajectory_start_x 		= _simu_res->thruthtrajectory_start_x;
+	simu_thruthtrajectory_start_y 		= _simu_res->thruthtrajectory_start_y;
+	simu_thruthtrajectory_start_z 		= _simu_res->thruthtrajectory_start_z;
+	simu_thruthtrajectory_stop_x 		= _simu_res->thruthtrajectory_stop_x;
+	simu_thruthtrajectory_stop_y 		= _simu_res->thruthtrajectory_stop_y;
+	simu_thruthtrajectory_stop_z 		= _simu_res->thruthtrajectory_stop_z;
+	simu_thruthtrajectory_trackID 		= _simu_res->thruthtrajectory_trackID;
+	simu_thruthtrajectory_parentID 		= _simu_res->thruthtrajectory_parentID;
+	simu_thruthtrajectory_charge 		= _simu_res->thruthtrajectory_charge;
+	simu_thruthtrajectory_PDG 			= _simu_res->thruthtrajectory_PDG;
+	simu_thruthtrajectory_stop_index 	= _simu_res->thruthtrajectory_stop_index;
 }
 
 void mc_tuple::Reset()
@@ -315,44 +323,44 @@ void mc_tuple::Reset()
 
 void mc_tuple::reset_simu_info()
 {
-	simu_energy = -999;
-	simu_energy_w = -999;
-	energy_corr_w = -999;
-	simu_position.SetXYZ(-999, -999, -999);
-	simu_momentum.SetXYZ(-999, -999, -999);
-	simu_slope_x = -999;
-	simu_slope_y = -999;
-	simu_intercept_x = -999;
-	simu_intercept_y = -999;
-	simu_radius = -999;
-	simu_theta = -999;
-	simu_phi = -999;
-	simu_flux_w = -999;
-	simu_n_particle = -999;
-	simu_cos_x = -999;
-	simu_cos_y = -999;
-	simu_cos_z = -999;
-	simu_charge = -999;
-	simu_zenith = -999;
-	simu_azimuth = -999;
-	simu_w = -999;
-	simu_PDG = -999;
-	simu_geocut = -999;
-	simu_thruthtrajectory_x = std::vector<double>();
-	simu_thruthtrajectory_y = std::vector<double>();
-	simu_thruthtrajectory_z = std::vector<double>();
-	simu_thruthtrajectory_energy = std::vector<double>();
-	simu_thruthtrajectory_start_x = std::vector<double>();
-	simu_thruthtrajectory_start_y = std::vector<double>();
-	simu_thruthtrajectory_start_z = std::vector<double>();
-	simu_thruthtrajectory_stop_x = std::vector<double>();
-	simu_thruthtrajectory_stop_y = std::vector<double>();
-	simu_thruthtrajectory_stop_z = std::vector<double>();
-	simu_thruthtrajectory_trackID = std::vector<double>();
-	simu_thruthtrajectory_parentID = std::vector<double>();
-	simu_thruthtrajectory_charge = std::vector<double>();
-	simu_thruthtrajectory_PDG = std::vector<double>();
-	simu_thruthtrajectory_stop_index = std::vector<double>();
-	evtfilter_geometric_before_trigger = false;
-	evtfilter_trigger_check = false;
+	simu_energy 						= -999;
+	simu_energy_w 						= -999;
+	energy_corr_w 						= -999;
+	simu_position						.SetXYZ(-999, -999, -999);
+	simu_momentum						.SetXYZ(-999, -999, -999);
+	simu_slope_x 						= -999;
+	simu_slope_y 						= -999;
+	simu_intercept_x 					= -999;
+	simu_intercept_y 					= -999;
+	simu_radius 						= -999;
+	simu_theta 							= -999;
+	simu_phi 							= -999;
+	simu_flux_w 						= -999;
+	simu_n_particle 					= -999;
+	simu_cos_x 							= -999;
+	simu_cos_y 							= -999;
+	simu_cos_z 							= -999;
+	simu_charge 						= -999;
+	simu_zenith 						= -999;
+	simu_azimuth 						= -999;
+	simu_w 								= -999;
+	simu_PDG 							= -999;
+	simu_geocut 						= -999;
+	simu_thruthtrajectory_x 			= std::vector<double>();
+	simu_thruthtrajectory_y 			= std::vector<double>();
+	simu_thruthtrajectory_z 			= std::vector<double>();
+	simu_thruthtrajectory_energy 		= std::vector<double>();
+	simu_thruthtrajectory_start_x 		= std::vector<double>();
+	simu_thruthtrajectory_start_y 		= std::vector<double>();
+	simu_thruthtrajectory_start_z		= std::vector<double>();
+	simu_thruthtrajectory_stop_x 		= std::vector<double>();
+	simu_thruthtrajectory_stop_y 		= std::vector<double>();
+	simu_thruthtrajectory_stop_z 		= std::vector<double>();
+	simu_thruthtrajectory_trackID 		= std::vector<double>();
+	simu_thruthtrajectory_parentID 		= std::vector<double>();
+	simu_thruthtrajectory_charge 		= std::vector<double>();
+	simu_thruthtrajectory_PDG 			= std::vector<double>();
+	simu_thruthtrajectory_stop_index 	= std::vector<double>();
+	evtfilter_geometric_before_trigger 	= false;
+	evtfilter_trigger_check 			= false;
 }
