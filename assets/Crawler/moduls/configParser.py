@@ -1,5 +1,7 @@
+from datetime import datetime, date
+
 def parseConfigFile(opts):
-	dConfig = {'farmAddress': "", 'simu_XRDFS_path': "", 'data_XRDFS_path': "", 'data_XRDFS_skimmed_path': "", 'geometry': "", 'simu_eMin': 0, 'simu_eMax': 0, 'particle': "", 'data_sYear': 0, 'data_eYear': 0, 'jSet': ""}
+	dConfig = {'farmAddress': "", 'localStorage': "", 'UseLocalStorage': True, 'simu_XRDFS_path': "", 'data_XRDFS_path': "", 'data_XRDFS_skimmed_path': "", 'geometry': "", 'simu_eMin': 0, 'simu_eMax': 0, 'particle': "", 'start_date': datetime.now(), 'end_date': datetime.now(), 'jSet': ""}
 	
 	config_params = []
 	custom_farm = False
@@ -24,6 +26,10 @@ def parseConfigFile(opts):
 		if word == "farmAddress":
 			if not custom_farm:
 				dConfig['farmAddress'] = config_params[idx+1]
+		if word == "localStorage":
+			dConfig['localStorage'] = config_params[idx+1]
+		if word == "UseLocalStorage":
+			dConfig['UseLocalStorage'] = True if config_params[idx+1] == "True" else False
 		if word == "simu_XRDFS_path":
 			dConfig['simu_XRDFS_path'] = config_params[idx+1]
 		if word == "data_XRDFS_path":
@@ -38,10 +44,16 @@ def parseConfigFile(opts):
 			dConfig['simu_eMax'] = float(config_params[idx+1])
 		if word == "particle":
 			dConfig['particle'] = config_params[idx+1]
-		if word == "data_sYear":
-			dConfig["data_sYear"] = int(config_params[idx+1])
-		if word == "data_eYear":
-			dConfig["data_eYear"] = int(config_params[idx+1])
+		if word == "start_date":
+			year = int(config_params[idx+1][:4])
+			month = int(config_params[idx+1][5:7])
+			day = int(config_params[idx+1][8:10])
+			dConfig["start_date"] = date(year, month, day)
+		if word == "end_date":
+			year = int(config_params[idx+1][:4])
+			month = int(config_params[idx+1][5:7])
+			day = int(config_params[idx+1][8:10])
+			dConfig["end_date"] = date(year, month, day)
 		if word == "jSet":
 			if not custom_set:
 				dConfig['jSet'] = config_params[idx+1]
