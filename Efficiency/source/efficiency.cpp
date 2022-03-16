@@ -88,7 +88,15 @@ void buildEfficiency(const in_args input_args)
 
     if (input_args.verbose)
         std::cout << "\n\nAnalysis running\n\n";
-        
+    
+    auto get_let_prescale = [](const double geographic_latitude) -> double {
+        return geographic_latitude>=-20 && geographic_latitude<=20 ? 1/8. : 1/64.;
+    };
+    
+    auto get_unb_prescale = [](const double geographic_latitude) -> double {
+        return geographic_latitude>=-20 && geographic_latitude<=20 ? 1/512. : 1/2048.;
+    };
+
     // Trigger histos
     auto h_trigger_efficiency_accepted_het_over_let_tight_xtrl = mc_file ? 
                                             fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
@@ -103,7 +111,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
-                                            .Define("trigger_w", []() -> double {return 1/64.;})
+                                            .Define("trigger_w", get_let_prescale, {"geo_lat"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_let_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     auto h_trigger_efficiency_accepted_het_over_unb_tight_xtrl = mc_file ?
@@ -119,7 +127,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
-                                            .Define("trigger_w", []() -> double {return 1/2048.;})
+                                            .Define("trigger_w", get_unb_prescale, {"geo_lat"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_tight_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     auto h_trigger_efficiency_accepted_het_let_tight_xtrl = mc_file ? 
@@ -134,7 +142,7 @@ void buildEfficiency(const in_args input_args)
                                             fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/64.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Define("trigger_w", [&get_let_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_let_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_trigger_efficiency_accepted_het_let_tight_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
@@ -151,7 +159,7 @@ void buildEfficiency(const in_args input_args)
                                             fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/2048.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Define("trigger_w", [&get_unb_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_unb_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_trigger_efficiency_accepted_het_unb_tight_xtrl", "UNB + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
     
@@ -168,7 +176,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Filter(bdt_cut, {"bdt_evt"})
-                                            .Define("trigger_w", []() -> double {return 1/64.;})
+                                            .Define("trigger_w", get_let_prescale, {"geo_lat"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_let_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
      auto h_trigger_efficiency_accepted_het_over_unb_bdt = mc_file ? 
@@ -184,7 +192,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Filter(bdt_cut, {"bdt_evt"})
-                                            .Define("trigger_w", []() -> double {return 1/2048.;})
+                                            .Define("trigger_w", get_unb_prescale, {"geo_lat"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     auto h_trigger_efficiency_accepted_het_let_bdt = mc_file ?
@@ -199,7 +207,7 @@ void buildEfficiency(const in_args input_args)
                                             fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
-                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/64.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Define("trigger_w", [&get_let_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_let_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
                                             .Filter(bdt_cut, {"bdt_evt"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_let_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
@@ -215,7 +223,7 @@ void buildEfficiency(const in_args input_args)
                                             fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
-                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/2048.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Define("trigger_w", [&get_unb_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_unb_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
                                             .Filter(bdt_cut, {"bdt_evt"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_unb_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
@@ -334,6 +342,29 @@ void buildEfficiency(const in_args input_args)
                                             .Filter(bdt_cut, {"bdt_evt"})
                                             .Histo1D({"h_psdstkmatch_efficiency_total_bdt", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
+    // PSD-STK match histos within PSD fiducial volume
+    auto h_psdstkmatch_efficiency_psd_fvolume_accepted_tight_xtrl = fr.Filter("psdstkmatch_efficiency_preselection==1 && evtfilter_psd_stk_match_cut_psd_fiducial_volume==1 && psdstkmatch_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_psdstkmatch_efficiency_psd_fvolume_accepted_tight_xtrl", "HET Trigger + PSD-STK Match Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    auto h_psdstkmatch_efficiency_psd_fvolume_total_tight_xtrl = fr.Filter("psdstkmatch_efficiency_preselection==1 && evtfilter_psd_stk_match_cut_psd_fiducial_volume==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_psdstkmatch_efficiency_psd_fvolume_total_tight_xtrl", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_psdstkmatch_efficiency_psd_fvolume_accepted_bdt = fr.Filter("psdstkmatch_efficiency_preselection==1 && evtfilter_psd_stk_match_cut_psd_fiducial_volume==1 && psdstkmatch_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Filter(bdt_cut, {"bdt_evt"})
+                                            .Histo1D({"h_psdstkmatch_efficiency_psd_fvolume_accepted_bdt", "HET Trigger + PSD-STK Match Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    auto h_psdstkmatch_efficiency_psd_fvolume_total_bdt = fr.Filter("psdstkmatch_efficiency_preselection==1 && evtfilter_psd_stk_match_cut_psd_fiducial_volume==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Filter(bdt_cut, {"bdt_evt"})
+                                            .Histo1D({"h_psdstkmatch_efficiency_psd_fvolume_total_bdt", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     // PSD charge histos
     auto h_psdcharge_efficiency_accepted_tight_xtrl = fr.Filter("psdcharge_efficiency_preselection==1 && psdcharge_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -373,7 +404,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("energy_gev", "energy * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Define("trigger_w", []() -> double {return 1/64.;})
+                                            .Define("trigger_w", get_let_prescale, {"geo_lat"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_let_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     auto h_trigger_efficiency_accepted_het_over_unb_loose_xtrl = mc_file ? 
@@ -391,7 +422,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("energy_gev", "energy * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Define("trigger_w", []() -> double {return 1/2048.;})
+                                            .Define("trigger_w", get_unb_prescale, {"geo_lat"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
 
@@ -409,7 +440,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("energy_gev", "energy * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/64.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Define("trigger_w", [&get_let_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_let_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
                                             .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_let_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
@@ -427,7 +458,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("energy_gev", "energy * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Define("trigger_w", [](const bool is_het) -> double { if (is_het) return 1/2048.; else return 1;}, {"trigger_efficiency_preselection_is_het"})
+                                            .Define("trigger_w", [&get_unb_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_unb_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
                                             .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_unb_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
     // MaxRMS histos
@@ -500,6 +531,20 @@ void buildEfficiency(const in_args input_args)
                                             .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
                                             .Histo1D({"h_psdstkmatch_efficiency_total_loose_xtrl", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
+    // PSD-STK match histos within PSD fiducial volume
+    auto h_psdstkmatch_efficiency_psd_fvolume_accepted_loose_xtrl = fr.Filter("psdstkmatch_efficiency_preselection==1 && evtfilter_psd_stk_match_cut_psd_fiducial_volume==1 && psdstkmatch_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_psdstkmatch_efficiency_psd_fvolume_accepted_loose_xtrl", "HET Trigger + PSD-STK Match Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    auto h_psdstkmatch_efficiency_psd_fvolume_total_loose_xtrl = fr.Filter("psdstkmatch_efficiency_preselection==1 && evtfilter_psd_stk_match_cut_psd_fiducial_volume==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_psdstkmatch_efficiency_psd_fvolume_total_loose_xtrl", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     // PSD charge histos
     auto h_psdcharge_efficiency_accepted_loose_xtrl = fr.Filter("psdcharge_efficiency_preselection==1 && psdcharge_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -537,9 +582,7 @@ void buildEfficiency(const in_args input_args)
                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                             .Histo2D({"h_xtrl_bgo_cosine_zoom", "XTRL vs BGO direction; cosine BGO direction #cos(#theta); xtrl", 100, 0, 1, 100, 0, 10}, "bgorec_cosine", "xtrl_evt");
 
-    // PSD charge after STK cut
-
-    // Da aggiungere anche il plot della carica del tracciatore e quello del psd dopo il taglio del traccitaore così da trovare quello che rimuove gli ioni
+    // Basic PSD and STK charge plots
     auto h_psd_charge_after_stk_cut = fr.Filter("psdcharge_efficiency_preselection==1")
                             .Histo1D({"h_psd_charge_after_stk_cut", "PSD charge after STK cut; PSD Charge; entries", 100, 0, 40}, "PSD_charge");
     auto h_stk_charge_after_stk_cut = fr.Filter("psdcharge_efficiency_preselection==1")
@@ -548,6 +591,384 @@ void buildEfficiency(const in_args input_args)
                             .Histo1D({"h_stk_charge", "STK charge; STK Charge; entries", 100, 0, 40}, "STK_charge");
     auto h_stk_charge_after_psd_charge_cut = fr.Filter("evtfilter_all_cut==1")
                             .Histo1D({"h_stk_charge_after_psd_charge_cut", "STK charge; STK Charge; entries", 100, 0, 40}, "STK_charge");
+
+    // PSD fiducial volume
+    auto n_events_presel_psd_fvolume    = *(fr.Filter("evtfilter_track_selection_cut==true").Count());
+    auto n_events_within_psd_fvolume    = *(fr.Filter("evtfilter_track_selection_cut==true").Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true").Count());
+    auto n_events_outside_psd_fvolume   = *(fr.Filter("evtfilter_track_selection_cut==true").Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false").Count());
+
+    std::cout << "\n\n*** PSD Fiducial Volume ***\n\n";
+    std::cout << "\n\nNumber of events after BGO and STK selection: " << n_events_presel_psd_fvolume;
+    std::cout << "\nNumber of events within the PSD fiducial volume: " << n_events_within_psd_fvolume;
+    std::cout << "\nNumber of events outside the PSD fiducial volume: " << n_events_outside_psd_fvolume;
+    std::cout << "\n\n***************************\n\n";
+
+    // PSD fiducial volume distance plots
+    auto h_psd_stk_match_distance_x_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                .Histo1D({"h_psd_stk_match_distance_x_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_x_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                .Histo1D({"h_psd_stk_match_distance_x_100_250", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_x_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                .Histo1D({"h_psd_stk_match_distance_x_250_500", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_x_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_500_1000", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance");
+    
+    auto h_psd_stk_match_distance_x_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_1000_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_x_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=3000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_y_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                .Histo1D({"h_psd_stk_match_distance_y_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    auto h_psd_stk_match_distance_y_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                .Histo1D({"h_psd_stk_match_distance_y_100_250", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    auto h_psd_stk_match_distance_y_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                .Histo1D({"h_psd_stk_match_distance_y_250_500", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    auto h_psd_stk_match_distance_y_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_500_1000", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance");
+    
+    auto h_psd_stk_match_distance_y_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_1000_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    auto h_psd_stk_match_distance_y_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=3000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    // PSD fiducial volume distance plots within PSD fiducial volume
+    auto h_psd_stk_match_distance_x_within_psd_fvolume_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_x_within_psd_fvolume_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_100_250", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_x_within_psd_fvolume_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_250_500", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_x_within_psd_fvolume_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_500_1000", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+    
+    auto h_psd_stk_match_distance_x_within_psd_fvolume_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_1000_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_x_within_psd_fvolume_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=3000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_y_within_psd_fvolume_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_y_within_psd_fvolume_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_100_250", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_y_within_psd_fvolume_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_250_500", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_y_within_psd_fvolume_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_500_1000", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+    
+    auto h_psd_stk_match_distance_y_within_psd_fvolume_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_1000_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+
+    auto h_psd_stk_match_distance_y_within_psd_fvolume_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=3000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+
+    // PSD fiducial volume distance plots outside PSD fiducial volume
+    auto h_psd_stk_match_distance_x_outside_psd_fvolume_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_x_outside_psd_fvolume_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_100_250", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_x_outside_psd_fvolume_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_250_500", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_x_outside_psd_fvolume_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_500_1000", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance");
+    
+    auto h_psd_stk_match_distance_x_outside_psd_fvolume_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_1000_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_x_outside_psd_fvolume_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=3000")
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+
+    auto h_psd_stk_match_distance_y_outside_psd_fvolume_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    auto h_psd_stk_match_distance_y_outside_psd_fvolume_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_100_250", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    auto h_psd_stk_match_distance_y_outside_psd_fvolume_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_250_500", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    auto h_psd_stk_match_distance_y_outside_psd_fvolume_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_500_1000", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance");
+    
+    auto h_psd_stk_match_distance_y_outside_psd_fvolume_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_1000_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    auto h_psd_stk_match_distance_y_outside_psd_fvolume_3000 = fr.Filter("evtfilter_track_selection_cut==true")
+                                                .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                .Filter("corr_energy_gev>=3000")
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+
+    // STK charge plots within PSD fiducial volume and withoud PSD charge cut
+    auto h_stk_charge_psd_fvolume_no_psd_cut_20_100 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_no_psd_cut_20_100", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+    
+    auto h_stk_charge_psd_fvolume_no_psd_cut_100_250 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_no_psd_cut_100_250", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+    
+    auto h_stk_charge_psd_fvolume_no_psd_cut_250_500 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_no_psd_cut_250_500", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_fvolume_no_psd_cut_500_1000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_no_psd_cut_500_1000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_fvolume_no_psd_cut_1000_3000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_no_psd_cut_1000_3000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_fvolume_no_psd_cut_3000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=3000")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_no_psd_cut_3000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    // STK charge plots within PSD fiducial volume and with PSD charge cut
+    auto h_stk_charge_psd_fvolume_psd_cut_20_100 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_psd_cut_20_100", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+    
+    auto h_stk_charge_psd_fvolume_psd_cut_100_250 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_psd_cut_100_250", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+    
+    auto h_stk_charge_psd_fvolume_psd_cut_250_500 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_psd_cut_250_500", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_fvolume_psd_cut_500_1000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_psd_cut_500_1000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_fvolume_psd_cut_1000_3000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_psd_cut_1000_3000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_fvolume_psd_cut_3000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=3000")
+                                                        .Histo2D({"h_stk_charge_psd_fvolume_psd_cut_3000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    // STK charge plots outside PSD fiducial volume and withoud PSD charge cut
+    auto h_stk_charge_no_psd_cut_20_100 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                        .Histo2D({"h_stk_charge_no_psd_cut_20_100", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+    
+    auto h_stk_charge_no_psd_cut_100_250 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                        .Histo2D({"h_stk_charge_no_psd_cut_100_250", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+    
+    auto h_stk_charge_no_psd_cut_250_500 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                        .Histo2D({"h_stk_charge_no_psd_cut_250_500", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_no_psd_cut_500_1000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                        .Histo2D({"h_stk_charge_no_psd_cut_500_1000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_no_psd_cut_1000_3000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                        .Histo2D({"h_stk_charge_no_psd_cut_1000_3000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_no_psd_cut_3000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=3000")
+                                                        .Histo2D({"h_stk_charge_no_psd_cut_3000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    // STK charge plots outside PSD fiducial volume and with PSD charge cut
+    auto h_stk_charge_psd_cut_20_100 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                                        .Histo2D({"h_stk_charge_psd_cut_20_100", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+    
+    auto h_stk_charge_psd_cut_100_250 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                                        .Histo2D({"h_stk_charge_psd_cut_100_250", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+    
+    auto h_stk_charge_psd_cut_250_500 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                                        .Histo2D({"h_stk_charge_psd_cut_250_500", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_cut_500_1000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                                        .Histo2D({"h_stk_charge_psd_cut_500_1000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_cut_1000_3000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                                        .Histo2D({"h_stk_charge_psd_cut_1000_3000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
+
+    auto h_stk_charge_psd_cut_3000 = fr.Filter("evtfilter_psd_stk_match_cut==true")
+                                                        .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
+                                                        .Filter("evtfilter_psd_charge_cut==true")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Filter("corr_energy_gev>=3000")
+                                                        .Histo2D({"h_stk_charge_psd_cut_3000", "STK charge; STK X Charge; STK Y Charge", 500, 0, 150, 500, 0, 150}, "STK_chargeX", "STK_chargeY");
 
     TFile *output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
@@ -583,6 +1004,10 @@ void buildEfficiency(const in_args input_args)
     h_psdstkmatch_efficiency_total_tight_xtrl                           ->Write();
     h_psdstkmatch_efficiency_accepted_bdt                               ->Write();
     h_psdstkmatch_efficiency_total_bdt                                  ->Write();
+    h_psdstkmatch_efficiency_psd_fvolume_accepted_tight_xtrl            ->Write();
+    h_psdstkmatch_efficiency_psd_fvolume_total_tight_xtrl               ->Write();
+    h_psdstkmatch_efficiency_psd_fvolume_accepted_bdt                   ->Write();
+    h_psdstkmatch_efficiency_psd_fvolume_total_bdt                      ->Write();
     h_psdcharge_efficiency_accepted_tight_xtrl                          ->Write();
     h_psdcharge_efficiency_total_tight_xtrl                             ->Write();
     h_psdcharge_efficiency_accepted_bdt                                 ->Write();
@@ -601,8 +1026,13 @@ void buildEfficiency(const in_args input_args)
     h_track_efficiency_total_loose_xtrl                                 ->Write();
     h_psdstkmatch_efficiency_accepted_loose_xtrl                        ->Write();
     h_psdstkmatch_efficiency_total_loose_xtrl                           ->Write();
+    h_psdstkmatch_efficiency_psd_fvolume_accepted_loose_xtrl            ->Write();
+    h_psdstkmatch_efficiency_psd_fvolume_total_loose_xtrl               ->Write();
     h_psdcharge_efficiency_accepted_loose_xtrl                          ->Write();
     h_psdcharge_efficiency_total_loose_xtrl                             ->Write();
+
+    output_file->mkdir("xtrl");
+    output_file->cd("xtrl");
 
     h_xtrl_stk_cosine                                                   ->Write();
     h_xtrl_bgo_cosine                                                   ->Write();
@@ -612,6 +1042,79 @@ void buildEfficiency(const in_args input_args)
     h_stk_charge_after_stk_cut                                          ->Write();
     h_stk_charge                                                        ->Write();
     h_stk_charge_after_psd_charge_cut                                   ->Write();
+
+    output_file->mkdir("psd_matching_distance");
+    output_file->cd("psd_matching_distance");
+
+    h_psd_stk_match_distance_x_20_100                                   ->Write();
+    h_psd_stk_match_distance_x_100_250                                  ->Write();
+    h_psd_stk_match_distance_x_250_500                                  ->Write();
+    h_psd_stk_match_distance_x_500_1000                                 ->Write();
+    h_psd_stk_match_distance_x_1000_3000                                ->Write();
+    h_psd_stk_match_distance_x_3000                                     ->Write();
+    h_psd_stk_match_distance_y_20_100                                   ->Write();
+    h_psd_stk_match_distance_y_100_250                                  ->Write();
+    h_psd_stk_match_distance_y_250_500                                  ->Write();
+    h_psd_stk_match_distance_y_500_1000                                 ->Write();
+    h_psd_stk_match_distance_y_1000_3000                                ->Write();
+    h_psd_stk_match_distance_y_3000                                     ->Write();
+
+    h_psd_stk_match_distance_x_within_psd_fvolume_20_100                ->Write();
+    h_psd_stk_match_distance_x_within_psd_fvolume_100_250               ->Write();
+    h_psd_stk_match_distance_x_within_psd_fvolume_250_500               ->Write();
+    h_psd_stk_match_distance_x_within_psd_fvolume_500_1000              ->Write();
+    h_psd_stk_match_distance_x_within_psd_fvolume_1000_3000             ->Write();
+    h_psd_stk_match_distance_x_within_psd_fvolume_3000                  ->Write();
+    h_psd_stk_match_distance_y_within_psd_fvolume_20_100                ->Write();
+    h_psd_stk_match_distance_y_within_psd_fvolume_100_250               ->Write();
+    h_psd_stk_match_distance_y_within_psd_fvolume_250_500               ->Write();
+    h_psd_stk_match_distance_y_within_psd_fvolume_500_1000              ->Write();
+    h_psd_stk_match_distance_y_within_psd_fvolume_1000_3000             ->Write();
+    h_psd_stk_match_distance_y_within_psd_fvolume_3000                  ->Write();
+
+    h_psd_stk_match_distance_x_outside_psd_fvolume_20_100               ->Write();
+    h_psd_stk_match_distance_x_outside_psd_fvolume_100_250              ->Write();
+    h_psd_stk_match_distance_x_outside_psd_fvolume_250_500              ->Write();
+    h_psd_stk_match_distance_x_outside_psd_fvolume_500_1000             ->Write();
+    h_psd_stk_match_distance_x_outside_psd_fvolume_1000_3000            ->Write();
+    h_psd_stk_match_distance_x_outside_psd_fvolume_3000                 ->Write();
+    h_psd_stk_match_distance_y_outside_psd_fvolume_20_100               ->Write();
+    h_psd_stk_match_distance_y_outside_psd_fvolume_100_250              ->Write();
+    h_psd_stk_match_distance_y_outside_psd_fvolume_250_500              ->Write();
+    h_psd_stk_match_distance_y_outside_psd_fvolume_500_1000             ->Write();
+    h_psd_stk_match_distance_y_outside_psd_fvolume_1000_3000            ->Write();
+    h_psd_stk_match_distance_y_outside_psd_fvolume_3000                 ->Write();
+
+    output_file->mkdir("stk_charge");
+    output_file->cd("stk_charge");
+
+    h_stk_charge_psd_fvolume_no_psd_cut_20_100                          ->Write();
+    h_stk_charge_psd_fvolume_no_psd_cut_100_250                         ->Write();
+    h_stk_charge_psd_fvolume_no_psd_cut_250_500                         ->Write();
+    h_stk_charge_psd_fvolume_no_psd_cut_500_1000                        ->Write();
+    h_stk_charge_psd_fvolume_no_psd_cut_1000_3000                       ->Write();
+    h_stk_charge_psd_fvolume_no_psd_cut_3000                            ->Write();
+
+    h_stk_charge_psd_fvolume_psd_cut_20_100                             ->Write();
+    h_stk_charge_psd_fvolume_psd_cut_100_250                            ->Write();
+    h_stk_charge_psd_fvolume_psd_cut_250_500                            ->Write();
+    h_stk_charge_psd_fvolume_psd_cut_500_1000                           ->Write();
+    h_stk_charge_psd_fvolume_psd_cut_1000_3000                          ->Write();
+    h_stk_charge_psd_fvolume_psd_cut_3000                               ->Write();
+
+    h_stk_charge_no_psd_cut_20_100                                      ->Write();
+    h_stk_charge_no_psd_cut_100_250                                     ->Write();
+    h_stk_charge_no_psd_cut_250_500                                     ->Write();
+    h_stk_charge_no_psd_cut_500_1000                                    ->Write();
+    h_stk_charge_no_psd_cut_1000_3000                                   ->Write();
+    h_stk_charge_no_psd_cut_3000                                        ->Write();
+
+    h_stk_charge_psd_cut_20_100                                         ->Write();
+    h_stk_charge_psd_cut_100_250                                        ->Write();
+    h_stk_charge_psd_cut_250_500                                        ->Write();
+    h_stk_charge_psd_cut_500_1000                                       ->Write();
+    h_stk_charge_psd_cut_1000_3000                                      ->Write();
+    h_stk_charge_psd_cut_3000                                           ->Write();
 
     output_file->Close();
 }   
