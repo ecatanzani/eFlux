@@ -598,7 +598,7 @@ void buildEfficiency(const in_args input_args)
     auto n_events_outside_psd_fvolume   = *(fr.Filter("evtfilter_track_selection_cut==true").Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false").Count());
 
     std::cout << "\n\n*** PSD Fiducial Volume ***\n\n";
-    std::cout << "\n\nNumber of events after BGO and STK selection: " << n_events_presel_psd_fvolume;
+    std::cout << "Number of events after BGO and STK selection: " << n_events_presel_psd_fvolume;
     std::cout << "\nNumber of events within the PSD fiducial volume: " << n_events_within_psd_fvolume;
     std::cout << "\nNumber of events outside the PSD fiducial volume: " << n_events_outside_psd_fvolume;
     std::cout << "\n\n***************************\n\n";
@@ -607,208 +607,208 @@ void buildEfficiency(const in_args input_args)
     auto h_psd_stk_match_distance_x_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
-                                                .Histo1D({"h_psd_stk_match_distance_x_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_20_100", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_x_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
-                                                .Histo1D({"h_psd_stk_match_distance_x_100_250", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_100_250", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_x_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
-                                                .Histo1D({"h_psd_stk_match_distance_x_250_500", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_250_500", "PSD/STK match - X distance",  600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_x_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_500_1000", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_500_1000", "PSD/STK match - X distance",  600, -300, 300}, "SPD_STK_match_X_distance");
     
     auto h_psd_stk_match_distance_x_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_1000_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_1000_3000", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_x_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=3000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_3000", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_y_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
-                                                .Histo1D({"h_psd_stk_match_distance_y_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_20_100", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_Y_distance");
 
     auto h_psd_stk_match_distance_y_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
-                                                .Histo1D({"h_psd_stk_match_distance_y_100_250", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_100_250", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance");
 
     auto h_psd_stk_match_distance_y_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
-                                                .Histo1D({"h_psd_stk_match_distance_y_250_500", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_250_500", "PSD/STK match - Y distance",  600, -300, 300}, "SPD_STK_match_Y_distance");
 
     auto h_psd_stk_match_distance_y_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_500_1000", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_500_1000", "PSD/STK match - Y distance",  600, -300, 300}, "SPD_STK_match_Y_distance");
     
     auto h_psd_stk_match_distance_y_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_1000_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_1000_3000", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance");
 
     auto h_psd_stk_match_distance_y_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=3000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_3000", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance");
 
     // PSD fiducial volume distance plots within PSD fiducial volume
     auto h_psd_stk_match_distance_x_within_psd_fvolume_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
-                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_20_100", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_x_within_psd_fvolume_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
-                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_100_250", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_100_250", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_x_within_psd_fvolume_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
-                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_250_500", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_250_500", "PSD/STK match - X distance",  600, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_x_within_psd_fvolume_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_500_1000", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_500_1000", "PSD/STK match - X distance",  600, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
     
     auto h_psd_stk_match_distance_x_within_psd_fvolume_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_1000_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_1000_3000", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_x_within_psd_fvolume_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=3000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_x_within_psd_fvolume_3000", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_y_within_psd_fvolume_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
-                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_20_100", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_y_within_psd_fvolume_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
-                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_100_250", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_100_250", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_y_within_psd_fvolume_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
-                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_250_500", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_250_500", "PSD/STK match - Y distance",  600, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_y_within_psd_fvolume_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_500_1000", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_500_1000", "PSD/STK match - Y distance",  600, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
     
     auto h_psd_stk_match_distance_y_within_psd_fvolume_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_1000_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_1000_3000", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
 
     auto h_psd_stk_match_distance_y_within_psd_fvolume_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==true")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=3000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
+                                                .Histo1D({"h_psd_stk_match_distance_y_within_psd_fvolume_3000", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance_fiducial_volume");
 
     // PSD fiducial volume distance plots outside PSD fiducial volume
     auto h_psd_stk_match_distance_x_outside_psd_fvolume_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
-                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_20_100", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_x_outside_psd_fvolume_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
-                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_100_250", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_100_250", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_x_outside_psd_fvolume_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
-                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_250_500", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_250_500", "PSD/STK match - X distance",  600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_x_outside_psd_fvolume_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_500_1000", "PSD/STK match - X distance",  1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_500_1000", "PSD/STK match - X distance",  600, -300, 300}, "SPD_STK_match_X_distance");
     
     auto h_psd_stk_match_distance_x_outside_psd_fvolume_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_1000_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_1000_3000", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_x_outside_psd_fvolume_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=3000")
-                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_3000", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_X_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_x_outside_psd_fvolume_3000", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_X_distance");
 
     auto h_psd_stk_match_distance_y_outside_psd_fvolume_20_100 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
-                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_20_100", "PSD/STK match - X distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_20_100", "PSD/STK match - X distance", 600, -300, 300}, "SPD_STK_match_Y_distance");
 
     auto h_psd_stk_match_distance_y_outside_psd_fvolume_100_250 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
-                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_100_250", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_100_250", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance");
 
     auto h_psd_stk_match_distance_y_outside_psd_fvolume_250_500 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
-                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_250_500", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_250_500", "PSD/STK match - Y distance",  600, -300, 300}, "SPD_STK_match_Y_distance");
 
     auto h_psd_stk_match_distance_y_outside_psd_fvolume_500_1000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_500_1000", "PSD/STK match - Y distance",  1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_500_1000", "PSD/STK match - Y distance",  600, -300, 300}, "SPD_STK_match_Y_distance");
     
     auto h_psd_stk_match_distance_y_outside_psd_fvolume_1000_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_1000_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_1000_3000", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance");
 
     auto h_psd_stk_match_distance_y_outside_psd_fvolume_3000 = fr.Filter("evtfilter_track_selection_cut==true")
                                                 .Filter("evtfilter_psd_stk_match_cut_psd_fiducial_volume==false")
                                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                                 .Filter("corr_energy_gev>=3000")
-                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_3000", "PSD/STK match - Y distance", 1000, -300, 300}, "SPD_STK_match_Y_distance");
+                                                .Histo1D({"h_psd_stk_match_distance_y_outside_psd_fvolume_3000", "PSD/STK match - Y distance", 600, -300, 300}, "SPD_STK_match_Y_distance");
 
     // STK charge plots within PSD fiducial volume and withoud PSD charge cut
     auto h_stk_charge_psd_fvolume_no_psd_cut_20_100 = fr.Filter("evtfilter_psd_stk_match_cut==true")
