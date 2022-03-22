@@ -140,14 +140,17 @@ protected:
 	bool evtfilter_BGO_fiducial_BGOTrackContainment_cut 					{false};
 	bool evtfilter_nBarLayer13_cut 											{false};
 	bool evtfilter_maxRms_cut 												{false};
+	bool evtfilter_stk_fiducial_volume										{false};
+	bool evtfilter_stk_fiducial_volume_X									{false};
+	bool evtfilter_stk_fiducial_volume_Y									{false};
 	bool evtfilter_track_selection_cut 										{false};
 	bool evtfilter_track_selection_cut_no_3hit_recover 						{false};
+	bool evtfilter_psd_fiducial_volume										{false};
+	bool evtfilter_psd_fiducial_volume_X									{false};
+	bool evtfilter_psd_fiducial_volume_Y									{false};
 	bool evtfilter_psd_stk_match_cut 										{false};
 	bool evtfilter_psd_stk_match_cut_X_view 								{false};
 	bool evtfilter_psd_stk_match_cut_Y_view 								{false};
-	bool evtfilter_psd_stk_match_cut_psd_fiducial_volume					{false};
-	bool evtfilter_psd_stk_match_cut_psd_fiducial_volume_X					{false};
-	bool evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y					{false};
 	bool evtfilter_psd_charge_cut 											{false};
 	bool evtfilter_psd_charge_cut_no_single_view_recover					{false};
 	bool evtfilter_stk_charge_cut 											{false};
@@ -200,6 +203,8 @@ protected:
 	bool psdstkmatch_efficiency_preselection_accepted           			{false};
 	bool psdcharge_efficiency_preselection                      			{false};
 	bool psdcharge_efficiency_preselection_accepted             			{false};
+	bool stkcharge_efficiency_preselection                      			{false};
+	bool stkcharge_efficiency_preselection_accepted             			{false};
 };
 
 #endif

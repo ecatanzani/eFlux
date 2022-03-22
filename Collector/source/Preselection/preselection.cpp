@@ -37,104 +37,244 @@ void preselection::Pipeline(
             {
                 output.trackselection_cut = true;
                 stk_charge_measurement(stkclusters);
-                if (stk_charge_cut(cuts.STK_charge))
-                    output.stkcharge_cut = true;
-                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo())) 
+                if (psd_fiducial_volume_cut())
                 {
-                    output.psdstkmatch_cut = true;
-                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                    if (psd_charge_cut(cuts))
-                        output.psdcharge_cut = true;
+                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo())) 
+                    {
+                        output.psdstkmatch_cut = true;
+                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                        if (psd_charge_cut(cuts))
+                        {
+                            output.psdcharge_cut = true;
+                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                output.stkcharge_cut = true;
+                        }            
+                    }
                 }
+                else
+                {
+                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                        output.stkcharge_cut = true;
+                } 
             }
             
             reset_cuts_results();
 
             // maxelayer lastcut
             if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+            {
                 if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+                {
                     if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+                    {
                         if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+                        {
                             if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
-                                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                            {
+                                stk_charge_measurement(stkclusters);
+                                if (psd_fiducial_volume_cut())
                                 {
-                                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                    if (psd_charge_cut(cuts))
+                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    {
+                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                        if (psd_charge_cut(cuts))
+                                        {
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                output.maxelayer_lastcut = true;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                         output.maxelayer_lastcut = true;
                                 }
+                            }
+                        }
+                    }
+                }
+            }
 
             reset_cuts_results();
 
             // maxbarlayer lastcut
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+            {
                 if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+                {
                     if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+                    {
                         if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+                        {
                             if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
-                                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                            {
+                                stk_charge_measurement(stkclusters);
+                                if (psd_fiducial_volume_cut())
                                 {
-                                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                    if (psd_charge_cut(cuts))
+                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    {
+                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                        if (psd_charge_cut(cuts))
+                                        {
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                output.maxbarlayer_lastcut = true;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                         output.maxbarlayer_lastcut = true;
-                                }       
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             reset_cuts_results();
 
             // bgotrack lastcut
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+            {
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+                {
                     if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+                    {
                         if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+                        {
                             if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
-                                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                            {
+                                stk_charge_measurement(stkclusters);
+                                if (psd_fiducial_volume_cut())
                                 {
-                                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                    if (psd_charge_cut(cuts))
+                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    {
+                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                        if (psd_charge_cut(cuts))
+                                        {
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                output.bgotrack_lastcut = true;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                         output.bgotrack_lastcut = true;
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+                                
 
             reset_cuts_results();
 
             // BGO fiducial lastcut
             if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+            {
                 if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+                {
                     if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
-                        if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                    {
+                        stk_charge_measurement(stkclusters);
+                        if (psd_fiducial_volume_cut())
                         {
-                            psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                            if (psd_charge_cut(cuts))
+                            if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                            {
+                                psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                if (psd_charge_cut(cuts))
+                                {
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                        output.bgofiducial_lastcut = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                 output.bgofiducial_lastcut = true;
-                        }       
+                        } 
+                    }
+                }
+            }      
 
             reset_cuts_results();
 
             // nbarlayer13 lastcut
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+            {
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+                {
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+                    {
                         if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+                        {
                             if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
-                                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                            {
+                                stk_charge_measurement(stkclusters);
+                                if (psd_fiducial_volume_cut())
                                 {
-                                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                    if (psd_charge_cut(cuts))
+                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    {
+                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                        if (psd_charge_cut(cuts))
+                                        {
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                output.nbarlayer13_lastcut = true;
+                                        }
+                                    } 
+                                }
+                                else
+                                {
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                         output.nbarlayer13_lastcut = true;
-                                }       
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+                                      
             
             reset_cuts_results();
 
             // maxrms lastcut
             if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+            {
                 if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+                {
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+                    {
                         if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+                        {
                             if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
-                                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                            {
+                                stk_charge_measurement(stkclusters);
+                                if (psd_fiducial_volume_cut())
                                 {
-                                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                    if (psd_charge_cut(cuts))
+                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    {
+                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                        if (psd_charge_cut(cuts))
+                                        {
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                output.maxrms_lastcut = true;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                         output.maxrms_lastcut = true;
                                 }
+                            }
+                        }
+                    }
+                }
+            }
             
             reset_cuts_results();
 

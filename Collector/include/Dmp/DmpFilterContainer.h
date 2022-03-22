@@ -117,13 +117,16 @@ struct filter_output
 	bool BGO_fiducial_BGOTrackContainment_cut 		{false};
 	bool nBarLayer13_cut 							{false};
 	bool maxRms_cut 								{false};
+	bool stk_fiducial_volume						{false};
+	bool stk_fiducial_volume_X						{false};
+	bool stk_fiducial_volume_Y						{false};
 	bool track_selection_cut 						{false};
 	bool track_selection_cut_no_3hit_recover 		{false};
 	bool three_cluster_only_track					{false};
 	bool psd_stk_match_cut 							{false};
-	bool psd_stk_match_cut_psd_fiducial_volume 		{false};
-	bool psd_stk_match_cut_psd_fiducial_volume_X 	{false};
-	bool psd_stk_match_cut_psd_fiducial_volume_Y 	{false};
+	bool psd_fiducial_volume 						{false};
+	bool psd_fiducial_volume_X 						{false};
+	bool psd_fiducial_volume_Y 						{false};
 	bool psd_stk_match_cut_x 						{false};
 	bool psd_stk_match_cut_y 						{false};
 	bool psd_charge_cut 							{false};
@@ -269,6 +272,7 @@ protected:
 		const cuts_conf data_cuts,
 		const bool recover_3_hits_tracks = true,
 		const bool update_struct = true);
+	const bool psd_fiducial_volume_cut();
 	const bool psd_stk_match_cut(
 		const std::vector<double> bgoRec_slope,
 		const std::vector<double> bgoRec_intercept,
@@ -288,7 +292,7 @@ protected:
 	const bool psd_charge_cut(
 		const cuts_conf data_cuts,
 		const bool recover_one_view = true);
-	const bool stk_charge_cut(const double charge_cut);
+	const bool stk_charge_cut(const double hi_cut, const double med_cut, const double low_cut);
 	const bool xtrl_tight_cut(
 		const double input_xtrl,
 		const double cut_value = 8.5);

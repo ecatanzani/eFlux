@@ -185,6 +185,8 @@ void ntuple::fill_preselectionfiltersefficiency_info(const eff_output &eff_prese
 		psdstkmatch_efficiency_preselection_accepted 					= eff_preselect.psdstkmatch_efficiency_preselection_accepted;
 		psdcharge_efficiency_preselection 								= eff_preselect.psdcharge_efficiency_preselection;
 		psdcharge_efficiency_preselection_accepted 						= eff_preselect.psdcharge_efficiency_preselection_accepted;
+		stkcharge_efficiency_preselection 								= eff_preselect.stkcharge_efficiency_preselection;
+		stkcharge_efficiency_preselection_accepted 						= eff_preselect.stkcharge_efficiency_preselection_accepted;
 	}
 }
 
@@ -263,14 +265,17 @@ void ntuple::core_reset()
 	evtfilter_BGO_fiducial_BGOTrackContainment_cut 		= false;
 	evtfilter_nBarLayer13_cut 							= false;
 	evtfilter_maxRms_cut 								= false;
+	evtfilter_stk_fiducial_volume 						= false;
+	evtfilter_stk_fiducial_volume_X						= false;
+	evtfilter_stk_fiducial_volume_Y						= false;
 	evtfilter_track_selection_cut 						= false;
 	evtfilter_track_selection_cut_no_3hit_recover 		= false;
+	evtfilter_psd_fiducial_volume 						= false;
+	evtfilter_psd_fiducial_volume_X						= false;
+	evtfilter_psd_fiducial_volume_Y						= false;
 	evtfilter_psd_stk_match_cut 						= false;
 	evtfilter_psd_stk_match_cut_X_view 					= false;
 	evtfilter_psd_stk_match_cut_Y_view 					= false;
-	evtfilter_psd_stk_match_cut_psd_fiducial_volume 	= false;
-	evtfilter_psd_stk_match_cut_psd_fiducial_volume_X	= false;
-	evtfilter_psd_stk_match_cut_psd_fiducial_volume_Y	= false;
 	evtfilter_psd_charge_cut 							= false;
 	evtfilter_psd_charge_cut_no_single_view_recover 	= false;
 	evtfilter_stk_charge_cut					 		= false;
@@ -323,4 +328,6 @@ void ntuple::core_reset()
 	psdstkmatch_efficiency_preselection_accepted        		= false;
 	psdcharge_efficiency_preselection                   		= false;
 	psdcharge_efficiency_preselection_accepted          		= false;
+	stkcharge_efficiency_preselection                   		= false;
+	stkcharge_efficiency_preselection_accepted          		= false;
 }

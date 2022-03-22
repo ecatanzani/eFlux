@@ -126,11 +126,22 @@ void config::get_config_info(std::string parsed_config)
 			input_stream >> tmp_str;
 			cuts.PSD_charge_no_match = stod(tmp_str, &sz);
 		}
-		if (!strcmp(tmp_str.c_str(), "STK_charge"))
+		if (!strcmp(tmp_str.c_str(), "STK_charge_upper"))
 		{
 			input_stream >> tmp_str;
-			cuts.STK_charge = stod(tmp_str, &sz);
+			cuts.STK_charge_upper = stod(tmp_str, &sz);
 		}
+		if (!strcmp(tmp_str.c_str(), "STK_charge_medium"))
+		{
+			input_stream >> tmp_str;
+			cuts.STK_charge_medium = stod(tmp_str, &sz);
+		}
+		if (!strcmp(tmp_str.c_str(), "STK_charge_lower"))
+		{
+			input_stream >> tmp_str;
+			cuts.STK_charge_lower = stod(tmp_str, &sz);
+		}
+
 
 		// Load cuts
 		if (!strcmp(tmp_str.c_str(), "nBarLayer13"))

@@ -32,57 +32,98 @@ void DmpFilterContainer::Pipeline(
 	classifier.xtr = xtrX_computation(bgoVault.GetSumRMS(), bgoVault.GetSingleFracLayer(13));
 	classifier.xtrl = xtrX_computation(bgoVault.GetSumRMS(), bgoVault.GetSingleFracLayer(bgoVault.GetLastEnergyLayer()));
 
-	if (output.BGO_fiducial_HET) {
+	if (output.BGO_fiducial_HET) 
+	{
 		output.all_cut = output.BGO_fiducial_HET;
 		// **** nBarLayer13 cut ****
-		if (acuts.nBarLayer13) {
+		if (acuts.nBarLayer13) 
+		{
 			output.nBarLayer13_cut = nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarIndex(13), bgoTotalE);
 			output.all_cut *= output.nBarLayer13_cut;
 		}
 
-		if (output.all_cut) {
+		if (output.all_cut) 
+		{
 			// **** maxRms cut ****
-			if (acuts.maxRms) {
+			if (acuts.maxRms) 
+			{
 				output.maxRms_cut = maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts);
 				output.all_cut *= output.maxRms_cut;
 			}
 
-			if (output.all_cut) {
+			if (output.all_cut) 
+			{
 				// **** track selection cut ****
-				if (acuts.track_selection) {
+				if (acuts.track_selection) 
+				{
 					output.track_selection_cut = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts);
 					output.track_selection_cut_no_3hit_recover = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts, false, false);
 					output.all_cut *= output.track_selection_cut;
-				}
 
-				if (output.all_cut) {
-					// **** psd stk match cut ****
-					if (acuts.psd_stk_match) {
-						output.psd_stk_match_cut = psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo());
-						output.all_cut *= output.psd_stk_match_cut;
-					}
-
-					if (output.all_cut) {
-						
-						// **** PSD and STK charge measurements ****
-						output.psd_charge_measurement = output.stk_charge_measurement = true;
-						psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+					// **** STK charge measurement ****
+					if (output.track_selection_cut)
+					{
+						output.stk_charge_measurement = true;
 						stk_charge_measurement(stkclusters);
+					}
+				}			
 
-						// **** psd charge cut ****
-						if (acuts.psd_charge) {
-							output.psd_charge_cut = psd_charge_cut(cuts);
-							output.psd_charge_cut_no_single_view_recover = psd_charge_cut(cuts, false);
-							output.all_cut *= output.psd_charge_cut;
+				if (output.all_cut) 
+				{
+					
+					if (psd_fiducial_volume_cut())
+					{
+						// **** psd stk match cut ****
+						if (acuts.psd_stk_match) 
+						{
+							output.psd_stk_match_cut = psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo());
+							output.all_cut *= output.psd_stk_match_cut;
+
+							// **** PSD charge measurement ****
+							if (output.psd_stk_match_cut)
+							{
+								output.psd_charge_measurement = true;
+								psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+							}
 						}
 
+						if (output.all_cut) 
+						{
+
+							// **** psd charge cut ****
+							if (acuts.psd_charge) 
+							{
+								output.psd_charge_cut = psd_charge_cut(cuts);
+								output.psd_charge_cut_no_single_view_recover = psd_charge_cut(cuts, false);
+								output.all_cut *= output.psd_charge_cut;
+							}
+
+							// **** stk charge cut ****
+							if (acuts.stk_charge) 
+							{
+								output.stk_charge_cut = stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower);
+								output.all_cut *= output.stk_charge_cut;
+							}
+
+							if (output.all_cut) 
+							{
+								output.xtrl_tight_cut = xtrl_tight_cut(classifier.xtrl);
+								output.xtrl_loose_cut = xtrl_loose_cut(classifier.xtrl, bgoTotalE_corr);
+								++particle_counter.selected_events;
+							}
+						}
+					}
+					else
+					{
 						// **** stk charge cut ****
-						if (acuts.stk_charge) {
-							output.stk_charge_cut = stk_charge_cut(cuts.STK_charge);
+						if (acuts.stk_charge) 
+						{
+							output.stk_charge_cut = stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower);
 							output.all_cut *= output.stk_charge_cut;
 						}
 
-						if (output.all_cut) {
+						if (output.all_cut) 
+						{
 							output.xtrl_tight_cut = xtrl_tight_cut(classifier.xtrl);
 							output.xtrl_loose_cut = xtrl_loose_cut(classifier.xtrl, bgoTotalE_corr);
 							++particle_counter.selected_events;
@@ -434,6 +475,17 @@ const bool DmpFilterContainer::track_selection_cut(
 {
 	bool passed_track_selection_cut = false;
 
+	// Check if the BGO shower extrapolation on the first layer of the STK is contained within its fiducial volume
+	double projCoord_bgoshowerX {bgoRec_slope[0] * STK_TopZ + bgoRec_intercept[0]};
+	double projCoord_bgoshowerY {bgoRec_slope[1] * STK_TopZ + bgoRec_intercept[1]};
+	if (fabs(projCoord_bgoshowerX) < STK_SideXY && fabs(projCoord_bgoshowerY) < STK_SideXY)
+		output.stk_fiducial_volume = true;
+	if (fabs(projCoord_bgoshowerX) < STK_SideXY)
+		output.stk_fiducial_volume_X = true;
+	if (fabs(projCoord_bgoshowerY) < STK_SideXY)
+		output.stk_fiducial_volume_Y = true;
+
+	// Continue with the track selection cut
 	TVector3 bgoRecEntrance;
 	TVector3 bgoRecDirection;
 	std::vector<int> LadderToLayer(nSTKladders, -1);
@@ -566,6 +618,24 @@ const bool DmpFilterContainer::track_selection_cut(
 	return passed_track_selection_cut;
 }
 
+const bool DmpFilterContainer::psd_fiducial_volume_cut()
+{
+	bool passed_fiducial_volume_cut {false};
+
+	// Check if the best track extrapolation is within the PSD fiducial volume
+	double projCoord_trackX {event_best_track.track_slope[0] * PSD_TopZ + event_best_track.track_intercept[0]};
+	double projCoord_trackY {event_best_track.track_slope[1] * PSD_TopZ + event_best_track.track_intercept[1]};
+	if (fabs(projCoord_trackX) < PSD_SideXY && fabs(projCoord_trackY) < PSD_SideXY)
+		output.psd_fiducial_volume = true;
+	if (fabs(projCoord_trackX) < PSD_SideXY)
+		output.psd_fiducial_volume_X = true;
+	if (fabs(projCoord_trackY) < PSD_SideXY)
+		output.psd_fiducial_volume_Y = true;
+
+	passed_fiducial_volume_cut = output.psd_fiducial_volume;
+	return passed_fiducial_volume_cut;
+}
+
 const bool DmpFilterContainer::psd_stk_match_cut(
 	const std::vector<double> bgoRec_slope,
 	const std::vector<double> bgoRec_intercept,
@@ -575,16 +645,6 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 	const std::vector<std::vector<double>> psdCluster_maxEcoordinate)
 {
 	bool passed_stk_psd_match {false};
-
-	// Check if the best track extrapolation is within the PSD fiducial volume
-	double projCoord_trackX {event_best_track.track_slope[0] * PSD_TopZ + event_best_track.track_intercept[0]};
-	double projCoord_trackY {event_best_track.track_slope[1] * PSD_TopZ + event_best_track.track_intercept[1]};
-	if (fabs(projCoord_trackX) < PSD_SideXY && fabs(projCoord_trackY) < PSD_SideXY)
-		output.psd_stk_match_cut_psd_fiducial_volume = true;
-	if (fabs(projCoord_trackX) < PSD_SideXY)
-		output.psd_stk_match_cut_psd_fiducial_volume_X = true;
-	if (fabs(projCoord_trackY) < PSD_SideXY)
-		output.psd_stk_match_cut_psd_fiducial_volume_Y = true;
 
 	for (int nLayer = 0; nLayer < DAMPE_psd_nLayers; ++nLayer)
 	{
@@ -778,7 +838,7 @@ void DmpFilterContainer::stk_charge_measurement(
 		}
 	}
 
-const bool DmpFilterContainer::stk_charge_cut(const double charge_cut)
+const bool DmpFilterContainer::stk_charge_cut(const double hi_cut, const double med_cut, const double low_cut)
 	{
 		bool passed_stk_charge_cut {false};
 
@@ -786,9 +846,16 @@ const bool DmpFilterContainer::stk_charge_cut(const double charge_cut)
 		if (extracted_stk_charge.chargeX == -999 || extracted_stk_charge.chargeY == -999)
 			return passed_stk_charge_cut;
 
-		// Check STK charge to select electrons
-		if (extracted_stk_charge.chargeX < charge_cut && extracted_stk_charge.chargeY < charge_cut)
-			passed_stk_charge_cut = true;
+		// Check STK charge to select electrons and protons
+		if (extracted_stk_charge.chargeX < hi_cut && extracted_stk_charge.chargeY < hi_cut)
+		{
+			if (extracted_stk_charge.chargeX > 0 && extracted_stk_charge.chargeX <= low_cut && extracted_stk_charge.chargeY < med_cut)
+				passed_stk_charge_cut = true;
+			else if (extracted_stk_charge.chargeX > low_cut && extracted_stk_charge.chargeX < med_cut && extracted_stk_charge.chargeY <= low_cut)
+				passed_stk_charge_cut = true;
+			else if (extracted_stk_charge.chargeX > low_cut &&  extracted_stk_charge.chargeY > low_cut)
+				passed_stk_charge_cut = true;
+		}
 
 		return passed_stk_charge_cut;
 	}
@@ -894,13 +961,16 @@ void DmpFilterContainer::reset_filter_output()
 	output.BGO_fiducial_BGOTrackContainment_cut 	= false;
 	output.nBarLayer13_cut 							= false;
 	output.maxRms_cut 								= false;
+	output.stk_fiducial_volume						= false;
+	output.stk_fiducial_volume_X					= false;
+	output.stk_fiducial_volume_Y					= false;
 	output.track_selection_cut 						= false;
 	output.track_selection_cut_no_3hit_recover 		= false;
 	output.three_cluster_only_track 				= false;
 	output.psd_stk_match_cut 						= false;
-	output.psd_stk_match_cut_psd_fiducial_volume 	= false;
-	output.psd_stk_match_cut_psd_fiducial_volume_X 	= false;
-	output.psd_stk_match_cut_psd_fiducial_volume_Y 	= false;
+	output.psd_fiducial_volume 						= false;
+	output.psd_fiducial_volume_X 					= false;
+	output.psd_fiducial_volume_Y 					= false;
 	output.psd_stk_match_cut_x 						= false;
 	output.psd_stk_match_cut_y 						= false;
 	output.psd_charge_cut 							= false;

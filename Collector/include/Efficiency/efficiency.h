@@ -27,6 +27,9 @@ struct eff_output
 
     bool psdcharge_efficiency_preselection                                  {false};
     bool psdcharge_efficiency_preselection_accepted                         {false};
+
+    bool stkcharge_efficiency_preselection                                  {false};
+    bool stkcharge_efficiency_preselection_accepted                         {false};
 };
 
 class efficiency: public DmpFilterContainer
