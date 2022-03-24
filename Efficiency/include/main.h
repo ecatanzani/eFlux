@@ -19,6 +19,7 @@ struct in_args
 	std::string bdt_learning_method;
 	std::string cosine_regularize_path;
 	std::string box_cox_regularize_path;
+	std::string eff_corr_function;
 	bool verbose {false};
 
 	// Tasks

@@ -30,6 +30,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -l  --learning-method         .......... <TMVA_learning_method>                 .......... TMVA learning/classifying method");
 	opt.addUsage(" -c  --cosine-regularize       .......... <path_to_proton_summary_fit_TTree>     .......... Regularize angular variables behaviour");
 	opt.addUsage(" -t  --box-cox-regularize      .......... <path_to_best_box-cox_lambda_Tree>     .......... Regularize lambda variables behaviour");
+	opt.addUsage(" -f  --function                .......... <path_to_ROOT_correction_file>         .......... signal efficiency ROOT correction file");
 
 	opt.setFlag("help", 'h');
 	opt.setOption("input", 'i');
@@ -42,6 +43,7 @@ int main(int argc, char **argv)
 	opt.setOption("learning-method", 'l');
 	opt.setOption("cosine-regularize", 'c');
 	opt.setOption("box-cox-regularize", 't');
+	opt.setOption("function", 'f');
 
 	opt.processCommandArgs(argc, argv);
 	
@@ -78,6 +80,8 @@ int main(int argc, char **argv)
 		input_args.cosine_regularize_path = opt.getValue('c');
 	if (opt.getValue("box-cox-regularize") || opt.getValue('t'))
 		input_args.box_cox_regularize_path = opt.getValue('t');
+	if (opt.getValue("function") || opt.getValue('f'))
+		input_args.eff_corr_function = opt.getValue('f');
 
 	// Set the energy bin
 	if (!input_args.output_path.empty())

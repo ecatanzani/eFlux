@@ -1,191 +1,17 @@
-#include "bdt.h"
+#include "vars.h"
+
+#include <iostream>
+#include <string>
 
 #include "TFile.h"
 #include "TTree.h"
 
-bdt::bdt(
-    const std::string bdt_config_file, 
-    const std::string bdt_learning_method,
-    const std::string cosine_regularize_path,
-    const std::string box_cox_regularize_path,
-    const bool verbose)
+inline double xtrl_computation(const double sumRms, const double lastFracLayer)
 {
-    // Parse bdt config file
-	get_config_info(parse_config_file(bdt_config_file));
-    // Initialize BDT method
-	method = bdt_learning_method;
-    // Check methods with the provided one
-    get_methods();
-    // Initialize TMVA instance
-    TMVA::Tools::Instance();
-    // Initialize TMVA readers
-    LE_reader = std::make_shared<TMVA::Reader>();
-    ME_reader = std::make_shared<TMVA::Reader>();
-    HE_reader = std::make_shared<TMVA::Reader>();
-    // Link readers with the variables
-    link_reader_vars(LE_reader);
-    link_reader_vars(ME_reader);
-    link_reader_vars(HE_reader);
-    // Book MVA
-    bookMVA(LE_reader, le_weights);
-    bookMVA(ME_reader, me_weights);
-    bookMVA(HE_reader, he_weights);
-    // Load cosine angular corrections
-    load_cosine_corrections(cosine_regularize_path, verbose);
-    // Load box-cox lambda corrections
-    load_box_cox_corrections(box_cox_regularize_path, verbose);
+	return lastFracLayer != -1 ? 0.125e-6 * pow(sumRms, 4) * lastFracLayer : -999;
 }
 
-std::string bdt::parse_config_file(std::string bdt_config_file)
-{
-	std::ifstream input_file(bdt_config_file.c_str());
-	if (!input_file.is_open())
-	{
-		std::cerr << "\nInput config file not found [" << bdt_config_file << "]\n\n";
-		exit(100);
-	}
-	std::string input_string(
-		(std::istreambuf_iterator<char>(input_file)),
-		(std::istreambuf_iterator<char>()));
-	input_file.close();
-	return input_string;
-}
-
-void bdt::get_config_info(std::string parsed_config)
-{
-	std::string tmp_str;
-	std::istringstream input_stream(parsed_config);
-    std::string::size_type sz;
-
-	while (input_stream >> tmp_str)
-	{
-		if (!strcmp(tmp_str.c_str(), "low_energy_weights"))             input_stream >> le_weights;
-		if (!strcmp(tmp_str.c_str(), "medium_energy_weights"))          input_stream >> me_weights;
-		if (!strcmp(tmp_str.c_str(), "high_energy_weights"))            input_stream >> he_weights;
-        if (!strcmp(tmp_str.c_str(), "low_energy_classifier_cut"))      {input_stream >> tmp_str; le_c_cut = stod(tmp_str, &sz);}
-        if (!strcmp(tmp_str.c_str(), "medium_energy_classifier_cut"))   {input_stream >> tmp_str; me_c_cut = stod(tmp_str, &sz);}
-        if (!strcmp(tmp_str.c_str(), "high_energy_classifier_cut"))     {input_stream >> tmp_str; he_c_cut = stod(tmp_str, &sz);}
-	}
-}
-
-void bdt::PrintWeights() {
-
-	std::cout << "\n\n**** Training Weights ****\n";
-	std::cout << "***********************\n\n";
-	std::cout << "Low Energy  (10 GeV - 100 GeV) : " << le_weights << std::endl;
-	std::cout << "Mean energy (100 GeV - 1 TeV)  : " << me_weights << std::endl;
-	std::cout << "High Energy (1 TeV - 10 TeV)   : " << he_weights << std::endl;
-	std::cout << "\n***********************\n";
-}
-
-void bdt::get_methods() {
-   
-    methods_map["Cuts"] = 0;
-    methods_map["CutsD"] = 0;
-    methods_map["CutsPCA"] = 0;
-    methods_map["CutsGA"] = 0;
-    methods_map["CutsSA"] = 0;
-
-    methods_map["Likelihood"] = 0;
-    methods_map["LikelihoodD"] = 0;
-    methods_map["LikelihoodPCA"] = 0;
-    methods_map["LikelihoodKDE"] = 0;
-    methods_map["LikelihoodMIX"] = 0;
-
-    methods_map["PDERS"] = 0;
-    methods_map["PDERSD"] = 0;
-    methods_map["PDERSPCA"] = 0;
-    methods_map["PDEFoam"] = 0;
-    methods_map["PDEFoamBoost"] = 0;
-    methods_map["KNN"] = 0;
-
-    methods_map["LD"] = 0;
-    methods_map["Fisher"] = 0;
-    methods_map["FisherG"] = 0;
-    methods_map["BoostedFisher"] = 0;
-    methods_map["HMatrix"] = 0;
-
-    methods_map["FDA_GA"] = 0;
-    methods_map["FDA_SA"] = 0;
-    methods_map["FDA_MC"] = 0;
-    methods_map["FDA_MT"] = 0;
-    methods_map["FDA_GAMT"] = 0;
-    methods_map["FDA_MCMT"] = 0;
-
-    methods_map["MLP"] = 0;
-    methods_map["MLPBFGS"] = 0;
-    methods_map["MLPBNN"] = 0;
-    methods_map["CFMlpANN"] = 0;
-    methods_map["TMlpANN"] = 0;
-
-    methods_map["SVM"] = 0;
-
-    methods_map["BDT"] = 0;
-    methods_map["BDTG"] = 0;
-    methods_map["BDTB"] = 0;
-    methods_map["BDTD"] = 0;
-    methods_map["BDTF"] = 0;
-
-    methods_map["RuleFit"] = 0;
-
-    auto linked_method = false;
-    for (auto &&dmethod : methods_map)
-        if (!strcmp(method.c_str(), dmethod.first.c_str())) {
-            dmethod.second = 1;
-            linked_method = true;
-            break;
-        }
-
-    if (!linked_method) {
-        std::cerr << "\nERROR: No match found in TMVA default methods...\n\n";
-        exit(100);
-    }
-}
-
-void bdt::link_reader_vars(std::shared_ptr<TMVA::Reader> reader)
-{
-    reader->AddVariable("rmslayer_norm_1", &tmva_vars.rmslayer_norm_1);
-    reader->AddVariable("rmslayer_norm_2", &tmva_vars.rmslayer_norm_2);
-    reader->AddVariable("rmslayer_norm_3", &tmva_vars.rmslayer_norm_3);
-    reader->AddVariable("rmslayer_norm_4", &tmva_vars.rmslayer_norm_4);
-    reader->AddVariable("rmslayer_norm_5", &tmva_vars.rmslayer_norm_5);
-    reader->AddVariable("rmslayer_norm_6", &tmva_vars.rmslayer_norm_6);
-    reader->AddVariable("rmslayer_norm_7", &tmva_vars.rmslayer_norm_7);
-    reader->AddVariable("rmslayer_norm_8", &tmva_vars.rmslayer_norm_8);
-    reader->AddVariable("rmslayer_norm_9", &tmva_vars.rmslayer_norm_9);
-    reader->AddVariable("rmslayer_norm_10", &tmva_vars.rmslayer_norm_10);
-    reader->AddVariable("rmslayer_norm_11", &tmva_vars.rmslayer_norm_11);
-    reader->AddVariable("rmslayer_norm_12", &tmva_vars.rmslayer_norm_12);
-    reader->AddVariable("rmslayer_norm_13", &tmva_vars.rmslayer_norm_13);
-    reader->AddVariable("rmslayer_norm_14", &tmva_vars.rmslayer_norm_14);
-
-    reader->AddVariable("fraclayer_norm_1", &tmva_vars.fraclayer_norm_1);
-    reader->AddVariable("fraclayer_norm_2", &tmva_vars.fraclayer_norm_2);
-    reader->AddVariable("fraclayer_norm_3", &tmva_vars.fraclayer_norm_3);
-    reader->AddVariable("fraclayer_norm_4", &tmva_vars.fraclayer_norm_4);
-    reader->AddVariable("fraclayer_norm_5", &tmva_vars.fraclayer_norm_5);
-    reader->AddVariable("fraclayer_norm_6", &tmva_vars.fraclayer_norm_6);
-    reader->AddVariable("fraclayer_norm_7", &tmva_vars.fraclayer_norm_7);
-    reader->AddVariable("fraclayer_norm_8", &tmva_vars.fraclayer_norm_8);
-    reader->AddVariable("fraclayer_norm_9", &tmva_vars.fraclayer_norm_9);
-    reader->AddVariable("fraclayer_norm_10", &tmva_vars.fraclayer_norm_10);
-    reader->AddVariable("fraclayer_norm_11", &tmva_vars.fraclayer_norm_11);
-    reader->AddVariable("fraclayer_norm_12", &tmva_vars.fraclayer_norm_12);
-    reader->AddVariable("fraclayer_norm_13", &tmva_vars.fraclayer_norm_13);
-    reader->AddVariable("fraclayer_norm_14", &tmva_vars.fraclayer_norm_14);
-
-    reader->AddVariable("sumrms_norm", &tmva_vars.sumrms_norm);
-    reader->AddVariable("fraclastlayer_norm", &tmva_vars.fraclastlayer_norm);
-    reader->AddVariable("xtrl_norm", &tmva_vars.xtrl_norm);
-    reader->AddSpectator("xtrl", &tmva_vars.xtrl);
-}
-
-void bdt::bookMVA(std::shared_ptr<TMVA::Reader> reader, const std::string weights)
-{
-    reader->BookMVA(method.c_str(), weights.c_str());
-}
-
-void bdt::load_cosine_corrections(std::string cosine_regularize_path, const bool verbose)
+void vars::load_cosine_corrections(std::string cosine_regularize_path, const bool verbose)
 {
     TFile *fitfile = TFile::Open(cosine_regularize_path.c_str(), "READ");
     if (!fitfile->IsOpen())
@@ -253,23 +79,24 @@ void bdt::load_cosine_corrections(std::string cosine_regularize_path, const bool
             cosine_corrections.flast_fitfunc[bin_idx]       .SetParameter(par_idx, flast_pars->at(par_idx));
             cosine_corrections.flast_fitfunc_err[bin_idx]   .SetParameter(par_idx, flast_err_pars->at(par_idx));
         }
+        
     }
 
     fitfile->Close();
 }
 
-void bdt::load_box_cox_corrections(std::string box_cox_regularize_path, const bool verbose)
+void vars::load_box_cox_corrections(std::string box_cox_regularize_path, const bool verbose)
 {
     TFile *lambda_tree_file = TFile::Open(box_cox_regularize_path.c_str(), "READ");
     if (!lambda_tree_file->IsOpen())
     {
-        std::cerr << "\nError reading best lambda TTree [" << box_cox_regularize_path << "]\n\n";
+        std::cerr << "\n\nError reading best lambda TTree [" << box_cox_regularize_path << "]\n\n";
         exit(100);
     }
     else
     {
         if (verbose)
-            std::cout << "\n\nReading best lambda TTree [" << box_cox_regularize_path << "]\n\n";
+            std::cout << "\n\nReading best lambda TTree [" << box_cox_regularize_path << "]";
     }
 
     box_cox_correction_parameters.initSize(energy_nbins);
@@ -339,50 +166,18 @@ void bdt::load_box_cox_corrections(std::string box_cox_regularize_path, const bo
     lambda_tree_file->Close();
 }
 
-inline double xtrl_computation(const double sumRms, const double lastFracLayer)
-{
-	return lastFracLayer != -1 ? 0.125e-6 * pow(sumRms, 4) * lastFracLayer : -999;
-}
+vars::vars(
+    const std::string cosine_regularize_path,
+	const std::string box_cox_regularize_path,
+	const bool verbose)
+    {
+        // Load cosine angular corrections
+        load_cosine_corrections(cosine_regularize_path, verbose);
+        // Load box-cox lambda corrections
+        load_box_cox_corrections(box_cox_regularize_path, verbose);
+    }
 
-void bdt::sync_vars()
-{
-    tmva_vars.rmslayer_norm_1 = static_cast<float>(vars.rms[0]);
-    tmva_vars.rmslayer_norm_2 = static_cast<float>(vars.rms[1]);
-    tmva_vars.rmslayer_norm_3 = static_cast<float>(vars.rms[2]);
-    tmva_vars.rmslayer_norm_4 = static_cast<float>(vars.rms[3]);
-    tmva_vars.rmslayer_norm_5 = static_cast<float>(vars.rms[4]);
-    tmva_vars.rmslayer_norm_6 = static_cast<float>(vars.rms[5]);
-    tmva_vars.rmslayer_norm_7 = static_cast<float>(vars.rms[6]);
-    tmva_vars.rmslayer_norm_8 = static_cast<float>(vars.rms[7]);
-    tmva_vars.rmslayer_norm_9 = static_cast<float>(vars.rms[8]);
-    tmva_vars.rmslayer_norm_10 = static_cast<float>(vars.rms[9]);
-    tmva_vars.rmslayer_norm_11 = static_cast<float>(vars.rms[10]);
-    tmva_vars.rmslayer_norm_12 = static_cast<float>(vars.rms[11]);
-    tmva_vars.rmslayer_norm_13 = static_cast<float>(vars.rms[12]);
-    tmva_vars.rmslayer_norm_14 = static_cast<float>(vars.rms[13]);
-
-    tmva_vars.fraclayer_norm_1 = static_cast<float>(vars.fraclayer[0]);
-    tmva_vars.fraclayer_norm_2 = static_cast<float>(vars.fraclayer[1]);
-    tmva_vars.fraclayer_norm_3 = static_cast<float>(vars.fraclayer[2]);
-    tmva_vars.fraclayer_norm_4 = static_cast<float>(vars.fraclayer[3]);
-    tmva_vars.fraclayer_norm_5 = static_cast<float>(vars.fraclayer[4]);
-    tmva_vars.fraclayer_norm_6 = static_cast<float>(vars.fraclayer[5]);
-    tmva_vars.fraclayer_norm_7 = static_cast<float>(vars.fraclayer[6]);
-    tmva_vars.fraclayer_norm_8 = static_cast<float>(vars.fraclayer[7]);
-    tmva_vars.fraclayer_norm_9 = static_cast<float>(vars.fraclayer[8]);
-    tmva_vars.fraclayer_norm_10 = static_cast<float>(vars.fraclayer[9]);
-    tmva_vars.fraclayer_norm_11 = static_cast<float>(vars.fraclayer[10]);
-    tmva_vars.fraclayer_norm_12 = static_cast<float>(vars.fraclayer[11]);
-    tmva_vars.fraclayer_norm_13 = static_cast<float>(vars.fraclayer[12]);
-    tmva_vars.fraclayer_norm_14 = static_cast<float>(vars.fraclayer[13]);
-
-    tmva_vars.sumrms_norm = static_cast<float>(vars.sumrms);
-    tmva_vars.fraclastlayer_norm = static_cast<float>(vars.fraclastlayer);
-    tmva_vars.xtrl_norm = static_cast<float>(vars.xtrl);
-    tmva_vars.xtrl = static_cast<float>(vars.xtrl_spectator);
-}
-
-const double bdt::ComputeMVA(
+const bdt_vars vars::GetVars(
     const std::vector<double> &rms,
     const double sumrms,
     const std::vector<double> &fraclayer,
@@ -391,16 +186,13 @@ const double bdt::ComputeMVA(
     const std::vector<float> &energy_binning,
     const TVector3& bgo_direction)
     {
-        // Initialize mva value
-        double mva_result {-999};
-
         // Reset the variables struct
-        vars.Reset();
+        my_vars.Reset();
         
         // Initialize with the new event values
         double xtrl = xtrl_computation(sumrms, fraclastlayer);
-        vars.corrected_energy_gev = corrected_energy_gev;
-        vars.xtrl_spectator = xtrl;
+        my_vars.corrected_energy_gev = corrected_energy_gev;
+        my_vars.xtrl_spectator = xtrl;
         
         // Apply cosine regularization
         auto get_energy_bin = [&energy_binning] (const double corrected_energy) -> int
@@ -436,8 +228,8 @@ const double bdt::ComputeMVA(
             return reg_flast;
         };
 
-        vars.sumrms = regularize_sumrms(sumrms, get_energy_bin(corrected_energy_gev), bgo_direction);
-        vars.fraclastlayer = regularize_flast(fraclastlayer, get_energy_bin(corrected_energy_gev), bgo_direction);
+        my_vars.sumrms = regularize_sumrms(sumrms, get_energy_bin(corrected_energy_gev), bgo_direction);
+        my_vars.fraclastlayer = regularize_flast(fraclastlayer, get_energy_bin(corrected_energy_gev), bgo_direction);
         
         // Apply box-cox regularization
         auto gaussianize_rmslayer = [=](const std::vector<double> input_rmslayer, const int energy_bin) -> std::vector<double>
@@ -499,11 +291,11 @@ const double bdt::ComputeMVA(
             return gaussianize_elm(input_xtrl, box_cox_correction_parameters.xtrl[energy_bin-1]);
         };
 
-        vars.rms = gaussianize_rmslayer(rms, get_energy_bin(corrected_energy_gev));
-        vars.sumrms = gaussianize_sumrms(vars.sumrms, get_energy_bin(corrected_energy_gev));
-        vars.fraclayer = gaussianize_fraclayer(fraclayer, get_energy_bin(corrected_energy_gev));
-        vars.fraclastlayer = gaussianize_fraclastlayer(vars.fraclastlayer, get_energy_bin(corrected_energy_gev));
-        vars.xtrl = gaussianize_xtrl(xtrl, get_energy_bin(corrected_energy_gev));
+        my_vars.rms = gaussianize_rmslayer(rms, get_energy_bin(corrected_energy_gev));
+        my_vars.sumrms = gaussianize_sumrms(my_vars.sumrms, get_energy_bin(corrected_energy_gev));
+        my_vars.fraclayer = gaussianize_fraclayer(fraclayer, get_energy_bin(corrected_energy_gev));
+        my_vars.fraclastlayer = gaussianize_fraclastlayer(my_vars.fraclastlayer, get_energy_bin(corrected_energy_gev));
+        my_vars.xtrl = gaussianize_xtrl(xtrl, get_energy_bin(corrected_energy_gev));
         
         auto normalize_rmslayer = [=](const std::vector<double> rms_gauss, const int energy_bin) -> std::vector<double>
         {
@@ -571,37 +363,11 @@ const double bdt::ComputeMVA(
             return xtrl_norm;
         };
 
-        vars.rms = normalize_rmslayer(vars.rms, get_energy_bin(corrected_energy_gev));
-        vars.sumrms = normalize_sumrms(vars.sumrms, get_energy_bin(corrected_energy_gev));
-        vars.fraclayer = normalize_fraclayer(vars.fraclayer, get_energy_bin(corrected_energy_gev));
-        vars.fraclastlayer = normalize_fraclastlayer(vars.fraclastlayer, get_energy_bin(corrected_energy_gev));
-        vars.xtrl = normalize_xtrl(vars.xtrl, get_energy_bin(corrected_energy_gev));
+        my_vars.rms = normalize_rmslayer(my_vars.rms, get_energy_bin(corrected_energy_gev));
+        my_vars.sumrms = normalize_sumrms(my_vars.sumrms, get_energy_bin(corrected_energy_gev));
+        my_vars.fraclayer = normalize_fraclayer(my_vars.fraclayer, get_energy_bin(corrected_energy_gev));
+        my_vars.fraclastlayer = normalize_fraclastlayer(my_vars.fraclastlayer, get_energy_bin(corrected_energy_gev));
+        my_vars.xtrl = normalize_xtrl(my_vars.xtrl, get_energy_bin(corrected_energy_gev));
 
-        // Sync transformed vars and TMVA classifier vars
-        sync_vars();
-
-        // Compute the MVA
-        if (vars.corrected_energy_gev>=10 && vars.corrected_energy_gev<100) {
-            mva_result = LE_reader->EvaluateMVA(method.c_str());
-        }
-        else if (vars.corrected_energy_gev>=100 && vars.corrected_energy_gev<1000) {
-            mva_result = ME_reader->EvaluateMVA(method.c_str());
-        }
-        else if (vars.corrected_energy_gev>=1000 && vars.corrected_energy_gev<=10000) {
-            mva_result = HE_reader->EvaluateMVA(method.c_str());
-        }
-        
-        return mva_result;
+        return my_vars;
     }
-
-const double bdt::GetLowEnergyBDTCut() {
-    return le_c_cut;
-}
-
-const double bdt::GetMidEnergyBDTCut() {
-    return me_c_cut;
-}
-
-const double bdt::GetHighEnergyBDTCut() {
-    return he_c_cut;
-}
