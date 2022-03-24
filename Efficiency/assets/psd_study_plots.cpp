@@ -153,6 +153,12 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
 
     input_file->Close();
 
+    TFile* output_file = TFile::Open(output_file_name, "RECREATE");
+    if (output_file->IsZombie()) {
+        std::cerr << "\n\nError writing output ROOT file [" << output_file_name << "]\n\n";
+        exit(100);
+    }
+
     // Build X PSD distance canvas
     TCanvas c_psd_x_distance("c_psd_x_distance", "c_psd_x_distance", 500, 500);
     
@@ -188,6 +194,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         auto primitive = (TLegendEntry*)primitiveObj;
         primitive->SetOption("l");
     }
+
+    c_psd_x_distance.Write();
 
     // Build X PSD distance canvas - within PSD fiducial volume
     TCanvas c_psd_x_distance_psd_fvolume ("c_psd_x_distance_psd_fvolume", "c_psd_x_distance_psd_fvolume", 500, 500);
@@ -225,6 +233,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         primitive->SetOption("l");
     }
 
+    c_psd_x_distance_psd_fvolume.Write();
+
     // Build X PSD distance canvas - outside PSD fiducial volume
     TCanvas c_psd_x_distance_outside_psd_fvolume ("c_psd_x_distance_outside_psd_fvolume", "c_psd_x_distance_outside_psd_fvolume", 500, 500);
     
@@ -260,6 +270,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         auto primitive = (TLegendEntry*)primitiveObj;
         primitive->SetOption("l");
     }
+
+    c_psd_x_distance_outside_psd_fvolume.Write();
 
     // Build X PSD distance canvas - 100 - 250 GeV focus
     TCanvas c_psd_x_distance_focus_100_250 ("c_psd_x_distance_focus_100_250", "c_psd_x_distance_focus_100_250", 500, 500);
@@ -299,6 +311,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         primitive->SetOption("l");
     }
 
+    c_psd_x_distance_focus_100_250.Write();
+
     // Build X PSD distance canvas - 250 - 500 GeV focus
     TCanvas c_psd_x_distance_focus_250_500 ("c_psd_x_distance_focus_250_500", "c_psd_x_distance_focus_250_500", 500, 500);
     
@@ -336,6 +350,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         auto primitive = (TLegendEntry*)primitiveObj;
         primitive->SetOption("l");
     }
+
+    c_psd_x_distance_focus_250_500.Write();
 
     // Build X PSD distance canvas - 500 - 1000 GeV focus
     TCanvas c_psd_x_distance_focus_500_1000 ("c_psd_x_distance_focus_500_1000", "c_psd_x_distance_focus_500_1000", 500, 500);
@@ -375,6 +391,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         primitive->SetOption("l");
     }
 
+    c_psd_x_distance_focus_500_1000.Write();
+
     // Build Y PSD distance canvas
     TCanvas c_psd_y_distance("c_psd_y_distance", "c_psd_y_distance", 500, 500);
     
@@ -410,6 +428,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         auto primitive = (TLegendEntry*)primitiveObj;
         primitive->SetOption("l");
     }
+
+    c_psd_y_distance.Write();
 
     // Build Y PSD distance canvas - within PSD fiducial volume
     TCanvas c_psd_y_distance_psd_fvolume ("c_psd_y_distance_psd_fvolume", "c_psd_y_distance_psd_fvolume", 500, 500);
@@ -447,6 +467,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         primitive->SetOption("l");
     }
 
+    c_psd_y_distance_psd_fvolume.Write();
+
     // Build Y PSD distance canvas - outside PSD fiducial volume
     TCanvas c_psd_y_distance_outside_psd_fvolume ("c_psd_y_distance_outside_psd_fvolume", "c_psd_y_distance_outside_psd_fvolume", 500, 500);
     
@@ -482,6 +504,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         auto primitive = (TLegendEntry*)primitiveObj;
         primitive->SetOption("l");
     }
+
+    c_psd_y_distance_outside_psd_fvolume.Write();
 
     // Build Y PSD distance canvas - 100 - 250 GeV focus
     TCanvas c_psd_y_distance_focus_100_250 ("c_psd_y_distance_focus_100_250", "c_psd_y_distance_focus_100_250", 500, 500);
@@ -521,6 +545,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         primitive->SetOption("l");
     }
 
+    c_psd_y_distance_focus_100_250.Write();
+
     // Build Y PSD distance canvas - 250 - 500 GeV focus
     TCanvas c_psd_y_distance_focus_250_500 ("c_psd_y_distance_focus_250_500", "c_psd_y_distance_focus_250_500", 500, 500);
     
@@ -559,6 +585,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         primitive->SetOption("l");
     }
 
+    c_psd_y_distance_focus_250_500.Write();
+    
     // Build Y PSD distance canvas - 500 - 1000 GeV focus
     TCanvas c_psd_y_distance_focus_500_1000 ("c_psd_y_distance_focus_500_1000", "c_psd_y_distance_focus_500_1000", 500, 500);
     
@@ -597,6 +625,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
         primitive->SetOption("l");
     }
 
+    c_psd_y_distance_focus_500_1000.Write();
+
     // STK charge within PSD fiducial volume - no PSD charge cut
     TCanvas stk_charge_within_psd_fvolume_no_psd_cut ("stk_charge_within_psd_fvolume_no_psd_cut", "stk_charge_within_psd_fvolume_no_psd_cut");
     stk_charge_within_psd_fvolume_no_psd_cut.Divide(3, 1);
@@ -621,6 +651,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
     stk_charge_within_psd_fvolume_no_psd_cut.SetTicks();
     gPad->SetLogz();
     gPad->SetGrid(1,1);
+
+    stk_charge_within_psd_fvolume_no_psd_cut.Write();
 
     // STK charge within PSD fiducial volume - PSD charge cut
     TCanvas stk_charge_within_psd_fvolume_psd_cut ("stk_charge_within_psd_fvolume_psd_cut", "stk_charge_within_psd_fvolume_psd_cut");
@@ -647,6 +679,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
     gPad->SetLogz();
     gPad->SetGrid(1,1);
 
+    stk_charge_within_psd_fvolume_psd_cut.Write();
+
     // STK charge outside PSD fiducial volume - no PSD charge cut
     TCanvas stk_charge_outside_psd_fvolume_no_psd_cut ("stk_charge_outside_psd_fvolume_no_psd_cut", "stk_charge_outside_psd_fvolume_no_psd_cut");
     stk_charge_outside_psd_fvolume_no_psd_cut.Divide(3, 1);
@@ -672,6 +706,8 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
     gPad->SetLogz();
     gPad->SetGrid(1,1);
 
+    stk_charge_outside_psd_fvolume_no_psd_cut.Write();
+
     // STK charge within PSD fiducial volume - PSD charge cut
     TCanvas stk_charge_outside_psd_fvolume_psd_cut ("stk_charge_outside_psd_fvolume_psd_cut", "stk_charge_outside_psd_fvolume_psd_cut");
     stk_charge_outside_psd_fvolume_psd_cut.Divide(3, 1);
@@ -696,31 +732,7 @@ void psd_study_plots(const char* input_file_name, const char* output_file_name) 
     stk_charge_outside_psd_fvolume_psd_cut.SetTicks();
     gPad->SetLogz();
     gPad->SetGrid(1,1);
-       
-
-    TFile* output_file = TFile::Open(output_file_name, "RECREATE");
-    if (output_file->IsZombie()) {
-        std::cerr << "\n\nError writing output ROOT file [" << output_file_name << "]\n\n";
-        exit(100);
-    }
-
-    c_psd_x_distance.Write();
-    c_psd_x_distance_psd_fvolume.Write();
-    c_psd_x_distance_outside_psd_fvolume.Write();
-    c_psd_x_distance_focus_100_250.Write();
-    c_psd_x_distance_focus_250_500.Write();
-    c_psd_x_distance_focus_500_1000.Write();
-
-    c_psd_y_distance.Write();
-    c_psd_y_distance_psd_fvolume.Write();
-    c_psd_y_distance_outside_psd_fvolume.Write();
-    c_psd_y_distance_focus_100_250.Write();
-    c_psd_y_distance_focus_250_500.Write();
-    c_psd_y_distance_focus_500_1000.Write();
-
-    stk_charge_within_psd_fvolume_no_psd_cut.Write();
-    stk_charge_within_psd_fvolume_psd_cut.Write();
-    stk_charge_outside_psd_fvolume_no_psd_cut.Write();
+    
     stk_charge_outside_psd_fvolume_psd_cut.Write();
     
     output_file->Close();
