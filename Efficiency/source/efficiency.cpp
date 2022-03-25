@@ -554,6 +554,33 @@ void buildEfficiency(const in_args input_args)
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_psdcharge_efficiency_total_bdt", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
+    // STK charge histos
+    auto h_stkcharge_efficiency_accepted_tight_xtrl = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_stkcharge_efficiency_accepted_tight_xtrl", "HET Trigger + STK Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    auto h_stkcharge_efficiency_total_tight_xtrl = fr.Filter("stkcharge_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_stkcharge_efficiency_total_tight_xtrl", "HET Trigger + STK Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    
+    auto h_stkcharge_efficiency_accepted_bdt = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                            .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Histo1D({"h_stkcharge_efficiency_accepted_bdt", "HET Trigger + STK Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    auto h_stkcharge_efficiency_total_bdt = fr.Filter("stkcharge_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                            .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Histo1D({"h_stkcharge_efficiency_total_bdt", "HET Trigger + STK Charge", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     // Trigger histos
     auto h_trigger_efficiency_accepted_het_over_let_loose_xtrl = mc_file ? 
                                             fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
@@ -724,6 +751,20 @@ void buildEfficiency(const in_args input_args)
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
                                             .Histo1D({"h_psdcharge_efficiency_total_loose_xtrl", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    // STK charge histos
+    auto h_stkcharge_efficiency_accepted_loose_xtrl = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_stkcharge_efficiency_accepted_loose_xtrl", "HET Trigger + STK Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    auto h_stkcharge_efficiency_total_loose_xtrl = fr.Filter("stkcharge_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_stkcharge_efficiency_total_loose_xtrl", "HET Trigger + STK Charge", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // XTRL vs STK cosine histo
     auto h_xtrl_stk_cosine = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
@@ -1504,6 +1545,10 @@ void buildEfficiency(const in_args input_args)
     h_psdcharge_efficiency_total_tight_xtrl                             ->Write();
     h_psdcharge_efficiency_accepted_bdt                                 ->Write();
     h_psdcharge_efficiency_total_bdt                                    ->Write();
+    h_stkcharge_efficiency_accepted_tight_xtrl                          ->Write();
+    h_stkcharge_efficiency_total_tight_xtrl                             ->Write();
+    h_stkcharge_efficiency_accepted_bdt                                 ->Write();
+    h_stkcharge_efficiency_total_bdt                                    ->Write();
     h_trigger_efficiency_accepted_het_over_let_loose_xtrl               ->Write();
     h_trigger_efficiency_accepted_het_over_unb_loose_xtrl               ->Write();
     h_trigger_efficiency_accepted_het_let_loose_xtrl                    ->Write();
@@ -1522,6 +1567,8 @@ void buildEfficiency(const in_args input_args)
     h_psdstkmatch_efficiency_total_loose_xtrl                           ->Write();
     h_psdcharge_efficiency_accepted_loose_xtrl                          ->Write();
     h_psdcharge_efficiency_total_loose_xtrl                             ->Write();
+    h_stkcharge_efficiency_accepted_loose_xtrl                          ->Write();
+    h_stkcharge_efficiency_total_loose_xtrl                             ->Write();           
 
     output_file->mkdir("xtrl");
     output_file->cd("xtrl");
