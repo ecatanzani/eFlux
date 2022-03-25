@@ -67,7 +67,7 @@ void stk_charge(const char* input_file_name) {
     auto h_stk_charge_250_500 = static_cast<TH2D*>(input_file->Get("stk_charge/h_stk_charge_250_500"));
     auto h_stk_charge_500_1000 = static_cast<TH2D*>(input_file->Get("stk_charge/h_stk_charge_500_1000"));
     auto h_stk_charge_1000_3000 = static_cast<TH2D*>(input_file->Get("stk_charge/h_stk_charge_1000_3000"));
-    auto h_stk_charge_3000 = static_cast<TH2D*>(input_file->Get("stk_charge/h_stk_charge_3000"));
+    auto h_stk_charge_3000 = static_cast<TH2D*>(input_file->Get("stk_charge/h_stk_charge_cut_3000"));
 
     auto h_stk_charge_20_100_xtrl_12 = static_cast<TH2D*>(input_file->Get("stk_charge/h_stk_charge_20_100_xtrl_12"));
     auto h_stk_charge_100_250_xtrl_12 = static_cast<TH2D*>(input_file->Get("stk_charge/h_stk_charge_100_250_xtrl_12"));
@@ -148,10 +148,14 @@ void stk_charge(const char* input_file_name) {
 
     input_file->Close();
 
-    TLine l1(0, 0, 40, 0);
-    TLine l2(40, 0, 40, 40);
-    TLine l3(40, 40, 0, 40);
-    TLine l4(0, 40, 0, 0);
+    TLine l1(0, 0, 0, 25);
+    TLine l2(0, 25, 10, 25);
+    TLine l3(10, 25, 10, 40);
+    TLine l4(10, 40, 40, 40);
+    TLine l5(40, 40, 40, 10);
+    TLine l6(40, 10, 25, 10);
+    TLine l7(25, 10, 25, 0);
+    TLine l8(25, 0, 0, 0);
 
     l1.SetLineWidth(2);
     l1.SetLineStyle(2);
@@ -169,6 +173,22 @@ void stk_charge(const char* input_file_name) {
     l4.SetLineStyle(2);
     l4.SetLineColor(kMagenta);
 
+    l5.SetLineWidth(2);
+    l5.SetLineStyle(2);
+    l5.SetLineColor(kMagenta);
+
+    l6.SetLineWidth(2);
+    l6.SetLineStyle(2);
+    l6.SetLineColor(kMagenta);
+
+    l7.SetLineWidth(2);
+    l7.SetLineStyle(2);
+    l7.SetLineColor(kMagenta);
+
+    l8.SetLineWidth(2);
+    l8.SetLineStyle(2);
+    l8.SetLineColor(kMagenta);
+
 
     TCanvas print_canvas("print_canvas", "print_canvas");
     print_canvas.Divide(2, 3);
@@ -185,6 +205,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogz();
     print_canvas.cd(2);
@@ -193,6 +217,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogz();
     print_canvas.cd(3);
@@ -201,6 +229,11 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
+
     gPad->SetGrid(1,1);
     gPad->SetLogz();
     print_canvas.cd(4);
@@ -209,6 +242,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogz();
     print_canvas.cd(5);
@@ -217,6 +254,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogz();
     print_canvas.cd(6);
@@ -225,6 +266,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
 
     print_canvas.Print("stk_charge.pdf(","Title:STK charges within PSD fiducial volume (no PSD charge cut)");
@@ -390,6 +435,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -399,6 +448,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -408,6 +461,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -417,6 +474,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -426,6 +487,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -435,6 +500,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -591,6 +660,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -600,6 +673,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -609,6 +686,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -618,6 +699,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -627,6 +712,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -636,6 +725,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -791,7 +884,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(2);
     h_stk_charge_psd_fvolume_psd_cut_100_250->Draw("colz");
@@ -799,7 +897,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(3);
     h_stk_charge_psd_fvolume_psd_cut_250_500->Draw("colz");
@@ -807,7 +910,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(4);
     h_stk_charge_psd_fvolume_psd_cut_500_1000->Draw("colz");
@@ -815,7 +923,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(5);
     h_stk_charge_psd_fvolume_psd_cut_1000_3000->Draw("colz");
@@ -823,7 +936,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(6);
     h_stk_charge_psd_fvolume_psd_cut_3000->Draw("colz");
@@ -831,7 +949,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
 
     print_canvas.Print("stk_charge.pdf","Title:STK charges within PSD fiducial volume (PSD charge cut)");
@@ -985,7 +1108,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(2);
     h_stk_charge_psd_fvolume_psd_cut_100_250_xtrl_12->Draw("colz");
@@ -993,7 +1121,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(3);
     h_stk_charge_psd_fvolume_psd_cut_250_500_xtrl_12->Draw("colz");
@@ -1001,7 +1134,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(4);
     h_stk_charge_psd_fvolume_psd_cut_500_1000_xtrl_12->Draw("colz");
@@ -1009,7 +1147,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(5);
     h_stk_charge_psd_fvolume_psd_cut_1000_3000_xtrl_12->Draw("colz");
@@ -1017,7 +1160,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(6);
     h_stk_charge_psd_fvolume_psd_cut_3000_xtrl_12->Draw("colz");
@@ -1025,7 +1173,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
 
     print_canvas.Print("stk_charge.pdf","Title:STK charges within PSD fiducial volume (PSD charge cut - xtrl < 12)");
@@ -1178,7 +1331,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(2);
     h_stk_charge_psd_fvolume_psd_cut_100_250_xtrl_12_100->Draw("colz");
@@ -1186,7 +1344,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(3);
     h_stk_charge_psd_fvolume_psd_cut_250_500_xtrl_12_100->Draw("colz");
@@ -1194,7 +1357,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(4);
     h_stk_charge_psd_fvolume_psd_cut_500_1000_xtrl_12_100->Draw("colz");
@@ -1202,7 +1370,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(5);
     h_stk_charge_psd_fvolume_psd_cut_1000_3000_xtrl_12_100->Draw("colz");
@@ -1210,7 +1383,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
     print_canvas.cd(6);
     h_stk_charge_psd_fvolume_psd_cut_3000_xtrl_12_100->Draw("colz");
@@ -1218,7 +1396,12 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
+    gPad->SetLogy(0);
     gPad->SetLogz();
 
     print_canvas.Print("stk_charge.pdf","Title:STK charges within PSD fiducial volume (PSD charge cut - xtrl < 12 < 100)");
@@ -1371,6 +1554,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1380,6 +1567,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1389,6 +1580,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1398,6 +1593,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1407,6 +1606,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1416,6 +1619,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1571,6 +1778,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1580,6 +1791,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1589,6 +1804,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1598,6 +1817,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1607,6 +1830,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1616,6 +1843,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1771,6 +2002,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1780,6 +2015,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1789,6 +2028,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1798,6 +2041,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1807,6 +2054,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
@@ -1816,6 +2067,10 @@ void stk_charge(const char* input_file_name) {
     l2.Draw("same");
     l3.Draw("same");
     l4.Draw("same");
+    l5.Draw("same");
+    l6.Draw("same");
+    l7.Draw("same");
+    l8.Draw("same");
     gPad->SetGrid(1,1);
     gPad->SetLogy(0);
     gPad->SetLogz();
