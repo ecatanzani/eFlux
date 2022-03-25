@@ -34,6 +34,7 @@ void produceEfficiencyPlots(
         auto data_track_selection_eff_within_stk_fvolume_xtrl_tight = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_within_stk_fvolume_xtrl_tight"));
         auto data_psd_stk_match_eff_xtrl_tight                      = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_stk_match_eff_xtrl_tight"));
         auto data_psd_charge_eff_xtrl_tight                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_charge_eff_xtrl_tight"));
+        auto data_stk_charge_eff_xtrl_tight                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_charge_eff_xtrl_tight"));
 
         auto data_trigger_eff_het_over_let_xtrl_loose               = static_cast<TEfficiency*>(datafile->Get("efficiencies/trigger_eff_het_over_let_xtrl_loose"));
         auto data_trigger_eff_het_over_unb_xtrl_loose               = static_cast<TEfficiency*>(datafile->Get("efficiencies/trigger_eff_het_over_unb_xtrl_loose"));
@@ -44,6 +45,7 @@ void produceEfficiencyPlots(
         auto data_track_selection_eff_within_stk_fvolume_xtrl_loose = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_within_stk_fvolume_xtrl_loose"));
         auto data_psd_stk_match_eff_xtrl_loose                      = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_stk_match_eff_xtrl_loose"));
         auto data_psd_charge_eff_xtrl_loose                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_charge_eff_xtrl_loose"));
+        auto data_stk_charge_eff_xtrl_loose                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_charge_eff_xtrl_loose"));
 
         auto data_trigger_eff_het_over_let_bdt                      = static_cast<TEfficiency*>(datafile->Get("efficiencies/trigger_eff_het_over_let_bdt"));
         auto data_trigger_eff_het_over_unb_bdt                      = static_cast<TEfficiency*>(datafile->Get("efficiencies/trigger_eff_het_over_unb_bdt"));
@@ -54,6 +56,7 @@ void produceEfficiencyPlots(
         auto data_track_selection_eff_within_stk_fvolume_bdt        = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_within_stk_fvolume_bdt"));
         auto data_psd_stk_match_eff_bdt                             = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_stk_match_eff_bdt"));
         auto data_psd_charge_eff_bdt                                = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_charge_eff_bdt"));
+        auto data_stk_charge_eff_bdt                                = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_charge_eff_bdt"));
 
         data_trigger_eff_het_over_let_xtrl_tight                ->SetLineColor(kRed);
         data_trigger_eff_het_over_unb_xtrl_tight                ->SetLineColor(kRed);
@@ -64,6 +67,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_xtrl_tight  ->SetLineColor(kRed);
         data_psd_stk_match_eff_xtrl_tight                       ->SetLineColor(kRed);
         data_psd_charge_eff_xtrl_tight                          ->SetLineColor(kRed);
+        data_stk_charge_eff_xtrl_tight                          ->SetLineColor(kRed);
 
         data_trigger_eff_het_over_let_xtrl_loose                ->SetLineColor(kRed);
         data_trigger_eff_het_over_unb_xtrl_loose                ->SetLineColor(kRed);
@@ -74,16 +78,18 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_xtrl_loose  ->SetLineColor(kRed);
         data_psd_stk_match_eff_xtrl_loose                       ->SetLineColor(kRed);
         data_psd_charge_eff_xtrl_loose                          ->SetLineColor(kRed);
+        data_stk_charge_eff_xtrl_loose                          ->SetLineColor(kRed);
 
-        data_trigger_eff_het_over_let_bdt                       ->SetLineColor(kRed-7);
-        data_trigger_eff_het_over_unb_bdt                       ->SetLineColor(kRed-7);
-        data_maxrms_eff_bdt                                     ->SetLineColor(kRed-7);
-        data_nbarlayer13_eff_bdt                                ->SetLineColor(kRed-7);
-        data_maxrms_and_nbarlayer13_eff_bdt                     ->SetLineColor(kRed-7);
-        data_track_selection_eff_bdt                            ->SetLineColor(kRed-7);
-        data_track_selection_eff_within_stk_fvolume_bdt         ->SetLineColor(kRed-7);
-        data_psd_stk_match_eff_bdt                              ->SetLineColor(kRed-7);
-        data_psd_charge_eff_bdt                                 ->SetLineColor(kRed-7);
+        data_trigger_eff_het_over_let_bdt                       ->SetLineColor(kMagenta);
+        data_trigger_eff_het_over_unb_bdt                       ->SetLineColor(kMagenta);
+        data_maxrms_eff_bdt                                     ->SetLineColor(kMagenta);
+        data_nbarlayer13_eff_bdt                                ->SetLineColor(kMagenta);
+        data_maxrms_and_nbarlayer13_eff_bdt                     ->SetLineColor(kMagenta);
+        data_track_selection_eff_bdt                            ->SetLineColor(kMagenta);
+        data_track_selection_eff_within_stk_fvolume_bdt         ->SetLineColor(kMagenta);
+        data_psd_stk_match_eff_bdt                              ->SetLineColor(kMagenta);
+        data_psd_charge_eff_bdt                                 ->SetLineColor(kMagenta);
+        data_stk_charge_eff_bdt                                 ->SetLineColor(kMagenta);
 
         data_trigger_eff_het_over_let_xtrl_tight                ->SetLineWidth(2);
         data_trigger_eff_het_over_unb_xtrl_tight                ->SetLineWidth(2);
@@ -94,6 +100,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_xtrl_tight  ->SetLineWidth(2);
         data_psd_stk_match_eff_xtrl_tight                       ->SetLineWidth(2);
         data_psd_charge_eff_xtrl_tight                          ->SetLineWidth(2);
+        data_stk_charge_eff_xtrl_tight                          ->SetLineWidth(2);
 
         data_trigger_eff_het_over_let_xtrl_loose                ->SetLineWidth(2);
         data_trigger_eff_het_over_unb_xtrl_loose                ->SetLineWidth(2);
@@ -104,6 +111,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_xtrl_loose  ->SetLineWidth(2);
         data_psd_stk_match_eff_xtrl_loose                       ->SetLineWidth(2);
         data_psd_charge_eff_xtrl_loose                          ->SetLineWidth(2);
+        data_stk_charge_eff_xtrl_loose                          ->SetLineWidth(2);
 
         data_trigger_eff_het_over_let_bdt                       ->SetLineWidth(2);
         data_trigger_eff_het_over_unb_bdt                       ->SetLineWidth(2);
@@ -114,6 +122,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_bdt         ->SetLineWidth(2);
         data_psd_stk_match_eff_bdt                              ->SetLineWidth(2);
         data_psd_charge_eff_bdt                                 ->SetLineWidth(2);
+        data_stk_charge_eff_bdt                                 ->SetLineWidth(2);
 
         data_trigger_eff_het_over_let_xtrl_tight                ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_trigger_eff_het_over_unb_xtrl_tight                ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
@@ -124,6 +133,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_xtrl_tight  ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_psd_stk_match_eff_xtrl_tight                       ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_psd_charge_eff_xtrl_tight                          ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
+        data_stk_charge_eff_xtrl_tight                          ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
 
         data_trigger_eff_het_over_let_xtrl_loose                ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_trigger_eff_het_over_unb_xtrl_loose                ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
@@ -134,6 +144,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_xtrl_loose  ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_psd_stk_match_eff_xtrl_loose                       ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_psd_charge_eff_xtrl_loose                          ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
+        data_stk_charge_eff_xtrl_loose                          ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
 
         data_trigger_eff_het_over_let_bdt                       ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_trigger_eff_het_over_unb_bdt                       ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
@@ -144,6 +155,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_bdt         ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_psd_stk_match_eff_bdt                              ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_psd_charge_eff_bdt                                 ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
+        data_stk_charge_eff_bdt                                 ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
 
         data_trigger_eff_het_over_let_xtrl_tight                ->SetDirectory(0);
         data_trigger_eff_het_over_unb_xtrl_tight                ->SetDirectory(0);
@@ -154,6 +166,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_xtrl_tight  ->SetDirectory(0);
         data_psd_stk_match_eff_xtrl_tight                       ->SetDirectory(0);
         data_psd_charge_eff_xtrl_tight                          ->SetDirectory(0);
+        data_stk_charge_eff_xtrl_tight                          ->SetDirectory(0);
 
         data_trigger_eff_het_over_let_xtrl_loose                ->SetDirectory(0);
         data_trigger_eff_het_over_unb_xtrl_loose                ->SetDirectory(0);
@@ -164,6 +177,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_xtrl_loose  ->SetDirectory(0);
         data_psd_stk_match_eff_xtrl_loose                       ->SetDirectory(0);
         data_psd_charge_eff_xtrl_loose                          ->SetDirectory(0);
+        data_stk_charge_eff_xtrl_loose                          ->SetDirectory(0);
 
         data_trigger_eff_het_over_let_bdt                       ->SetDirectory(0);
         data_trigger_eff_het_over_unb_bdt                       ->SetDirectory(0);
@@ -174,6 +188,7 @@ void produceEfficiencyPlots(
         data_track_selection_eff_within_stk_fvolume_bdt         ->SetDirectory(0);
         data_psd_stk_match_eff_bdt                              ->SetDirectory(0);
         data_psd_charge_eff_bdt                                 ->SetDirectory(0);
+        data_stk_charge_eff_bdt                                 ->SetDirectory(0);
 
         datafile->Close();
 
@@ -192,6 +207,7 @@ void produceEfficiencyPlots(
         auto mc_track_selection_eff_within_stk_fvolume_xtrl_tight   = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_within_stk_fvolume_xtrl_tight"));
         auto mc_psd_stk_match_eff_xtrl_tight                        = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_stk_match_eff_xtrl_tight"));
         auto mc_psd_charge_eff_xtrl_tight                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_charge_eff_xtrl_tight"));
+        auto mc_stk_charge_eff_xtrl_tight                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_charge_eff_xtrl_tight"));
 
         auto mc_trigger_eff_het_over_let_xtrl_loose                 = static_cast<TEfficiency*>(mcfile->Get("efficiencies/trigger_eff_het_over_let_xtrl_loose"));
         auto mc_trigger_eff_het_over_unb_xtrl_loose                 = static_cast<TEfficiency*>(mcfile->Get("efficiencies/trigger_eff_het_over_unb_xtrl_loose"));
@@ -202,6 +218,7 @@ void produceEfficiencyPlots(
         auto mc_track_selection_eff_within_stk_fvolume_xtrl_loose   = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_within_stk_fvolume_xtrl_loose"));
         auto mc_psd_stk_match_eff_xtrl_loose                        = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_stk_match_eff_xtrl_loose"));
         auto mc_psd_charge_eff_xtrl_loose                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_charge_eff_xtrl_loose"));
+        auto mc_stk_charge_eff_xtrl_loose                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_charge_eff_xtrl_loose"));
         
         auto mc_trigger_eff_het_over_let_bdt                        = static_cast<TEfficiency*>(mcfile->Get("efficiencies/trigger_eff_het_over_let_bdt"));
         auto mc_trigger_eff_het_over_unb_bdt                        = static_cast<TEfficiency*>(mcfile->Get("efficiencies/trigger_eff_het_over_unb_bdt"));
@@ -212,6 +229,7 @@ void produceEfficiencyPlots(
         auto mc_track_selection_eff_within_stk_fvolume_bdt          = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_within_stk_fvolume_bdt"));
         auto mc_psd_stk_match_eff_bdt                               = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_stk_match_eff_bdt"));
         auto mc_psd_charge_eff_bdt                                  = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_charge_eff_bdt"));
+        auto mc_stk_charge_eff_bdt                                  = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_charge_eff_bdt"));
 
         mc_trigger_eff_het_over_let_xtrl_tight                  ->SetLineColor(kBlue);
         mc_trigger_eff_het_over_unb_xtrl_tight                  ->SetLineColor(kBlue);
@@ -222,6 +240,7 @@ void produceEfficiencyPlots(
         mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetLineColor(kBlue);
         mc_psd_stk_match_eff_xtrl_tight                         ->SetLineColor(kBlue);
         mc_psd_charge_eff_xtrl_tight                            ->SetLineColor(kBlue);
+        mc_stk_charge_eff_xtrl_tight                            ->SetLineColor(kBlue);
 
         mc_trigger_eff_het_over_let_xtrl_loose                  ->SetLineColor(kBlue);
         mc_trigger_eff_het_over_unb_xtrl_loose                  ->SetLineColor(kBlue);
@@ -232,16 +251,18 @@ void produceEfficiencyPlots(
         mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetLineColor(kBlue);
         mc_psd_stk_match_eff_xtrl_loose                         ->SetLineColor(kBlue);
         mc_psd_charge_eff_xtrl_loose                            ->SetLineColor(kBlue);
+        mc_stk_charge_eff_xtrl_loose                            ->SetLineColor(kBlue);
 
-        mc_trigger_eff_het_over_let_bdt                         ->SetLineColor(kBlue-7);
-        mc_trigger_eff_het_over_unb_bdt                         ->SetLineColor(kBlue-7);
-        mc_maxrms_eff_bdt                                       ->SetLineColor(kBlue-7);
-        mc_nbarlayer13_eff_bdt                                  ->SetLineColor(kBlue-7);
-        mc_maxrms_and_nbarlayer13_eff_bdt                       ->SetLineColor(kBlue-7);
-        mc_track_selection_eff_bdt                              ->SetLineColor(kBlue-7);
-        mc_track_selection_eff_within_stk_fvolume_bdt           ->SetLineColor(kBlue-7);
-        mc_psd_stk_match_eff_bdt                                ->SetLineColor(kBlue-7);
-        mc_psd_charge_eff_bdt                                   ->SetLineColor(kBlue-7);
+        mc_trigger_eff_het_over_let_bdt                         ->SetLineColor(kGreen);
+        mc_trigger_eff_het_over_unb_bdt                         ->SetLineColor(kGreen);
+        mc_maxrms_eff_bdt                                       ->SetLineColor(kGreen);
+        mc_nbarlayer13_eff_bdt                                  ->SetLineColor(kGreen);
+        mc_maxrms_and_nbarlayer13_eff_bdt                       ->SetLineColor(kGreen);
+        mc_track_selection_eff_bdt                              ->SetLineColor(kGreen);
+        mc_track_selection_eff_within_stk_fvolume_bdt           ->SetLineColor(kGreen);
+        mc_psd_stk_match_eff_bdt                                ->SetLineColor(kGreen);
+        mc_psd_charge_eff_bdt                                   ->SetLineColor(kGreen);
+        mc_stk_charge_eff_bdt                                   ->SetLineColor(kGreen);
 
         mc_trigger_eff_het_over_let_xtrl_tight                  ->SetLineWidth(2);
         mc_trigger_eff_het_over_unb_xtrl_tight                  ->SetLineWidth(2);
@@ -252,6 +273,7 @@ void produceEfficiencyPlots(
         mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetLineWidth(2);
         mc_psd_stk_match_eff_xtrl_tight                         ->SetLineWidth(2);
         mc_psd_charge_eff_xtrl_tight                            ->SetLineWidth(2);
+        mc_stk_charge_eff_xtrl_tight                            ->SetLineWidth(2);
 
         mc_trigger_eff_het_over_let_xtrl_loose                  ->SetLineWidth(2);
         mc_trigger_eff_het_over_unb_xtrl_loose                  ->SetLineWidth(2);
@@ -262,6 +284,7 @@ void produceEfficiencyPlots(
         mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetLineWidth(2);
         mc_psd_stk_match_eff_xtrl_loose                         ->SetLineWidth(2);
         mc_psd_charge_eff_xtrl_loose                            ->SetLineWidth(2);
+        mc_stk_charge_eff_xtrl_loose                            ->SetLineWidth(2);
 
         mc_trigger_eff_het_over_let_bdt                         ->SetLineWidth(2);
         mc_trigger_eff_het_over_unb_bdt                         ->SetLineWidth(2);
@@ -272,36 +295,40 @@ void produceEfficiencyPlots(
         mc_track_selection_eff_within_stk_fvolume_bdt           ->SetLineWidth(2);
         mc_psd_stk_match_eff_bdt                                ->SetLineWidth(2);
         mc_psd_charge_eff_bdt                                   ->SetLineWidth(2);
+        mc_stk_charge_eff_bdt                                   ->SetLineWidth(2);
 
-        mc_trigger_eff_het_over_let_xtrl_tight                  ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_trigger_eff_het_over_unb_xtrl_tight                  ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_maxrms_eff_xtrl_tight                                ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_nbarlayer13_eff_xtrl_tight                           ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_maxrms_and_nbarlayer13_eff_xtrl_tight                ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_track_selection_eff_xtrl_tight                       ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_psd_stk_match_eff_xtrl_tight                         ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_psd_charge_eff_xtrl_tight                            ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
+        mc_trigger_eff_het_over_let_xtrl_tight                  ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_trigger_eff_het_over_unb_xtrl_tight                  ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_maxrms_eff_xtrl_tight                                ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_nbarlayer13_eff_xtrl_tight                           ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_maxrms_and_nbarlayer13_eff_xtrl_tight                ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_track_selection_eff_xtrl_tight                       ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_psd_stk_match_eff_xtrl_tight                         ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_psd_charge_eff_xtrl_tight                            ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_stk_charge_eff_xtrl_tight                            ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
 
-        mc_trigger_eff_het_over_let_xtrl_loose                  ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_trigger_eff_het_over_unb_xtrl_loose                  ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_maxrms_eff_xtrl_loose                                ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_nbarlayer13_eff_xtrl_loose                           ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_maxrms_and_nbarlayer13_eff_xtrl_loose                ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_track_selection_eff_xtrl_loose                       ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_psd_stk_match_eff_xtrl_loose                         ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
-        mc_psd_charge_eff_xtrl_loose                            ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
+        mc_trigger_eff_het_over_let_xtrl_loose                  ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_trigger_eff_het_over_unb_xtrl_loose                  ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_maxrms_eff_xtrl_loose                                ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_nbarlayer13_eff_xtrl_loose                           ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_maxrms_and_nbarlayer13_eff_xtrl_loose                ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_track_selection_eff_xtrl_loose                       ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_psd_stk_match_eff_xtrl_loose                         ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_psd_charge_eff_xtrl_loose                            ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_stk_charge_eff_xtrl_loose                            ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
 
-        mc_trigger_eff_het_over_let_bdt                         ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
-        mc_trigger_eff_het_over_unb_bdt                         ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
-        mc_maxrms_eff_bdt                                       ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
-        mc_nbarlayer13_eff_bdt                                  ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
-        mc_maxrms_and_nbarlayer13_eff_bdt                       ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
-        mc_track_selection_eff_bdt                              ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
-        mc_track_selection_eff_within_stk_fvolume_bdt           ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
-        mc_psd_stk_match_eff_bdt                                ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
-        mc_psd_charge_eff_bdt                                   ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
+        mc_trigger_eff_het_over_let_bdt                         ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_trigger_eff_het_over_unb_bdt                         ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_maxrms_eff_bdt                                       ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_nbarlayer13_eff_bdt                                  ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_maxrms_and_nbarlayer13_eff_bdt                       ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_track_selection_eff_bdt                              ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_track_selection_eff_within_stk_fvolume_bdt           ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_psd_stk_match_eff_bdt                                ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_psd_charge_eff_bdt                                   ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_stk_charge_eff_bdt                                   ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
 
         mc_trigger_eff_het_over_let_xtrl_tight                  ->SetDirectory(0);
         mc_trigger_eff_het_over_unb_xtrl_tight                  ->SetDirectory(0);
@@ -312,6 +339,7 @@ void produceEfficiencyPlots(
         mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetDirectory(0);
         mc_psd_stk_match_eff_xtrl_tight                         ->SetDirectory(0);
         mc_psd_charge_eff_xtrl_tight                            ->SetDirectory(0);
+        mc_stk_charge_eff_xtrl_tight                            ->SetDirectory(0);
 
         mc_trigger_eff_het_over_let_xtrl_loose                  ->SetDirectory(0);
         mc_trigger_eff_het_over_unb_xtrl_loose                  ->SetDirectory(0);
@@ -322,6 +350,7 @@ void produceEfficiencyPlots(
         mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetDirectory(0);
         mc_psd_stk_match_eff_xtrl_loose                         ->SetDirectory(0);
         mc_psd_charge_eff_xtrl_loose                            ->SetDirectory(0);
+        mc_stk_charge_eff_xtrl_loose                            ->SetDirectory(0);
 
         mc_trigger_eff_het_over_let_bdt                         ->SetDirectory(0);
         mc_trigger_eff_het_over_unb_bdt                         ->SetDirectory(0);
@@ -332,6 +361,7 @@ void produceEfficiencyPlots(
         mc_track_selection_eff_within_stk_fvolume_bdt           ->SetDirectory(0);
         mc_psd_stk_match_eff_bdt                                ->SetDirectory(0);
         mc_psd_charge_eff_bdt                                   ->SetDirectory(0);
+        mc_stk_charge_eff_bdt                                   ->SetDirectory(0);
 
         datafile->Close();
         
@@ -346,8 +376,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         auto graph = data_trigger_eff_het_over_let_xtrl_tight->GetPaintedGraph(); 
-        graph->SetMinimum(0.9);
-        graph->SetMaximum(1.01); 
+        graph->SetMinimum(0.5);
+        graph->SetMaximum(1); 
         gPad->Update();
 
         gPad->SetLogx();
@@ -375,7 +405,7 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_trigger_eff_het_over_let_xtrl_loose->GetPaintedGraph(); 
-        graph->SetMinimum(0.9);
+        graph->SetMinimum(0.5);
         graph->SetMaximum(1.01); 
         gPad->Update();
 
@@ -403,7 +433,7 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_trigger_eff_het_over_unb_xtrl_tight->GetPaintedGraph(); 
-        graph->SetMinimum(0.9);
+        graph->SetMinimum(0.5);
         graph->SetMaximum(1.01); 
         gPad->Update();
 
@@ -432,7 +462,7 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_trigger_eff_het_over_unb_xtrl_tight->GetPaintedGraph(); 
-        graph->SetMinimum(0.9);
+        graph->SetMinimum(0.5);
         graph->SetMaximum(1.01); 
         gPad->Update();
 
@@ -688,8 +718,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_track_selection_eff_xtrl_tight->GetPaintedGraph(); 
-        graph->SetMinimum(0.8);
-        graph->SetMaximum(1); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
         gPad->Update();
 
         gPad->SetLogx();
@@ -717,8 +747,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_track_selection_eff_xtrl_loose->GetPaintedGraph(); 
-        graph->SetMinimum(0.8);
-        graph->SetMaximum(1); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
         gPad->Update();
 
         gPad->SetLogx();
@@ -745,8 +775,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_psd_stk_match_eff_xtrl_tight->GetPaintedGraph(); 
-        graph->SetMinimum(0.8);
-        graph->SetMaximum(1); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
         gPad->Update();
 
         gPad->SetLogx();
@@ -774,8 +804,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_psd_stk_match_eff_xtrl_loose->GetPaintedGraph(); 
-        graph->SetMinimum(0.8);
-        graph->SetMaximum(1); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
         gPad->Update();
 
         gPad->SetLogx();
@@ -802,8 +832,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_psd_charge_eff_xtrl_tight->GetPaintedGraph(); 
-        graph->SetMinimum(0.9);
-        graph->SetMaximum(1.01); 
+        graph->SetMinimum(0.8);
+        graph->SetMaximum(1); 
         gPad->Update();
 
         gPad->SetLogx();
@@ -823,7 +853,7 @@ void produceEfficiencyPlots(
         gStyle->SetOptTitle(0);
         print_canvas.Print("efficiency.pdf","Title:PSD charge - xtrl tight efficiency");
         
-        // Print psd-stk match outside PSD fiucial volume efficiency (xtrl loose)
+        // Print psd charge efficiency (xtrl loose)
         data_psd_charge_eff_xtrl_loose->Draw();
         mc_psd_charge_eff_xtrl_loose->Draw("same");
         data_psd_charge_eff_bdt->Draw("same");
@@ -831,8 +861,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_psd_charge_eff_xtrl_loose->GetPaintedGraph(); 
-        graph->SetMinimum(0.9);
-        graph->SetMaximum(1.01); 
+        graph->SetMinimum(0.8);
+        graph->SetMaximum(1); 
         gPad->Update();
 
         gPad->SetLogx();
@@ -849,6 +879,63 @@ void produceEfficiencyPlots(
 
         label = TPaveLabel(0.0, 0.95, 0.3, 1, "PSD charge Efficiency (xtrl loose)", "tlNDC");
         label.Draw();
-        print_canvas.Print("efficiency.pdf)","Title:PSD charge - xtrl loose efficiency");
+        print_canvas.Print("efficiency.pdf","Title:PSD charge - xtrl loose efficiency");
+
+        // Print stk charge efficiency (xtrl tight)
+        data_stk_charge_eff_xtrl_tight->Draw();
+        mc_stk_charge_eff_xtrl_tight->Draw("same");
+        data_stk_charge_eff_bdt->Draw("same");
+        mc_stk_charge_eff_bdt->Draw("same");
+
+        gPad->Update(); 
+        graph = data_stk_charge_eff_xtrl_tight->GetPaintedGraph(); 
+        graph->SetMinimum(0.8);
+        graph->SetMaximum(1); 
+        gPad->Update();
+
+        gPad->SetLogx();
+        gPad->SetGrid(1,1);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        label = TPaveLabel(0.0, 0.95, 0.3, 1, "STK charge Efficiency (xtrl tight)", "tlNDC");
+        label.Draw();
+        gStyle->SetOptTitle(0);
+        print_canvas.Print("efficiency.pdf","Title:STK charge - xtrl tight efficiency");
+        
+        // Print stk charge efficiency (xtrl loose)
+        data_stk_charge_eff_xtrl_loose->Draw();
+        mc_stk_charge_eff_xtrl_loose->Draw("same");
+        data_stk_charge_eff_bdt->Draw("same");
+        mc_stk_charge_eff_bdt->Draw("same");
+
+        gPad->Update(); 
+        graph = data_stk_charge_eff_xtrl_loose->GetPaintedGraph(); 
+        graph->SetMinimum(0.8);
+        graph->SetMaximum(1); 
+        gPad->Update();
+
+        gPad->SetLogx();
+        gPad->SetGrid(1,1);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        label = TPaveLabel(0.0, 0.95, 0.3, 1, "STK charge Efficiency (xtrl loose)", "tlNDC");
+        label.Draw();
+        print_canvas.Print("efficiency.pdf)","Title:STK charge - xtrl loose efficiency");
         
     }
