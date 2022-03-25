@@ -265,6 +265,23 @@ void buildEfficiency(
         h_psdcharge_efficiency_accepted_loose_xtrl->SetDirectory(0);
         h_psdcharge_efficiency_total_loose_xtrl->SetDirectory(0);
 
+        // STK charge histos
+        auto h_stkcharge_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_stkcharge_efficiency_accepted_tight_xtrl"));
+        auto h_stkcharge_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_stkcharge_efficiency_total_tight_xtrl"));
+        auto h_stkcharge_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_stkcharge_efficiency_accepted_bdt"));
+        auto h_stkcharge_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_stkcharge_efficiency_total_bdt"));
+
+        auto h_stkcharge_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_stkcharge_efficiency_accepted_loose_xtrl"));
+        auto h_stkcharge_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_stkcharge_efficiency_total_loose_xtrl"));
+
+        h_stkcharge_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_stkcharge_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_stkcharge_efficiency_accepted_bdt->SetDirectory(0);
+        h_stkcharge_efficiency_total_bdt->SetDirectory(0);
+        
+        h_stkcharge_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_stkcharge_efficiency_total_loose_xtrl->SetDirectory(0);
+
         infile->Close();
 
         // Build efficiencies
@@ -277,6 +294,7 @@ void buildEfficiency(
         std::unique_ptr<TEfficiency> track_selection_eff_within_stk_fvolume_xtrl_tight;
         std::unique_ptr<TEfficiency> psd_stk_match_eff_xtrl_tight;
         std::unique_ptr<TEfficiency> psd_charge_eff_xtrl_tight;
+        std::unique_ptr<TEfficiency> stk_charge_eff_xtrl_tight;
 
         std::unique_ptr<TEfficiency> trigger_eff_het_over_let_xtrl_loose;
         std::unique_ptr<TEfficiency> trigger_eff_het_over_unb_xtrl_loose;
@@ -287,6 +305,7 @@ void buildEfficiency(
         std::unique_ptr<TEfficiency> track_selection_eff_within_stk_fvolume_xtrl_loose;
         std::unique_ptr<TEfficiency> psd_stk_match_eff_xtrl_loose;
         std::unique_ptr<TEfficiency> psd_charge_eff_xtrl_loose;
+        std::unique_ptr<TEfficiency> stk_charge_eff_xtrl_loose;
 
         std::unique_ptr<TEfficiency> trigger_eff_het_over_let_bdt;
         std::unique_ptr<TEfficiency> trigger_eff_het_over_unb_bdt;
@@ -297,6 +316,7 @@ void buildEfficiency(
         std::unique_ptr<TEfficiency> track_selection_eff_within_stk_fvolume_bdt;
         std::unique_ptr<TEfficiency> psd_stk_match_eff_bdt;
         std::unique_ptr<TEfficiency> psd_charge_eff_bdt;
+        std::unique_ptr<TEfficiency> stk_charge_eff_bdt;
 
         if (TEfficiency::CheckConsistency(*h_trigger_efficiency_accepted_het_over_let_tight_xtrl, *h_trigger_efficiency_accepted_het_let_tight_xtrl))
             trigger_eff_het_over_let_xtrl_tight = std::make_unique<TEfficiency>(*h_trigger_efficiency_accepted_het_over_let_tight_xtrl, *h_trigger_efficiency_accepted_het_let_tight_xtrl);
@@ -325,6 +345,9 @@ void buildEfficiency(
         if (TEfficiency::CheckConsistency(*h_psdcharge_efficiency_accepted_tight_xtrl, *h_psdcharge_efficiency_total_tight_xtrl))
             psd_charge_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_psdcharge_efficiency_accepted_tight_xtrl, *h_psdcharge_efficiency_total_tight_xtrl);
 
+        if (TEfficiency::CheckConsistency(*h_stkcharge_efficiency_accepted_tight_xtrl, *h_stkcharge_efficiency_total_tight_xtrl))
+            stk_charge_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_stkcharge_efficiency_accepted_tight_xtrl, *h_stkcharge_efficiency_total_tight_xtrl);
+
         if (TEfficiency::CheckConsistency(*h_trigger_efficiency_accepted_het_over_let_loose_xtrl, *h_trigger_efficiency_accepted_het_let_loose_xtrl))
             trigger_eff_het_over_let_xtrl_loose = std::make_unique<TEfficiency>(*h_trigger_efficiency_accepted_het_over_let_loose_xtrl, *h_trigger_efficiency_accepted_het_let_loose_xtrl);
 
@@ -352,6 +375,9 @@ void buildEfficiency(
         if (TEfficiency::CheckConsistency(*h_psdcharge_efficiency_accepted_loose_xtrl, *h_psdcharge_efficiency_total_loose_xtrl))
             psd_charge_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_psdcharge_efficiency_accepted_loose_xtrl, *h_psdcharge_efficiency_total_loose_xtrl);
 
+        if (TEfficiency::CheckConsistency(*h_stkcharge_efficiency_accepted_loose_xtrl, *h_stkcharge_efficiency_total_loose_xtrl))
+            stk_charge_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_stkcharge_efficiency_accepted_loose_xtrl, *h_stkcharge_efficiency_total_loose_xtrl);
+
         if (TEfficiency::CheckConsistency(*h_trigger_efficiency_accepted_het_over_let_bdt, *h_trigger_efficiency_accepted_het_let_bdt))
             trigger_eff_het_over_let_bdt = std::make_unique<TEfficiency>(*h_trigger_efficiency_accepted_het_over_let_bdt, *h_trigger_efficiency_accepted_het_let_bdt);
 
@@ -378,6 +404,9 @@ void buildEfficiency(
 
         if (TEfficiency::CheckConsistency(*h_psdcharge_efficiency_accepted_bdt, *h_psdcharge_efficiency_total_bdt))
             psd_charge_eff_bdt = std::make_unique<TEfficiency>(*h_psdcharge_efficiency_accepted_bdt, *h_psdcharge_efficiency_total_bdt);
+
+        if (TEfficiency::CheckConsistency(*h_stkcharge_efficiency_accepted_bdt, *h_stkcharge_efficiency_total_bdt))
+            stk_charge_eff_bdt = std::make_unique<TEfficiency>(*h_stkcharge_efficiency_accepted_bdt, *h_stkcharge_efficiency_total_bdt);
         
         trigger_eff_het_over_let_xtrl_tight                 ->SetStatisticOption(TEfficiency::kBUniform);
         trigger_eff_het_over_unb_xtrl_tight                 ->SetStatisticOption(TEfficiency::kBUniform);
@@ -388,6 +417,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_xtrl_tight   ->SetStatisticOption(TEfficiency::kBUniform);
         psd_stk_match_eff_xtrl_tight                        ->SetStatisticOption(TEfficiency::kBUniform);
         psd_charge_eff_xtrl_tight                           ->SetStatisticOption(TEfficiency::kBUniform);
+        stk_charge_eff_xtrl_tight                           ->SetStatisticOption(TEfficiency::kBUniform);
         trigger_eff_het_over_let_xtrl_loose                 ->SetStatisticOption(TEfficiency::kBUniform);
         trigger_eff_het_over_unb_xtrl_loose                 ->SetStatisticOption(TEfficiency::kBUniform);
         maxrms_eff_xtrl_loose                               ->SetStatisticOption(TEfficiency::kBUniform);
@@ -397,6 +427,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_xtrl_loose   ->SetStatisticOption(TEfficiency::kBUniform);
         psd_stk_match_eff_xtrl_loose                        ->SetStatisticOption(TEfficiency::kBUniform);
         psd_charge_eff_xtrl_loose                           ->SetStatisticOption(TEfficiency::kBUniform);
+        stk_charge_eff_xtrl_loose                           ->SetStatisticOption(TEfficiency::kBUniform);
         
         trigger_eff_het_over_let_bdt                        ->SetStatisticOption(TEfficiency::kBUniform);
         trigger_eff_het_over_unb_bdt                        ->SetStatisticOption(TEfficiency::kBUniform);
@@ -407,6 +438,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_bdt          ->SetStatisticOption(TEfficiency::kBUniform);
         psd_stk_match_eff_bdt                               ->SetStatisticOption(TEfficiency::kBUniform);
         psd_charge_eff_bdt                                  ->SetStatisticOption(TEfficiency::kBUniform);
+        stk_charge_eff_bdt                                  ->SetStatisticOption(TEfficiency::kBUniform);
 
         trigger_eff_het_over_let_xtrl_tight                 ->SetName("trigger_eff_het_over_let_xtrl_tight");
         trigger_eff_het_over_unb_xtrl_tight                 ->SetName("trigger_eff_het_over_unb_xtrl_tight");
@@ -417,6 +449,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_xtrl_tight   ->SetName("track_selection_eff_within_stk_fvolume_xtrl_tight");
         psd_stk_match_eff_xtrl_tight                        ->SetName("psd_stk_match_eff_xtrl_tight");
         psd_charge_eff_xtrl_tight                           ->SetName("psd_charge_eff_xtrl_tight");
+        stk_charge_eff_xtrl_tight                           ->SetName("stk_charge_eff_xtrl_tight");
         trigger_eff_het_over_let_xtrl_loose                 ->SetName("trigger_eff_het_over_let_xtrl_loose");
         trigger_eff_het_over_unb_xtrl_loose                 ->SetName("trigger_eff_het_over_unb_xtrl_loose");
         maxrms_eff_xtrl_loose                               ->SetName("maxrms_eff_xtrl_loose");
@@ -426,6 +459,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_xtrl_loose   ->SetName("track_selection_eff_within_stk_fvolume_xtrl_loose");
         psd_stk_match_eff_xtrl_loose                        ->SetName("psd_stk_match_eff_xtrl_loose");
         psd_charge_eff_xtrl_loose                           ->SetName("psd_charge_eff_xtrl_loose");
+        stk_charge_eff_xtrl_loose                           ->SetName("stk_charge_eff_xtrl_loose");
 
         trigger_eff_het_over_let_xtrl_tight                 ->SetTitle("trigger_eff_het_over_let_xtrl_tight; Energy [GeV]; efficiency");
         trigger_eff_het_over_unb_xtrl_tight                 ->SetTitle("trigger_eff_het_over_unb_xtrl_tight; Energy [GeV]; efficiency");
@@ -436,6 +470,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_xtrl_tight   ->SetTitle("track_selection_eff_within_stk_fvolume_xtrl_tight; Energy [GeV]; efficiency");
         psd_stk_match_eff_xtrl_tight                        ->SetTitle("psd_stk_match_eff_xtrl_tight; Energy [GeV]; efficiency");
         psd_charge_eff_xtrl_tight                           ->SetTitle("psd_charge_eff_xtrl_tight; Energy [GeV]; efficiency");
+        stk_charge_eff_xtrl_tight                           ->SetTitle("stk_charge_eff_xtrl_tight; Energy [GeV]; efficiency");
         trigger_eff_het_over_let_xtrl_loose                 ->SetTitle("trigger_eff_het_over_let_xtrl_loose; Energy [GeV]; efficiency");
         trigger_eff_het_over_unb_xtrl_loose                 ->SetTitle("trigger_eff_het_over_unb_xtrl_loose; Energy [GeV]; efficiency");
         maxrms_eff_xtrl_loose                               ->SetTitle("maxrms_eff_xtrl_loose; Energy [GeV]; efficiency");
@@ -445,6 +480,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_xtrl_loose   ->SetTitle("track_selection_eff_within_stk_fvolume_xtrl_loose; Energy [GeV]; efficiency");
         psd_stk_match_eff_xtrl_loose                        ->SetTitle("psd_stk_match_eff_xtrl_loose; Energy [GeV]; efficiency");
         psd_charge_eff_xtrl_loose                           ->SetTitle("psd_charge_eff_xtrl_loose; Energy [GeV]; efficiency");
+        stk_charge_eff_xtrl_loose                           ->SetTitle("stk_charge_eff_xtrl_loose; Energy [GeV]; efficiency");
 
         trigger_eff_het_over_let_bdt                ->SetName("trigger_eff_het_over_let_bdt");
         trigger_eff_het_over_unb_bdt                ->SetName("trigger_eff_het_over_unb_bdt");
@@ -455,6 +491,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_bdt  ->SetName("track_selection_eff_within_stk_fvolume_bdt");
         psd_stk_match_eff_bdt                       ->SetName("psd_stk_match_eff_bdt");
         psd_charge_eff_bdt                          ->SetName("psd_charge_eff_bdt");
+        stk_charge_eff_bdt                          ->SetName("stk_charge_eff_bdt");
 
         trigger_eff_het_over_let_bdt                ->SetTitle("trigger_eff_het_over_let_bdt; Energy [GeV]; efficiency");
         trigger_eff_het_over_unb_bdt                ->SetTitle("trigger_eff_het_over_unb_bdt; Energy [GeV]; efficiency");
@@ -465,6 +502,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_bdt  ->SetTitle("track_selection_eff_within_stk_fvolume_bdt; Energy [GeV]; efficiency");
         psd_stk_match_eff_bdt                       ->SetTitle("psd_stk_match_eff_bdt; Energy [GeV]; efficiency");
         psd_charge_eff_bdt                          ->SetTitle("psd_charge_eff_bdt; Energy [GeV]; efficiency");
+        stk_charge_eff_bdt                          ->SetTitle("stk_charge_eff_bdt; Energy [GeV]; efficiency");
 
         // Write output TFile
         TFile* outfile = TFile::Open(output_file, "RECREATE");
@@ -485,6 +523,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_xtrl_tight   ->Write();
         psd_stk_match_eff_xtrl_tight                        ->Write();
         psd_charge_eff_xtrl_tight                           ->Write();
+        stk_charge_eff_xtrl_tight                           ->Write();
         trigger_eff_het_over_let_xtrl_loose                 ->Write();
         trigger_eff_het_over_unb_xtrl_loose                 ->Write();
         maxrms_eff_xtrl_loose                               ->Write();
@@ -494,6 +533,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_xtrl_loose   ->Write();
         psd_stk_match_eff_xtrl_loose                        ->Write();
         psd_charge_eff_xtrl_loose                           ->Write();
+        stk_charge_eff_xtrl_loose                           ->Write();
 
         trigger_eff_het_over_let_bdt                        ->Write();
         trigger_eff_het_over_unb_bdt                        ->Write();
@@ -504,6 +544,7 @@ void buildEfficiency(
         track_selection_eff_within_stk_fvolume_bdt          ->Write();
         psd_stk_match_eff_bdt                               ->Write();
         psd_charge_eff_bdt                                  ->Write();
+        stk_charge_eff_bdt                                  ->Write();
 
         outfile->mkdir("histos");
         outfile->cd("histos");
@@ -533,6 +574,8 @@ void buildEfficiency(
         h_psdstkmatch_efficiency_total_tight_xtrl                           ->Write();
         h_psdcharge_efficiency_accepted_tight_xtrl                          ->Write();
         h_psdcharge_efficiency_total_tight_xtrl                             ->Write();
+        h_stkcharge_efficiency_accepted_tight_xtrl                          ->Write();
+        h_stkcharge_efficiency_total_tight_xtrl                             ->Write();
         h_maxrms_efficiency_accepted_loose_xtrl                             ->Write();
         h_maxrms_efficiency_total_loose_xtrl                                ->Write();
         h_nbarlayer13_efficiency_accepted_loose_xtrl                        ->Write();
@@ -545,6 +588,8 @@ void buildEfficiency(
         h_psdstkmatch_efficiency_total_loose_xtrl                           ->Write();
         h_psdcharge_efficiency_accepted_loose_xtrl                          ->Write();
         h_psdcharge_efficiency_total_loose_xtrl                             ->Write();
+        h_stkcharge_efficiency_accepted_loose_xtrl                          ->Write();
+        h_stkcharge_efficiency_total_loose_xtrl                             ->Write();
         
         h_maxrms_efficiency_accepted_bdt                                    ->Write();
         h_maxrms_efficiency_total_bdt                                       ->Write();
@@ -558,6 +603,8 @@ void buildEfficiency(
         h_psdstkmatch_efficiency_total_bdt                                  ->Write();
         h_psdcharge_efficiency_accepted_bdt                                 ->Write();    
         h_psdcharge_efficiency_total_bdt                                    ->Write();
+        h_stkcharge_efficiency_accepted_bdt                                 ->Write();    
+        h_stkcharge_efficiency_total_bdt                                    ->Write();
 
         outfile->Close();
 
