@@ -44,7 +44,9 @@ void buildAcceptance(
     TH1D* h_bgo_stk_selection_inside_psd_fvolume    = static_cast<TH1D*>(input_file->Get("h_bgo_stk_selection_inside_psd_fvolume"));
     TH1D* h_bgo_stk_selection_outside_psd_fvolume   = static_cast<TH1D*>(input_file->Get("h_bgo_stk_selection_outside_psd_fvolume"));
     TH1D* h_psdstkmatch                             = static_cast<TH1D*>(input_file->Get("h_psdstkmatch"));
+    TH1D* h_psdcharge                               = static_cast<TH1D*>(input_file->Get("h_psdcharge"));
     TH1D* h_psdcharge_no_one_view_recover           = static_cast<TH1D*>(input_file->Get("h_psdcharge_no_one_view_recover"));
+    TH1D* h_stkcharge                               = static_cast<TH1D*>(input_file->Get("h_stkcharge"));
     TH1D* h_all_cut                                 = static_cast<TH1D*>(input_file->Get("h_all_cut"));
 
     h_gen                                       ->SetDirectory(0);
@@ -59,7 +61,9 @@ void buildAcceptance(
     h_bgo_stk_selection_inside_psd_fvolume      ->SetDirectory(0);
     h_bgo_stk_selection_outside_psd_fvolume     ->SetDirectory(0);
     h_psdstkmatch                               ->SetDirectory(0);
+    h_psdcharge                                 ->SetDirectory(0);
     h_psdcharge_no_one_view_recover             ->SetDirectory(0);
+    h_stkcharge                                 ->SetDirectory(0);
     h_all_cut                                   ->SetDirectory(0);
 
     input_file->Close();
@@ -75,7 +79,9 @@ void buildAcceptance(
     TH1D* h_acc_bgo_stk_selection_inside_psd_fvolume    = static_cast<TH1D*>(h_bgo_stk_selection_inside_psd_fvolume->Clone("h_acc_bgo_stk_selection_inside_psd_fvolume"));
     TH1D* h_acc_bgo_stk_selection_outside_psd_fvolume   = static_cast<TH1D*>(h_bgo_stk_selection_outside_psd_fvolume->Clone("h_acc_bgo_stk_selection_outside_psd_fvolume"));
     TH1D* h_acc_psdstkmatch                             = static_cast<TH1D*>(h_psdstkmatch->Clone("h_acc_psdstkmatch"));
+    TH1D* h_acc_psdcharge                               = static_cast<TH1D*>(h_psdcharge->Clone("h_acc_psdcharge"));
     TH1D* h_acc_psdcharge_no_one_view_recover           = static_cast<TH1D*>(h_psdcharge_no_one_view_recover->Clone("h_acc_psdcharge_no_one_view_recover"));
+    TH1D* h_acc_stkcharge                               = static_cast<TH1D*>(h_stkcharge->Clone("h_acc_stkcharge"));
     TH1D* h_acc_all_cut                                 = static_cast<TH1D*>(h_all_cut->Clone("h_acc_all_cut"));
 
     h_geometric_factor                              ->Divide(h_gen);
@@ -89,7 +95,9 @@ void buildAcceptance(
     h_acc_bgo_stk_selection_inside_psd_fvolume      ->Divide(h_gen);
     h_acc_bgo_stk_selection_outside_psd_fvolume     ->Divide(h_gen);
     h_acc_psdstkmatch                               ->Divide(h_gen);
+    h_acc_psdcharge                                 ->Divide(h_gen);
     h_acc_psdcharge_no_one_view_recover             ->Divide(h_gen);
+    h_acc_stkcharge                                 ->Divide(h_gen);
     h_acc_all_cut                                   ->Divide(h_gen);
 
     double genSurface               = 4 * TMath::Pi() * pow(generation_vertex_radius, 2) / 2;
@@ -106,7 +114,9 @@ void buildAcceptance(
     h_acc_bgo_stk_selection_inside_psd_fvolume      ->Scale(scaleFactor);
     h_acc_bgo_stk_selection_outside_psd_fvolume     ->Scale(scaleFactor);
     h_acc_psdstkmatch                               ->Scale(scaleFactor);
+    h_acc_psdcharge                                 ->Scale(scaleFactor);
     h_acc_psdcharge_no_one_view_recover             ->Scale(scaleFactor);
+    h_acc_stkcharge                                 ->Scale(scaleFactor);
     h_acc_all_cut                                   ->Scale(scaleFactor);
 
     h_geometric_factor                              ->GetYaxis()->SetTitle("geometric factor [m^{2} sr]");
@@ -120,7 +130,9 @@ void buildAcceptance(
     h_acc_bgo_stk_selection_inside_psd_fvolume      ->GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     h_acc_bgo_stk_selection_outside_psd_fvolume     ->GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     h_acc_psdstkmatch                               ->GetYaxis()->SetTitle("acceptance [m^{2} sr]");
+    h_acc_psdcharge                                 ->GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     h_acc_psdcharge_no_one_view_recover             ->GetYaxis()->SetTitle("acceptance [m^{2} sr]");
+    h_acc_stkcharge                                 ->GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     h_acc_all_cut                                   ->GetYaxis()->SetTitle("acceptance [m^{2} sr]");
 
     std::vector<double> geometric_factor                            (h_geometric_factor->GetNbinsX(), 0);
@@ -134,7 +146,9 @@ void buildAcceptance(
     std::vector<double> acc_bgo_stk_selection_inside_psd_fvolume    (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> acc_bgo_stk_selection_outside_psd_fvolume   (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> acc_psdstkmatch                             (h_geometric_factor->GetNbinsX(), 0);
+    std::vector<double> acc_psdcharge                               (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> acc_psdcharge_no_one_view_recover           (h_geometric_factor->GetNbinsX(), 0);
+    std::vector<double> acc_stkcharge                               (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> acc_all_cut                                 (h_geometric_factor->GetNbinsX(), 0);
 
     std::vector<double> geometric_factor_err                            (h_geometric_factor->GetNbinsX(), 0);
@@ -148,7 +162,9 @@ void buildAcceptance(
     std::vector<double> acc_bgo_stk_selection_inside_psd_fvolume_err    (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> acc_bgo_stk_selection_outside_psd_fvolume_err   (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> acc_psdstkmatch_err                             (h_geometric_factor->GetNbinsX(), 0);
+    std::vector<double> acc_psdcharge_err                               (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> acc_psdcharge_no_one_view_recover_err           (h_geometric_factor->GetNbinsX(), 0);
+    std::vector<double> acc_stkcharge_err                               (h_geometric_factor->GetNbinsX(), 0);
     std::vector<double> acc_all_cut_err                                 (h_geometric_factor->GetNbinsX(), 0);
 
     std::vector<double> energy                                          (h_geometric_factor->GetNbinsX(), 0);
@@ -182,8 +198,12 @@ void buildAcceptance(
         acc_bgo_stk_selection_outside_psd_fvolume_err[idx]      = h_acc_bgo_stk_selection_outside_psd_fvolume->GetBinError(idx+1);
         acc_psdstkmatch[idx]                                    = h_acc_psdstkmatch->GetBinContent(idx+1);
         acc_psdstkmatch_err[idx]                                = h_acc_psdstkmatch->GetBinError(idx+1);
+        acc_psdcharge[idx]                                      = h_acc_psdcharge->GetBinContent(idx+1);
+        acc_psdcharge_err[idx]                                  = h_acc_psdcharge->GetBinError(idx+1);
         acc_psdcharge_no_one_view_recover[idx]                  = h_acc_psdcharge_no_one_view_recover->GetBinContent(idx+1);
         acc_psdcharge_no_one_view_recover_err[idx]              = h_acc_psdcharge_no_one_view_recover->GetBinError(idx+1);
+        acc_stkcharge[idx]                                      = h_acc_stkcharge->GetBinContent(idx+1);
+        acc_stkcharge_err[idx]                                  = h_acc_stkcharge->GetBinError(idx+1);
         acc_all_cut[idx]                                        = h_acc_all_cut->GetBinContent(idx+1);
         acc_all_cut_err[idx]                                    = h_acc_all_cut->GetBinError(idx+1);
 
@@ -202,7 +222,9 @@ void buildAcceptance(
     TGraphErrors gr_acc_bgo_stk_selection_inside_psd_fvolume    ((int)geometric_factor.size(), &energy[0], &acc_bgo_stk_selection_inside_psd_fvolume[0], &energy_err[0], &acc_bgo_stk_selection_inside_psd_fvolume_err[0]);
     TGraphErrors gr_acc_bgo_stk_selection_outside_psd_fvolume   ((int)geometric_factor.size(), &energy[0], &acc_bgo_stk_selection_outside_psd_fvolume[0], &energy_err[0], &acc_bgo_stk_selection_outside_psd_fvolume_err[0]);
     TGraphErrors gr_acc_psdstkmatch                             ((int)geometric_factor.size(), &energy[0], &acc_psdstkmatch[0], &energy_err[0], &acc_psdstkmatch_err[0]);
+    TGraphErrors gr_acc_psdcharge                               ((int)geometric_factor.size(), &energy[0], &acc_psdcharge[0], &energy_err[0], &acc_psdcharge_err[0]);
     TGraphErrors gr_acc_psdcharge_no_one_view_recover           ((int)geometric_factor.size(), &energy[0], &acc_psdcharge_no_one_view_recover[0], &energy_err[0], &acc_psdcharge_no_one_view_recover_err[0]);
+    TGraphErrors gr_acc_stkcharge                               ((int)geometric_factor.size(), &energy[0], &acc_stkcharge[0], &energy_err[0], &acc_stkcharge_err[0]);
     TGraphErrors gr_acc_all_cut                                 ((int)geometric_factor.size(), &energy[0], &acc_all_cut[0], &energy_err[0], &acc_all_cut_err[0]);
 
     TGraph gr_ratio_trackselection_no_3hit_recover_trackselection (int(energy.size()), &energy[0], &ratio_trackselection_no_3hit_recover_trackselection[0]);
@@ -219,7 +241,9 @@ void buildAcceptance(
     gr_acc_bgo_stk_selection_inside_psd_fvolume     .SetName("gr_acc_bgo_stk_selection_inside_psd_fvolume");
     gr_acc_bgo_stk_selection_outside_psd_fvolume    .SetName("gr_acc_bgo_stk_selection_outside_psd_fvolume");
     gr_acc_psdstkmatch                              .SetName("gr_acc_psdstkmatch");
+    gr_acc_psdcharge                                .SetName("gr_acc_psdcharge");
     gr_acc_psdcharge_no_one_view_recover            .SetName("gr_acc_psdcharge_no_one_view_recover");
+    gr_acc_stkcharge                                .SetName("gr_acc_stkcharge");
     gr_acc_all_cut                                  .SetName("gr_acc_all_cut");
 
     gr_ratio_trackselection_no_3hit_recover_trackselection      .SetName("gr_ratio_trackselection_no_3hit_recover_trackselection");
@@ -236,7 +260,9 @@ void buildAcceptance(
     gr_acc_bgo_stk_selection_inside_psd_fvolume     .SetTitle("Acceptance - BGO STK selection inside PSD Fiducial Volume");
     gr_acc_bgo_stk_selection_outside_psd_fvolume    .SetTitle("Acceptance - BGO STK selection outside PSD Fiducial Volume");
     gr_acc_psdstkmatch                              .SetTitle("Acceptance - PSD-STK match");
+    gr_acc_psdcharge                                .SetTitle("Acceptance - PSD charge");
     gr_acc_psdcharge_no_one_view_recover            .SetTitle("Acceptance - PSD charge - no one view recover");
+    gr_acc_stkcharge                                .SetTitle("Acceptance - STK charge");
     gr_acc_all_cut                                  .SetTitle("Acceptance - all cuts");
 
     gr_ratio_trackselection_no_3hit_recover_trackselection      .SetTitle("Ratio - track selection - no 3 hit recover / track selection");
@@ -253,7 +279,9 @@ void buildAcceptance(
     gr_acc_bgo_stk_selection_inside_psd_fvolume     .GetXaxis()->SetTitle("Energy [GeV]");
     gr_acc_bgo_stk_selection_outside_psd_fvolume    .GetXaxis()->SetTitle("Energy [GeV]");
     gr_acc_psdstkmatch                              .GetXaxis()->SetTitle("Energy [GeV]");
+    gr_acc_psdcharge                                .GetXaxis()->SetTitle("Energy [GeV]");
     gr_acc_psdcharge_no_one_view_recover            .GetXaxis()->SetTitle("Energy [GeV]");
+    gr_acc_stkcharge                                .GetXaxis()->SetTitle("Energy [GeV]");
     gr_acc_all_cut                                  .GetXaxis()->SetTitle("Energy [GeV]");
 
     gr_ratio_trackselection_no_3hit_recover_trackselection      .GetXaxis()->SetTitle("Energy [GeV]");
@@ -270,7 +298,9 @@ void buildAcceptance(
     gr_acc_bgo_stk_selection_inside_psd_fvolume     .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     gr_acc_bgo_stk_selection_outside_psd_fvolume    .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     gr_acc_psdstkmatch                              .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
+    gr_acc_psdcharge                                .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     gr_acc_psdcharge_no_one_view_recover            .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
+    gr_acc_stkcharge                                .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
     gr_acc_all_cut                                  .GetYaxis()->SetTitle("acceptance [m^{2} sr]");
 
     gr_ratio_trackselection_no_3hit_recover_trackselection      .GetYaxis()->SetTitle("track selection_{no 3 hit recover} / track selection (percentage)");
@@ -294,7 +324,9 @@ void buildAcceptance(
     h_acc_bgo_stk_selection_inside_psd_fvolume      ->Write();
     h_acc_bgo_stk_selection_outside_psd_fvolume     ->Write();
     h_acc_psdstkmatch                               ->Write();
+    h_acc_psdcharge                                 ->Write();
     h_acc_psdcharge_no_one_view_recover             ->Write();
+    h_acc_stkcharge                                 ->Write();
     h_acc_all_cut                                   ->Write();
 
     gr_geometric_factor                             .Write();
@@ -308,7 +340,9 @@ void buildAcceptance(
     gr_acc_bgo_stk_selection_inside_psd_fvolume     .Write();
     gr_acc_bgo_stk_selection_outside_psd_fvolume    .Write();
     gr_acc_psdstkmatch                              .Write();
+    gr_acc_psdcharge                                .Write();
     gr_acc_psdcharge_no_one_view_recover            .Write();
+    gr_acc_stkcharge                                .Write();
     gr_acc_all_cut                                  .Write();
 
     gr_ratio_trackselection_no_3hit_recover_trackselection      .Write();
