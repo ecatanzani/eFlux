@@ -213,7 +213,38 @@ void buildEfficiency(
         
         h_track_efficiency_accepted_loose_xtrl->SetDirectory(0);
         h_track_efficiency_total_loose_xtrl->SetDirectory(0);
+
+        // Clusters on first STK layer
+        auto h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl"));
+        auto h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl"));
+        auto h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_tight_xtrl"));
+        auto h_clusters_on_first_STK_layer_outside_psd_fvolume_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_outside_psd_fvolume_total_tight_xtrl"));
+
+        auto h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_loose_xtrl"));
+        auto h_clusters_on_first_STK_layer_within_psd_fvolume_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_within_psd_fvolume_total_loose_xtrl"));
+        auto h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_loose_xtrl"));
+        auto h_clusters_on_first_STK_layer_outside_psd_fvolume_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_outside_psd_fvolume_total_loose_xtrl"));
+
+        auto h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt"));
+        auto h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt"));
+        auto h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt"));
+        auto h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt"));
         
+        h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl->SetDirectory(0);
+        h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl->SetDirectory(0);
+        h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_tight_xtrl->SetDirectory(0);
+        h_clusters_on_first_STK_layer_outside_psd_fvolume_total_tight_xtrl->SetDirectory(0);
+
+        h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_loose_xtrl->SetDirectory(0);
+        h_clusters_on_first_STK_layer_within_psd_fvolume_total_loose_xtrl->SetDirectory(0);
+        h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_loose_xtrl->SetDirectory(0);
+        h_clusters_on_first_STK_layer_outside_psd_fvolume_total_loose_xtrl->SetDirectory(0);
+
+        h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt->SetDirectory(0);
+        h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt->SetDirectory(0);
+        h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt->SetDirectory(0);
+        h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt->SetDirectory(0);
+
         // Track Selection histos within STK fiducial volume
         auto h_track_efficiency_stk_fvolume_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_track_efficiency_stk_fvolume_accepted_tight_xtrl"));
         auto h_track_efficiency_stk_fvolume_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_track_efficiency_stk_fvolume_total_tight_xtrl"));
@@ -318,6 +349,13 @@ void buildEfficiency(
         std::unique_ptr<TEfficiency> psd_charge_eff_bdt;
         std::unique_ptr<TEfficiency> stk_charge_eff_bdt;
 
+        std::unique_ptr<TEfficiency> clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight;
+        std::unique_ptr<TEfficiency> clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight;
+        std::unique_ptr<TEfficiency> clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose;
+        std::unique_ptr<TEfficiency> clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose;
+        std::unique_ptr<TEfficiency> clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt;
+        std::unique_ptr<TEfficiency> clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt;
+
         if (TEfficiency::CheckConsistency(*h_trigger_efficiency_accepted_het_over_let_tight_xtrl, *h_trigger_efficiency_accepted_het_let_tight_xtrl))
             trigger_eff_het_over_let_xtrl_tight = std::make_unique<TEfficiency>(*h_trigger_efficiency_accepted_het_over_let_tight_xtrl, *h_trigger_efficiency_accepted_het_let_tight_xtrl);
 
@@ -407,7 +445,25 @@ void buildEfficiency(
 
         if (TEfficiency::CheckConsistency(*h_stkcharge_efficiency_accepted_bdt, *h_stkcharge_efficiency_total_bdt))
             stk_charge_eff_bdt = std::make_unique<TEfficiency>(*h_stkcharge_efficiency_accepted_bdt, *h_stkcharge_efficiency_total_bdt);
-        
+
+        if (TEfficiency::CheckConsistency(*h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl, *h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl))
+            clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight = std::make_unique<TEfficiency>(*h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl, *h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_tight_xtrl, *h_clusters_on_first_STK_layer_outside_psd_fvolume_total_tight_xtrl))
+            clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight = std::make_unique<TEfficiency>(*h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_tight_xtrl, *h_clusters_on_first_STK_layer_outside_psd_fvolume_total_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_loose_xtrl, *h_clusters_on_first_STK_layer_within_psd_fvolume_total_loose_xtrl))
+            clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose = std::make_unique<TEfficiency>(*h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_loose_xtrl, *h_clusters_on_first_STK_layer_within_psd_fvolume_total_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_loose_xtrl, *h_clusters_on_first_STK_layer_outside_psd_fvolume_total_loose_xtrl))
+            clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose = std::make_unique<TEfficiency>(*h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_loose_xtrl, *h_clusters_on_first_STK_layer_outside_psd_fvolume_total_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt, *h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt))
+            clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt = std::make_unique<TEfficiency>(*h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt, *h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt);
+
+        if (TEfficiency::CheckConsistency(*h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt, *h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt))
+            clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt = std::make_unique<TEfficiency>(*h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt, *h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt);
+
         trigger_eff_het_over_let_xtrl_tight                 ->SetStatisticOption(TEfficiency::kBUniform);
         trigger_eff_het_over_unb_xtrl_tight                 ->SetStatisticOption(TEfficiency::kBUniform);
         maxrms_eff_xtrl_tight                               ->SetStatisticOption(TEfficiency::kBUniform);
@@ -440,6 +496,13 @@ void buildEfficiency(
         psd_charge_eff_bdt                                  ->SetStatisticOption(TEfficiency::kBUniform);
         stk_charge_eff_bdt                                  ->SetStatisticOption(TEfficiency::kBUniform);
 
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight       ->SetStatisticOption(TEfficiency::kBUniform);
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight      ->SetStatisticOption(TEfficiency::kBUniform);
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose       ->SetStatisticOption(TEfficiency::kBUniform);
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose      ->SetStatisticOption(TEfficiency::kBUniform);
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt         ->SetStatisticOption(TEfficiency::kBUniform);
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt        ->SetStatisticOption(TEfficiency::kBUniform);
+
         trigger_eff_het_over_let_xtrl_tight                 ->SetName("trigger_eff_het_over_let_xtrl_tight");
         trigger_eff_het_over_unb_xtrl_tight                 ->SetName("trigger_eff_het_over_unb_xtrl_tight");
         maxrms_eff_xtrl_tight                               ->SetName("maxrms_eff_xtrl_tight");
@@ -461,6 +524,13 @@ void buildEfficiency(
         psd_charge_eff_xtrl_loose                           ->SetName("psd_charge_eff_xtrl_loose");
         stk_charge_eff_xtrl_loose                           ->SetName("stk_charge_eff_xtrl_loose");
 
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight       ->SetName("clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight");
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight      ->SetName("clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight");
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose       ->SetName("clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose");
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose      ->SetName("clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose");
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt         ->SetName("clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt");
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt        ->SetName("clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt");
+
         trigger_eff_het_over_let_xtrl_tight                 ->SetTitle("trigger_eff_het_over_let_xtrl_tight; Energy [GeV]; efficiency");
         trigger_eff_het_over_unb_xtrl_tight                 ->SetTitle("trigger_eff_het_over_unb_xtrl_tight; Energy [GeV]; efficiency");
         maxrms_eff_xtrl_tight                               ->SetTitle("maxrms_eff_xtrl_tight; Energy [GeV]; efficiency");
@@ -481,6 +551,13 @@ void buildEfficiency(
         psd_stk_match_eff_xtrl_loose                        ->SetTitle("psd_stk_match_eff_xtrl_loose; Energy [GeV]; efficiency");
         psd_charge_eff_xtrl_loose                           ->SetTitle("psd_charge_eff_xtrl_loose; Energy [GeV]; efficiency");
         stk_charge_eff_xtrl_loose                           ->SetTitle("stk_charge_eff_xtrl_loose; Energy [GeV]; efficiency");
+
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight       ->SetTitle("clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight; Energy [GeV]; efficiency");
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight      ->SetTitle("clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight; Energy [GeV]; efficiency");
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose       ->SetTitle("clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose; Energy [GeV]; efficiency");
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose      ->SetTitle("clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose; Energy [GeV]; efficiency");
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt         ->SetTitle("clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt; Energy [GeV]; efficiency");
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt        ->SetTitle("clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt; Energy [GeV]; efficiency");
 
         trigger_eff_het_over_let_bdt                ->SetName("trigger_eff_het_over_let_bdt");
         trigger_eff_het_over_unb_bdt                ->SetName("trigger_eff_het_over_unb_bdt");
@@ -545,6 +622,13 @@ void buildEfficiency(
         psd_stk_match_eff_bdt                               ->Write();
         psd_charge_eff_bdt                                  ->Write();
         stk_charge_eff_bdt                                  ->Write();
+
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight       ->Write();
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight      ->Write();
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose       ->Write();
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose      ->Write();
+        clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt         ->Write();
+        clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt        ->Write();
 
         outfile->mkdir("histos");
         outfile->cd("histos");

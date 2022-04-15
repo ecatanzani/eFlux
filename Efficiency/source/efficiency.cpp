@@ -285,6 +285,79 @@ void buildEfficiency(const in_args input_args)
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_trigger_efficiency_accepted_het_unb_tight_xtrl", "UNB + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
     
+    auto h_trigger_efficiency_accepted_het_over_let_loose_xtrl = mc_file ? 
+                                            fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
+
+                                            :
+
+                                            fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Define("trigger_w", get_let_prescale, {"geo_lat"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
+
+    auto h_trigger_efficiency_accepted_het_over_unb_loose_xtrl = mc_file ? 
+                                            fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
+
+                                            :
+
+                                            fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Define("trigger_w", get_unb_prescale, {"geo_lat"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
+
+
+    auto h_trigger_efficiency_accepted_het_let_loose_xtrl = mc_file ? 
+                                            fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
+
+                                            :
+
+                                            fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Define("trigger_w", [&get_let_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_let_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
+
+    auto h_trigger_efficiency_accepted_het_unb_loose_xtrl = mc_file ? 
+                                            fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_unb_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
+
+                                            :
+
+                                            fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Define("trigger_w", [&get_unb_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_unb_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_trigger_efficiency_accepted_het_unb_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
+
     auto h_trigger_efficiency_accepted_het_over_let_bdt = mc_file ? 
                                             fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -371,12 +444,27 @@ void buildEfficiency(const in_args input_args)
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_maxrms_efficiency_accepted_tight_xtrl", "HET Trigger + MaxRMS Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_maxrms_efficiency_total_tight_xtrl = fr.Filter("maxrms_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_maxrms_efficiency_total_tight_xtrl", "HET Trigger + MaxRMS", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
     
+    auto h_maxrms_efficiency_accepted_loose_xtrl = fr.Filter("maxrms_efficiency_preselection==1 && maxrms_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_maxrms_efficiency_accepted_loose_xtrl", "HET Trigger + MaxRMS Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_maxrms_efficiency_total_loose_xtrl = fr.Filter("maxrms_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_maxrms_efficiency_total_loose_xtrl", "HET Trigger + MaxRMS", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_maxrms_efficiency_accepted_bdt = fr.Filter("maxrms_efficiency_preselection==1 && maxrms_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -384,6 +472,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_maxrms_efficiency_accepted_bdt", "HET Trigger + MaxRMS Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_maxrms_efficiency_total_bdt = fr.Filter("maxrms_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -398,11 +487,26 @@ void buildEfficiency(const in_args input_args)
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_nbarlayer13_efficiency_accepted_tight_xtrl", "HET Trigger + nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_nbarlayer13_efficiency_total_tight_xtrl = fr.Filter("nbarlayer13_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_nbarlayer13_efficiency_total_tight_xtrl", "HET Trigger + nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_nbarlayer13_efficiency_accepted_loose_xtrl = fr.Filter("nbarlayer13_efficiency_preselection==1 && nbarlayer13_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_nbarlayer13_efficiency_accepted_loose_xtrl", "HET Trigger + nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_nbarlayer13_efficiency_total_loose_xtrl = fr.Filter("nbarlayer13_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_nbarlayer13_efficiency_total_loose_xtrl", "HET Trigger + nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_nbarlayer13_efficiency_accepted_bdt = fr.Filter("nbarlayer13_efficiency_preselection==1 && nbarlayer13_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -411,6 +515,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_nbarlayer13_efficiency_accepted_bdt", "HET Trigger + nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_nbarlayer13_efficiency_total_bdt = fr.Filter("nbarlayer13_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -431,6 +536,20 @@ void buildEfficiency(const in_args input_args)
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl", "HET Trigger + maxrms & nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
+    auto h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1 && maxrms_and_nbarlayer13_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl", "HET Trigger + maxrms & nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl", "HET Trigger + maxrms & nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_maxrms_and_nbarlayer13_efficiency_accepted_bdt = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1 && maxrms_and_nbarlayer13_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -438,6 +557,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_accepted_bdt", "HET Trigger + maxrms & nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_maxrms_and_nbarlayer13_efficiency_total_bdt = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -452,12 +572,27 @@ void buildEfficiency(const in_args input_args)
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_track_efficiency_accepted_tight_xtrl", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_track_efficiency_total_tight_xtrl = fr.Filter("track_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_track_efficiency_total_tight_xtrl", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
     
+    auto h_track_efficiency_accepted_loose_xtrl = fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_track_efficiency_accepted_loose_xtrl", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_track_efficiency_total_loose_xtrl = fr.Filter("track_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_track_efficiency_total_loose_xtrl", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_track_efficiency_accepted_bdt = fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -465,6 +600,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_track_efficiency_accepted_bdt", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_track_efficiency_total_bdt = fr.Filter("track_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -472,6 +608,109 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_track_efficiency_total_bdt", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    // Clusters on first STK layer
+    auto h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==1")
+                                                        .Filter("STK_chargeX!=-999 && STK_chargeY!=-999")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                                        .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl", "Track Selection + PSD fvolume + STK clusters on first layer", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==1")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                                        .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl", "Track Selection + PSD fvolume", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_tight_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==0")
+                                                        .Filter("STK_chargeX!=-999 && STK_chargeY!=-999")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                                        .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_tight_xtrl", "Track Selection + PSD fvolume + STK clusters on first layer", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_outside_psd_fvolume_total_tight_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==0")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                                        .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_outside_psd_fvolume_total_tight_xtrl", "Track Selection + PSD fvolume", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_loose_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==1")
+                                                        .Filter("STK_chargeX!=-999 && STK_chargeY!=-999")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("energy_gev", "energy * 0.001")
+                                                        .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                                        .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_loose_xtrl", "Track Selection + PSD fvolume + STK clusters on first layer", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_within_psd_fvolume_total_loose_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==1")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("energy_gev", "energy * 0.001")
+                                                        .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                                        .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_within_psd_fvolume_total_loose_xtrl", "Track Selection + PSD fvolume", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_loose_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==0")
+                                                        .Filter("STK_chargeX!=-999 && STK_chargeY!=-999")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("energy_gev", "energy * 0.001")
+                                                        .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                                        .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_loose_xtrl", "Track Selection + PSD fvolume + STK clusters on first layer", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_outside_psd_fvolume_total_loose_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==0")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("energy_gev", "energy * 0.001")
+                                                        .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                                        .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_outside_psd_fvolume_total_loose_xtrl", "Track Selection + PSD fvolume", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==1")
+                                                        .Filter("STK_chargeX!=-999 && STK_chargeY!=-999")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                                        .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                                        .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                                        .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt", "Track Selection + PSD fvolume + STK clusters on first layer", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==1")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                                        .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                                        .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                                        .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt", "Track Selection + PSD fvolume", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==0")
+                                                        .Filter("STK_chargeX!=-999 && STK_chargeY!=-999")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                                        .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                                        .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                                        .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt", "Track Selection + PSD fvolume + STK clusters on first layer", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
+                                                        .Filter("evtfilter_psd_fiducial_volume==0")
+                                                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                        .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                                        .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                                        .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                                        .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                                        .Histo1D({"h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt", "Track Selection + PSD fvolume", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // Track Selection histos within STK fiducial volume
     auto h_track_efficiency_stk_fvolume_accepted_tight_xtrl = fr.Filter("track_efficiency_preselection==1 && evtfilter_stk_fiducial_volume==1 && track_efficiency_preselection_accepted==1")
@@ -485,6 +724,19 @@ void buildEfficiency(const in_args input_args)
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_track_efficiency_stk_fvolume_total_tight_xtrl", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
     
+    auto h_track_efficiency_stk_fvolume_accepted_loose_xtrl = fr.Filter("track_efficiency_preselection==1 && evtfilter_stk_fiducial_volume==1 && track_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_track_efficiency_stk_fvolume_accepted_loose_xtrl", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    auto h_track_efficiency_stk_fvolume_total_loose_xtrl = fr.Filter("track_efficiency_preselection==1 && evtfilter_stk_fiducial_volume==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_track_efficiency_stk_fvolume_total_loose_xtrl", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_track_efficiency_stk_fvolume_accepted_bdt = fr.Filter("track_efficiency_preselection==1 && evtfilter_stk_fiducial_volume==1 && track_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -492,6 +744,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_track_efficiency_stk_fvolume_accepted_bdt", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_track_efficiency_stk_fvolume_total_bdt = fr.Filter("track_efficiency_preselection==1 && evtfilter_stk_fiducial_volume==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -512,6 +765,20 @@ void buildEfficiency(const in_args input_args)
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_psdstkmatch_efficiency_total_tight_xtrl", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
+    auto h_psdstkmatch_efficiency_accepted_loose_xtrl = fr.Filter("psdstkmatch_efficiency_preselection==1 && psdstkmatch_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_psdstkmatch_efficiency_accepted_loose_xtrl", "HET Trigger + PSD-STK Match Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_psdstkmatch_efficiency_total_loose_xtrl = fr.Filter("psdstkmatch_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_psdstkmatch_efficiency_total_loose_xtrl", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_psdstkmatch_efficiency_accepted_bdt = fr.Filter("psdstkmatch_efficiency_preselection==1 && psdstkmatch_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -519,6 +786,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_psdstkmatch_efficiency_accepted_bdt", "HET Trigger + PSD-STK Match Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_psdstkmatch_efficiency_total_bdt = fr.Filter("psdstkmatch_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -539,6 +807,20 @@ void buildEfficiency(const in_args input_args)
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_psdcharge_efficiency_total_tight_xtrl", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
     
+    auto h_psdcharge_efficiency_accepted_loose_xtrl = fr.Filter("psdcharge_efficiency_preselection==1 && psdcharge_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_psdcharge_efficiency_accepted_loose_xtrl", "HET Trigger + PSD Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_psdcharge_efficiency_total_loose_xtrl = fr.Filter("psdcharge_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_psdcharge_efficiency_total_loose_xtrl", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_psdcharge_efficiency_accepted_bdt = fr.Filter("psdcharge_efficiency_preselection==1 && psdcharge_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -546,6 +828,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_psdcharge_efficiency_accepted_bdt", "HET Trigger + PSD Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     auto h_psdcharge_efficiency_total_bdt = fr.Filter("psdcharge_efficiency_preselection==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
@@ -555,216 +838,46 @@ void buildEfficiency(const in_args input_args)
                                             .Histo1D({"h_psdcharge_efficiency_total_bdt", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // STK charge histos
-    auto h_stkcharge_efficiency_accepted_tight_xtrl = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1")
+    auto h_stkcharge_efficiency_accepted_tight_xtrl = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1 && STK_chargeX!=-999 && STK_chargeY!=-999")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_stkcharge_efficiency_accepted_tight_xtrl", "HET Trigger + STK Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_stkcharge_efficiency_total_tight_xtrl = fr.Filter("stkcharge_efficiency_preselection==1")
+    auto h_stkcharge_efficiency_total_tight_xtrl = fr.Filter("stkcharge_efficiency_preselection==1 && STK_chargeX!=-999 && STK_chargeY!=-999")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
                                             .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
                                             .Histo1D({"h_stkcharge_efficiency_total_tight_xtrl", "HET Trigger + STK Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
     
-    auto h_stkcharge_efficiency_accepted_bdt = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1")
+    auto h_stkcharge_efficiency_accepted_loose_xtrl = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1 && STK_chargeX!=-999 && STK_chargeY!=-999")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_stkcharge_efficiency_accepted_loose_xtrl", "HET Trigger + STK Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_stkcharge_efficiency_total_loose_xtrl = fr.Filter("stkcharge_efficiency_preselection==1 && STK_chargeX!=-999 && STK_chargeY!=-999")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_stkcharge_efficiency_total_loose_xtrl", "HET Trigger + STK Charge", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_stkcharge_efficiency_accepted_bdt = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1 && STK_chargeX!=-999 && STK_chargeY!=-999")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_stkcharge_efficiency_accepted_bdt", "HET Trigger + STK Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_stkcharge_efficiency_total_bdt = fr.Filter("stkcharge_efficiency_preselection==1")
+
+    auto h_stkcharge_efficiency_total_bdt = fr.Filter("stkcharge_efficiency_preselection==1 && STK_chargeX!=-999 && STK_chargeY!=-999")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_stkcharge_efficiency_total_bdt", "HET Trigger + STK Charge", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
-    // Trigger histos
-    auto h_trigger_efficiency_accepted_het_over_let_loose_xtrl = mc_file ? 
-                                            fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
-
-                                            :
-
-                                            fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Define("trigger_w", get_let_prescale, {"geo_lat"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_let_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
-
-    auto h_trigger_efficiency_accepted_het_over_unb_loose_xtrl = mc_file ? 
-                                            fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
-
-                                            :
-
-                                            fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Define("trigger_w", get_unb_prescale, {"geo_lat"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_loose_xtrl", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
-
-
-    auto h_trigger_efficiency_accepted_het_let_loose_xtrl = mc_file ? 
-                                            fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
-
-                                            :
-
-                                            fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_let==1)")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Define("trigger_w", [&get_let_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_let_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_let_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
-
-    auto h_trigger_efficiency_accepted_het_unb_loose_xtrl = mc_file ? 
-                                            fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_unb_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
-
-                                            :
-
-                                            fr.Filter("trigger_efficiency_preselection==1 && (trigger_efficiency_preselection_is_het==1 || trigger_efficiency_preselection_is_unb==1)")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Define("trigger_w", [&get_unb_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_unb_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_trigger_efficiency_accepted_het_unb_loose_xtrl", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
-    // MaxRMS histos
-    auto h_maxrms_efficiency_accepted_loose_xtrl = fr.Filter("maxrms_efficiency_preselection==1 && maxrms_efficiency_preselection_accepted==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_maxrms_efficiency_accepted_loose_xtrl", "HET Trigger + MaxRMS Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_maxrms_efficiency_total_loose_xtrl = fr.Filter("maxrms_efficiency_preselection==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_maxrms_efficiency_total_loose_xtrl", "HET Trigger + MaxRMS", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
-    // nbarlayer13 histos
-    auto h_nbarlayer13_efficiency_accepted_loose_xtrl = fr.Filter("nbarlayer13_efficiency_preselection==1 && nbarlayer13_efficiency_preselection_accepted==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_nbarlayer13_efficiency_accepted_loose_xtrl", "HET Trigger + nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_nbarlayer13_efficiency_total_loose_xtrl = fr.Filter("nbarlayer13_efficiency_preselection==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_nbarlayer13_efficiency_total_loose_xtrl", "HET Trigger + nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
-    // MaxRMS and nbarlayer13 histos
-    auto h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1 && maxrms_and_nbarlayer13_efficiency_preselection_accepted==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl", "HET Trigger + maxrms & nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl", "HET Trigger + maxrms & nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
-    // Track Selection histos
-    auto h_track_efficiency_accepted_loose_xtrl = fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_track_efficiency_accepted_loose_xtrl", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_track_efficiency_total_loose_xtrl = fr.Filter("track_efficiency_preselection==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_track_efficiency_total_loose_xtrl", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
-    // Track Selection histos within STK fiducial volume
-    auto h_track_efficiency_stk_fvolume_accepted_loose_xtrl = fr.Filter("track_efficiency_preselection==1 && evtfilter_stk_fiducial_volume==1 && track_efficiency_preselection_accepted==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_track_efficiency_stk_fvolume_accepted_loose_xtrl", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_track_efficiency_stk_fvolume_total_loose_xtrl = fr.Filter("track_efficiency_preselection==1 && evtfilter_stk_fiducial_volume==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_track_efficiency_stk_fvolume_total_loose_xtrl", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
-    // PSD-STK match histos
-    auto h_psdstkmatch_efficiency_accepted_loose_xtrl = fr.Filter("psdstkmatch_efficiency_preselection==1 && psdstkmatch_efficiency_preselection_accepted==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_psdstkmatch_efficiency_accepted_loose_xtrl", "HET Trigger + PSD-STK Match Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_psdstkmatch_efficiency_total_loose_xtrl = fr.Filter("psdstkmatch_efficiency_preselection==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_psdstkmatch_efficiency_total_loose_xtrl", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
-    // PSD charge histos
-    auto h_psdcharge_efficiency_accepted_loose_xtrl = fr.Filter("psdcharge_efficiency_preselection==1 && psdcharge_efficiency_preselection_accepted==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_psdcharge_efficiency_accepted_loose_xtrl", "HET Trigger + PSD Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_psdcharge_efficiency_total_loose_xtrl = fr.Filter("psdcharge_efficiency_preselection==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_psdcharge_efficiency_total_loose_xtrl", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-
-    // STK charge histos
-    auto h_stkcharge_efficiency_accepted_loose_xtrl = fr.Filter("stkcharge_efficiency_preselection==1 && stkcharge_efficiency_preselection_accepted==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_stkcharge_efficiency_accepted_loose_xtrl", "HET Trigger + STK Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
-    auto h_stkcharge_efficiency_total_loose_xtrl = fr.Filter("stkcharge_efficiency_preselection==1")
-                                            .Define("corr_energy_gev", "energy_corr * 0.001")
-                                            .Define("energy_gev", "energy * 0.001")
-                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
-                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
-                                            .Histo1D({"h_stkcharge_efficiency_total_loose_xtrl", "HET Trigger + STK Charge", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // XTRL vs STK cosine histo
     auto h_xtrl_stk_cosine = fr.Filter("HET_trigger==1 && evtfilter_correct_bgo_reco==1")
@@ -1501,7 +1614,185 @@ void buildEfficiency(const in_args input_args)
                                                         .Filter("xtrl_evt>12 && xtrl<100")
                                                         .Define("corr_energy_gev", "energy_corr * 0.001")
                                                         .Filter("corr_energy_gev>=3000")
-                                                        .Histo2D({"h_psd_charge_3000_xtrl_12_100", "PSD charge; PSD X Charge; PSD Y Charge", 200, 0, 50, 200, 0, 50}, "PSD_chargeX", "PSD_chargeY");                                            
+                                                        .Histo2D({"h_psd_charge_3000_xtrl_12_100", "PSD charge; PSD X Charge; PSD Y Charge", 200, 0, 50, 200, 0, 50}, "PSD_chargeX", "PSD_chargeY");     
+
+    // STK cleaning cuts after all cuts
+    auto createLogBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<double> {
+        std::vector<double> binning (n_bins + 1, 0);
+        double log_interval = (log10(max) - log10(min)) / n_bins;
+        for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
+            binning[bIdx] = pow(10, log10(min) + bIdx * log_interval);
+
+        return binning;
+    };
+
+    auto nStkClu1Rm_log_binning = createLogBinning(1, 1e+3, 80);
+    auto StkEcore1rm_log_binning = createLogBinning(1e+2, 1e+6, 500);
+
+    auto h_stk_cleaning_20_100 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                    .Histo2D({"h_stk_cleaning_20_100", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_100_250 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                    .Histo2D({"h_stk_cleaning_100_250", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_250_500 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                    .Histo2D({"h_stk_cleaning_250_500", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_500_1000 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                    .Histo2D({"h_stk_cleaning_500_1000", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_1000_3000 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                    .Histo2D({"h_stk_cleaning_1000_3000", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_3000 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=3000")
+                                    .Histo2D({"h_stk_cleaning_3000", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    // STK cleaning cuts after all cuts (xtrl signal cut)
+    auto h_stk_cleaning_20_100_xtrl_12 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt<12")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                    .Histo2D({"h_stk_cleaning_20_100_xtrl_12", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_100_250_xtrl_12 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt<12")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                    .Histo2D({"h_stk_cleaning_100_250_xtrl_12", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_250_500_xtrl_12 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt<12")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                    .Histo2D({"h_stk_cleaning_250_500_xtrl_12", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_500_1000_xtrl_12 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt<12")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                    .Histo2D({"h_stk_cleaning_500_1000_xtrl_12", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_1000_3000_xtrl_12 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt<12")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                    .Histo2D({"h_stk_cleaning_1000_3000_xtrl_12", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_3000_xtrl_12 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt<12")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=3000")
+                                    .Histo2D({"h_stk_cleaning_3000_xtrl_12", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    // STK cleaning cuts after all cuts (xtrl background cut)
+    auto h_stk_cleaning_20_100_xtrl_12_100 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>12 && xtrl<100")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                    .Histo2D({"h_stk_cleaning_20_100_xtrl_12_100", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_100_250_xtrl_12_100 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>12 && xtrl<100")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                    .Histo2D({"h_stk_cleaning_100_250_xtrl_12_100", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_250_500_xtrl_12_100 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>12 && xtrl<100")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                    .Histo2D({"h_stk_cleaning_250_500_xtrl_12_100", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_500_1000_xtrl_12_100 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>12 && xtrl<100")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                    .Histo2D({"h_stk_cleaning_500_1000_xtrl_12_100", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_1000_3000_xtrl_12_100 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>12 && xtrl<100")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                    .Histo2D({"h_stk_cleaning_1000_3000_xtrl_12_100", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    auto h_stk_cleaning_3000_xtrl_12_100 = fr.Filter("evtfilter_all_cut==true")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>12 && xtrl<100")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=3000")
+                                    .Histo2D({"h_stk_cleaning_3000_xtrl_12_100", "STK cleaning cut; nStkClu1Rm; StkEcore1rm", (int)nStkClu1Rm_log_binning.size()-1, &nStkClu1Rm_log_binning[0], (int)StkEcore1rm_log_binning.size()-1, &StkEcore1rm_log_binning[0]}, "nStkClu1Rm_stk", "stkEcore1Rm_stk");
+
+    
+    // Rvalue variable
+    auto createLinearBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<float>
+    {
+        double h = (max - min) / n_bins;
+        std::vector<float> xs(n_bins + 1);
+        std::vector<float>::iterator x;
+        double val;
+        for (x = xs.begin(), val = min; x != xs.end(); ++x, val += h)
+            *x = val;
+
+        return xs;
+    };
+    auto rvalue_binning = createLinearBinning(0, 10, 1e+2);
+    auto lvalue_binning = createLinearBinning(0, 1, 1e+2);
+
+    auto h_rvalue = fr.Filter("evtfilter_all_cut==true")
+                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                        .Histo2D({"h_rvalue", "R value; Corrected Energy [GeV]; RValue", energy_nbins, &energy_binning[0], (int)rvalue_binning.size()-1, &rvalue_binning[0]}, "corr_energy_gev", "rvalue");
+    
+    auto h_rvalue_xtrl_12 = fr.Filter("evtfilter_all_cut==true")
+                                .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                .Filter("xtrl_evt<12")
+                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                .Histo2D({"h_rvalue_xtrl_12", "R value; Corrected Energy [GeV]; RValue", energy_nbins, &energy_binning[0], (int)rvalue_binning.size()-1, &rvalue_binning[0]}, "corr_energy_gev", "rvalue");
+
+    auto h_rvalue_xtrl_12_100 = fr.Filter("evtfilter_all_cut==true")
+                                .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                .Filter("xtrl_evt>12 && xtrl<100")
+                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                .Histo2D({"h_rvalue_xtrl_12_100", "R value; Corrected Energy [GeV]; RValue", energy_nbins, &energy_binning[0], (int)rvalue_binning.size()-1, &rvalue_binning[0]}, "corr_energy_gev", "rvalue");
+    
+    // Lvalue variable
+    auto h_lvalue = fr.Filter("evtfilter_all_cut==true")
+                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                        .Histo2D({"h_lvalue", "L value; Corrected Energy [GeV]; LValue", energy_nbins, &energy_binning[0], (int)lvalue_binning.size()-1, &lvalue_binning[0]}, "corr_energy_gev", "lvalue");
+    
+    auto h_lvalue_xtrl_12 = fr.Filter("evtfilter_all_cut==true")
+                                .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                .Filter("xtrl_evt<12")
+                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                .Histo2D({"h_lvalue_xtrl_12", "L value; Corrected Energy [GeV]; LValue", energy_nbins, &energy_binning[0], (int)lvalue_binning.size()-1, &lvalue_binning[0]}, "corr_energy_gev", "lvalue");
+
+    auto h_lvalue_xtrl_12_100 = fr.Filter("evtfilter_all_cut==true")
+                                .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                .Filter("xtrl_evt>12 && xtrl<100")
+                                .Define("corr_energy_gev", "energy_corr * 0.001")
+                                .Histo2D({"h_lvalue_xtrl_12_100", "L value; Corrected Energy [GeV]; LValue", energy_nbins, &energy_binning[0], (int)lvalue_binning.size()-1, &lvalue_binning[0]}, "corr_energy_gev", "lvalue");
 
     TFile *output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
@@ -1533,6 +1824,22 @@ void buildEfficiency(const in_args input_args)
     h_track_efficiency_total_tight_xtrl                                 ->Write();
     h_track_efficiency_accepted_bdt                                     ->Write();
     h_track_efficiency_total_bdt                                        ->Write();
+
+    h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl           ->Write();
+    h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl              ->Write();
+    h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_tight_xtrl          ->Write();
+    h_clusters_on_first_STK_layer_outside_psd_fvolume_total_tight_xtrl             ->Write();
+
+    h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_loose_xtrl           ->Write();
+    h_clusters_on_first_STK_layer_within_psd_fvolume_total_loose_xtrl              ->Write();
+    h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_loose_xtrl          ->Write();
+    h_clusters_on_first_STK_layer_outside_psd_fvolume_total_loose_xtrl             ->Write();
+
+    h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt                   ->Write();
+    h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt                      ->Write();
+    h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt                  ->Write();
+    h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt                     ->Write();
+
     h_track_efficiency_stk_fvolume_accepted_tight_xtrl                  ->Write();
     h_track_efficiency_stk_fvolume_total_tight_xtrl                     ->Write();
     h_track_efficiency_stk_fvolume_accepted_bdt                         ->Write();
@@ -1623,6 +1930,44 @@ void buildEfficiency(const in_args input_args)
     h_psd_stk_match_distance_y_outside_psd_fvolume_500_1000             ->Write();
     h_psd_stk_match_distance_y_outside_psd_fvolume_1000_3000            ->Write();
     h_psd_stk_match_distance_y_outside_psd_fvolume_3000                 ->Write();
+
+    output_file->mkdir("stk_cleaning_cut");
+    output_file->cd("stk_cleaning_cut");
+
+    h_stk_cleaning_20_100                                               ->Write();
+    h_stk_cleaning_100_250                                              ->Write();
+    h_stk_cleaning_250_500                                              ->Write();
+    h_stk_cleaning_500_1000                                             ->Write();
+    h_stk_cleaning_1000_3000                                            ->Write();
+    h_stk_cleaning_3000                                                 ->Write();
+
+    h_stk_cleaning_20_100_xtrl_12                                       ->Write();
+    h_stk_cleaning_100_250_xtrl_12                                      ->Write();
+    h_stk_cleaning_250_500_xtrl_12                                      ->Write();
+    h_stk_cleaning_500_1000_xtrl_12                                     ->Write();
+    h_stk_cleaning_1000_3000_xtrl_12                                    ->Write();
+    h_stk_cleaning_3000_xtrl_12                                         ->Write();
+
+    h_stk_cleaning_20_100_xtrl_12_100                                   ->Write();
+    h_stk_cleaning_100_250_xtrl_12_100                                  ->Write();
+    h_stk_cleaning_250_500_xtrl_12_100                                  ->Write();
+    h_stk_cleaning_500_1000_xtrl_12_100                                 ->Write();
+    h_stk_cleaning_1000_3000_xtrl_12_100                                ->Write();
+    h_stk_cleaning_3000_xtrl_12_100                                     ->Write();
+
+    output_file->mkdir("rvalue");
+    output_file->cd("rvalue");
+
+    h_rvalue                                                            ->Write();
+    h_rvalue_xtrl_12                                                    ->Write();
+    h_rvalue_xtrl_12_100                                                ->Write();
+
+    output_file->mkdir("lvalue");
+    output_file->cd("lvalue");
+
+    h_lvalue                                                            ->Write();
+    h_lvalue_xtrl_12                                                    ->Write();
+    h_lvalue_xtrl_12_100                                                ->Write();
 
     output_file->mkdir("stk_charge");
     output_file->cd("stk_charge");
