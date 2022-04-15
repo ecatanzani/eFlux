@@ -36,7 +36,8 @@ void mcLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool verbose,
-	const std::string wd)
+	const std::string wd,
+	const std::string stk_corrections)
 	{
 		bool _MC = true;
 		double _GeV = 0.001;
@@ -117,6 +118,9 @@ void mcLoop(
 		efficiency cuts_efficiency;
 		// Load preselection class
 		preselection cuts_preselection;
+		// Load STK correction functions
+		if (!stk_corrections.empty())
+			filter.LoadStkCorrectionFunctions(stk_corrections);
 		// Load output file
 		outFile.cd();
 		// Create MC tuple objects
@@ -190,10 +194,10 @@ void mcLoop(
 				mc_config.GetMaxEnergyRange());
 			
 			// Load sub-detectors high level class
-			// Load STK class
-			stkVault.scanSTKHits(stkclusters);
 			// Load BGO class
 			bgoVault.scanBGOHits(bgohits, bgorec, evt_energy.GetRawEnergy(), mc_config.GetBGOLayerMinEnergy());
+			// Load STK class
+			stkVault.scanSTKHits(stkclusters, stktracks, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept());
 			// Load PSD class
 			psdVault.scanPSDHits(psdhits, mc_config.GetPSDBarMinEnergy());
 			// Load NUD class
@@ -215,6 +219,7 @@ void mcLoop(
 					evt_energy.GetRawEnergy(),
 					evt_energy.GetCorrEnergy(),
 					bgoVault,
+					stkVault,
 					psdVault,
 					stkclusters,
 					stktracks,
@@ -242,6 +247,7 @@ void mcLoop(
 					evt_energy.GetRawEnergy(),
 					evt_energy.GetCorrEnergy(),
 					bgoVault,
+					stkVault,
 					psdVault,
 					stkclusters,
 					stktracks,
@@ -252,8 +258,8 @@ void mcLoop(
 			// Fill output structures
 			simu_tuple->Fill(
 				fillFilterTmpStruct(filter, cuts_efficiency, cuts_preselection),
-				stkVault.GetNPlaneClusters(),
 				fillPSDTmpStruct(filter),
+				fillSTKTmpStruct(stkVault),
 				fillBGOTmpStruct(bgoVault),
 				fillSimuTmpStruct(simu_primaries, simu_trajectories),
 				fillEnergyTmpStruct(evt_energy),

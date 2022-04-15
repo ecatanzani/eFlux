@@ -20,6 +20,8 @@ public:
 			   layerBarEnergy		(DAMPE_bgo_nLayers, std::vector<double>(DAMPE_bgo_bars_layer, -999)),
 			   rmsLayer				(DAMPE_bgo_nLayers, -999),
 			   fracLayer			(DAMPE_bgo_nLayers, -999),
+			   t_bgo				(DAMPE_bgo_nLayers, -999),
+			   t_bgo_norm			(DAMPE_bgo_nLayers, -999),
 			   nud_adc				(DAMPE_NUD_channels, -999),
 			   STK_plane_clusters	(DAMPE_stk_planes, -999)
 			   {
@@ -37,7 +39,9 @@ protected:
 		const double psdstkmatch_y_fiducial);
 	void fill_stk_info(
 		const best_track &event_best_track,
-		const std::vector<int> _stk_clusters_on_plane);
+		const std::vector<int> _stk_clusters_on_plane,
+		const std::vector<double> _stkEcore1Rm,
+		const std::vector<unsigned int> _nStkClu1Rm);
 	void fill_bgo_info(
 		const double raw_energy,
 		const double corr_energy,
@@ -52,7 +56,13 @@ protected:
 		const double lastFracLayer,
 		const double frac_layer_13,
 		const int last_bgo_layer,
-		const int bgo_entries);
+		const int bgo_entries,
+		const double bgo_rvalue,
+		const double bgo_lvalue,
+		const double bgo_maximum_shower_position,
+		const double bgo_maximum_shower_position_norm,
+		const std::vector<double> bgo_t,
+		const std::vector<double> bgo_t_norm);
 	void fill_psdcharge_info(const psd_charge &extracted_psd_charge);
 	void fill_stkcharge_info(const stk_charge &extracted_stk_charge);
 	void fill_classifier_info(const bgo_classifiers &classifier);
@@ -94,6 +104,10 @@ protected:
 	double STK_chargeY 														{-999};
 	double STK_charge 														{-999};
 	std::vector<int> STK_plane_clusters;
+	double stkEcore1Rm_bgo 													{-999};
+	double stkEcore1Rm_stk 													{-999};
+	unsigned int nStkClu1Rm_bgo 											{0};
+	unsigned int nStkClu1Rm_stk 											{0};
 	// BGO
 	double energy 															{-999};
 	double energy_corr 														{-999};
@@ -111,6 +125,12 @@ protected:
 	double fracLast_13 														{-999};
 	int lastBGOLayer 														{-999};
 	int nBGOentries 														{-999};
+	double rvalue															{-999};	
+	double lvalue															{-999};
+	double maximum_shower_position											{-999};
+	double maximum_shower_position_norm										{-999};
+	std::vector<double> t_bgo;
+	std::vector<double> t_bgo_norm;
 	// PSD
 	double PSD_chargeX 														{-999};
 	double PSD_chargeY 														{-999};
@@ -140,11 +160,13 @@ protected:
 	bool evtfilter_BGO_fiducial_BGOTrackContainment_cut 					{false};
 	bool evtfilter_nBarLayer13_cut 											{false};
 	bool evtfilter_maxRms_cut 												{false};
+	bool evtfilter_sumrms_low_energy_cut 									{false};
 	bool evtfilter_stk_fiducial_volume										{false};
 	bool evtfilter_stk_fiducial_volume_X									{false};
 	bool evtfilter_stk_fiducial_volume_Y									{false};
 	bool evtfilter_track_selection_cut 										{false};
 	bool evtfilter_track_selection_cut_no_3hit_recover 						{false};
+	bool evtfilter_stk_1rm_cut												{false};
 	bool evtfilter_psd_fiducial_volume										{false};
 	bool evtfilter_psd_fiducial_volume_X									{false};
 	bool evtfilter_psd_fiducial_volume_Y									{false};
@@ -197,8 +219,12 @@ protected:
 	bool nbarlayer13_efficiency_preselection_accepted           			{false};
 	bool maxrms_and_nbarlayer13_efficiency_preselection						{false};
 	bool maxrms_and_nbarlayer13_efficiency_preselection_accepted 			{false};
+	bool sumrms_low_energy_cut_efficiency_preselection						{false};
+	bool sumrms_low_energy_cut_efficiency_preselection_accepted				{false};
 	bool track_efficiency_preselection                          			{false};
 	bool track_efficiency_preselection_accepted                 			{false};
+	bool stk_1rm_cut_efficiency_preselection								{false};
+	bool stk_1rm_cut_efficiency_preselection_accepted						{false};
 	bool psdstkmatch_efficiency_preselection                    			{false};
 	bool psdstkmatch_efficiency_preselection_accepted           			{false};
 	bool psdcharge_efficiency_preselection                      			{false};

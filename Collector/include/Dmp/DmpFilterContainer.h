@@ -19,13 +19,15 @@
 #include "DmpStkTrackHelper.h"
 #include "DmpEvtSimuPrimaries.h"
 
+#include "TF1.h"
 #include "TChain.h"
 #include "TVector3.h"
 #include "TClonesArray.h"
 
 #include "config.h"
-#include "DmpBgoContainer.h"
-#include "DmpPsdContainer.h"
+#include "Dmp/DmpStkContainer.h"
+#include "Dmp/DmpBgoContainer.h"
+#include "Dmp/DmpPsdContainer.h"
 
 struct best_track
 {
@@ -117,12 +119,14 @@ struct filter_output
 	bool BGO_fiducial_BGOTrackContainment_cut 		{false};
 	bool nBarLayer13_cut 							{false};
 	bool maxRms_cut 								{false};
+	bool sumrms_low_energy_cut						{false};
 	bool stk_fiducial_volume						{false};
 	bool stk_fiducial_volume_X						{false};
 	bool stk_fiducial_volume_Y						{false};
 	bool track_selection_cut 						{false};
 	bool track_selection_cut_no_3hit_recover 		{false};
 	bool three_cluster_only_track					{false};
+	bool stk_1rm_cut								{false};
 	bool psd_stk_match_cut 							{false};
 	bool psd_fiducial_volume 						{false};
 	bool psd_fiducial_volume_X 						{false};
@@ -159,11 +163,22 @@ struct data_evt_time
 	short msecond 				{0};
 };
 
+struct stk_correction_functions
+{
+	std::shared_ptr<TF1> f_stk_correction_20_100 = std::shared_ptr<TF1>(nullptr);
+	std::shared_ptr<TF1> f_stk_correction_100_250 = std::shared_ptr<TF1>(nullptr);
+	std::shared_ptr<TF1> f_stk_correction_250_500 = std::shared_ptr<TF1>(nullptr);
+	std::shared_ptr<TF1> f_stk_correction_500_1000 = std::shared_ptr<TF1>(nullptr);
+	std::shared_ptr<TF1> f_stk_correction_1000_3000 = std::shared_ptr<TF1>(nullptr);
+	std::shared_ptr<TF1> f_stk_correction_3000 = std::shared_ptr<TF1>(nullptr);
+};
+
 class DmpFilterContainer
 {
 public:
 	DmpFilterContainer(){};
 	~DmpFilterContainer(){};
+	void LoadStkCorrectionFunctions(std::string path);
 	void Pipeline(
 		const std::shared_ptr<DmpEvtBgoRec> &bgorec,
 		const std::shared_ptr<DmpEvtBgoHits> &bgohits,
@@ -171,6 +186,7 @@ public:
 		const double bgoTotalE,
 		const double bgoTotalE_corr,
 		DmpBgoContainer &bgoVault,
+		DmpStkContainer &stkVault,
 		DmpPsdContainer &psdVault,
 		const std::shared_ptr<TClonesArray> &stkclusters,
 		const std::shared_ptr<TClonesArray> &stktracks,
@@ -228,6 +244,8 @@ protected:
 	void checkBGOreco(
 		const std::vector<double> bgoRec_slope,
 		const std::vector<double> bgoRec_intercept);
+
+	// Analysis cuts
 	const bool maxElayer_cut(
 		const std::vector<double> layer_energies,
 		const cuts_conf acceptance_cuts,
@@ -249,6 +267,19 @@ protected:
 		const std::vector<double> rmsLayer,
 		const double bgoTotalE,
 		const cuts_conf data_cuts);
+
+	
+	const bool sumrms_low_energy_cut(
+		const double bgoTotalE,
+		const double sumrms,
+		const double bgo_direction_cosine);
+	const bool stk_1rm_cut(
+		const std::vector<double> stkEcore1Rm,
+		const std::vector<unsigned int> nStkClu1Rm,
+		const double bgoTotalE_corr);
+	const bool rvalue_cut(const double rvalue);
+	const bool lvalue_cut(const double lvalue, const double bgoTotalE, const double bgoTotalE_corr);
+
 	void link_ladders(std::vector<int> &LadderToLayer);
 	void fill_BGO_vectors(
 		TVector3 &bgoRecEntrance,
@@ -318,6 +349,8 @@ protected:
 	statistics particle_counter;
 	data_evt_time time;
 	trigger_info evt_trigger;
+
+	stk_correction_functions stk_cleaning_functions;
 };
 
 #endif

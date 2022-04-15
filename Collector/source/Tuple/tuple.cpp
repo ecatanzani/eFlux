@@ -39,7 +39,9 @@ void ntuple::fill_psd_info(
 
 void ntuple::fill_stk_info(
 	const best_track &event_best_track,
-	const std::vector<int> _stk_clusters_on_plane)
+	const std::vector<int> _stk_clusters_on_plane,
+	const std::vector<double> _stkEcore1Rm,
+	const std::vector<unsigned int> _nStkClu1Rm)
 {
 	if (evtfilter_track_selection_cut)
 	{
@@ -59,7 +61,12 @@ void ntuple::fill_stk_info(
 		STK_bestTrack_STK_BGO_topY_distance = event_best_track.STK_BGO_topY_distance;
 		STK_bestTrack_angular_distance_STK_BGO = event_best_track.angular_distance_STK_BGO;
 	}
+	
 	STK_plane_clusters = _stk_clusters_on_plane;
+	stkEcore1Rm_bgo = _stkEcore1Rm[0];
+	stkEcore1Rm_stk = _stkEcore1Rm[1];
+	nStkClu1Rm_bgo = _nStkClu1Rm[0];
+	nStkClu1Rm_stk = _nStkClu1Rm[1];
 }
 
 void ntuple::fill_bgo_info(
@@ -76,28 +83,40 @@ void ntuple::fill_bgo_info(
 	const double lastFracLayer,
 	const double frac_layer_13,
 	const int last_bgo_layer,
-	const int bgo_entries)
-{
-	if (evtfilter_correct_bgo_reco)
+	const int bgo_entries,
+	const double bgo_rvalue,
+	const double bgo_lvalue,
+	const double bgo_maximum_shower_position,
+	const double bgo_maximum_shower_position_norm,
+	const std::vector<double> bgo_t,
+	const std::vector<double> bgo_t_norm)
 	{
-		energy = raw_energy;
-		energy_corr = corr_energy;
-		eLayer = energy_release_layer;
-		layerBarEnergy = energy_release_layer_bar;
-		BGOrec_slopeX = bgoRec_slope[0];
-		BGOrec_slopeY = bgoRec_slope[1];
-		BGOrec_interceptX = bgoRec_intercept[0];
-		BGOrec_interceptY = bgoRec_intercept[1];
-		trajectoryDirection2D = bgoRec_trajectory2D;
-		sumRms = sumRMS;
-		rmsLayer = rms_layer;
-		fracLayer = bgo_fracLayer;
-		fracLast = lastFracLayer;
-		fracLast_13 = frac_layer_13;
-		lastBGOLayer = last_bgo_layer;
-		nBGOentries = bgo_entries;
+		if (evtfilter_correct_bgo_reco)
+		{
+			energy = raw_energy;
+			energy_corr = corr_energy;
+			eLayer = energy_release_layer;
+			layerBarEnergy = energy_release_layer_bar;
+			BGOrec_slopeX = bgoRec_slope[0];
+			BGOrec_slopeY = bgoRec_slope[1];
+			BGOrec_interceptX = bgoRec_intercept[0];
+			BGOrec_interceptY = bgoRec_intercept[1];
+			trajectoryDirection2D = bgoRec_trajectory2D;
+			sumRms = sumRMS;
+			rmsLayer = rms_layer;
+			fracLayer = bgo_fracLayer;
+			fracLast = lastFracLayer;
+			fracLast_13 = frac_layer_13;
+			lastBGOLayer = last_bgo_layer;
+			nBGOentries = bgo_entries;
+			rvalue = bgo_rvalue;
+			lvalue = bgo_lvalue;
+			maximum_shower_position = bgo_maximum_shower_position;
+			maximum_shower_position_norm = bgo_maximum_shower_position_norm;
+			t_bgo = bgo_t;
+			t_bgo_norm = bgo_t_norm;
+		}
 	}
-}
 
 void ntuple::fill_psdcharge_info(const psd_charge &extracted_psd_charge)
 {
@@ -179,8 +198,12 @@ void ntuple::fill_preselectionfiltersefficiency_info(const eff_output &eff_prese
 		nbarlayer13_efficiency_preselection_accepted 					= eff_preselect.nbarlayer13_efficiency_preselection_accepted;
 		maxrms_and_nbarlayer13_efficiency_preselection 					= eff_preselect.maxrms_and_nbarlayer13_efficiency_preselection;
 		maxrms_and_nbarlayer13_efficiency_preselection_accepted 		= eff_preselect.maxrms_and_nbarlayer13_efficiency_preselection_accepted;
+		sumrms_low_energy_cut_efficiency_preselection					= eff_preselect.sumrms_low_energy_cut_efficiency_preselection;
+		sumrms_low_energy_cut_efficiency_preselection_accepted			= eff_preselect.sumrms_low_energy_cut_efficiency_preselection_accepted;
 		track_efficiency_preselection 									= eff_preselect.track_efficiency_preselection;
 		track_efficiency_preselection_accepted 							= eff_preselect.track_efficiency_preselection_accepted;
+		stk_1rm_cut_efficiency_preselection								= eff_preselect.stk_1rm_cut_efficiency_preselection;
+		stk_1rm_cut_efficiency_preselection_accepted					= eff_preselect.stk_1rm_cut_efficiency_preselection_accepted;
 		psdstkmatch_efficiency_preselection 							= eff_preselect.psdstkmatch_efficiency_preselection;
 		psdstkmatch_efficiency_preselection_accepted 					= eff_preselect.psdstkmatch_efficiency_preselection_accepted;
 		psdcharge_efficiency_preselection 								= eff_preselect.psdcharge_efficiency_preselection;
@@ -219,6 +242,10 @@ void ntuple::core_reset()
 	STK_chargeY 										= -999;
 	STK_charge 											= -999;
 	STK_plane_clusters 									= std::vector<int> (DAMPE_stk_planes, -999);
+	stkEcore1Rm_bgo										= -999;
+	stkEcore1Rm_stk										= -999;
+	nStkClu1Rm_bgo										= 0;
+	nStkClu1Rm_stk										= 0;
 	// BGO
 	energy 												= -999;
 	energy_corr	 										= -999;
@@ -229,13 +256,19 @@ void ntuple::core_reset()
 	BGOrec_interceptX 									= -999;
 	BGOrec_interceptY 									= -999;
 	trajectoryDirection2D								.SetXYZ(-999, -999, -999);
-	sumRms = -999;
+	sumRms 												= -999;
 	rmsLayer 											= std::vector<double>(DAMPE_bgo_nLayers, -999);
 	fracLayer 											= std::vector<double>(DAMPE_bgo_nLayers, -999);
 	fracLast 											= -999;
 	fracLast_13 										= -999;
 	lastBGOLayer 										= -999;
 	nBGOentries 										= -999;
+	rvalue												= -999;
+	lvalue												= -999;
+	maximum_shower_position								= -999;
+	maximum_shower_position_norm						= -999;
+	t_bgo 												= std::vector<double>(DAMPE_bgo_nLayers, -999);
+	t_bgo_norm											= std::vector<double>(DAMPE_bgo_nLayers, -999);
 	// PSD
 	PSD_chargeX 										= -999;
 	PSD_chargeY 										= -999;
@@ -265,11 +298,13 @@ void ntuple::core_reset()
 	evtfilter_BGO_fiducial_BGOTrackContainment_cut 		= false;
 	evtfilter_nBarLayer13_cut 							= false;
 	evtfilter_maxRms_cut 								= false;
+	evtfilter_sumrms_low_energy_cut						= false;
 	evtfilter_stk_fiducial_volume 						= false;
 	evtfilter_stk_fiducial_volume_X						= false;
 	evtfilter_stk_fiducial_volume_Y						= false;
 	evtfilter_track_selection_cut 						= false;
 	evtfilter_track_selection_cut_no_3hit_recover 		= false;
+	evtfilter_stk_1rm_cut								= false;
 	evtfilter_psd_fiducial_volume 						= false;
 	evtfilter_psd_fiducial_volume_X						= false;
 	evtfilter_psd_fiducial_volume_Y						= false;
@@ -320,10 +355,14 @@ void ntuple::core_reset()
 	maxrms_efficiency_preselection_accepted             		= false;
 	nbarlayer13_efficiency_preselection                 		= false;
 	nbarlayer13_efficiency_preselection_accepted        		= false;
+	sumrms_low_energy_cut_efficiency_preselection				= false;
+	sumrms_low_energy_cut_efficiency_preselection_accepted		= false;
 	maxrms_and_nbarlayer13_efficiency_preselection	  			= false;
 	maxrms_and_nbarlayer13_efficiency_preselection_accepted		= false;
 	track_efficiency_preselection                       		= false;
 	track_efficiency_preselection_accepted              		= false;
+	stk_1rm_cut_efficiency_preselection							= false;
+	stk_1rm_cut_efficiency_preselection_accepted				= false;
 	psdstkmatch_efficiency_preselection                 		= false;
 	psdstkmatch_efficiency_preselection_accepted        		= false;
 	psdcharge_efficiency_preselection                   		= false;

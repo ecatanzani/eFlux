@@ -41,6 +41,11 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch("STK_chargeY", &STK_chargeY, "STK_chargeY/D");
 	DmpNtupTree->Branch("STK_charge", &STK_charge, "STK_charge/D");
 	DmpNtupTree->Branch("STK_plane_clusters", &STK_plane_clusters);
+	
+	DmpNtupTree->Branch("stkEcore1Rm_bgo", &stkEcore1Rm_bgo, "stkEcore1Rm_bgo/D");
+	DmpNtupTree->Branch("stkEcore1Rm_stk", &stkEcore1Rm_stk, "stkEcore1Rm_stk/D");
+	DmpNtupTree->Branch("nStkClu1Rm_bgo", &nStkClu1Rm_bgo, "nStkClu1Rm_bgo/i");
+	DmpNtupTree->Branch("nStkClu1Rm_stk", &nStkClu1Rm_stk, "nStkClu1Rm_stk/i");
 	// BGO
 	DmpNtupTree->Branch("energy", &energy, "energy/D");
 	DmpNtupTree->Branch("energy_corr", &energy_corr, "energy_corr/D");
@@ -58,6 +63,12 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch("fracLast_13", &fracLast_13, "fracLast_13/D");
 	DmpNtupTree->Branch("lastBGOLayer", &lastBGOLayer, "lastBGOLayer/I");
 	DmpNtupTree->Branch("nBGOentries", &nBGOentries, "nBGOentries/I");
+	DmpNtupTree->Branch("rvalue", &rvalue, "rvalue/D");
+	DmpNtupTree->Branch("lvalue", &lvalue, "lvalue/D");
+	DmpNtupTree->Branch("maximum_shower_position", &maximum_shower_position, "maximum_shower_position/D");
+	DmpNtupTree->Branch("maximum_shower_position_norm", &maximum_shower_position_norm, "maximum_shower_position_norm/D");
+	DmpNtupTree->Branch("t_bgo", &t_bgo);
+	DmpNtupTree->Branch("t_bgo_norm", &t_bgo_norm);
 	// PSD
 	DmpNtupTree->Branch("PSD_chargeX", &PSD_chargeX, "PSD_chargeX/D");
 	DmpNtupTree->Branch("PSD_chargeY", &PSD_chargeY, "PSD_chargeY/D");
@@ -110,11 +121,13 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch("evtfilter_BGO_fiducial_BGOTrackContainment_cut", &evtfilter_BGO_fiducial_BGOTrackContainment_cut, "evtfilter_BGO_fiducial_BGOTrackContainment_cut/O");
 	DmpNtupTree->Branch("evtfilter_nBarLayer13_cut", &evtfilter_nBarLayer13_cut, "evtfilter_nBarLayer13_cut/O");
 	DmpNtupTree->Branch("evtfilter_maxRms_cut", &evtfilter_maxRms_cut, "evtfilter_maxRms_cut/O");
+	DmpNtupTree->Branch("evtfilter_sumrms_low_energy_cut", &evtfilter_sumrms_low_energy_cut, "evtfilter_sumrms_low_energy_cut/O");
 	DmpNtupTree->Branch("evtfilter_stk_fiducial_volume", &evtfilter_stk_fiducial_volume, "evtfilter_stk_fiducial_volume/O");
 	DmpNtupTree->Branch("evtfilter_stk_fiducial_volume_X", &evtfilter_stk_fiducial_volume_X, "evtfilter_stk_fiducial_volume_X/O");
 	DmpNtupTree->Branch("evtfilter_stk_fiducial_volume_Y", &evtfilter_stk_fiducial_volume_Y, "evtfilter_stk_fiducial_volume_Y/O");
 	DmpNtupTree->Branch("evtfilter_track_selection_cut", &evtfilter_track_selection_cut, "evtfilter_track_selection_cut/O");
 	DmpNtupTree->Branch("evtfilter_track_selection_cut_no_3hit_recover", &evtfilter_track_selection_cut_no_3hit_recover, "evtfilter_track_selection_cut_no_3hit_recover/O");
+	DmpNtupTree->Branch("evtfilter_stk_1rm_cut", &evtfilter_stk_1rm_cut, "evtfilter_stk_1rm_cut/O");
 	DmpNtupTree->Branch("evtfilter_psd_fiducial_volume", &evtfilter_psd_fiducial_volume, "evtfilter_psd_fiducial_volume/O");
 	DmpNtupTree->Branch("evtfilter_psd_fiducial_volume_X", &evtfilter_psd_fiducial_volume_X, "evtfilter_psd_fiducial_volume_X/O");
 	DmpNtupTree->Branch("evtfilter_psd_fiducial_volume_Y", &evtfilter_psd_fiducial_volume_Y, "evtfilter_psd_fiducial_volume_Y/O");
@@ -161,8 +174,12 @@ void data_tuple::branch_tree()
 	DmpNtupTree->Branch("nbarlayer13_efficiency_preselection_accepted", &nbarlayer13_efficiency_preselection_accepted, "nbarlayer13_efficiency_preselection_accepted/O");
 	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection", &maxrms_and_nbarlayer13_efficiency_preselection, "maxrms_and_nbarlayer13_efficiency_preselection/O");
 	DmpNtupTree->Branch("maxrms_and_nbarlayer13_efficiency_preselection_accepted", &maxrms_and_nbarlayer13_efficiency_preselection_accepted, "maxrms_and_nbarlayer13_efficiency_preselection_accepted/O");
+	DmpNtupTree->Branch("sumrms_low_energy_cut_efficiency_preselection", &sumrms_low_energy_cut_efficiency_preselection, "sumrms_low_energy_cut_efficiency_preselection/O");
+	DmpNtupTree->Branch("sumrms_low_energy_cut_efficiency_preselection_accepted", &sumrms_low_energy_cut_efficiency_preselection_accepted, "sumrms_low_energy_cut_efficiency_preselection_accepted/O");
 	DmpNtupTree->Branch("track_efficiency_preselection", &track_efficiency_preselection, "track_efficiency_preselection/O");
 	DmpNtupTree->Branch("track_efficiency_preselection_accepted", &track_efficiency_preselection_accepted, "track_efficiency_preselection_accepted/O");
+	DmpNtupTree->Branch("stk_1rm_cut_efficiency_preselection", &stk_1rm_cut_efficiency_preselection, "stk_1rm_cut_efficiency_preselection/O");
+	DmpNtupTree->Branch("stk_1rm_cut_efficiency_preselection_accepted", &stk_1rm_cut_efficiency_preselection_accepted, "stk_1rm_cut_efficiency_preselection_accepted/O");
 	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection", &psdstkmatch_efficiency_preselection, "psdstkmatch_efficiency_preselection/O");
 	DmpNtupTree->Branch("psdstkmatch_efficiency_preselection_accepted", &psdstkmatch_efficiency_preselection_accepted, "psdstkmatch_efficiency_preselection_accepted/O");
 	DmpNtupTree->Branch("psdcharge_efficiency_preselection", &psdcharge_efficiency_preselection, "psdcharge_efficiency_preselection/O");
@@ -173,8 +190,8 @@ void data_tuple::branch_tree()
 
 void data_tuple::Fill(
 	const std::shared_ptr<_tmp_filter> _filter_res,
-	const std::vector<int> _stk_clusters_on_plane,
 	const std::shared_ptr<_tmp_psd> _psd_res,
+	const std::shared_ptr<_tmp_stk> _stk_res,
 	const std::shared_ptr<_tmp_bgo> _bgo_res,
 	const std::shared_ptr<_tmp_energy_data> _energy_res,
 	const std::shared_ptr<DmpEvtAttitude> attitude,
@@ -191,8 +208,10 @@ void data_tuple::Fill(
 		_psd_res->SPD_STK_match_X_distance_fiducial_volume,
 		_psd_res->SPD_STK_match_Y_distance_fiducial_volume);
 	fill_stk_info(
-		_filter_res->evt_best_track,
-		_stk_clusters_on_plane);
+		_filter_res->evt_best_track, 
+		_stk_res->clusters_on_plane,
+		_stk_res->stkEcore1Rm,
+		_stk_res->nStkClu1Rm);
 	fill_bgo_info(
 		_energy_res->raw,
 		_energy_res->correct,
@@ -207,7 +226,13 @@ void data_tuple::Fill(
 		_bgo_res->energy_fraction_last_layer,
 		_bgo_res->energy_fraction_13th_layer,
 		_bgo_res->last_energy_layer,
-		_bgo_res->hits);
+		_bgo_res->hits,
+		_bgo_res->rvalue,
+		_bgo_res->lvalue,
+		_bgo_res->maximum_shower_position,
+		_bgo_res->maximum_shower_position_norm,
+		_bgo_res->t_bgo,
+		_bgo_res->t_bgo_norm);
 	fill_attitude_info(attitude);
 	fill_psdcharge_info(_filter_res->evt_psd_charge);
 	fill_stkcharge_info(_filter_res->evt_stk_charge);
@@ -236,11 +261,13 @@ void data_tuple::fill_filter_info(const filter_output &output)
 	evtfilter_BGO_fiducial_BGOTrackContainment_cut 			= output.BGO_fiducial_BGOTrackContainment_cut;
 	evtfilter_nBarLayer13_cut 								= output.nBarLayer13_cut;
 	evtfilter_maxRms_cut 									= output.maxRms_cut;
+	evtfilter_sumrms_low_energy_cut							= output.sumrms_low_energy_cut;
 	evtfilter_stk_fiducial_volume	 						= output.stk_fiducial_volume;
 	evtfilter_stk_fiducial_volume_X 						= output.stk_fiducial_volume_X;
 	evtfilter_stk_fiducial_volume_Y 						= output.stk_fiducial_volume_Y;
 	evtfilter_track_selection_cut 							= output.track_selection_cut;
 	evtfilter_track_selection_cut_no_3hit_recover 			= output.track_selection_cut_no_3hit_recover;
+	evtfilter_stk_1rm_cut									= output.stk_1rm_cut;
 	evtfilter_psd_fiducial_volume 							= output.psd_fiducial_volume;
 	evtfilter_psd_fiducial_volume_X 						= output.psd_fiducial_volume_X;
 	evtfilter_psd_fiducial_volume_Y 						= output.psd_fiducial_volume_Y;

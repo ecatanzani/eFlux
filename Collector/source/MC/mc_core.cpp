@@ -18,7 +18,8 @@ void mcCore(in_pars input_pars)
 		input_pars.input_path,
 		out_file,
 		input_pars.verbose,
-		input_pars.wd);
+		input_pars.wd,
+		input_pars.stk_correction);
 
 	// Close output file ...
 	out_file.Close();

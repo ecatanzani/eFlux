@@ -20,6 +20,12 @@ int main(int argc, char **argv)
 	opt.addUsage(" -p  --pedantic                .......... Pedantic output");
 
 	opt.addUsage("");
+	opt.addUsage("Cuts correction functions: ");
+	opt.addUsage("");
+
+	opt.addUsage(" -s  --stk_correction          .......... <path_to_stk_correction_function>      .......... STK correction function");
+
+	opt.addUsage("");
 	opt.addUsage("Tasks: ");
 	opt.addUsage("");
 
@@ -35,6 +41,7 @@ int main(int argc, char **argv)
 	opt.setOption("outputDir", 'd');
 	opt.setFlag("verbose", 'v');
 	opt.setFlag("pedantic", 'p');
+	opt.setOption("stk_correction", 's');
 	opt.setFlag("mc", 'm');
 	opt.setFlag("raw_data", 'r');
 	
@@ -62,6 +69,8 @@ int main(int argc, char **argv)
 		input_pars.verbose = opt.getFlag('v');
 	if (opt.getFlag("pedantic") || opt.getFlag('p'))
 		input_pars.pedantic = opt.getFlag('p');
+	if (opt.getValue("stk_correction") || opt.getValue('s'))
+		input_pars.stk_correction = opt.getValue('s');
 	if (opt.getFlag("mc") || opt.getFlag('m'))
 		input_pars.mc_flag = true;
 	if (opt.getFlag("raw_data") || opt.getFlag('r'))

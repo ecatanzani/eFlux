@@ -1,8 +1,30 @@
 #include "Dmp/DmpFilterContainer.h"
 
+#include "TF1.h"
+#include "TGraph.h"
+
 inline double xtrX_computation(const double sumRms, const double lastFracLayer)
 {
 	return lastFracLayer != -1 ? 0.125e-6 * pow(sumRms, 4) * lastFracLayer : -999;
+}
+
+void DmpFilterContainer::LoadStkCorrectionFunctions(std::string path)
+{
+	TFile *infile = TFile::Open(path.c_str(), "READ");
+	if (infile->IsZombie())
+	{
+		std::cerr << "\n\nError reading input file [" << path << "]\n\n";
+		exit(100);
+	}
+
+	stk_cleaning_functions.f_stk_correction_20_100 = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get("f_cuts_20_100")));
+	stk_cleaning_functions.f_stk_correction_100_250 = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get("f_cuts_100_250")));
+	stk_cleaning_functions.f_stk_correction_250_500 = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get("f_cuts_250_500")));
+	stk_cleaning_functions.f_stk_correction_500_1000 = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get("f_cuts_500_1000")));
+	stk_cleaning_functions.f_stk_correction_1000_3000 = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get("f_cuts_1000_3000")));
+	stk_cleaning_functions.f_stk_correction_3000 = std::shared_ptr<TF1>(static_cast<TF1*>(infile->Get("f_cuts_3000")));
+
+	infile->Close();
 }
 
 void DmpFilterContainer::Pipeline(
@@ -12,6 +34,7 @@ void DmpFilterContainer::Pipeline(
 	const double bgoTotalE,
 	const double bgoTotalE_corr,
 	DmpBgoContainer &bgoVault,
+	DmpStkContainer &stkVault,
 	DmpPsdContainer &psdVault,
 	const std::shared_ptr<TClonesArray> &stkclusters,
 	const std::shared_ptr<TClonesArray> &stktracks,
@@ -51,82 +74,104 @@ void DmpFilterContainer::Pipeline(
 				output.all_cut *= output.maxRms_cut;
 			}
 
-			if (output.all_cut) 
+			if (output.all_cut)
 			{
-				// **** track selection cut ****
-				if (acuts.track_selection) 
-				{
-					output.track_selection_cut = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts);
-					output.track_selection_cut_no_3hit_recover = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts, false, false);
-					output.all_cut *= output.track_selection_cut;
-
-					// **** STK charge measurement ****
-					if (output.track_selection_cut)
-					{
-						output.stk_charge_measurement = true;
-						stk_charge_measurement(stkclusters);
-					}
-				}			
+				// **** sumRMS Low Energy cleaning cut ****
+				output.sumrms_low_energy_cut = sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta());
+				output.all_cut *= output.sumrms_low_energy_cut;
 
 				if (output.all_cut) 
 				{
-					
-					if (psd_fiducial_volume_cut())
+					// **** track selection cut ****
+					if (acuts.track_selection) 
 					{
-						// **** psd stk match cut ****
-						if (acuts.psd_stk_match) 
+						output.track_selection_cut = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts);
+						output.track_selection_cut_no_3hit_recover = track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts, false, false);
+						output.all_cut *= output.track_selection_cut;
+
+						// **** STK charge measurement ****
+						if (output.track_selection_cut)
 						{
-							output.psd_stk_match_cut = psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo());
-							output.all_cut *= output.psd_stk_match_cut;
-
-							// **** PSD charge measurement ****
-							if (output.psd_stk_match_cut)
-							{
-								output.psd_charge_measurement = true;
-								psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-							}
+							output.stk_charge_measurement = true;
+							stk_charge_measurement(stkclusters);
 						}
+					}			
 
-						if (output.all_cut) 
-						{
-
-							// **** psd charge cut ****
-							if (acuts.psd_charge) 
-							{
-								output.psd_charge_cut = psd_charge_cut(cuts);
-								output.psd_charge_cut_no_single_view_recover = psd_charge_cut(cuts, false);
-								output.all_cut *= output.psd_charge_cut;
-							}
-
-							// **** stk charge cut ****
-							if (acuts.stk_charge) 
-							{
-								output.stk_charge_cut = stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower);
-								output.all_cut *= output.stk_charge_cut;
-							}
-
-							if (output.all_cut) 
-							{
-								output.xtrl_tight_cut = xtrl_tight_cut(classifier.xtrl);
-								output.xtrl_loose_cut = xtrl_loose_cut(classifier.xtrl, bgoTotalE_corr);
-								++particle_counter.selected_events;
-							}
-						}
-					}
-					else
+					if (output.all_cut) 
 					{
-						// **** stk charge cut ****
-						if (acuts.stk_charge) 
-						{
-							output.stk_charge_cut = stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower);
-							output.all_cut *= output.stk_charge_cut;
-						}
+						// **** STK cleaning cut ****
+						output.stk_1rm_cut = stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr);
+						output.all_cut *= output.stk_1rm_cut;
 
-						if (output.all_cut) 
+						/* Other cleaning cuts
+						rvalue_cut(bgoVault.GetRValue());
+						lvalue_cut(bgoVault.GetLValue(), bgoTotalE, bgoTotalE_corr);
+						*/
+
+						if (output.all_cut)
 						{
-							output.xtrl_tight_cut = xtrl_tight_cut(classifier.xtrl);
-							output.xtrl_loose_cut = xtrl_loose_cut(classifier.xtrl, bgoTotalE_corr);
-							++particle_counter.selected_events;
+							if (psd_fiducial_volume_cut())
+							{
+								// **** psd stk match cut ****
+								if (acuts.psd_stk_match) 
+								{
+									output.psd_stk_match_cut = psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo());
+									output.all_cut *= output.psd_stk_match_cut;
+
+									// **** PSD charge measurement ****
+									if (output.psd_stk_match_cut)
+									{
+										output.psd_charge_measurement = true;
+										psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+									}
+								}
+
+								if (output.all_cut) 
+								{
+
+									// **** psd charge cut ****
+									if (acuts.psd_charge) 
+									{
+										output.psd_charge_cut = psd_charge_cut(cuts);
+										output.psd_charge_cut_no_single_view_recover = psd_charge_cut(cuts, false);
+										output.all_cut *= output.psd_charge_cut;
+									}
+
+									// **** stk charge cut ****
+									if (acuts.stk_charge) 
+									{
+										output.stk_charge_cut = stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower);
+										output.all_cut *= output.stk_charge_cut;
+									}
+
+									if (output.all_cut) 
+									{
+										output.xtrl_tight_cut = xtrl_tight_cut(classifier.xtrl);
+										output.xtrl_loose_cut = xtrl_loose_cut(classifier.xtrl, bgoTotalE_corr);
+										++particle_counter.selected_events;
+									}
+								}
+							}
+							else
+							{
+								// Set to true the cuts that will not be applied in this analysis branch
+								output.psd_stk_match_cut = true;
+								output.psd_charge_cut = true;
+
+								// **** stk charge cut ****
+								if (acuts.stk_charge) 
+								{
+									output.stk_charge_cut = stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower);
+									output.all_cut *= output.stk_charge_cut;
+								}
+
+								if (output.all_cut) 
+								{
+									output.xtrl_tight_cut = xtrl_tight_cut(classifier.xtrl);
+									output.xtrl_loose_cut = xtrl_loose_cut(classifier.xtrl, bgoTotalE_corr);
+									++particle_counter.selected_events;
+								}
+							}
 						}
 					}
 				}
@@ -197,7 +242,7 @@ const bool DmpFilterContainer::maxElayer_cut(
 	const cuts_conf cuts,
 	const double bgoTotalE)
 {
-	bool passed_maxELayerTotalE_cut = true;
+	bool passed_maxELayerTotalE_cut {true};
 
 	for (int idxLy = 0; idxLy < DAMPE_bgo_nLayers; ++idxLy)
 	{
@@ -217,7 +262,7 @@ const bool DmpFilterContainer::maxBarLayer_cut(
 	const std::vector<int> iMaxLayer,
 	const std::vector<int> idxBarMaxLayer)
 {
-	bool passed_maxBarLayer_cut = true;
+	bool passed_maxBarLayer_cut {true};
 
 	for (auto lIdx = 1; lIdx <= 3; ++lIdx)
 	{
@@ -227,11 +272,13 @@ const bool DmpFilterContainer::maxBarLayer_cut(
 			break;
 		}
 		if (iMaxLayer[lIdx] > -1)
+		{
 			if (idxBarMaxLayer[lIdx] == 0 || idxBarMaxLayer[lIdx] == 21)
 			{
 				passed_maxBarLayer_cut = false;
 				break;
 			}
+		}
 	}
 
 	return passed_maxBarLayer_cut;
@@ -242,7 +289,7 @@ const bool DmpFilterContainer::BGOTrackContainment_cut(
 	const std::vector<double> bgoRec_intercept,
 	const cuts_conf cuts)
 {
-	bool passed_bgo_containment_cut = false;
+	bool passed_bgo_containment_cut {false};
 
 	double topX = bgoRec_slope[0] * BGO_TopZ + bgoRec_intercept[0];
 	double topY = bgoRec_slope[1] * BGO_TopZ + bgoRec_intercept[1];
@@ -265,9 +312,9 @@ const bool DmpFilterContainer::nBarLayer13_cut(
 	const std::vector<short> layerBarIndex,
 	const double bgoTotalE)
 {
-	bool passed_nBarLayer13_cut = false;
-	unsigned int nTriggeredBGO_13_bars = 0;
-	double _GeV = 0.001;
+	bool passed_nBarLayer13_cut {false};
+	unsigned int nTriggeredBGO_13_bars {0};
+	double _GeV {0.001};
 
 	for (auto it = std::begin(layerBarIndex); it != std::end(layerBarIndex); ++it)
 	{
@@ -288,9 +335,9 @@ const bool DmpFilterContainer::maxRms_cut(
 	const double bgoTotalE,
 	const cuts_conf cuts)
 {
-	bool passed_maxRms_cut = false;
-	auto max_rms = 0;
-	auto eCut = bgoTotalE / 100.;
+	bool passed_maxRms_cut {false};
+	double max_rms {0};
+	double eCut {bgoTotalE / 100.};
 
 	for (auto lIdx = 0; lIdx < DAMPE_bgo_nLayers; ++lIdx)
 		if (layer_energy[lIdx] > eCut)
@@ -301,6 +348,116 @@ const bool DmpFilterContainer::maxRms_cut(
 		passed_maxRms_cut = true;
 
 	return passed_maxRms_cut;
+}
+
+const bool DmpFilterContainer::sumrms_low_energy_cut(
+	const double bgoTotalE,
+	const double sumrms,
+	const double bgo_direction_cosine)
+	{
+		bool passed_sumrms_low_energy_cut {false};
+		double _GeV {0.001};
+
+		if (bgoTotalE*_GeV < 100)
+		{
+			if (sumrms < (270 - 100 * pow(bgo_direction_cosine, 6)))
+				passed_sumrms_low_energy_cut = true;
+		}
+		else if (bgoTotalE*_GeV > 100 && bgoTotalE*_GeV < 250)
+		{
+			if (sumrms < (800 - 600 * pow(bgo_direction_cosine, 1.2)))
+				passed_sumrms_low_energy_cut = true;
+		}
+		else
+			passed_sumrms_low_energy_cut = true;
+
+		return passed_sumrms_low_energy_cut;
+	}
+
+const bool DmpFilterContainer::stk_1rm_cut(
+	const std::vector<double> stkEcore1Rm,
+	const std::vector<unsigned int> nStkClu1Rm,
+	const double bgoTotalE_corr)
+	{
+		bool passed_stk_1rm_cut {false};
+		double _gev {0.001};
+
+		if (stk_cleaning_functions.f_stk_correction_20_100 == nullptr)
+		{
+			stk_cleaning_functions.f_stk_correction_20_100 = std::make_shared<TF1>("f_cuts_20_100", "[0] + [1]*x", 5, 300);
+			stk_cleaning_functions.f_stk_correction_20_100->SetParameters(-1693.3133, 394.41844);
+		}
+		if (stk_cleaning_functions.f_stk_correction_100_250 == nullptr)
+		{
+			stk_cleaning_functions.f_stk_correction_100_250 = std::make_shared<TF1>("f_cuts_100_250", "[0] + [1]*x", 5, 300);
+			stk_cleaning_functions.f_stk_correction_100_250->SetParameters(-2307.2126, 485.24149);
+		}
+		if (stk_cleaning_functions.f_stk_correction_250_500 == nullptr)
+		{
+			stk_cleaning_functions.f_stk_correction_250_500 = std::make_shared<TF1>("f_cuts_250_500", "[0] + [1]*x", 5, 300);
+			stk_cleaning_functions.f_stk_correction_250_500->SetParameters(-2456.6841, 543.43938);
+		}
+		if (stk_cleaning_functions.f_stk_correction_500_1000 == nullptr)
+		{
+			stk_cleaning_functions.f_stk_correction_500_1000 = std::make_shared<TF1>("f_cuts_500_1000", "[0] + [1]*x", 5, 300);
+			stk_cleaning_functions.f_stk_correction_500_1000->SetParameters(-2859.7504, 587.49936);
+		}
+		if (stk_cleaning_functions.f_stk_correction_1000_3000 == nullptr)
+		{
+			stk_cleaning_functions.f_stk_correction_1000_3000 = std::make_shared<TF1>("f_cuts_1000_3000", "[0] + [1]*x", 5, 300);
+			stk_cleaning_functions.f_stk_correction_1000_3000->SetParameters(-502.92267, 449.74620);
+		}
+		if (stk_cleaning_functions.f_stk_correction_3000 == nullptr)
+		{
+			stk_cleaning_functions.f_stk_correction_3000 = std::make_shared<TF1>("f_cuts_3000", "[0] + [1]*x", 5, 300);
+		}
+
+		if (nStkClu1Rm.size() > 1 && stkEcore1Rm.size() > 1)
+		{
+			if (bgoTotalE_corr * _gev < 100)
+				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_20_100->Eval(nStkClu1Rm[1]);
+			else if (bgoTotalE_corr * _gev >= 100 && bgoTotalE_corr * _gev < 250)
+				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_100_250->Eval(nStkClu1Rm[1]);
+			else if (bgoTotalE_corr * _gev >= 250 && bgoTotalE_corr * _gev < 500)
+				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_250_500->Eval(nStkClu1Rm[1]);
+			else if (bgoTotalE_corr * _gev >= 500 && bgoTotalE_corr * _gev < 1000)
+				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_500_1000->Eval(nStkClu1Rm[1]);
+			else if (bgoTotalE_corr * _gev >= 1000 && bgoTotalE_corr * _gev < 3000)
+				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_1000_3000->Eval(nStkClu1Rm[1]);
+			else if (bgoTotalE_corr * _gev >= 3000)
+				//passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_3000->Eval(nStkClu1Rm);
+				passed_stk_1rm_cut = true;
+			passed_stk_1rm_cut = true;
+		}
+		return passed_stk_1rm_cut;
+	}
+
+const bool DmpFilterContainer::rvalue_cut(const double rvalue)
+{
+	bool passed_rvalue_cut {true};
+
+	if (rvalue < 1 || rvalue > 6)
+		passed_rvalue_cut = false;
+
+	return passed_rvalue_cut;
+}
+
+const bool DmpFilterContainer::lvalue_cut(const double lvalue, const double bgoTotalE, const double bgoTotalE_corr)
+{
+	bool passed_lvalue_cut {true};
+
+	if (bgoTotalE_corr<1000)
+	{
+		if (lvalue < 0.1 || lvalue > (0.059*(log10(bgoTotalE)-3) + 0.5))
+			passed_lvalue_cut = false;
+	}
+	else
+	{
+		if (lvalue < 0.5 || lvalue > (0.038*(log10(bgoTotalE)-3) + 0.5))
+			passed_lvalue_cut = false;
+	}
+
+	return passed_lvalue_cut;
 }
 
 void DmpFilterContainer::link_ladders(std::vector<int> &LadderToLayer)
@@ -473,7 +630,7 @@ const bool DmpFilterContainer::track_selection_cut(
 	const bool recover_3_hits_tracks,
 	const bool update_struct)
 {
-	bool passed_track_selection_cut = false;
+	bool passed_track_selection_cut {false};
 
 	// Check if the BGO shower extrapolation on the first layer of the STK is contained within its fiducial volume
 	double projCoord_bgoshowerX {bgoRec_slope[0] * STK_TopZ + bgoRec_intercept[0]};
@@ -644,8 +801,6 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 	const std::vector<std::vector<double>> psdCluster_Z,
 	const std::vector<std::vector<double>> psdCluster_maxEcoordinate)
 {
-	bool passed_stk_psd_match {false};
-
 	for (int nLayer = 0; nLayer < DAMPE_psd_nLayers; ++nLayer)
 	{
 		for (unsigned int iclu = 0; iclu < psdCluster_idxBeg[nLayer].size(); ++iclu)
@@ -697,7 +852,7 @@ const bool DmpFilterContainer::psd_stk_match_cut(
 	output.psd_stk_match_cut_x = clu_matching.X_match;
 	output.psd_stk_match_cut_y = clu_matching.Y_match;
 
-	passed_stk_psd_match = clu_matching.X_match || clu_matching.Y_match;
+	bool passed_stk_psd_match {clu_matching.X_match || clu_matching.Y_match};
 	return passed_stk_psd_match;
 }
 
@@ -844,7 +999,7 @@ const bool DmpFilterContainer::stk_charge_cut(const double hi_cut, const double 
 
 		// Check charges
 		if (extracted_stk_charge.chargeX == -999 || extracted_stk_charge.chargeY == -999)
-			return passed_stk_charge_cut;
+			return true;
 
 		// Check STK charge to select electrons and protons
 		if (extracted_stk_charge.chargeX < hi_cut && extracted_stk_charge.chargeY < hi_cut)
@@ -961,12 +1116,14 @@ void DmpFilterContainer::reset_filter_output()
 	output.BGO_fiducial_BGOTrackContainment_cut 	= false;
 	output.nBarLayer13_cut 							= false;
 	output.maxRms_cut 								= false;
+	output.sumrms_low_energy_cut					= false;
 	output.stk_fiducial_volume						= false;
 	output.stk_fiducial_volume_X					= false;
 	output.stk_fiducial_volume_Y					= false;
 	output.track_selection_cut 						= false;
 	output.track_selection_cut_no_3hit_recover 		= false;
 	output.three_cluster_only_track 				= false;
+	output.stk_1rm_cut								= false;
 	output.psd_stk_match_cut 						= false;
 	output.psd_fiducial_volume 						= false;
 	output.psd_fiducial_volume_X 					= false;

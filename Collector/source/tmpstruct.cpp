@@ -27,6 +27,16 @@ std::shared_ptr<_tmp_psd> fillPSDTmpStruct(DmpFilterContainer &filter)
 	return _psd_res;
 }
 
+std::shared_ptr<_tmp_stk> fillSTKTmpStruct(DmpStkContainer &stkVault)
+{
+	std::shared_ptr<_tmp_stk> _stk_res = std::make_shared<_tmp_stk>();
+	_stk_res->clusters_on_plane = stkVault.GetNPlaneClusters();
+	_stk_res->stkEcore1Rm = stkVault.GetStkEcore1Rm();
+	_stk_res->nStkClu1Rm = stkVault.GetNStkClu1Rm();
+
+	return _stk_res;
+}
+
 std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault)
 {
 	std::shared_ptr<_tmp_bgo> _bgo_res = std::make_shared<_tmp_bgo>();
@@ -43,6 +53,12 @@ std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault)
 	_bgo_res->energy_fraction_13th_layer = bgoVault.GetSingleFracLayer(13);
 	_bgo_res->last_energy_layer = bgoVault.GetLastEnergyLayer();
 	_bgo_res->hits = bgoVault.GetNhits();
+	_bgo_res->rvalue = bgoVault.GetRValue();
+	_bgo_res->lvalue = bgoVault.GetLValue();
+	_bgo_res->maximum_shower_position = bgoVault.GetMaximumShowerPosition();
+	_bgo_res->maximum_shower_position_norm = bgoVault.GetMaximumShowerPositionNorm();
+	_bgo_res->t_bgo = bgoVault.GetTShowerProfile();
+	_bgo_res->t_bgo_norm = bgoVault.GetTShowerProfileNorm();
 
 	return _bgo_res;
 }

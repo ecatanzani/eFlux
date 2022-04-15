@@ -33,6 +33,13 @@ struct _tmp_psd
 	double SPD_STK_match_X_distance_fiducial_volume;	
 	double SPD_STK_match_Y_distance_fiducial_volume;
 };
+
+struct _tmp_stk
+{
+	std::vector<int> clusters_on_plane;
+	std::vector<double> stkEcore1Rm;
+	std::vector<unsigned int> nStkClu1Rm;
+};
 struct _tmp_bgo
 {
 	std::vector<double> layer_energies;
@@ -47,6 +54,12 @@ struct _tmp_bgo
 	double energy_fraction_13th_layer;
 	int last_energy_layer;
 	int hits;
+	double rvalue;										
+	double lvalue;					
+	double maximum_shower_position;				
+	double maximum_shower_position_norm;
+	std::vector<double> t_bgo;
+	std::vector<double> t_bgo_norm;
 };
 
 struct _tmp_nud
@@ -59,6 +72,7 @@ struct _tmp_nud
 
 extern std::shared_ptr<_tmp_filter> fillFilterTmpStruct(DmpFilterContainer &filter, efficiency &eff_filter, preselection &presel_filter);
 extern std::shared_ptr<_tmp_psd> fillPSDTmpStruct(DmpFilterContainer &filter);
+extern std::shared_ptr<_tmp_stk> fillSTKTmpStruct(DmpStkContainer &stkVault);
 extern std::shared_ptr<_tmp_bgo> fillBGOTmpStruct(DmpBgoContainer &bgoVault);
 extern std::shared_ptr<_tmp_nud> fillNUDTmpStruct(DmpNudContainer &nudVault);
 

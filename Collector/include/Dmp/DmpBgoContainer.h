@@ -22,7 +22,9 @@ public:
 						fracLayer			(DAMPE_bgo_nLayers, 0),
 						eLayer				(DAMPE_bgo_nLayers, 0),
 						eCoreLayer			(DAMPE_bgo_nLayers, 0),
-						eCoreCoord			(DAMPE_bgo_nLayers, 0)
+						eCoreCoord			(DAMPE_bgo_nLayers, 0),
+						t_bgo				(DAMPE_bgo_nLayers, 0),
+						t_bgo_norm			(DAMPE_bgo_nLayers, 0)
 	{
 	}
 
@@ -35,7 +37,9 @@ public:
 								  fracLayer			(m_size, 0),
 								  eLayer			(m_size, 0),
 								  eCoreLayer		(m_size, 0),
-								  eCoreCoord		(m_size, 0)
+								  eCoreCoord		(m_size, 0),
+								  t_bgo				(m_size, 0),
+								  t_bgo_norm		(m_size, 0)
 	{
 	}
 
@@ -79,8 +83,21 @@ public:
 	const TVector3 GetBGOTrajectory2D();
 	// BGO hits
 	const int GetNhits();
+	// rValue
+	const double GetRValue();
+	// rValue
+	const double GetLValue();
+	// Get shower profile maximum positions
+	const double GetMaximumShowerPosition();
+	const double GetMaximumShowerPositionNorm();
+	const std::vector<double> GetTShowerProfile();
+	const std::vector<double> GetTShowerProfileNorm();
+
 
 private:
+	void calculate_lvalue(const double bgoTotalE);
+	void calculate_rvalue();
+
 	// BGO variables
 	std::vector<std::vector<short>> layerBarIndex;		// arrange BGO hits by layer
 	std::vector<std::vector<short>> layerBarNumber; 	// arrange BGO bars by layer
@@ -98,6 +115,13 @@ private:
 	std::vector<double> slope							{-999, -999};
 	std::vector<double> intercept						{-999, -999};
 	TVector3 trajectoryDirection2D;
+
+	double rvalue										{-999};
+	double lvalue										{-999};
+	double maximum_shower_position						{-999};
+	double maximum_shower_position_norm					{-999};
+	std::vector<double> t_bgo;
+	std::vector<double> t_bgo_norm;
 };
 
 #endif

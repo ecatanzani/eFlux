@@ -11,6 +11,7 @@ struct in_pars
     std::string wd;
 	std::string input_path;
 	std::string output_path;
+    std::string stk_correction;
 
 	bool verbose = false;
 	bool pedantic = false;

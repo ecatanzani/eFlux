@@ -18,8 +18,8 @@ public:
 
 	void Fill(
 		const std::shared_ptr<_tmp_filter> _filter_res,
-		const std::vector<int> _stk_clusters_on_plane,
 		const std::shared_ptr<_tmp_psd> _psd_res,
+		const std::shared_ptr<_tmp_stk> _stk_res,
 		const std::shared_ptr<_tmp_bgo> _bgo_res,
 		const std::shared_ptr<_tmp_energy_data> _energy_res,
 		const std::shared_ptr<DmpEvtAttitude> attitude,

@@ -35,7 +35,8 @@ void rawDataLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool verbose,
-	const std::string wd)
+	const std::string wd,
+	const std::string stk_corrections)
 	{
 		bool _MC = false;
 
@@ -118,6 +119,9 @@ void rawDataLoop(
 		efficiency cuts_efficiency;
 		// Load preselection class
 		preselection cuts_preselection;
+		// Load STK correction functions
+		if (!stk_corrections.empty())
+			filter.LoadStkCorrectionFunctions(stk_corrections);
 		// Load output file
 		outFile.cd();
 		// Create DATA tuple objects
@@ -180,10 +184,10 @@ void rawDataLoop(
 				data_config.GetMaxEnergyRange());
 
 			// Load sub-detectors high level class
-			// Load STK class
-			stkVault.scanSTKHits(stkclusters);
 			// Load BGO class
 			bgoVault.scanBGOHits(bgohits, bgorec, evt_energy.GetRawEnergy(), data_config.GetBGOLayerMinEnergy());
+			// Load STK class
+			stkVault.scanSTKHits(stkclusters, stktracks, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept());
 			// Load PSD class
 			psdVault.scanPSDHits(psdhits, data_config.GetPSDBarMinEnergy());
 			// Load NUD class
@@ -206,6 +210,7 @@ void rawDataLoop(
 					evt_energy.GetRawEnergy(),
 					evt_energy.GetCorrEnergy(),
 					bgoVault,
+					stkVault,
 					psdVault,
 					stkclusters,
 					stktracks,
@@ -233,6 +238,7 @@ void rawDataLoop(
 					evt_energy.GetRawEnergy(),
 					evt_energy.GetCorrEnergy(),
 					bgoVault,
+					stkVault,
 					psdVault,
 					stkclusters,
 					stktracks,
@@ -243,8 +249,8 @@ void rawDataLoop(
 			// Fill output structures
 			tuple->Fill(
 				fillFilterTmpStruct(filter, cuts_efficiency, cuts_preselection),
-				stkVault.GetNPlaneClusters(),
 				fillPSDTmpStruct(filter),
+				fillSTKTmpStruct(stkVault),
 				fillBGOTmpStruct(bgoVault),
 				fillDataEnergyTmpStruct(evt_energy),
 				attitude,

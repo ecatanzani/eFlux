@@ -7,6 +7,7 @@ void efficiency::Pipeline(
     const double bgoTotalE,
     const double bgoTotalE_corr,
     DmpBgoContainer &bgoVault,
+    DmpStkContainer &stkVault,
     DmpPsdContainer &psdVault,
     const std::shared_ptr<TClonesArray> &stkclusters,
     const std::shared_ptr<TClonesArray> &stktracks,
@@ -24,15 +25,31 @@ void efficiency::Pipeline(
                     {
                         if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
                         {
-                            if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                            if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
                             {
-                                stk_charge_measurement(stkclusters);
-                                if (psd_fiducial_volume_cut())
+                                if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
                                 {
-                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    stk_charge_measurement(stkclusters);
+                                    if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
                                     {
-                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                        if (psd_charge_cut(cuts))
+                                        if (psd_fiducial_volume_cut())
+                                        {
+                                            if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                            {
+                                                psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                                if (psd_charge_cut(cuts))
+                                                {
+                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                    {
+                                                        output.trigger_efficiency_preselection = true;
+                                                        if (evt_trigger_info.HET) output.trigger_efficiency_preselection_is_het = true;
+                                                        if (evt_trigger_info.LET) output.trigger_efficiency_preselection_is_let = true;
+                                                        if (evt_trigger_info.unbiased) output.trigger_efficiency_preselection_is_unb = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
                                         {
                                             if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                             {
@@ -42,16 +59,6 @@ void efficiency::Pipeline(
                                                 if (evt_trigger_info.unbiased) output.trigger_efficiency_preselection_is_unb = true;
                                             }
                                         }
-                                    }
-                                }
-                                else
-                                {
-                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
-                                    {
-                                        output.trigger_efficiency_preselection = true;
-                                        if (evt_trigger_info.HET) output.trigger_efficiency_preselection_is_het = true;
-                                        if (evt_trigger_info.LET) output.trigger_efficiency_preselection_is_let = true;
-                                        if (evt_trigger_info.unbiased) output.trigger_efficiency_preselection_is_unb = true;
                                     }
                                 }
                             }
@@ -74,15 +81,30 @@ void efficiency::Pipeline(
                     {
                         if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
                         {
-                            if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                            if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
                             {
-                                stk_charge_measurement(stkclusters);
-                                if (psd_fiducial_volume_cut())
+                                if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
                                 {
-                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    stk_charge_measurement(stkclusters);
+                                    if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
                                     {
-                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                        if (psd_charge_cut(cuts))
+                                        if (psd_fiducial_volume_cut())
+                                        {
+                                            if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                            {
+                                                psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                                if (psd_charge_cut(cuts))
+                                                {
+                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                    {
+                                                        output.maxrms_efficiency_preselection = true;
+                                                        if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+                                                            output.maxrms_efficiency_preselection_accepted = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
                                         {
                                             if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                             {
@@ -91,15 +113,6 @@ void efficiency::Pipeline(
                                                     output.maxrms_efficiency_preselection_accepted = true;
                                             }
                                         }
-                                    }
-                                }
-                                else
-                                {
-                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
-                                    {
-                                        output.maxrms_efficiency_preselection = true;
-                                        if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
-                                            output.maxrms_efficiency_preselection_accepted = true;
                                     }
                                 }
                             }
@@ -122,15 +135,30 @@ void efficiency::Pipeline(
                     {
                         if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
                         {
-                            if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                            if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
                             {
-                                stk_charge_measurement(stkclusters);
-                                if (psd_fiducial_volume_cut())
+                                if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
                                 {
-                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    stk_charge_measurement(stkclusters);
+                                    if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
                                     {
-                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                        if (psd_charge_cut(cuts))
+                                        if (psd_fiducial_volume_cut())
+                                        {
+                                            if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                            {
+                                                psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                                if (psd_charge_cut(cuts))
+                                                {
+                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                    {
+                                                        output.nbarlayer13_efficiency_preselection = true;
+                                                        if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+                                                            output.nbarlayer13_efficiency_preselection_accepted = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
                                         {
                                             if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                             {
@@ -139,15 +167,6 @@ void efficiency::Pipeline(
                                                     output.nbarlayer13_efficiency_preselection_accepted = true;
                                             }
                                         }
-                                    }
-                                }
-                                else
-                                {
-                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
-                                    {
-                                        output.nbarlayer13_efficiency_preselection = true;
-                                        if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
-                                            output.nbarlayer13_efficiency_preselection_accepted = true;
                                     }
                                 }
                             }
@@ -168,15 +187,30 @@ void efficiency::Pipeline(
                 {
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
                     {
-                        if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                        if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
                         {
-                            stk_charge_measurement(stkclusters);
-                            if (psd_fiducial_volume_cut())
+                            if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
                             {
-                                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                stk_charge_measurement(stkclusters);
+                                if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
                                 {
-                                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                    if (psd_charge_cut(cuts))
+                                    if (psd_fiducial_volume_cut())
+                                    {
+                                        if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                        {
+                                            psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                            if (psd_charge_cut(cuts))
+                                            {
+                                                if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                {
+                                                    output.maxrms_and_nbarlayer13_efficiency_preselection = true;
+                                                    if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts) && nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+                                                        output.maxrms_and_nbarlayer13_efficiency_preselection_accepted = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
                                     {
                                         if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
                                         {
@@ -187,13 +221,52 @@ void efficiency::Pipeline(
                                     }
                                 }
                             }
-                            else
+                        }
+                    }
+                }
+            }
+        }
+
+        reset_cuts_results();
+
+        // sumrms_low_energy_cut efficiency
+        if (evt_trigger_info.HET)
+        {
+            if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+            {
+                if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+                {
+                    if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+                    {
+                        if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                        {
+                            stk_charge_measurement(stkclusters);
+                            if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
                             {
-                                if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                if (psd_fiducial_volume_cut())
                                 {
-                                    output.maxrms_and_nbarlayer13_efficiency_preselection = true;
-                                    if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts) && nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
-                                        output.maxrms_and_nbarlayer13_efficiency_preselection_accepted = true;
+                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    {
+                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                        if (psd_charge_cut(cuts))
+                                        {
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                            {
+                                                output.sumrms_low_energy_cut_efficiency_preselection = true;
+                                                if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
+                                                    output.sumrms_low_energy_cut_efficiency_preselection_accepted = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                    {
+                                        output.sumrms_low_energy_cut_efficiency_preselection = true;
+                                        if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
+                                            output.sumrms_low_energy_cut_efficiency_preselection_accepted = true;
+                                    }
                                 }
                             }
                         }
@@ -201,10 +274,57 @@ void efficiency::Pipeline(
                 }
             }
         }
-                            
-
+        
         reset_cuts_results();
 
+        // sumrms_low_energy_cut efficiency
+        if (evt_trigger_info.HET)
+        {
+            if (maxElayer_cut(bgoVault.GetLayerEnergies(), cuts, bgoTotalE))
+            {
+                if (maxBarLayer_cut(bgoVault.GetLayerBarNumber(), bgoVault.GetiMaxLayer(), bgoVault.GetIdxBarMaxLayer()))
+                {
+                    if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
+                    {
+                        if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
+                        {
+                            if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                            {
+                                stk_charge_measurement(stkclusters);
+                                if (psd_fiducial_volume_cut())
+                                {
+                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                    {
+                                        psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                        if (psd_charge_cut(cuts))
+                                        {
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                            {
+                                                output.stk_1rm_cut_efficiency_preselection = true;
+                                                if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
+                                                    output.stk_1rm_cut_efficiency_preselection_accepted = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                    {
+                                        output.stk_1rm_cut_efficiency_preselection = true;
+                                        if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
+                                            output.stk_1rm_cut_efficiency_preselection_accepted = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        reset_cuts_results();
+        
         // track selection efficiency
         if (evt_trigger_info.HET)
         {
@@ -214,13 +334,16 @@ void efficiency::Pipeline(
                 {
                     if (BGOTrackContainment_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts))
                     {
-                        if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
+                        if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
                         {
-                            if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+                            if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
                             {
-                                output.track_efficiency_preselection = true;
-                                if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
-                                    output.track_efficiency_preselection_accepted = true;
+                                if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
+                                {
+                                    output.track_efficiency_preselection = true;
+                                    if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                                        output.track_efficiency_preselection_accepted = true;
+                                }
                             }
                         }
                     }
@@ -243,17 +366,23 @@ void efficiency::Pipeline(
                         {
                             if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
                             {
-                                if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                                if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
                                 {
-                                    stk_charge_measurement(stkclusters);   
-                                    if (psd_fiducial_volume_cut())
+                                    if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
                                     {
-                                        if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                        stk_charge_measurement(stkclusters);   
+                                        if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
                                         {
-                                            output.psdstkmatch_efficiency_preselection = true;
-                                            if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
-                                                output.psdstkmatch_efficiency_preselection_accepted = true;
-                                        }   
+                                            if (psd_fiducial_volume_cut())
+                                            {
+                                                if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                {
+                                                    output.psdstkmatch_efficiency_preselection = true;
+                                                    if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                                        output.psdstkmatch_efficiency_preselection_accepted = true;
+                                                }   
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -278,19 +407,25 @@ void efficiency::Pipeline(
                         {
                             if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
                             {
-                                if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                                if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
                                 {
-                                    stk_charge_measurement(stkclusters);   
-                                    if (psd_fiducial_volume_cut())
+                                    if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
                                     {
-                                        if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                        stk_charge_measurement(stkclusters);
+                                        if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
                                         {
-                                            psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                            if (psd_fiducial_volume_cut())
                                             {
-                                                output.psdcharge_efficiency_preselection = true;
-                                                if (psd_charge_cut(cuts))
-                                                    output.psdcharge_efficiency_preselection_accepted = true;
+                                                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                                {
+                                                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                    {
+                                                        output.psdcharge_efficiency_preselection = true;
+                                                        if (psd_charge_cut(cuts))
+                                                            output.psdcharge_efficiency_preselection_accepted = true;
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -317,19 +452,25 @@ void efficiency::Pipeline(
                         {
                             if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
                             {
-                                if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
+                                if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
                                 {
-                                    stk_charge_measurement(stkclusters);   
-                                    if (psd_fiducial_volume_cut())
+                                    if (track_selection_cut(bgorec, bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), bgohits, stkclusters, stktracks, cuts))
                                     {
-                                        if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                        stk_charge_measurement(stkclusters);   
+                                        if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
                                         {
-                                            psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                            if (psd_charge_cut(cuts))
+                                            if (psd_fiducial_volume_cut())
                                             {
-                                                output.stkcharge_efficiency_preselection = true;
-                                                if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
-                                                    output.stkcharge_efficiency_preselection_accepted = true;
+                                                if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
+                                                {
+                                                    psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
+                                                    if (psd_charge_cut(cuts))
+                                                    {
+                                                        output.stkcharge_efficiency_preselection = true;
+                                                        if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                            output.stkcharge_efficiency_preselection_accepted = true;
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -364,8 +505,14 @@ void efficiency::reset_efficiency_output()
     output.maxrms_and_nbarlayer13_efficiency_preselection                   = false;
     output.maxrms_and_nbarlayer13_efficiency_preselection_accepted          = false;
 
+    output.sumrms_low_energy_cut_efficiency_preselection                    = false;
+    output.sumrms_low_energy_cut_efficiency_preselection_accepted           = false;
+
     output.track_efficiency_preselection                                    = false;
     output.track_efficiency_preselection_accepted                           = false;
+
+    output.stk_1rm_cut_efficiency_preselection                              = false; 
+    output.stk_1rm_cut_efficiency_preselection_accepted                     = false;
 
     output.psdstkmatch_efficiency_preselection                              = false;
     output.psdstkmatch_efficiency_preselection_accepted                     = false;

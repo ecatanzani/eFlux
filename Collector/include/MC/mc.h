@@ -15,6 +15,7 @@ extern void mcLoop(
 	const std::string inputPath,
 	TFile &outFile,
 	const bool verbose,
-	const std::string wd);
+	const std::string wd,
+	const std::string stk_corrections);
 
 #endif
