@@ -355,22 +355,20 @@ const bool DmpFilterContainer::sumrms_low_energy_cut(
 	const double sumrms,
 	const double bgo_direction_cosine)
 	{
-		bool passed_sumrms_low_energy_cut {false};
+		bool passed_sumrms_low_energy_cut {true};
 		double _GeV {0.001};
 
 		if (bgoTotalE*_GeV < 100)
 		{
 			if (sumrms < (270 - 100 * pow(bgo_direction_cosine, 6)))
-				passed_sumrms_low_energy_cut = true;
+				passed_sumrms_low_energy_cut = false;
 		}
-		else if (bgoTotalE*_GeV > 100 && bgoTotalE*_GeV < 250)
+		else if (bgoTotalE*_GeV >= 100 && bgoTotalE*_GeV < 250)
 		{
 			if (sumrms < (800 - 600 * pow(bgo_direction_cosine, 1.2)))
-				passed_sumrms_low_energy_cut = true;
+				passed_sumrms_low_energy_cut = false;
 		}
-		else
-			passed_sumrms_low_energy_cut = true;
-
+		
 		return passed_sumrms_low_energy_cut;
 	}
 
@@ -415,20 +413,20 @@ const bool DmpFilterContainer::stk_1rm_cut(
 		if (nStkClu1Rm.size() > 1 && stkEcore1Rm.size() > 1)
 		{
 			if (bgoTotalE_corr * _gev < 100)
-				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_20_100->Eval(nStkClu1Rm[1]);
+				passed_stk_1rm_cut = stkEcore1Rm[1] < fabs(stk_cleaning_functions.f_stk_correction_20_100->Eval(nStkClu1Rm[1]));
 			else if (bgoTotalE_corr * _gev >= 100 && bgoTotalE_corr * _gev < 250)
-				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_100_250->Eval(nStkClu1Rm[1]);
+				passed_stk_1rm_cut = stkEcore1Rm[1] < fabs(stk_cleaning_functions.f_stk_correction_100_250->Eval(nStkClu1Rm[1]));
 			else if (bgoTotalE_corr * _gev >= 250 && bgoTotalE_corr * _gev < 500)
-				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_250_500->Eval(nStkClu1Rm[1]);
+				passed_stk_1rm_cut = stkEcore1Rm[1] < fabs(stk_cleaning_functions.f_stk_correction_250_500->Eval(nStkClu1Rm[1]));
 			else if (bgoTotalE_corr * _gev >= 500 && bgoTotalE_corr * _gev < 1000)
-				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_500_1000->Eval(nStkClu1Rm[1]);
+				passed_stk_1rm_cut = stkEcore1Rm[1] < fabs(stk_cleaning_functions.f_stk_correction_500_1000->Eval(nStkClu1Rm[1]));
 			else if (bgoTotalE_corr * _gev >= 1000 && bgoTotalE_corr * _gev < 3000)
-				passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_1000_3000->Eval(nStkClu1Rm[1]);
+				passed_stk_1rm_cut = stkEcore1Rm[1] < fabs(stk_cleaning_functions.f_stk_correction_1000_3000->Eval(nStkClu1Rm[1]));
 			else if (bgoTotalE_corr * _gev >= 3000)
 				//passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_3000->Eval(nStkClu1Rm);
 				passed_stk_1rm_cut = true;
-			passed_stk_1rm_cut = true;
 		}
+
 		return passed_stk_1rm_cut;
 	}
 
@@ -993,23 +991,30 @@ void DmpFilterContainer::stk_charge_measurement(
 		}
 	}
 
-const bool DmpFilterContainer::stk_charge_cut(const double hi_cut, const double med_cut, const double low_cut)
+const bool DmpFilterContainer::stk_charge_cut(const double hi_cut, const double med_cut, const double low_cut, const bool reject_if_no_clusters)
 	{
 		bool passed_stk_charge_cut {false};
 
 		// Check charges
 		if (extracted_stk_charge.chargeX == -999 || extracted_stk_charge.chargeY == -999)
-			return true;
-
-		// Check STK charge to select electrons and protons
-		if (extracted_stk_charge.chargeX < hi_cut && extracted_stk_charge.chargeY < hi_cut)
 		{
-			if (extracted_stk_charge.chargeX > 0 && extracted_stk_charge.chargeX <= low_cut && extracted_stk_charge.chargeY < med_cut)
+			if (reject_if_no_clusters)
+				passed_stk_charge_cut = false;
+			else
 				passed_stk_charge_cut = true;
-			else if (extracted_stk_charge.chargeX > low_cut && extracted_stk_charge.chargeX < med_cut && extracted_stk_charge.chargeY <= low_cut)
-				passed_stk_charge_cut = true;
-			else if (extracted_stk_charge.chargeX > low_cut &&  extracted_stk_charge.chargeY > low_cut)
-				passed_stk_charge_cut = true;
+		}
+		else 
+		{
+			// Check STK charge to select electrons and protons
+			if (extracted_stk_charge.chargeX < hi_cut && extracted_stk_charge.chargeY < hi_cut)
+			{
+				if (extracted_stk_charge.chargeX > 0 && extracted_stk_charge.chargeX <= low_cut && extracted_stk_charge.chargeY < med_cut)
+					passed_stk_charge_cut = true;
+				else if (extracted_stk_charge.chargeX > low_cut && extracted_stk_charge.chargeX < med_cut && extracted_stk_charge.chargeY <= low_cut)
+					passed_stk_charge_cut = true;
+				else if (extracted_stk_charge.chargeX > low_cut &&  extracted_stk_charge.chargeY > low_cut)
+					passed_stk_charge_cut = true;
+			}
 		}
 
 		return passed_stk_charge_cut;

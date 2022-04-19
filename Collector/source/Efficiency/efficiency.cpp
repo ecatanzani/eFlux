@@ -39,7 +39,7 @@ void efficiency::Pipeline(
                                                 psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
                                                 if (psd_charge_cut(cuts))
                                                 {
-                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                                     {
                                                         output.trigger_efficiency_preselection = true;
                                                         if (evt_trigger_info.HET) output.trigger_efficiency_preselection_is_het = true;
@@ -51,7 +51,7 @@ void efficiency::Pipeline(
                                         }
                                         else
                                         {
-                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                             {
                                                 output.trigger_efficiency_preselection = true;
                                                 if (evt_trigger_info.HET) output.trigger_efficiency_preselection_is_het = true;
@@ -95,7 +95,7 @@ void efficiency::Pipeline(
                                                 psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
                                                 if (psd_charge_cut(cuts))
                                                 {
-                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                                     {
                                                         output.maxrms_efficiency_preselection = true;
                                                         if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
@@ -106,7 +106,7 @@ void efficiency::Pipeline(
                                         }
                                         else
                                         {
-                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                             {
                                                 output.maxrms_efficiency_preselection = true;
                                                 if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts))
@@ -149,7 +149,7 @@ void efficiency::Pipeline(
                                                 psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
                                                 if (psd_charge_cut(cuts))
                                                 {
-                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                                     {
                                                         output.nbarlayer13_efficiency_preselection = true;
                                                         if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
@@ -160,7 +160,7 @@ void efficiency::Pipeline(
                                         }
                                         else
                                         {
-                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                             {
                                                 output.nbarlayer13_efficiency_preselection = true;
                                                 if (nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
@@ -201,7 +201,7 @@ void efficiency::Pipeline(
                                             psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
                                             if (psd_charge_cut(cuts))
                                             {
-                                                if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                                 {
                                                     output.maxrms_and_nbarlayer13_efficiency_preselection = true;
                                                     if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts) && nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
@@ -212,7 +212,7 @@ void efficiency::Pipeline(
                                     }
                                     else
                                     {
-                                        if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                        if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                         {
                                             output.maxrms_and_nbarlayer13_efficiency_preselection = true;
                                             if (maxRms_cut(bgoVault.GetELayer(), bgoVault.GetRmsLayer(), bgoTotalE, cuts) && nBarLayer13_cut(bgohits, bgoVault.GetSingleLayerBarNumber(13), bgoTotalE))
@@ -250,7 +250,7 @@ void efficiency::Pipeline(
                                         psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
                                         if (psd_charge_cut(cuts))
                                         {
-                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                             {
                                                 output.sumrms_low_energy_cut_efficiency_preselection = true;
                                                 if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
@@ -261,7 +261,7 @@ void efficiency::Pipeline(
                                 }
                                 else
                                 {
-                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                     {
                                         output.sumrms_low_energy_cut_efficiency_preselection = true;
                                         if (sumrms_low_energy_cut(bgoTotalE, bgoVault.GetSumRMS(), (bgoVault.GetBGOTrajectory2D()).CosTheta()))
@@ -298,7 +298,7 @@ void efficiency::Pipeline(
                                         psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
                                         if (psd_charge_cut(cuts))
                                         {
-                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                            if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                             {
                                                 output.stk_1rm_cut_efficiency_preselection = true;
                                                 if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
@@ -309,7 +309,7 @@ void efficiency::Pipeline(
                                 }
                                 else
                                 {
-                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                     {
                                         output.stk_1rm_cut_efficiency_preselection = true;
                                         if (stk_1rm_cut(stkVault.GetStkEcore1Rm(), stkVault.GetNStkClu1Rm(), bgoTotalE_corr))
@@ -375,7 +375,7 @@ void efficiency::Pipeline(
                                         {
                                             if (psd_fiducial_volume_cut())
                                             {
-                                                if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                                 {
                                                     output.psdstkmatch_efficiency_preselection = true;
                                                     if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
@@ -419,7 +419,7 @@ void efficiency::Pipeline(
                                                 if (psd_stk_match_cut(bgoVault.GetBGOslope(), bgoVault.GetBGOintercept(), cuts, psdVault.getPsdClusterIdxBegin(), psdVault.getPsdClusterZ(), psdVault.getPsdClusterMaxECoo()))
                                                 {
                                                     psd_charge_measurement(psdVault.getPsdClusterMaxE(), psdVault.getPsdClusterIdxMaxE(), psdVault.getHitZ(), psdVault.getGlobalBarID());
-                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                    if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                                     {
                                                         output.psdcharge_efficiency_preselection = true;
                                                         if (psd_charge_cut(cuts))
@@ -467,7 +467,7 @@ void efficiency::Pipeline(
                                                     if (psd_charge_cut(cuts))
                                                     {
                                                         output.stkcharge_efficiency_preselection = true;
-                                                        if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower))
+                                                        if (stk_charge_cut(cuts.STK_charge_upper, cuts.STK_charge_medium, cuts.STK_charge_lower, true))
                                                             output.stkcharge_efficiency_preselection_accepted = true;
                                                     }
                                                 }
