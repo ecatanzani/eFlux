@@ -1617,8 +1617,8 @@ void buildEfficiency(const in_args input_args)
                                                         .Histo2D({"h_psd_charge_3000_xtrl_12_100", "PSD charge; PSD X Charge; PSD Y Charge", 200, 0, 50, 200, 0, 50}, "PSD_chargeX", "PSD_chargeY");     
 
     // STK cleaning cuts after all cuts
-    auto createLogBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<double> {
-        std::vector<double> binning (n_bins + 1, 0);
+    auto createLogBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<float> {
+        std::vector<float> binning (n_bins + 1, 0);
         double log_interval = (log10(max) - log10(min)) / n_bins;
         for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
             binning[bIdx] = pow(10, log10(min) + bIdx * log_interval);
@@ -1749,10 +1749,10 @@ void buildEfficiency(const in_args input_args)
     // Rvalue variable
     auto createLinearBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<float>
     {
-        double h = (max - min) / n_bins;
+        float h = (max - min) / n_bins;
         std::vector<float> xs(n_bins + 1);
         std::vector<float>::iterator x;
-        double val;
+        float val;
         for (x = xs.begin(), val = min; x != xs.end(); ++x, val += h)
             *x = val;
 
@@ -1793,6 +1793,22 @@ void buildEfficiency(const in_args input_args)
                                 .Filter("xtrl_evt>12 && xtrl<100")
                                 .Define("corr_energy_gev", "energy_corr * 0.001")
                                 .Histo2D({"h_lvalue_xtrl_12_100", "L value; Corrected Energy [GeV]; LValue", energy_nbins, &energy_binning[0], (int)lvalue_binning.size()-1, &lvalue_binning[0]}, "corr_energy_gev", "lvalue");
+
+    // sumRMS vs BGO polar angle cosine
+    auto sumRms_cosine_bins = createLogBinning(10, 3e+3, 1e+2);
+    auto cosine_bins = createLinearBinning(0, 1, 1e+2);
+
+    auto h_sumrms_cosine_20_100 = fr.Filter("evtfilter_maxRms_cut==true")
+                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                        .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                        .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                        .Histo2D({"h_sumrms_cosine_20_100", "sumRMS vs BGO polar angle cosine; #cos(#theta); sumRMS [mm]", (int)cosine_bins.size() -1, &cosine_bins[0], (int)sumRms_cosine_bins.size()-1, &sumRms_cosine_bins[0]}, "bgorec_cosine", "sumRms");
+
+    auto h_sumrms_cosine_100_250 = fr.Filter("evtfilter_maxRms_cut==true")
+                        .Define("corr_energy_gev", "energy_corr * 0.001")
+                        .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                        .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
+                        .Histo2D({"h_sumrms_cosine_100_250", "sumRMS vs BGO polar angle cosine; #cos(#theta); sumRMS [mm]", (int)cosine_bins.size() -1, &cosine_bins[0], (int)sumRms_cosine_bins.size()-1, &sumRms_cosine_bins[0]}, "bgorec_cosine", "sumRms");
 
     TFile *output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
@@ -2058,6 +2074,12 @@ void buildEfficiency(const in_args input_args)
     h_psd_charge_500_1000_xtrl_12_100                                   ->Write();
     h_psd_charge_1000_3000_xtrl_12_100                                  ->Write();
     h_psd_charge_3000_xtrl_12_100                                       ->Write();
+
+    output_file->mkdir("sumrms");
+    output_file->cd("sumrms");
+
+    h_sumrms_cosine_20_100                                              ->Write();
+    h_sumrms_cosine_100_250                                             ->Write();               
     
     output_file->Close();
 }   
