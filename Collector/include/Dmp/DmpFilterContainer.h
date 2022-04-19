@@ -323,7 +323,7 @@ protected:
 	const bool psd_charge_cut(
 		const cuts_conf data_cuts,
 		const bool recover_one_view = true);
-	const bool stk_charge_cut(const double hi_cut, const double med_cut, const double low_cut);
+	const bool stk_charge_cut(const double hi_cut, const double med_cut, const double low_cut, const bool reject_if_no_clusters = false);
 	const bool xtrl_tight_cut(
 		const double input_xtrl,
 		const double cut_value = 8.5);
