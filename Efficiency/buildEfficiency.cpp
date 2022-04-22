@@ -197,6 +197,23 @@ void buildEfficiency(
         h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl->SetDirectory(0);
         h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl->SetDirectory(0);
 
+        // sumRMS low energy histos
+        auto h_sumrms_low_energy_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_sumrms_low_energy_efficiency_accepted_tight_xtrl"));
+        auto h_sumrms_low_energy_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_sumrms_low_energy_efficiency_total_tight_xtrl"));
+        auto h_sumrms_low_energy_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_sumrms_low_energy_efficiency_accepted_bdt"));
+        auto h_sumrms_low_energy_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_sumrms_low_energy_efficiency_total_bdt"));
+
+        auto h_sumrms_low_energy_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_sumrms_low_energy_efficiency_accepted_loose_xtrl"));
+        auto h_sumrms_low_energy_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_sumrms_low_energy_efficiency_total_loose_xtrl"));
+
+        h_sumrms_low_energy_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_sumrms_low_energy_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_sumrms_low_energy_efficiency_accepted_bdt->SetDirectory(0);
+        h_sumrms_low_energy_efficiency_total_bdt->SetDirectory(0);
+        
+        h_sumrms_low_energy_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_sumrms_low_energy_efficiency_total_loose_xtrl->SetDirectory(0);
+
         // Track Selection histos
         auto h_track_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_track_efficiency_accepted_tight_xtrl"));
         auto h_track_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_track_efficiency_total_tight_xtrl"));
@@ -213,6 +230,23 @@ void buildEfficiency(
         
         h_track_efficiency_accepted_loose_xtrl->SetDirectory(0);
         h_track_efficiency_total_loose_xtrl->SetDirectory(0);
+
+        // STK 1 RM histos
+        auto h_stk_1rm_efficiency_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_stk_1rm_efficiency_accepted_tight_xtrl"));
+        auto h_stk_1rm_efficiency_total_tight_xtrl = static_cast<TH1D*>(infile->Get("h_stk_1rm_efficiency_total_tight_xtrl"));
+        auto h_stk_1rm_efficiency_accepted_bdt = static_cast<TH1D*>(infile->Get("h_stk_1rm_efficiency_accepted_bdt"));
+        auto h_stk_1rm_efficiency_total_bdt = static_cast<TH1D*>(infile->Get("h_stk_1rm_efficiency_total_bdt"));
+
+        auto h_stk_1rm_efficiency_accepted_loose_xtrl = static_cast<TH1D*>(infile->Get("h_stk_1rm_efficiency_accepted_loose_xtrl"));
+        auto h_stk_1rm_efficiency_total_loose_xtrl = static_cast<TH1D*>(infile->Get("h_stk_1rm_efficiency_total_loose_xtrl"));
+
+        h_stk_1rm_efficiency_accepted_tight_xtrl->SetDirectory(0);
+        h_stk_1rm_efficiency_total_tight_xtrl->SetDirectory(0);
+        h_stk_1rm_efficiency_accepted_bdt->SetDirectory(0);
+        h_stk_1rm_efficiency_total_bdt->SetDirectory(0);
+        
+        h_stk_1rm_efficiency_accepted_loose_xtrl->SetDirectory(0);
+        h_stk_1rm_efficiency_total_loose_xtrl->SetDirectory(0);
 
         // Clusters on first STK layer
         auto h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl = static_cast<TH1D*>(infile->Get("h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl"));
@@ -321,7 +355,9 @@ void buildEfficiency(
         std::unique_ptr<TEfficiency> maxrms_eff_xtrl_tight;
         std::unique_ptr<TEfficiency> nbarlayer13_eff_xtrl_tight;
         std::unique_ptr<TEfficiency> maxrms_and_nbarlayer13_eff_xtrl_tight;
+        std::unique_ptr<TEfficiency> sumrms_low_energy_eff_xtrl_tight;
         std::unique_ptr<TEfficiency> track_selection_eff_xtrl_tight;
+        std::unique_ptr<TEfficiency> stk_1_rm_eff_xtrl_tight;
         std::unique_ptr<TEfficiency> track_selection_eff_within_stk_fvolume_xtrl_tight;
         std::unique_ptr<TEfficiency> psd_stk_match_eff_xtrl_tight;
         std::unique_ptr<TEfficiency> psd_charge_eff_xtrl_tight;
@@ -332,7 +368,9 @@ void buildEfficiency(
         std::unique_ptr<TEfficiency> maxrms_eff_xtrl_loose;
         std::unique_ptr<TEfficiency> nbarlayer13_eff_xtrl_loose;
         std::unique_ptr<TEfficiency> maxrms_and_nbarlayer13_eff_xtrl_loose;
+        std::unique_ptr<TEfficiency> sumrms_low_energy_eff_xtrl_loose;
         std::unique_ptr<TEfficiency> track_selection_eff_xtrl_loose;
+        std::unique_ptr<TEfficiency> stk_1_rm_eff_xtrl_loose;
         std::unique_ptr<TEfficiency> track_selection_eff_within_stk_fvolume_xtrl_loose;
         std::unique_ptr<TEfficiency> psd_stk_match_eff_xtrl_loose;
         std::unique_ptr<TEfficiency> psd_charge_eff_xtrl_loose;
@@ -343,7 +381,9 @@ void buildEfficiency(
         std::unique_ptr<TEfficiency> maxrms_eff_bdt;
         std::unique_ptr<TEfficiency> nbarlayer13_eff_bdt;
         std::unique_ptr<TEfficiency> maxrms_and_nbarlayer13_eff_bdt;
+        std::unique_ptr<TEfficiency> sumrms_low_energy_eff_bdt;
         std::unique_ptr<TEfficiency> track_selection_eff_bdt;
+        std::unique_ptr<TEfficiency> stk_1_rm_eff_bdt;
         std::unique_ptr<TEfficiency> track_selection_eff_within_stk_fvolume_bdt;
         std::unique_ptr<TEfficiency> psd_stk_match_eff_bdt;
         std::unique_ptr<TEfficiency> psd_charge_eff_bdt;
@@ -371,11 +411,17 @@ void buildEfficiency(
         if (TEfficiency::CheckConsistency(*h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl))
             maxrms_and_nbarlayer13_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_maxrms_and_nbarlayer13_efficiency_accepted_tight_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl);
 
+        if (TEfficiency::CheckConsistency(*h_sumrms_low_energy_efficiency_accepted_tight_xtrl, *h_sumrms_low_energy_efficiency_total_tight_xtrl))
+            sumrms_low_energy_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_sumrms_low_energy_efficiency_accepted_tight_xtrl, *h_sumrms_low_energy_efficiency_total_tight_xtrl);
+
         if (TEfficiency::CheckConsistency(*h_track_efficiency_accepted_tight_xtrl, *h_track_efficiency_total_tight_xtrl))
             track_selection_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_track_efficiency_accepted_tight_xtrl, *h_track_efficiency_total_tight_xtrl);
 
         if (TEfficiency::CheckConsistency(*h_track_efficiency_stk_fvolume_accepted_tight_xtrl, *h_track_efficiency_stk_fvolume_total_tight_xtrl))
             track_selection_eff_within_stk_fvolume_xtrl_tight = std::make_unique<TEfficiency>(*h_track_efficiency_stk_fvolume_accepted_tight_xtrl, *h_track_efficiency_stk_fvolume_total_tight_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_stk_1rm_efficiency_accepted_tight_xtrl, *h_stk_1rm_efficiency_total_tight_xtrl))
+            stk_1_rm_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_stk_1rm_efficiency_accepted_tight_xtrl, *h_stk_1rm_efficiency_total_tight_xtrl);
 
         if (TEfficiency::CheckConsistency(*h_psdstkmatch_efficiency_accepted_tight_xtrl, *h_psdstkmatch_efficiency_total_tight_xtrl))
             psd_stk_match_eff_xtrl_tight = std::make_unique<TEfficiency>(*h_psdstkmatch_efficiency_accepted_tight_xtrl, *h_psdstkmatch_efficiency_total_tight_xtrl);
@@ -401,11 +447,17 @@ void buildEfficiency(
         if (TEfficiency::CheckConsistency(*h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl))
             maxrms_and_nbarlayer13_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_maxrms_and_nbarlayer13_efficiency_accepted_loose_xtrl, *h_maxrms_and_nbarlayer13_efficiency_total_loose_xtrl);
 
+        if (TEfficiency::CheckConsistency(*h_sumrms_low_energy_efficiency_accepted_loose_xtrl, *h_sumrms_low_energy_efficiency_total_loose_xtrl))
+            sumrms_low_energy_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_sumrms_low_energy_efficiency_accepted_loose_xtrl, *h_sumrms_low_energy_efficiency_total_loose_xtrl);
+
         if (TEfficiency::CheckConsistency(*h_track_efficiency_accepted_loose_xtrl, *h_track_efficiency_total_loose_xtrl))
             track_selection_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_track_efficiency_accepted_loose_xtrl, *h_track_efficiency_total_loose_xtrl);
 
         if (TEfficiency::CheckConsistency(*h_track_efficiency_stk_fvolume_accepted_loose_xtrl, *h_track_efficiency_stk_fvolume_total_loose_xtrl))
             track_selection_eff_within_stk_fvolume_xtrl_loose = std::make_unique<TEfficiency>(*h_track_efficiency_stk_fvolume_accepted_loose_xtrl, *h_track_efficiency_stk_fvolume_total_loose_xtrl);
+
+        if (TEfficiency::CheckConsistency(*h_stk_1rm_efficiency_accepted_loose_xtrl, *h_stk_1rm_efficiency_total_loose_xtrl))
+            stk_1_rm_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_stk_1rm_efficiency_accepted_loose_xtrl, *h_stk_1rm_efficiency_total_loose_xtrl);
 
         if (TEfficiency::CheckConsistency(*h_psdstkmatch_efficiency_accepted_loose_xtrl, *h_psdstkmatch_efficiency_total_loose_xtrl))
             psd_stk_match_eff_xtrl_loose = std::make_unique<TEfficiency>(*h_psdstkmatch_efficiency_accepted_loose_xtrl, *h_psdstkmatch_efficiency_total_loose_xtrl);
@@ -431,11 +483,17 @@ void buildEfficiency(
         if (TEfficiency::CheckConsistency(*h_maxrms_and_nbarlayer13_efficiency_accepted_bdt, *h_maxrms_and_nbarlayer13_efficiency_total_bdt))
             maxrms_and_nbarlayer13_eff_bdt = std::make_unique<TEfficiency>(*h_maxrms_and_nbarlayer13_efficiency_accepted_bdt, *h_maxrms_and_nbarlayer13_efficiency_total_bdt);
 
+        if (TEfficiency::CheckConsistency(*h_sumrms_low_energy_efficiency_accepted_bdt, *h_sumrms_low_energy_efficiency_total_bdt))
+            sumrms_low_energy_eff_bdt = std::make_unique<TEfficiency>(*h_sumrms_low_energy_efficiency_accepted_bdt, *h_sumrms_low_energy_efficiency_total_bdt);
+
         if (TEfficiency::CheckConsistency(*h_track_efficiency_accepted_bdt, *h_track_efficiency_total_bdt))
             track_selection_eff_bdt = std::make_unique<TEfficiency>(*h_track_efficiency_accepted_bdt, *h_track_efficiency_total_bdt);
 
         if (TEfficiency::CheckConsistency(*h_track_efficiency_stk_fvolume_accepted_bdt, *h_track_efficiency_stk_fvolume_total_bdt))
             track_selection_eff_within_stk_fvolume_bdt = std::make_unique<TEfficiency>(*h_track_efficiency_stk_fvolume_accepted_bdt, *h_track_efficiency_stk_fvolume_total_bdt);
+
+        if (TEfficiency::CheckConsistency(*h_stk_1rm_efficiency_accepted_bdt, *h_stk_1rm_efficiency_total_bdt))
+            stk_1_rm_eff_bdt = std::make_unique<TEfficiency>(*h_stk_1rm_efficiency_accepted_bdt, *h_stk_1rm_efficiency_total_bdt);
 
         if (TEfficiency::CheckConsistency(*h_psdstkmatch_efficiency_accepted_bdt, *h_psdstkmatch_efficiency_total_bdt))
             psd_stk_match_eff_bdt = std::make_unique<TEfficiency>(*h_psdstkmatch_efficiency_accepted_bdt, *h_psdstkmatch_efficiency_total_bdt);
@@ -469,8 +527,10 @@ void buildEfficiency(
         maxrms_eff_xtrl_tight                               ->SetStatisticOption(TEfficiency::kBUniform);
         nbarlayer13_eff_xtrl_tight                          ->SetStatisticOption(TEfficiency::kBUniform);
         maxrms_and_nbarlayer13_eff_xtrl_tight               ->SetStatisticOption(TEfficiency::kBUniform);
+        sumrms_low_energy_eff_xtrl_tight                    ->SetStatisticOption(TEfficiency::kBUniform);
         track_selection_eff_xtrl_tight                      ->SetStatisticOption(TEfficiency::kBUniform);
         track_selection_eff_within_stk_fvolume_xtrl_tight   ->SetStatisticOption(TEfficiency::kBUniform);
+        stk_1_rm_eff_xtrl_tight                             ->SetStatisticOption(TEfficiency::kBUniform);
         psd_stk_match_eff_xtrl_tight                        ->SetStatisticOption(TEfficiency::kBUniform);
         psd_charge_eff_xtrl_tight                           ->SetStatisticOption(TEfficiency::kBUniform);
         stk_charge_eff_xtrl_tight                           ->SetStatisticOption(TEfficiency::kBUniform);
@@ -479,8 +539,10 @@ void buildEfficiency(
         maxrms_eff_xtrl_loose                               ->SetStatisticOption(TEfficiency::kBUniform);
         nbarlayer13_eff_xtrl_loose                          ->SetStatisticOption(TEfficiency::kBUniform);
         maxrms_and_nbarlayer13_eff_xtrl_loose               ->SetStatisticOption(TEfficiency::kBUniform);
+        sumrms_low_energy_eff_xtrl_loose                    ->SetStatisticOption(TEfficiency::kBUniform);
         track_selection_eff_xtrl_loose                      ->SetStatisticOption(TEfficiency::kBUniform);
         track_selection_eff_within_stk_fvolume_xtrl_loose   ->SetStatisticOption(TEfficiency::kBUniform);
+        stk_1_rm_eff_xtrl_loose                             ->SetStatisticOption(TEfficiency::kBUniform);
         psd_stk_match_eff_xtrl_loose                        ->SetStatisticOption(TEfficiency::kBUniform);
         psd_charge_eff_xtrl_loose                           ->SetStatisticOption(TEfficiency::kBUniform);
         stk_charge_eff_xtrl_loose                           ->SetStatisticOption(TEfficiency::kBUniform);
@@ -490,8 +552,10 @@ void buildEfficiency(
         maxrms_eff_bdt                                      ->SetStatisticOption(TEfficiency::kBUniform);
         nbarlayer13_eff_bdt                                 ->SetStatisticOption(TEfficiency::kBUniform);
         maxrms_and_nbarlayer13_eff_bdt                      ->SetStatisticOption(TEfficiency::kBUniform);
+        sumrms_low_energy_eff_bdt                           ->SetStatisticOption(TEfficiency::kBUniform);
         track_selection_eff_bdt                             ->SetStatisticOption(TEfficiency::kBUniform);
         track_selection_eff_within_stk_fvolume_bdt          ->SetStatisticOption(TEfficiency::kBUniform);
+        stk_1_rm_eff_bdt                                    ->SetStatisticOption(TEfficiency::kBUniform);
         psd_stk_match_eff_bdt                               ->SetStatisticOption(TEfficiency::kBUniform);
         psd_charge_eff_bdt                                  ->SetStatisticOption(TEfficiency::kBUniform);
         stk_charge_eff_bdt                                  ->SetStatisticOption(TEfficiency::kBUniform);
@@ -508,8 +572,10 @@ void buildEfficiency(
         maxrms_eff_xtrl_tight                               ->SetName("maxrms_eff_xtrl_tight");
         nbarlayer13_eff_xtrl_tight                          ->SetName("nbarlayer13_eff_xtrl_tight");
         maxrms_and_nbarlayer13_eff_xtrl_tight               ->SetName("maxrms_and_nbarlayer13_eff_xtrl_tight");
+        sumrms_low_energy_eff_xtrl_tight                    ->SetName("sumrms_low_energy_eff_xtrl_tight");
         track_selection_eff_xtrl_tight                      ->SetName("track_selection_eff_xtrl_tight");
         track_selection_eff_within_stk_fvolume_xtrl_tight   ->SetName("track_selection_eff_within_stk_fvolume_xtrl_tight");
+        stk_1_rm_eff_xtrl_tight                             ->SetName("stk_1_rm_eff_xtrl_tight");
         psd_stk_match_eff_xtrl_tight                        ->SetName("psd_stk_match_eff_xtrl_tight");
         psd_charge_eff_xtrl_tight                           ->SetName("psd_charge_eff_xtrl_tight");
         stk_charge_eff_xtrl_tight                           ->SetName("stk_charge_eff_xtrl_tight");
@@ -518,8 +584,10 @@ void buildEfficiency(
         maxrms_eff_xtrl_loose                               ->SetName("maxrms_eff_xtrl_loose");
         nbarlayer13_eff_xtrl_loose                          ->SetName("nbarlayer13_eff_xtrl_loose");
         maxrms_and_nbarlayer13_eff_xtrl_loose               ->SetName("maxrms_and_nbarlayer13_eff_xtrl_loose");
+        sumrms_low_energy_eff_xtrl_loose                    ->SetName("sumrms_low_energy_eff_xtrl_loose");
         track_selection_eff_xtrl_loose                      ->SetName("track_selection_eff_xtrl_loose");
         track_selection_eff_within_stk_fvolume_xtrl_loose   ->SetName("track_selection_eff_within_stk_fvolume_xtrl_loose");
+        stk_1_rm_eff_xtrl_loose                             ->SetName("stk_1_rm_eff_xtrl_loose");
         psd_stk_match_eff_xtrl_loose                        ->SetName("psd_stk_match_eff_xtrl_loose");
         psd_charge_eff_xtrl_loose                           ->SetName("psd_charge_eff_xtrl_loose");
         stk_charge_eff_xtrl_loose                           ->SetName("stk_charge_eff_xtrl_loose");
@@ -536,8 +604,10 @@ void buildEfficiency(
         maxrms_eff_xtrl_tight                               ->SetTitle("maxrms_eff_xtrl_tight; Energy [GeV]; efficiency");
         nbarlayer13_eff_xtrl_tight                          ->SetTitle("nbarlayer13_eff_xtrl_tight; Energy [GeV]; efficiency");
         maxrms_and_nbarlayer13_eff_xtrl_tight               ->SetTitle("maxrms_and_nbarlayer13_eff_xtrl_tight; Energy [GeV]; efficiency");
+        sumrms_low_energy_eff_xtrl_tight                    ->SetTitle("sumrms_low_energy_eff_xtrl_tight; Energy [GeV]; efficiency");
         track_selection_eff_xtrl_tight                      ->SetTitle("track_selection_eff_xtrl_tight; Energy [GeV]; efficiency");
         track_selection_eff_within_stk_fvolume_xtrl_tight   ->SetTitle("track_selection_eff_within_stk_fvolume_xtrl_tight; Energy [GeV]; efficiency");
+        stk_1_rm_eff_xtrl_tight                             ->SetTitle("stk_1_rm_eff_xtrl_tight; Energy [GeV]; efficiency");
         psd_stk_match_eff_xtrl_tight                        ->SetTitle("psd_stk_match_eff_xtrl_tight; Energy [GeV]; efficiency");
         psd_charge_eff_xtrl_tight                           ->SetTitle("psd_charge_eff_xtrl_tight; Energy [GeV]; efficiency");
         stk_charge_eff_xtrl_tight                           ->SetTitle("stk_charge_eff_xtrl_tight; Energy [GeV]; efficiency");
@@ -546,8 +616,10 @@ void buildEfficiency(
         maxrms_eff_xtrl_loose                               ->SetTitle("maxrms_eff_xtrl_loose; Energy [GeV]; efficiency");
         nbarlayer13_eff_xtrl_loose                          ->SetTitle("nbarlayer13_eff_xtrl_loose; Energy [GeV]; efficiency");
         maxrms_and_nbarlayer13_eff_xtrl_loose               ->SetTitle("maxrms_and_nbarlayer13_eff_xtrl_loose; Energy [GeV]; efficiency");
+        sumrms_low_energy_eff_xtrl_loose                    ->SetTitle("sumrms_low_energy_eff_xtrl_loose; Energy [GeV]; efficiency");
         track_selection_eff_xtrl_loose                      ->SetTitle("track_selection_eff_xtrl_loose; Energy [GeV]; efficiency");
         track_selection_eff_within_stk_fvolume_xtrl_loose   ->SetTitle("track_selection_eff_within_stk_fvolume_xtrl_loose; Energy [GeV]; efficiency");
+        stk_1_rm_eff_xtrl_loose                             ->SetTitle("stk_1_rm_eff_xtrl_loose; Energy [GeV]; efficiency");
         psd_stk_match_eff_xtrl_loose                        ->SetTitle("psd_stk_match_eff_xtrl_loose; Energy [GeV]; efficiency");
         psd_charge_eff_xtrl_loose                           ->SetTitle("psd_charge_eff_xtrl_loose; Energy [GeV]; efficiency");
         stk_charge_eff_xtrl_loose                           ->SetTitle("stk_charge_eff_xtrl_loose; Energy [GeV]; efficiency");
@@ -564,8 +636,10 @@ void buildEfficiency(
         maxrms_eff_bdt                              ->SetName("maxrms_eff_bdt");
         nbarlayer13_eff_bdt                         ->SetName("nbarlayer13_eff_bdt");
         maxrms_and_nbarlayer13_eff_bdt              ->SetName("maxrms_and_nbarlayer13_eff_bdt");
+        sumrms_low_energy_eff_bdt                   ->SetName("sumrms_low_energy_eff_bdt");
         track_selection_eff_bdt                     ->SetName("track_selection_eff_bdt");
         track_selection_eff_within_stk_fvolume_bdt  ->SetName("track_selection_eff_within_stk_fvolume_bdt");
+        stk_1_rm_eff_bdt                            ->SetName("stk_1_rm_eff_bdt");
         psd_stk_match_eff_bdt                       ->SetName("psd_stk_match_eff_bdt");
         psd_charge_eff_bdt                          ->SetName("psd_charge_eff_bdt");
         stk_charge_eff_bdt                          ->SetName("stk_charge_eff_bdt");
@@ -575,8 +649,10 @@ void buildEfficiency(
         maxrms_eff_bdt                              ->SetTitle("maxrms_eff_bdt; Energy [GeV]; efficiency");
         nbarlayer13_eff_bdt                         ->SetTitle("nbarlayer13_eff_bdt; Energy [GeV]; efficiency");
         maxrms_and_nbarlayer13_eff_bdt              ->SetTitle("maxrms_and_nbarlayer13_eff_bdt; Energy [GeV]; efficiency");
+        sumrms_low_energy_eff_bdt                   ->SetTitle("sumrms_low_energy_eff_bdt; Energy [GeV]; efficiency");
         track_selection_eff_bdt                     ->SetTitle("track_selection_eff_bdt; Energy [GeV]; efficiency");
         track_selection_eff_within_stk_fvolume_bdt  ->SetTitle("track_selection_eff_within_stk_fvolume_bdt; Energy [GeV]; efficiency");
+        stk_1_rm_eff_bdt                            ->SetTitle("stk_1_rm_eff_bdt; Energy [GeV]; efficiency");
         psd_stk_match_eff_bdt                       ->SetTitle("psd_stk_match_eff_bdt; Energy [GeV]; efficiency");
         psd_charge_eff_bdt                          ->SetTitle("psd_charge_eff_bdt; Energy [GeV]; efficiency");
         stk_charge_eff_bdt                          ->SetTitle("stk_charge_eff_bdt; Energy [GeV]; efficiency");
@@ -596,8 +672,10 @@ void buildEfficiency(
         maxrms_eff_xtrl_tight                               ->Write();
         nbarlayer13_eff_xtrl_tight                          ->Write();
         maxrms_and_nbarlayer13_eff_xtrl_tight               ->Write();
+        sumrms_low_energy_eff_xtrl_tight                    ->Write();
         track_selection_eff_xtrl_tight                      ->Write();
         track_selection_eff_within_stk_fvolume_xtrl_tight   ->Write();
+        stk_1_rm_eff_xtrl_tight                             ->Write();
         psd_stk_match_eff_xtrl_tight                        ->Write();
         psd_charge_eff_xtrl_tight                           ->Write();
         stk_charge_eff_xtrl_tight                           ->Write();
@@ -606,8 +684,10 @@ void buildEfficiency(
         maxrms_eff_xtrl_loose                               ->Write();
         nbarlayer13_eff_xtrl_loose                          ->Write();
         maxrms_and_nbarlayer13_eff_xtrl_loose               ->Write();
+        sumrms_low_energy_eff_xtrl_loose                    ->Write();
         track_selection_eff_xtrl_loose                      ->Write();
         track_selection_eff_within_stk_fvolume_xtrl_loose   ->Write();
+        stk_1_rm_eff_xtrl_loose                             ->Write();
         psd_stk_match_eff_xtrl_loose                        ->Write();
         psd_charge_eff_xtrl_loose                           ->Write();
         stk_charge_eff_xtrl_loose                           ->Write();
@@ -617,8 +697,10 @@ void buildEfficiency(
         maxrms_eff_bdt                                      ->Write();
         nbarlayer13_eff_bdt                                 ->Write();
         maxrms_and_nbarlayer13_eff_bdt                      ->Write();
+        sumrms_low_energy_eff_bdt                           ->Write();
         track_selection_eff_bdt                             ->Write();
         track_selection_eff_within_stk_fvolume_bdt          ->Write();
+        stk_1_rm_eff_bdt                                    ->Write();
         psd_stk_match_eff_bdt                               ->Write();
         psd_charge_eff_bdt                                  ->Write();
         stk_charge_eff_bdt                                  ->Write();

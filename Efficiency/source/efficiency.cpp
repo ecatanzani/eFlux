@@ -179,6 +179,14 @@ void buildEfficiency(const in_args input_args)
             return false;
     };
 
+    auto xtrl_loose_reject_cut = [](const double bgo_total_energy_gev, const double xtrl) -> bool {
+        auto xtrl_cut_value {3*log10(bgo_total_energy_gev/200) + 12};
+        if (xtrl>xtrl_cut_value && xtrl!=-999)
+            return true;
+        else
+            return false;
+    };
+
     // Compute the energy binning giving the corrected energy
     auto get_energy_bin = [&energy_binning] (const double corrected_energy) -> int
     {
@@ -566,6 +574,48 @@ void buildEfficiency(const in_args input_args)
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_total_bdt", "HET Trigger + maxrms & nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
+    // sumRMS low energy histos
+    auto h_sumrms_low_energy_efficiency_accepted_tight_xtrl = fr.Filter("sumrms_low_energy_cut_efficiency_preselection==1 && sumrms_low_energy_cut_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_sumrms_low_energy_efficiency_accepted_tight_xtrl", "HET Trigger + sumrms low energy cut Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    auto h_sumrms_low_energy_efficiency_total_tight_xtrl = fr.Filter("sumrms_low_energy_cut_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_sumrms_low_energy_efficiency_total_tight_xtrl", "HET Trigger + sumrms low energy cut", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_sumrms_low_energy_efficiency_accepted_loose_xtrl = fr.Filter("sumrms_low_energy_cut_efficiency_preselection==1 && sumrms_low_energy_cut_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_sumrms_low_energy_efficiency_accepted_loose_xtrl", "HET Trigger + sumrms low energy cut Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_sumrms_low_energy_efficiency_total_loose_xtrl = fr.Filter("sumrms_low_energy_cut_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_sumrms_low_energy_efficiency_total_loose_xtrl", "HET Trigger + sumrms low energy cut", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_sumrms_low_energy_efficiency_accepted_bdt = fr.Filter("sumrms_low_energy_cut_efficiency_preselection==1 && sumrms_low_energy_cut_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                            .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Histo1D({"h_sumrms_low_energy_efficiency_accepted_bdt", "HET Trigger + sumrms low energy cut Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_sumrms_low_energy_efficiency_total_bdt = fr.Filter("sumrms_low_energy_cut_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                            .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Histo1D({"h_sumrms_low_energy_efficiency_total_bdt", "HET Trigger + sumrms low energy cut", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
     // Track Selection histos
     auto h_track_efficiency_accepted_tight_xtrl = fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
                                             .Define("corr_energy_gev", "energy_corr * 0.001")
@@ -608,6 +658,49 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
                                             .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_track_efficiency_total_bdt", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    // STK 1 RM cut
+    auto h_stk_1rm_efficiency_accepted_tight_xtrl = fr.Filter("stk_1rm_cut_efficiency_preselection==1 && stk_1rm_cut_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_stk_1rm_efficiency_accepted_tight_xtrl", "HET Trigger + STK 1 RM Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_stk_1rm_efficiency_total_tight_xtrl = fr.Filter("stk_1rm_cut_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter("xtrl_evt<8.5 && xtrl_evt!= -999")
+                                            .Histo1D({"h_stk_1rm_efficiency_total_tight_xtrl", "HET Trigger + STK 1 RM Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+    
+    auto h_stk_1rm_efficiency_accepted_loose_xtrl = fr.Filter("stk_1rm_cut_efficiency_preselection==1 && stk_1rm_cut_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_stk_1rm_efficiency_accepted_loose_xtrl", "HET Trigger + STK 1 RM Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_stk_1rm_efficiency_total_loose_xtrl = fr.Filter("stk_1rm_cut_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("energy_gev", "energy * 0.001")
+                                            .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                            .Filter(xtrl_loose_cut, {"energy_gev", "xtrl_evt"})
+                                            .Histo1D({"h_stk_1rm_efficiency_total_loose_xtrl", "HET Trigger + STK 1 RM Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_stk_1rm_efficiency_accepted_bdt = fr.Filter("stk_1rm_cut_efficiency_preselection==1 && stk_1rm_cut_efficiency_preselection_accepted==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                            .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Histo1D({"h_stk_1rm_efficiency_accepted_bdt", "HET Trigger + STK 1 RM Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
+
+    auto h_stk_1rm_efficiency_total_bdt = fr.Filter("stk_1rm_cut_efficiency_preselection==1")
+                                            .Define("corr_energy_gev", "energy_corr * 0.001")
+                                            .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                            .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                            .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Histo1D({"h_stk_1rm_efficiency_total_bdt", "HET Trigger + STK 1 RM Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // Clusters on first STK layer
     auto h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
@@ -1810,6 +1903,175 @@ void buildEfficiency(const in_args input_args)
                         .Define("bgorec_cosine", "BGOrec_trajectoryDirection2D.CosTheta()")
                         .Histo2D({"h_sumrms_cosine_100_250", "sumRMS vs BGO polar angle cosine; #cos(#theta); sumRMS [mm]", (int)cosine_bins.size() -1, &cosine_bins[0], (int)sumRms_cosine_bins.size()-1, &sumRms_cosine_bins[0]}, "bgorec_cosine", "sumRms");
 
+    // STK track selection distance variables (events rejected by the classifiers)
+    auto h_trackselection_distance_vars_20_100_xtrl_tight = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>8.5 && xtrl_evt!= -999")
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_20_100_xtrl_tight", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_100_250_xtrl_tight = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>8.5 && xtrl_evt!= -999")
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_100_250_xtrl_tight", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_250_500_xtrl_tight = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>8.5 && xtrl_evt!= -999")
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_250_500_xtrl_tight", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_500_1000_xtrl_tight = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>8.5 && xtrl_evt!= -999")
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_500_1000_xtrl_tight", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_1000_3000_xtrl_tight = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>8.5 && xtrl_evt!= -999")
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_1000_3000_xtrl_tight", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_3000_xtrl_tight = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Filter("corr_energy_gev>=3000")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter("xtrl_evt>8.5 && xtrl_evt!= -999")
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_3000_xtrl_tight", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_20_100_xtrl_loose = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter(xtrl_loose_reject_cut, {"energy_gev", "xtrl_evt"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_20_100_xtrl_loose", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_100_250_xtrl_loose = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter(xtrl_loose_reject_cut, {"energy_gev", "xtrl_evt"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_100_250_xtrl_loose", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_250_500_xtrl_loose = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter(xtrl_loose_reject_cut, {"energy_gev", "xtrl_evt"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_250_500_xtrl_loose", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_500_1000_xtrl_loose = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter(xtrl_loose_reject_cut, {"energy_gev", "xtrl_evt"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_500_1000_xtrl_loose", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_1000_3000_xtrl_loose = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter(xtrl_loose_reject_cut, {"energy_gev", "xtrl_evt"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_1000_3000_xtrl_loose", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_3000_xtrl_loose = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=3000")
+                                    .Define("xtrl_evt", compute_xtrl, {"fracLast_13", "sumRms"})
+                                    .Filter(xtrl_loose_reject_cut, {"energy_gev", "xtrl_evt"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_3000_xtrl_loose", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_20_100_bdt = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=20 && corr_energy_gev<100")
+                                    .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                    .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                    .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                    .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_20_100_bdt", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_100_250_bdt = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=100 && corr_energy_gev<250")
+                                    .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                    .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                    .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                    .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_100_250_bdt", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_250_500_bdt = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=250 && corr_energy_gev<500")
+                                    .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                    .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                    .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                    .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_250_500_bdt", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_500_1000_bdt = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=500 && corr_energy_gev<1000")
+                                    .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                    .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                    .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                    .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_500_1000_bdt", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_1000_3000_bdt = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=1000 && corr_energy_gev<3000")
+                                    .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                    .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                    .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                    .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_1000_3000_bdt", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
+    auto h_trackselection_distance_vars_3000_bdt = fr.Filter("track_efficiency_preselection_accepted==true")
+                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                    .Define("energy_gev", "energy * 0.001")
+                                    .Filter("corr_energy_gev>=3000")
+                                    .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
+                                    .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
+                                    .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                    .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                    .Define("STK_bestTrack_linear_distance_STK_BGO", "sqrt(pow(STK_bestTrack_STK_BGO_topX_distance, 2) + pow(STK_bestTrack_STK_BGO_topY_distance, 2))")
+                                    .Histo2D({"h_trackselection_distance_vars_3000_bdt", "STK Track Selection distancest; linear distance [mm]; angular distance [deg]", 100, 0, 100, 100, 0, 50}, "STK_bestTrack_linear_distance_STK_BGO", "STK_bestTrack_angular_distance_STK_BGO");
+
     TFile *output_file = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (output_file->IsZombie()) {
         std::cerr << "Error writing output ROOT file [" << input_args.output_path << "]\n\n";
@@ -1836,10 +2098,22 @@ void buildEfficiency(const in_args input_args)
     h_maxrms_and_nbarlayer13_efficiency_total_tight_xtrl                ->Write();
     h_maxrms_and_nbarlayer13_efficiency_accepted_bdt                    ->Write();
     h_maxrms_and_nbarlayer13_efficiency_total_bdt                       ->Write();
+    h_sumrms_low_energy_efficiency_accepted_tight_xtrl                  ->Write();
+    h_sumrms_low_energy_efficiency_total_tight_xtrl                     ->Write();
+    h_sumrms_low_energy_efficiency_accepted_loose_xtrl                  ->Write();
+    h_sumrms_low_energy_efficiency_total_loose_xtrl                     ->Write();
+    h_sumrms_low_energy_efficiency_accepted_bdt                         ->Write();
+    h_sumrms_low_energy_efficiency_total_bdt                            ->Write();
     h_track_efficiency_accepted_tight_xtrl                              ->Write();
     h_track_efficiency_total_tight_xtrl                                 ->Write();
     h_track_efficiency_accepted_bdt                                     ->Write();
     h_track_efficiency_total_bdt                                        ->Write();
+    h_stk_1rm_efficiency_accepted_tight_xtrl                            ->Write();
+    h_stk_1rm_efficiency_total_tight_xtrl                               ->Write();
+    h_stk_1rm_efficiency_accepted_loose_xtrl                            ->Write();
+    h_stk_1rm_efficiency_total_loose_xtrl                               ->Write();
+    h_stk_1rm_efficiency_accepted_bdt                                   ->Write();
+    h_stk_1rm_efficiency_total_bdt                                      ->Write();
 
     h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_tight_xtrl           ->Write();
     h_clusters_on_first_STK_layer_within_psd_fvolume_total_tight_xtrl              ->Write();
@@ -2079,7 +2353,31 @@ void buildEfficiency(const in_args input_args)
     output_file->cd("sumrms");
 
     h_sumrms_cosine_20_100                                              ->Write();
-    h_sumrms_cosine_100_250                                             ->Write();               
+    h_sumrms_cosine_100_250                                             ->Write();
+
+    output_file->mkdir("trackselection_distance");
+    output_file->cd("trackselection_distance");
+
+    h_trackselection_distance_vars_20_100_xtrl_tight                    ->Write();
+    h_trackselection_distance_vars_100_250_xtrl_tight                   ->Write();
+    h_trackselection_distance_vars_250_500_xtrl_tight                   ->Write();
+    h_trackselection_distance_vars_500_1000_xtrl_tight                  ->Write();
+    h_trackselection_distance_vars_1000_3000_xtrl_tight                 ->Write();
+    h_trackselection_distance_vars_3000_xtrl_tight                      ->Write();
     
+    h_trackselection_distance_vars_20_100_xtrl_loose                    ->Write();
+    h_trackselection_distance_vars_100_250_xtrl_loose                   ->Write();
+    h_trackselection_distance_vars_250_500_xtrl_loose                   ->Write();
+    h_trackselection_distance_vars_500_1000_xtrl_loose                  ->Write();
+    h_trackselection_distance_vars_1000_3000_xtrl_loose                 ->Write();
+    h_trackselection_distance_vars_3000_xtrl_loose                      ->Write();
+
+    h_trackselection_distance_vars_20_100_bdt                           ->Write();
+    h_trackselection_distance_vars_100_250_bdt                          ->Write();
+    h_trackselection_distance_vars_250_500_bdt                          ->Write();
+    h_trackselection_distance_vars_500_1000_bdt                         ->Write();
+    h_trackselection_distance_vars_1000_3000_bdt                        ->Write();
+    h_trackselection_distance_vars_3000_bdt                             ->Write();
+
     output_file->Close();
 }   

@@ -30,8 +30,10 @@ void produceEfficiencyPlots(
         auto data_maxrms_eff_xtrl_tight                             = static_cast<TEfficiency*>(datafile->Get("efficiencies/maxrms_eff_xtrl_tight"));
         auto data_nbarlayer13_eff_xtrl_tight                        = static_cast<TEfficiency*>(datafile->Get("efficiencies/nbarlayer13_eff_xtrl_tight"));
         auto data_maxrms_and_nbarlayer13_eff_xtrl_tight             = static_cast<TEfficiency*>(datafile->Get("efficiencies/maxrms_and_nbarlayer13_eff_xtrl_tight"));
+        auto data_sumrms_low_energy_eff_xtrl_tight                  = static_cast<TEfficiency*>(datafile->Get("efficiencies/sumrms_low_energy_eff_xtrl_tight"));
         auto data_track_selection_eff_xtrl_tight                    = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_xtrl_tight"));
         auto data_track_selection_eff_within_stk_fvolume_xtrl_tight = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_within_stk_fvolume_xtrl_tight"));
+        auto data_stk_1_rm_eff_xtrl_tight                           = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_1_rm_eff_xtrl_tight"));
         auto data_psd_stk_match_eff_xtrl_tight                      = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_stk_match_eff_xtrl_tight"));
         auto data_psd_charge_eff_xtrl_tight                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_charge_eff_xtrl_tight"));
         auto data_stk_charge_eff_xtrl_tight                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_charge_eff_xtrl_tight"));
@@ -41,8 +43,10 @@ void produceEfficiencyPlots(
         auto data_maxrms_eff_xtrl_loose                             = static_cast<TEfficiency*>(datafile->Get("efficiencies/maxrms_eff_xtrl_loose"));
         auto data_nbarlayer13_eff_xtrl_loose                        = static_cast<TEfficiency*>(datafile->Get("efficiencies/nbarlayer13_eff_xtrl_loose"));
         auto data_maxrms_and_nbarlayer13_eff_xtrl_loose             = static_cast<TEfficiency*>(datafile->Get("efficiencies/maxrms_and_nbarlayer13_eff_xtrl_loose"));
+        auto data_sumrms_low_energy_eff_xtrl_loose                  = static_cast<TEfficiency*>(datafile->Get("efficiencies/sumrms_low_energy_eff_xtrl_loose"));
         auto data_track_selection_eff_xtrl_loose                    = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_xtrl_loose"));
         auto data_track_selection_eff_within_stk_fvolume_xtrl_loose = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_within_stk_fvolume_xtrl_loose"));
+        auto data_stk_1_rm_eff_xtrl_loose                           = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_1_rm_eff_xtrl_loose"));
         auto data_psd_stk_match_eff_xtrl_loose                      = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_stk_match_eff_xtrl_loose"));
         auto data_psd_charge_eff_xtrl_loose                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_charge_eff_xtrl_loose"));
         auto data_stk_charge_eff_xtrl_loose                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_charge_eff_xtrl_loose"));
@@ -52,8 +56,10 @@ void produceEfficiencyPlots(
         auto data_maxrms_eff_bdt                                    = static_cast<TEfficiency*>(datafile->Get("efficiencies/maxrms_eff_bdt"));
         auto data_nbarlayer13_eff_bdt                               = static_cast<TEfficiency*>(datafile->Get("efficiencies/nbarlayer13_eff_bdt"));
         auto data_maxrms_and_nbarlayer13_eff_bdt                    = static_cast<TEfficiency*>(datafile->Get("efficiencies/maxrms_and_nbarlayer13_eff_bdt"));
+        auto data_sumrms_low_energy_eff_bdt                         = static_cast<TEfficiency*>(datafile->Get("efficiencies/sumrms_low_energy_eff_bdt"));
         auto data_track_selection_eff_bdt                           = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_bdt"));
         auto data_track_selection_eff_within_stk_fvolume_bdt        = static_cast<TEfficiency*>(datafile->Get("efficiencies/track_selection_eff_within_stk_fvolume_bdt"));
+        auto data_stk_1_rm_eff_bdt                                  = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_1_rm_eff_bdt"));
         auto data_psd_stk_match_eff_bdt                             = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_stk_match_eff_bdt"));
         auto data_psd_charge_eff_bdt                                = static_cast<TEfficiency*>(datafile->Get("efficiencies/psd_charge_eff_bdt"));
         auto data_stk_charge_eff_bdt                                = static_cast<TEfficiency*>(datafile->Get("efficiencies/stk_charge_eff_bdt"));
@@ -70,8 +76,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_xtrl_tight                              ->SetLineColor(kRed);
         data_nbarlayer13_eff_xtrl_tight                         ->SetLineColor(kRed);
         data_maxrms_and_nbarlayer13_eff_xtrl_tight              ->SetLineColor(kRed);
+        data_sumrms_low_energy_eff_xtrl_tight                   ->SetLineColor(kRed);
         data_track_selection_eff_xtrl_tight                     ->SetLineColor(kRed);
         data_track_selection_eff_within_stk_fvolume_xtrl_tight  ->SetLineColor(kRed);
+        data_stk_1_rm_eff_xtrl_tight                            ->SetLineColor(kRed);
         data_psd_stk_match_eff_xtrl_tight                       ->SetLineColor(kRed);
         data_psd_charge_eff_xtrl_tight                          ->SetLineColor(kRed);
         data_stk_charge_eff_xtrl_tight                          ->SetLineColor(kRed);
@@ -81,8 +89,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_xtrl_loose                              ->SetLineColor(kRed);
         data_nbarlayer13_eff_xtrl_loose                         ->SetLineColor(kRed);
         data_maxrms_and_nbarlayer13_eff_xtrl_loose              ->SetLineColor(kRed);
+        data_sumrms_low_energy_eff_xtrl_loose                   ->SetLineColor(kRed);
         data_track_selection_eff_xtrl_loose                     ->SetLineColor(kRed);
         data_track_selection_eff_within_stk_fvolume_xtrl_loose  ->SetLineColor(kRed);
+        data_stk_1_rm_eff_xtrl_loose                            ->SetLineColor(kRed);
         data_psd_stk_match_eff_xtrl_loose                       ->SetLineColor(kRed);
         data_psd_charge_eff_xtrl_loose                          ->SetLineColor(kRed);
         data_stk_charge_eff_xtrl_loose                          ->SetLineColor(kRed);
@@ -92,8 +102,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_bdt                                     ->SetLineColor(kMagenta);
         data_nbarlayer13_eff_bdt                                ->SetLineColor(kMagenta);
         data_maxrms_and_nbarlayer13_eff_bdt                     ->SetLineColor(kMagenta);
+        data_sumrms_low_energy_eff_bdt                          ->SetLineColor(kMagenta);
         data_track_selection_eff_bdt                            ->SetLineColor(kMagenta);
         data_track_selection_eff_within_stk_fvolume_bdt         ->SetLineColor(kMagenta);
+        data_stk_1_rm_eff_bdt                                   ->SetLineColor(kMagenta);
         data_psd_stk_match_eff_bdt                              ->SetLineColor(kMagenta);
         data_psd_charge_eff_bdt                                 ->SetLineColor(kMagenta);
         data_stk_charge_eff_bdt                                 ->SetLineColor(kMagenta);
@@ -110,8 +122,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_xtrl_tight                              ->SetLineWidth(2);
         data_nbarlayer13_eff_xtrl_tight                         ->SetLineWidth(2);
         data_maxrms_and_nbarlayer13_eff_xtrl_tight              ->SetLineWidth(2);
+        data_sumrms_low_energy_eff_xtrl_tight                   ->SetLineWidth(2);
         data_track_selection_eff_xtrl_tight                     ->SetLineWidth(2);
         data_track_selection_eff_within_stk_fvolume_xtrl_tight  ->SetLineWidth(2);
+        data_stk_1_rm_eff_xtrl_tight                            ->SetLineWidth(2);
         data_psd_stk_match_eff_xtrl_tight                       ->SetLineWidth(2);
         data_psd_charge_eff_xtrl_tight                          ->SetLineWidth(2);
         data_stk_charge_eff_xtrl_tight                          ->SetLineWidth(2);
@@ -121,8 +135,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_xtrl_loose                              ->SetLineWidth(2);
         data_nbarlayer13_eff_xtrl_loose                         ->SetLineWidth(2);
         data_maxrms_and_nbarlayer13_eff_xtrl_loose              ->SetLineWidth(2);
+        data_sumrms_low_energy_eff_xtrl_loose                   ->SetLineWidth(2);
         data_track_selection_eff_xtrl_loose                     ->SetLineWidth(2);
         data_track_selection_eff_within_stk_fvolume_xtrl_loose  ->SetLineWidth(2);
+        data_stk_1_rm_eff_xtrl_loose                            ->SetLineWidth(2);
         data_psd_stk_match_eff_xtrl_loose                       ->SetLineWidth(2);
         data_psd_charge_eff_xtrl_loose                          ->SetLineWidth(2);
         data_stk_charge_eff_xtrl_loose                          ->SetLineWidth(2);
@@ -132,8 +148,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_bdt                                     ->SetLineWidth(2);
         data_nbarlayer13_eff_bdt                                ->SetLineWidth(2);
         data_maxrms_and_nbarlayer13_eff_bdt                     ->SetLineWidth(2);
+        data_sumrms_low_energy_eff_bdt                          ->SetLineWidth(2);
         data_track_selection_eff_bdt                            ->SetLineWidth(2);
         data_track_selection_eff_within_stk_fvolume_bdt         ->SetLineWidth(2);
+        data_stk_1_rm_eff_bdt                                   ->SetLineWidth(2);
         data_psd_stk_match_eff_bdt                              ->SetLineWidth(2);
         data_psd_charge_eff_bdt                                 ->SetLineWidth(2);
         data_stk_charge_eff_bdt                                 ->SetLineWidth(2);
@@ -150,8 +168,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_xtrl_tight                              ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_nbarlayer13_eff_xtrl_tight                         ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_maxrms_and_nbarlayer13_eff_xtrl_tight              ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
+        data_sumrms_low_energy_eff_xtrl_tight                   ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_track_selection_eff_xtrl_tight                     ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_track_selection_eff_within_stk_fvolume_xtrl_tight  ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
+        data_stk_1_rm_eff_xtrl_tight                            ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_psd_stk_match_eff_xtrl_tight                       ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_psd_charge_eff_xtrl_tight                          ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_stk_charge_eff_xtrl_tight                          ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
@@ -161,8 +181,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_xtrl_loose                              ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_nbarlayer13_eff_xtrl_loose                         ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_maxrms_and_nbarlayer13_eff_xtrl_loose              ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
+        data_sumrms_low_energy_eff_xtrl_loose                   ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_track_selection_eff_xtrl_loose                     ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_track_selection_eff_within_stk_fvolume_xtrl_loose  ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
+        data_stk_1_rm_eff_xtrl_loose                            ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_psd_stk_match_eff_xtrl_loose                       ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_psd_charge_eff_xtrl_loose                          ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
         data_stk_charge_eff_xtrl_loose                          ->SetTitle((std::string(data_label) + std::string(" (xtrl)")).c_str());
@@ -172,8 +194,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_bdt                                     ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_nbarlayer13_eff_bdt                                ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_maxrms_and_nbarlayer13_eff_bdt                     ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
+        data_sumrms_low_energy_eff_bdt                          ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_track_selection_eff_bdt                            ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_track_selection_eff_within_stk_fvolume_bdt         ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
+        data_stk_1_rm_eff_bdt                                   ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_psd_stk_match_eff_bdt                              ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_psd_charge_eff_bdt                                 ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
         data_stk_charge_eff_bdt                                 ->SetTitle((std::string(data_label) + std::string(" (BDT)")).c_str());
@@ -190,8 +214,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_xtrl_tight                              ->SetDirectory(0);
         data_nbarlayer13_eff_xtrl_tight                         ->SetDirectory(0);
         data_maxrms_and_nbarlayer13_eff_xtrl_tight              ->SetDirectory(0);
+        data_sumrms_low_energy_eff_xtrl_tight                   ->SetDirectory(0);
         data_track_selection_eff_xtrl_tight                     ->SetDirectory(0);
         data_track_selection_eff_within_stk_fvolume_xtrl_tight  ->SetDirectory(0);
+        data_stk_1_rm_eff_xtrl_tight                            ->SetDirectory(0);
         data_psd_stk_match_eff_xtrl_tight                       ->SetDirectory(0);
         data_psd_charge_eff_xtrl_tight                          ->SetDirectory(0);
         data_stk_charge_eff_xtrl_tight                          ->SetDirectory(0);
@@ -201,8 +227,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_xtrl_loose                              ->SetDirectory(0);
         data_nbarlayer13_eff_xtrl_loose                         ->SetDirectory(0);
         data_maxrms_and_nbarlayer13_eff_xtrl_loose              ->SetDirectory(0);
+        data_sumrms_low_energy_eff_xtrl_loose                   ->SetDirectory(0);
         data_track_selection_eff_xtrl_loose                     ->SetDirectory(0);
         data_track_selection_eff_within_stk_fvolume_xtrl_loose  ->SetDirectory(0);
+        data_stk_1_rm_eff_xtrl_loose                            ->SetDirectory(0);
         data_psd_stk_match_eff_xtrl_loose                       ->SetDirectory(0);
         data_psd_charge_eff_xtrl_loose                          ->SetDirectory(0);
         data_stk_charge_eff_xtrl_loose                          ->SetDirectory(0);
@@ -212,8 +240,10 @@ void produceEfficiencyPlots(
         data_maxrms_eff_bdt                                     ->SetDirectory(0);
         data_nbarlayer13_eff_bdt                                ->SetDirectory(0);
         data_maxrms_and_nbarlayer13_eff_bdt                     ->SetDirectory(0);
+        data_sumrms_low_energy_eff_bdt                          ->SetDirectory(0);
         data_track_selection_eff_bdt                            ->SetDirectory(0);
         data_track_selection_eff_within_stk_fvolume_bdt         ->SetDirectory(0);
+        data_stk_1_rm_eff_bdt                                   ->SetDirectory(0);
         data_psd_stk_match_eff_bdt                              ->SetDirectory(0);
         data_psd_charge_eff_bdt                                 ->SetDirectory(0);
         data_stk_charge_eff_bdt                                 ->SetDirectory(0);
@@ -238,8 +268,10 @@ void produceEfficiencyPlots(
         auto mc_maxrms_eff_xtrl_tight                               = static_cast<TEfficiency*>(mcfile->Get("efficiencies/maxrms_eff_xtrl_tight"));
         auto mc_nbarlayer13_eff_xtrl_tight                          = static_cast<TEfficiency*>(mcfile->Get("efficiencies/nbarlayer13_eff_xtrl_tight"));
         auto mc_maxrms_and_nbarlayer13_eff_xtrl_tight               = static_cast<TEfficiency*>(mcfile->Get("efficiencies/maxrms_and_nbarlayer13_eff_xtrl_tight"));
+        auto mc_sumrms_low_energy_eff_xtrl_tight                    = static_cast<TEfficiency*>(mcfile->Get("efficiencies/sumrms_low_energy_eff_xtrl_tight"));
         auto mc_track_selection_eff_xtrl_tight                      = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_xtrl_tight"));
         auto mc_track_selection_eff_within_stk_fvolume_xtrl_tight   = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_within_stk_fvolume_xtrl_tight"));
+        auto mc_stk_1_rm_eff_xtrl_tight                             = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_1_rm_eff_xtrl_tight"));
         auto mc_psd_stk_match_eff_xtrl_tight                        = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_stk_match_eff_xtrl_tight"));
         auto mc_psd_charge_eff_xtrl_tight                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_charge_eff_xtrl_tight"));
         auto mc_stk_charge_eff_xtrl_tight                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_charge_eff_xtrl_tight"));
@@ -249,8 +281,10 @@ void produceEfficiencyPlots(
         auto mc_maxrms_eff_xtrl_loose                               = static_cast<TEfficiency*>(mcfile->Get("efficiencies/maxrms_eff_xtrl_loose"));
         auto mc_nbarlayer13_eff_xtrl_loose                          = static_cast<TEfficiency*>(mcfile->Get("efficiencies/nbarlayer13_eff_xtrl_loose"));
         auto mc_maxrms_and_nbarlayer13_eff_xtrl_loose               = static_cast<TEfficiency*>(mcfile->Get("efficiencies/maxrms_and_nbarlayer13_eff_xtrl_loose"));
+        auto mc_sumrms_low_energy_eff_xtrl_loose                    = static_cast<TEfficiency*>(mcfile->Get("efficiencies/sumrms_low_energy_eff_xtrl_loose"));
         auto mc_track_selection_eff_xtrl_loose                      = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_xtrl_loose"));
         auto mc_track_selection_eff_within_stk_fvolume_xtrl_loose   = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_within_stk_fvolume_xtrl_loose"));
+        auto mc_stk_1_rm_eff_xtrl_loose                             = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_1_rm_eff_xtrl_loose"));
         auto mc_psd_stk_match_eff_xtrl_loose                        = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_stk_match_eff_xtrl_loose"));
         auto mc_psd_charge_eff_xtrl_loose                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_charge_eff_xtrl_loose"));
         auto mc_stk_charge_eff_xtrl_loose                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_charge_eff_xtrl_loose"));
@@ -260,8 +294,10 @@ void produceEfficiencyPlots(
         auto mc_maxrms_eff_bdt                                      = static_cast<TEfficiency*>(mcfile->Get("efficiencies/maxrms_eff_bdt"));
         auto mc_nbarlayer13_eff_bdt                                 = static_cast<TEfficiency*>(mcfile->Get("efficiencies/nbarlayer13_eff_bdt"));
         auto mc_maxrms_and_nbarlayer13_eff_bdt                      = static_cast<TEfficiency*>(mcfile->Get("efficiencies/maxrms_and_nbarlayer13_eff_bdt"));
+        auto mc_sumrms_low_energy_eff_bdt                           = static_cast<TEfficiency*>(mcfile->Get("efficiencies/sumrms_low_energy_eff_bdt"));
         auto mc_track_selection_eff_bdt                             = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_bdt"));
         auto mc_track_selection_eff_within_stk_fvolume_bdt          = static_cast<TEfficiency*>(mcfile->Get("efficiencies/track_selection_eff_within_stk_fvolume_bdt"));
+        auto mc_stk_1_rm_eff_bdt                                    = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_1_rm_eff_bdt"));
         auto mc_psd_stk_match_eff_bdt                               = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_stk_match_eff_bdt"));
         auto mc_psd_charge_eff_bdt                                  = static_cast<TEfficiency*>(mcfile->Get("efficiencies/psd_charge_eff_bdt"));
         auto mc_stk_charge_eff_bdt                                  = static_cast<TEfficiency*>(mcfile->Get("efficiencies/stk_charge_eff_bdt"));
@@ -278,8 +314,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_xtrl_tight                                ->SetLineColor(kBlue);
         mc_nbarlayer13_eff_xtrl_tight                           ->SetLineColor(kBlue);
         mc_maxrms_and_nbarlayer13_eff_xtrl_tight                ->SetLineColor(kBlue);
+        mc_sumrms_low_energy_eff_xtrl_tight                     ->SetLineColor(kBlue);
         mc_track_selection_eff_xtrl_tight                       ->SetLineColor(kBlue);
         mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetLineColor(kBlue);
+        mc_stk_1_rm_eff_xtrl_tight                              ->SetLineColor(kBlue);
         mc_psd_stk_match_eff_xtrl_tight                         ->SetLineColor(kBlue);
         mc_psd_charge_eff_xtrl_tight                            ->SetLineColor(kBlue);
         mc_stk_charge_eff_xtrl_tight                            ->SetLineColor(kBlue);
@@ -289,8 +327,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_xtrl_loose                                ->SetLineColor(kBlue);
         mc_nbarlayer13_eff_xtrl_loose                           ->SetLineColor(kBlue);
         mc_maxrms_and_nbarlayer13_eff_xtrl_loose                ->SetLineColor(kBlue);
+        mc_sumrms_low_energy_eff_xtrl_loose                     ->SetLineColor(kBlue);
         mc_track_selection_eff_xtrl_loose                       ->SetLineColor(kBlue);
         mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetLineColor(kBlue);
+        mc_stk_1_rm_eff_xtrl_loose                              ->SetLineColor(kBlue);
         mc_psd_stk_match_eff_xtrl_loose                         ->SetLineColor(kBlue);
         mc_psd_charge_eff_xtrl_loose                            ->SetLineColor(kBlue);
         mc_stk_charge_eff_xtrl_loose                            ->SetLineColor(kBlue);
@@ -300,8 +340,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_bdt                                       ->SetLineColor(kGreen);
         mc_nbarlayer13_eff_bdt                                  ->SetLineColor(kGreen);
         mc_maxrms_and_nbarlayer13_eff_bdt                       ->SetLineColor(kGreen);
+        mc_sumrms_low_energy_eff_bdt                            ->SetLineColor(kGreen);
         mc_track_selection_eff_bdt                              ->SetLineColor(kGreen);
         mc_track_selection_eff_within_stk_fvolume_bdt           ->SetLineColor(kGreen);
+        mc_stk_1_rm_eff_bdt                                     ->SetLineColor(kGreen);
         mc_psd_stk_match_eff_bdt                                ->SetLineColor(kGreen);
         mc_psd_charge_eff_bdt                                   ->SetLineColor(kGreen);
         mc_stk_charge_eff_bdt                                   ->SetLineColor(kGreen);
@@ -318,8 +360,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_xtrl_tight                                ->SetLineWidth(2);
         mc_nbarlayer13_eff_xtrl_tight                           ->SetLineWidth(2);
         mc_maxrms_and_nbarlayer13_eff_xtrl_tight                ->SetLineWidth(2);
+        mc_sumrms_low_energy_eff_xtrl_tight                     ->SetLineWidth(2);
         mc_track_selection_eff_xtrl_tight                       ->SetLineWidth(2);
         mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetLineWidth(2);
+        mc_stk_1_rm_eff_xtrl_tight                              ->SetLineWidth(2);
         mc_psd_stk_match_eff_xtrl_tight                         ->SetLineWidth(2);
         mc_psd_charge_eff_xtrl_tight                            ->SetLineWidth(2);
         mc_stk_charge_eff_xtrl_tight                            ->SetLineWidth(2);
@@ -329,8 +373,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_xtrl_loose                                ->SetLineWidth(2);
         mc_nbarlayer13_eff_xtrl_loose                           ->SetLineWidth(2);
         mc_maxrms_and_nbarlayer13_eff_xtrl_loose                ->SetLineWidth(2);
+        mc_sumrms_low_energy_eff_xtrl_loose                     ->SetLineWidth(2);
         mc_track_selection_eff_xtrl_loose                       ->SetLineWidth(2);
         mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetLineWidth(2);
+        mc_stk_1_rm_eff_xtrl_loose                              ->SetLineWidth(2);
         mc_psd_stk_match_eff_xtrl_loose                         ->SetLineWidth(2);
         mc_psd_charge_eff_xtrl_loose                            ->SetLineWidth(2);
         mc_stk_charge_eff_xtrl_loose                            ->SetLineWidth(2);
@@ -340,8 +386,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_bdt                                       ->SetLineWidth(2);
         mc_nbarlayer13_eff_bdt                                  ->SetLineWidth(2);
         mc_maxrms_and_nbarlayer13_eff_bdt                       ->SetLineWidth(2);
+        mc_sumrms_low_energy_eff_bdt                            ->SetLineWidth(2);
         mc_track_selection_eff_bdt                              ->SetLineWidth(2);
         mc_track_selection_eff_within_stk_fvolume_bdt           ->SetLineWidth(2);
+        mc_stk_1_rm_eff_bdt                                     ->SetLineWidth(2);
         mc_psd_stk_match_eff_bdt                                ->SetLineWidth(2);
         mc_psd_charge_eff_bdt                                   ->SetLineWidth(2);
         mc_stk_charge_eff_bdt                                   ->SetLineWidth(2);
@@ -358,8 +406,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_xtrl_tight                                ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_nbarlayer13_eff_xtrl_tight                           ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_maxrms_and_nbarlayer13_eff_xtrl_tight                ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_sumrms_low_energy_eff_xtrl_tight                     ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_track_selection_eff_xtrl_tight                       ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_stk_1_rm_eff_xtrl_tight                              ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_psd_stk_match_eff_xtrl_tight                         ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_psd_charge_eff_xtrl_tight                            ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_stk_charge_eff_xtrl_tight                            ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
@@ -369,8 +419,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_xtrl_loose                                ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_nbarlayer13_eff_xtrl_loose                           ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_maxrms_and_nbarlayer13_eff_xtrl_loose                ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_sumrms_low_energy_eff_xtrl_loose                     ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_track_selection_eff_xtrl_loose                       ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
+        mc_stk_1_rm_eff_xtrl_loose                              ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_psd_stk_match_eff_xtrl_loose                         ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_psd_charge_eff_xtrl_loose                            ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
         mc_stk_charge_eff_xtrl_loose                            ->SetTitle((std::string(mc_label) + std::string(" (xtrl)")).c_str());
@@ -380,8 +432,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_bdt                                       ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
         mc_nbarlayer13_eff_bdt                                  ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
         mc_maxrms_and_nbarlayer13_eff_bdt                       ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_sumrms_low_energy_eff_bdt                            ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
         mc_track_selection_eff_bdt                              ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
         mc_track_selection_eff_within_stk_fvolume_bdt           ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
+        mc_stk_1_rm_eff_bdt                                     ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
         mc_psd_stk_match_eff_bdt                                ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
         mc_psd_charge_eff_bdt                                   ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
         mc_stk_charge_eff_bdt                                   ->SetTitle((std::string(mc_label) + std::string(" (BDT)")).c_str());
@@ -398,8 +452,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_xtrl_tight                                ->SetDirectory(0);
         mc_nbarlayer13_eff_xtrl_tight                           ->SetDirectory(0);
         mc_maxrms_and_nbarlayer13_eff_xtrl_tight                ->SetDirectory(0);
+        mc_sumrms_low_energy_eff_xtrl_tight                     ->SetDirectory(0);
         mc_track_selection_eff_xtrl_tight                       ->SetDirectory(0);
         mc_track_selection_eff_within_stk_fvolume_xtrl_tight    ->SetDirectory(0);
+        mc_stk_1_rm_eff_xtrl_tight                              ->SetDirectory(0);
         mc_psd_stk_match_eff_xtrl_tight                         ->SetDirectory(0);
         mc_psd_charge_eff_xtrl_tight                            ->SetDirectory(0);
         mc_stk_charge_eff_xtrl_tight                            ->SetDirectory(0);
@@ -409,8 +465,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_xtrl_loose                                ->SetDirectory(0);
         mc_nbarlayer13_eff_xtrl_loose                           ->SetDirectory(0);
         mc_maxrms_and_nbarlayer13_eff_xtrl_loose                ->SetDirectory(0);
+        mc_sumrms_low_energy_eff_xtrl_loose                     ->SetDirectory(0);
         mc_track_selection_eff_xtrl_loose                       ->SetDirectory(0);
         mc_track_selection_eff_within_stk_fvolume_xtrl_loose    ->SetDirectory(0);
+        mc_stk_1_rm_eff_xtrl_loose                              ->SetDirectory(0);
         mc_psd_stk_match_eff_xtrl_loose                         ->SetDirectory(0);
         mc_psd_charge_eff_xtrl_loose                            ->SetDirectory(0);
         mc_stk_charge_eff_xtrl_loose                            ->SetDirectory(0);
@@ -420,8 +478,10 @@ void produceEfficiencyPlots(
         mc_maxrms_eff_bdt                                       ->SetDirectory(0);
         mc_nbarlayer13_eff_bdt                                  ->SetDirectory(0);
         mc_maxrms_and_nbarlayer13_eff_bdt                       ->SetDirectory(0);
+        mc_sumrms_low_energy_eff_bdt                            ->SetDirectory(0);
         mc_track_selection_eff_bdt                              ->SetDirectory(0);
         mc_track_selection_eff_within_stk_fvolume_bdt           ->SetDirectory(0);
+        mc_stk_1_rm_eff_bdt                                     ->SetDirectory(0);
         mc_psd_stk_match_eff_bdt                                ->SetDirectory(0);
         mc_psd_charge_eff_bdt                                   ->SetDirectory(0);
         mc_stk_charge_eff_bdt                                   ->SetDirectory(0);
@@ -723,6 +783,63 @@ void produceEfficiencyPlots(
         label.Draw();
         print_canvas.Print("efficiency.pdf","Title:maxrms and nbarlayer13 - xtrl loose efficiency");
 
+        // Print sumrms low energy efficiency (xtrl tight)
+        data_sumrms_low_energy_eff_xtrl_tight->Draw();
+        mc_sumrms_low_energy_eff_xtrl_tight->Draw("same");
+        data_sumrms_low_energy_eff_bdt->Draw("same");
+        mc_sumrms_low_energy_eff_bdt->Draw("same");
+
+        gPad->Update(); 
+        graph = data_sumrms_low_energy_eff_xtrl_tight->GetPaintedGraph(); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
+        gPad->Update();
+
+        gPad->SetLogx();
+        gPad->SetGrid(1,1);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        label = TPaveLabel(0.0, 0.95, 0.3, 1, "sumrms low energy Efficiency (xtrl tight)", "tlNDC");
+        label.Draw();
+        gStyle->SetOptTitle(0);
+        print_canvas.Print("efficiency.pdf","Title:sumrms low energy efficiency - xtrl tight efficiency");
+        
+        // Print sumrms low energy efficiency (xtrl loose)
+        data_sumrms_low_energy_eff_xtrl_loose->Draw();
+        mc_sumrms_low_energy_eff_xtrl_loose->Draw("same");
+        data_sumrms_low_energy_eff_bdt->Draw("same");
+        mc_sumrms_low_energy_eff_bdt->Draw("same");
+
+        gPad->Update(); 
+        graph = data_sumrms_low_energy_eff_xtrl_loose->GetPaintedGraph(); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
+        gPad->Update();
+
+        gPad->SetLogx();
+        gPad->SetGrid(1,1);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        label = TPaveLabel(0.0, 0.95, 0.3, 1, "sumrms low energy Efficiency (xtrl loose)", "tlNDC");
+        label.Draw();
+        print_canvas.Print("efficiency.pdf","Title:sumrms low energy - xtrl loose efficiency");
+
         // Print trackselection efficiency (xtrl tight)
         data_track_selection_eff_xtrl_tight->Draw();
         mc_track_selection_eff_xtrl_tight->Draw("same");
@@ -837,6 +954,63 @@ void produceEfficiencyPlots(
         label.Draw();
         print_canvas.Print("efficiency.pdf","Title:trackselection within STK fiducial volume - xtrl loose efficiency");
 
+        // Print STK 1 RM efficiency (xtrl tight)
+        data_stk_1_rm_eff_xtrl_tight->Draw();
+        mc_stk_1_rm_eff_xtrl_tight->Draw("same");
+        data_stk_1_rm_eff_bdt->Draw("same");
+        mc_stk_1_rm_eff_bdt->Draw("same");
+
+        gPad->Update(); 
+        graph = data_stk_1_rm_eff_xtrl_tight->GetPaintedGraph(); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
+        gPad->Update();
+
+        gPad->SetLogx();
+        gPad->SetGrid(1,1);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        label = TPaveLabel(0.0, 0.95, 0.3, 1, "STK 1 RM efficiency (xtrl tight)", "tlNDC");
+        label.Draw();
+        gStyle->SetOptTitle(0);
+        print_canvas.Print("efficiency.pdf","Title:STK 1 RM efficiency - xtrl tight efficiency");
+        
+        // Print STK 1 RM efficiency (xtrl loose)
+        data_stk_1_rm_eff_xtrl_loose->Draw();
+        mc_stk_1_rm_eff_xtrl_loose->Draw("same");
+        data_stk_1_rm_eff_bdt->Draw("same");
+        mc_stk_1_rm_eff_bdt->Draw("same");
+
+        gPad->Update(); 
+        graph = data_stk_1_rm_eff_xtrl_loose->GetPaintedGraph(); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
+        gPad->Update();
+
+        gPad->SetLogx();
+        gPad->SetGrid(1,1);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        label = TPaveLabel(0.0, 0.95, 0.3, 1, "STK 1 RM efficiency (xtrl loose)", "tlNDC");
+        label.Draw();
+        print_canvas.Print("efficiency.pdf","Title:STK 1 RM efficiency - xtrl loose efficiency");
+
         // Print psd-stk match efficiency (xtrl tight)
         data_psd_stk_match_eff_xtrl_tight->Draw();
         mc_psd_stk_match_eff_xtrl_tight->Draw("same");
@@ -902,8 +1076,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_psd_charge_eff_xtrl_tight->GetPaintedGraph(); 
-        graph->SetMinimum(0.8);
-        graph->SetMaximum(1); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
         gPad->Update();
 
         gPad->SetLogx();
@@ -931,8 +1105,8 @@ void produceEfficiencyPlots(
 
         gPad->Update(); 
         graph = data_psd_charge_eff_xtrl_loose->GetPaintedGraph(); 
-        graph->SetMinimum(0.8);
-        graph->SetMaximum(1); 
+        graph->SetMinimum(0.9);
+        graph->SetMaximum(1.01); 
         gPad->Update();
 
         gPad->SetLogx();
