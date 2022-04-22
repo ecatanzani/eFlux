@@ -44,13 +44,14 @@ void buildSet(in_args input_pars) {
             auto _gev = 0.001;
             bool status;
             bool in_train_range, in_test_range;
-            if (dataset_energy_range->IsEnergyRangeCommon()) status = tt_assign < 0.5 ? true : false;
+            const double train_over_test_prop {0.8};    // 80% is for training, 20% is for testing
+            if (dataset_energy_range->IsEnergyRangeCommon()) status = tt_assign < train_over_test_prop ? true : false;
             else {
                 in_train_range = is_in_energy_range(dataset_energy_range->GetMinTrainEvtEnergy(), dataset_energy_range->GetMaxTrainEvtEnergy(), energy*_gev);
                 in_test_range = is_in_energy_range(dataset_energy_range->GetMinTestEvtEnergy(), dataset_energy_range->GetMaxTestEvtEnergy(), energy*_gev);
                 if (in_train_range && !in_test_range) status = true;
                 else if (!in_train_range && in_test_range) status = false;
-                else status = tt_assign < 0.5 ? true : false;
+                else status = tt_assign < train_over_test_prop ? true : false;
             }
             if (!train) status = !status;
             return status;
