@@ -22,31 +22,36 @@ const bool DAMPE_electron = true;
 const bool AMS02_electron = true;
 const bool CALET_electron = true;
 const bool FERMILAT_electron = true;
+const bool ATIC2_electron = true;
 
 TColor *kAMS02_electron = gROOT->GetColor(kBlue-10);
 TColor *kCALET_electron = gROOT->GetColor(kCyan-6);
 TColor *kDAMPE_electron = gROOT->GetColor(kBlue);
 TColor *kFERMILAT_electron = gROOT->GetColor(kAzure-4);
+TColor *kATIC2_electron = gROOT->GetColor(kBlack);
 
 int ams02_marker_style = 21;
 int dampe_marker_style = 20;
 int calet_marker_style = 33;
 int fermi_marker_style = 45;
+int atic2_marker_style = 41;
 
 const char* ams02_allele_legendentry = "e^{-}+e^{+} (AMS02)";
 const char* calet_allele_legendentry = "e^{-}+e^{+} (CALET)";
 const char* fermilat_allele_legendentry = "e^{-}+e^{+} (FERMI-LAT)";
 const char* dampe_allele_legendentry = "e^{-}+e^{+} (DAMPE)";
+const char* atic2_allele_legendentry = "e^{-}+e^{+} (ATIC-2)";
 
 const char* ams02_electron_path = "data/ssdc_AMS02_e_E3.root";
 const char* dampe_electron_path = "data/ssdc_DAMPE_e_E3.root";
 const char* calet_electron_path = "data/ssdc_CALET_e_E3.root";
 const char* fermilat_electron_path = "data/ssdc_FERMILAT_e_E3.root";
+const char* atic2_electron_path = "data/ssdc_ATIC2_e_E3.root";
 
 const double emin = 1;
 const double emax = 1e+4;
 const double phi_min = 0;
-const double phi_max = 300;
+const double phi_max = 400;
 
 const char* multigraph_name = "flux_mg_E3";
 
@@ -81,6 +86,7 @@ std::shared_ptr<TMultiGraph> buildflux()
     if (CALET_electron) add_to_mg(calet_electron_path, kCALET_electron, calet_marker_style, 1.3, calet_allele_legendentry, mgE3);
     if (FERMILAT_electron) add_to_mg(fermilat_electron_path, kFERMILAT_electron, fermi_marker_style, 1, fermilat_allele_legendentry, mgE3);
     if (DAMPE_electron) add_to_mg(dampe_electron_path, kDAMPE_electron, dampe_marker_style, 1, dampe_allele_legendentry, mgE3);
+    if (ATIC2_electron) add_to_mg(atic2_electron_path, kATIC2_electron, atic2_marker_style, 1.3, atic2_allele_legendentry, mgE3);
     
     mgE3->GetXaxis()->SetTitle("Energy (GeV)");
     mgE3->GetYaxis()->SetTitle("E^{3} #times #Phi (GeV [m^{2} sr s]^{-1})");
