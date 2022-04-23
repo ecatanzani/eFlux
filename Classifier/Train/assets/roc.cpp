@@ -13,6 +13,7 @@
 #include <iostream>
 
 struct bdt_vars {
+    /*
     float rmslayer_norm_1 {0};
     float rmslayer_norm_2 {0};
     float rmslayer_norm_3 {0};
@@ -45,6 +46,40 @@ struct bdt_vars {
     float fraclastlayer_norm {0};
     float xtrl_norm {0};
     float xtrl {0};
+    */
+
+    float rmslayer_1 {0};
+    float rmslayer_2 {0};
+    float rmslayer_3 {0};
+    float rmslayer_4 {0};
+    float rmslayer_5 {0};
+    float rmslayer_6 {0};
+    float rmslayer_7 {0};
+    float rmslayer_8 {0};
+    float rmslayer_9 {0};
+    float rmslayer_10 {0};
+    float rmslayer_11 {0};
+    float rmslayer_12 {0};
+    float rmslayer_13 {0};
+    float rmslayer_14 {0};
+    float fraclayer_1 {0};
+    float fraclayer_2 {0};
+    float fraclayer_3 {0};
+    float fraclayer_4 {0};
+    float fraclayer_5 {0};
+    float fraclayer_6 {0};
+    float fraclayer_7 {0};
+    float fraclayer_8 {0};
+    float fraclayer_9 {0};
+    float fraclayer_10 {0};
+    float fraclayer_11 {0};
+    float fraclayer_12 {0};
+    float fraclayer_13 {0};
+    float fraclayer_14 {0};
+    float sumRms {0};
+    float fracLast {0};
+    float xtrl {0};
+
 };
 
 struct roc_vars {
@@ -73,6 +108,8 @@ inline const char* get_tree_name(const char* file) {
 }
 
 inline void load_bdt_vars(std::shared_ptr<TMVA::Reader> tmva_reader,  bdt_vars &my_bdt_vars) {
+
+    /*
     tmva_reader->AddVariable("rmslayer_norm_1", &my_bdt_vars.rmslayer_norm_1);
     tmva_reader->AddVariable("rmslayer_norm_2", &my_bdt_vars.rmslayer_norm_2);
     tmva_reader->AddVariable("rmslayer_norm_3", &my_bdt_vars.rmslayer_norm_3);
@@ -105,6 +142,39 @@ inline void load_bdt_vars(std::shared_ptr<TMVA::Reader> tmva_reader,  bdt_vars &
     tmva_reader->AddVariable("fraclastlayer_norm", &my_bdt_vars.fraclastlayer_norm);
     tmva_reader->AddVariable("xtrl_norm", &my_bdt_vars.xtrl_norm);
     tmva_reader->AddSpectator("xtrl", &my_bdt_vars.xtrl);
+    */
+
+    tmva_reader->AddVariable("rmslayer_1", &my_bdt_vars.rmslayer_1);
+    tmva_reader->AddVariable("rmslayer_2", &my_bdt_vars.rmslayer_2);
+    tmva_reader->AddVariable("rmslayer_3", &my_bdt_vars.rmslayer_3);
+    tmva_reader->AddVariable("rmslayer_4", &my_bdt_vars.rmslayer_4);
+    tmva_reader->AddVariable("rmslayer_5", &my_bdt_vars.rmslayer_5);
+    tmva_reader->AddVariable("rmslayer_6", &my_bdt_vars.rmslayer_6);
+    tmva_reader->AddVariable("rmslayer_7", &my_bdt_vars.rmslayer_7);
+    tmva_reader->AddVariable("rmslayer_8", &my_bdt_vars.rmslayer_8);
+    tmva_reader->AddVariable("rmslayer_9", &my_bdt_vars.rmslayer_9);
+    tmva_reader->AddVariable("rmslayer_10", &my_bdt_vars.rmslayer_10);
+    tmva_reader->AddVariable("rmslayer_11", &my_bdt_vars.rmslayer_11);
+    tmva_reader->AddVariable("rmslayer_12", &my_bdt_vars.rmslayer_12);
+    tmva_reader->AddVariable("rmslayer_13", &my_bdt_vars.rmslayer_13);
+    tmva_reader->AddVariable("rmslayer_14", &my_bdt_vars.rmslayer_14);
+    tmva_reader->AddVariable("fraclayer_1", &my_bdt_vars.fraclayer_1);
+    tmva_reader->AddVariable("fraclayer_2", &my_bdt_vars.fraclayer_2);
+    tmva_reader->AddVariable("fraclayer_3", &my_bdt_vars.fraclayer_3);
+    tmva_reader->AddVariable("fraclayer_4", &my_bdt_vars.fraclayer_4);
+    tmva_reader->AddVariable("fraclayer_5", &my_bdt_vars.fraclayer_5);
+    tmva_reader->AddVariable("fraclayer_6", &my_bdt_vars.fraclayer_6);
+    tmva_reader->AddVariable("fraclayer_7", &my_bdt_vars.fraclayer_7);
+    tmva_reader->AddVariable("fraclayer_8", &my_bdt_vars.fraclayer_8);
+    tmva_reader->AddVariable("fraclayer_9", &my_bdt_vars.fraclayer_9);
+    tmva_reader->AddVariable("fraclayer_10", &my_bdt_vars.fraclayer_10);
+    tmva_reader->AddVariable("fraclayer_11", &my_bdt_vars.fraclayer_11);
+    tmva_reader->AddVariable("fraclayer_12", &my_bdt_vars.fraclayer_12);
+    tmva_reader->AddVariable("fraclayer_13", &my_bdt_vars.fraclayer_13);
+    tmva_reader->AddVariable("fraclayer_14", &my_bdt_vars.fraclayer_14);
+    tmva_reader->AddVariable("sumRms", &my_bdt_vars.sumRms);
+    tmva_reader->AddVariable("fracLast", &my_bdt_vars.fracLast);
+    tmva_reader->AddVariable("xtrl", &my_bdt_vars.xtrl);
 }
 
 inline void branch_roc_tree(std::shared_ptr<TTree> roc_tree, roc_vars &my_roc_vars) {
@@ -337,6 +407,7 @@ std::tuple<double, double> get_bdt_efficiencies(
         TTreeReaderValue<double> corrected_energy_electron(*electron_reader, "energy_corr");
         TTreeReaderValue<double> corrected_energy_proton(*proton_reader, "energy_corr");
 
+        /*
         TTreeReaderValue<double> rmslayer_norm_1_electron(*electron_reader, "rmslayer_norm_1");
         TTreeReaderValue<double> rmslayer_norm_2_electron(*electron_reader, "rmslayer_norm_2");
         TTreeReaderValue<double> rmslayer_norm_3_electron(*electron_reader, "rmslayer_norm_3");
@@ -406,6 +477,75 @@ std::tuple<double, double> get_bdt_efficiencies(
         TTreeReaderValue<double> fraclastlayer_norm_proton(*proton_reader, "fraclastlayer_norm");
         TTreeReaderValue<double> xtrl_norm_proton(*proton_reader, "xtrl_norm");
         TTreeReaderValue<double> xtrl_proton(*proton_reader, "xtrl");
+        */
+
+        TTreeReaderValue<double> rmslayer_norm_1_electron(*electron_reader, "rmslayer_1");
+        TTreeReaderValue<double> rmslayer_norm_2_electron(*electron_reader, "rmslayer_2");
+        TTreeReaderValue<double> rmslayer_norm_3_electron(*electron_reader, "rmslayer_3");
+        TTreeReaderValue<double> rmslayer_norm_4_electron(*electron_reader, "rmslayer_4");
+        TTreeReaderValue<double> rmslayer_norm_5_electron(*electron_reader, "rmslayer_5");
+        TTreeReaderValue<double> rmslayer_norm_6_electron(*electron_reader, "rmslayer_6");
+        TTreeReaderValue<double> rmslayer_norm_7_electron(*electron_reader, "rmslayer_7");
+        TTreeReaderValue<double> rmslayer_norm_8_electron(*electron_reader, "rmslayer_8");
+        TTreeReaderValue<double> rmslayer_norm_9_electron(*electron_reader, "rmslayer_9");
+        TTreeReaderValue<double> rmslayer_norm_10_electron(*electron_reader, "rmslayer_10");
+        TTreeReaderValue<double> rmslayer_norm_11_electron(*electron_reader, "rmslayer_11");
+        TTreeReaderValue<double> rmslayer_norm_12_electron(*electron_reader, "rmslayer_12");
+        TTreeReaderValue<double> rmslayer_norm_13_electron(*electron_reader, "rmslayer_13");
+        TTreeReaderValue<double> rmslayer_norm_14_electron(*electron_reader, "rmslayer_14");
+
+        TTreeReaderValue<double> fraclayer_norm_1_electron(*electron_reader, "fraclayer_1");
+        TTreeReaderValue<double> fraclayer_norm_2_electron(*electron_reader, "fraclayer_2");
+        TTreeReaderValue<double> fraclayer_norm_3_electron(*electron_reader, "fraclayer_3");
+        TTreeReaderValue<double> fraclayer_norm_4_electron(*electron_reader, "fraclayer_4");
+        TTreeReaderValue<double> fraclayer_norm_5_electron(*electron_reader, "fraclayer_5");
+        TTreeReaderValue<double> fraclayer_norm_6_electron(*electron_reader, "fraclayer_6");
+        TTreeReaderValue<double> fraclayer_norm_7_electron(*electron_reader, "fraclayer_7");
+        TTreeReaderValue<double> fraclayer_norm_8_electron(*electron_reader, "fraclayer_8");
+        TTreeReaderValue<double> fraclayer_norm_9_electron(*electron_reader, "fraclayer_9");
+        TTreeReaderValue<double> fraclayer_norm_10_electron(*electron_reader, "fraclayer_10");
+        TTreeReaderValue<double> fraclayer_norm_11_electron(*electron_reader, "fraclayer_11");
+        TTreeReaderValue<double> fraclayer_norm_12_electron(*electron_reader, "fraclayer_12");
+        TTreeReaderValue<double> fraclayer_norm_13_electron(*electron_reader, "fraclayer_13");
+        TTreeReaderValue<double> fraclayer_norm_14_electron(*electron_reader, "fraclayer_14");
+
+        TTreeReaderValue<double> sumrms_norm_electron(*electron_reader, "sumRms");
+        TTreeReaderValue<double> fraclastlayer_norm_electron(*electron_reader, "fracLast");
+        TTreeReaderValue<double> xtrl_norm_electron(*electron_reader, "xtrl");
+
+        TTreeReaderValue<double> rmslayer_norm_1_proton(*proton_reader, "rmslayer_1");
+        TTreeReaderValue<double> rmslayer_norm_2_proton(*proton_reader, "rmslayer_2");
+        TTreeReaderValue<double> rmslayer_norm_3_proton(*proton_reader, "rmslayer_3");
+        TTreeReaderValue<double> rmslayer_norm_4_proton(*proton_reader, "rmslayer_4");
+        TTreeReaderValue<double> rmslayer_norm_5_proton(*proton_reader, "rmslayer_5");
+        TTreeReaderValue<double> rmslayer_norm_6_proton(*proton_reader, "rmslayer_6");
+        TTreeReaderValue<double> rmslayer_norm_7_proton(*proton_reader, "rmslayer_7");
+        TTreeReaderValue<double> rmslayer_norm_8_proton(*proton_reader, "rmslayer_8");
+        TTreeReaderValue<double> rmslayer_norm_9_proton(*proton_reader, "rmslayer_9");
+        TTreeReaderValue<double> rmslayer_norm_10_proton(*proton_reader, "rmslayer_10");
+        TTreeReaderValue<double> rmslayer_norm_11_proton(*proton_reader, "rmslayer_11");
+        TTreeReaderValue<double> rmslayer_norm_12_proton(*proton_reader, "rmslayer_12");
+        TTreeReaderValue<double> rmslayer_norm_13_proton(*proton_reader, "rmslayer_13");
+        TTreeReaderValue<double> rmslayer_norm_14_proton(*proton_reader, "rmslayer_14");
+
+        TTreeReaderValue<double> fraclayer_norm_1_proton(*proton_reader, "fraclayer_1");
+        TTreeReaderValue<double> fraclayer_norm_2_proton(*proton_reader, "fraclayer_2");
+        TTreeReaderValue<double> fraclayer_norm_3_proton(*proton_reader, "fraclayer_3");
+        TTreeReaderValue<double> fraclayer_norm_4_proton(*proton_reader, "fraclayer_4");
+        TTreeReaderValue<double> fraclayer_norm_5_proton(*proton_reader, "fraclayer_5");
+        TTreeReaderValue<double> fraclayer_norm_6_proton(*proton_reader, "fraclayer_6");
+        TTreeReaderValue<double> fraclayer_norm_7_proton(*proton_reader, "fraclayer_7");
+        TTreeReaderValue<double> fraclayer_norm_8_proton(*proton_reader, "fraclayer_8");
+        TTreeReaderValue<double> fraclayer_norm_9_proton(*proton_reader, "fraclayer_9");
+        TTreeReaderValue<double> fraclayer_norm_10_proton(*proton_reader, "fraclayer_10");
+        TTreeReaderValue<double> fraclayer_norm_11_proton(*proton_reader, "fraclayer_11");
+        TTreeReaderValue<double> fraclayer_norm_12_proton(*proton_reader, "fraclayer_12");
+        TTreeReaderValue<double> fraclayer_norm_13_proton(*proton_reader, "fraclayer_13");
+        TTreeReaderValue<double> fraclayer_norm_14_proton(*proton_reader, "fraclayer_14");
+
+        TTreeReaderValue<double> sumrms_norm_proton(*proton_reader, "sumRms");
+        TTreeReaderValue<double> fraclastlayer_norm_proton(*proton_reader, "fracLast");
+        TTreeReaderValue<double> xtrl_norm_proton(*proton_reader, "xtrl");
 
         double gev {0.001};
 
@@ -421,6 +561,7 @@ std::tuple<double, double> get_bdt_efficiencies(
             if (in_energy_range(*(corrected_energy_electron)*gev, emin, emax)) {
                 electron_events += 1;
                 
+                /*
                 my_bdt_vars.rmslayer_norm_1 = *rmslayer_norm_1_electron;
                 my_bdt_vars.rmslayer_norm_2 = *rmslayer_norm_2_electron;
                 my_bdt_vars.rmslayer_norm_3 = *rmslayer_norm_3_electron;
@@ -455,6 +596,41 @@ std::tuple<double, double> get_bdt_efficiencies(
                 my_bdt_vars.fraclastlayer_norm = *fraclastlayer_norm_electron;
                 my_bdt_vars.xtrl_norm = *xtrl_norm_electron;
                 my_bdt_vars.xtrl = *xtrl_electron;
+                */
+
+                my_bdt_vars.rmslayer_1 = *rmslayer_norm_1_electron;
+                my_bdt_vars.rmslayer_2 = *rmslayer_norm_2_electron;
+                my_bdt_vars.rmslayer_3 = *rmslayer_norm_3_electron;
+                my_bdt_vars.rmslayer_4 = *rmslayer_norm_4_electron;
+                my_bdt_vars.rmslayer_5 = *rmslayer_norm_5_electron;
+                my_bdt_vars.rmslayer_6 = *rmslayer_norm_6_electron;
+                my_bdt_vars.rmslayer_7 = *rmslayer_norm_7_electron;
+                my_bdt_vars.rmslayer_8 = *rmslayer_norm_8_electron;
+                my_bdt_vars.rmslayer_9 = *rmslayer_norm_9_electron;
+                my_bdt_vars.rmslayer_10 = *rmslayer_norm_10_electron;
+                my_bdt_vars.rmslayer_11 = *rmslayer_norm_11_electron;
+                my_bdt_vars.rmslayer_12 = *rmslayer_norm_12_electron;
+                my_bdt_vars.rmslayer_13 = *rmslayer_norm_13_electron;
+                my_bdt_vars.rmslayer_14 = *rmslayer_norm_14_electron;
+
+                my_bdt_vars.fraclayer_1 = *fraclayer_norm_1_electron;
+                my_bdt_vars.fraclayer_2 = *fraclayer_norm_2_electron;
+                my_bdt_vars.fraclayer_3 = *fraclayer_norm_3_electron;
+                my_bdt_vars.fraclayer_4 = *fraclayer_norm_4_electron;
+                my_bdt_vars.fraclayer_5 = *fraclayer_norm_5_electron;
+                my_bdt_vars.fraclayer_6 = *fraclayer_norm_6_electron;
+                my_bdt_vars.fraclayer_7 = *fraclayer_norm_7_electron;
+                my_bdt_vars.fraclayer_8 = *fraclayer_norm_8_electron;
+                my_bdt_vars.fraclayer_9 = *fraclayer_norm_9_electron;
+                my_bdt_vars.fraclayer_10 = *fraclayer_norm_10_electron;
+                my_bdt_vars.fraclayer_11 = *fraclayer_norm_11_electron;
+                my_bdt_vars.fraclayer_12 = *fraclayer_norm_12_electron;
+                my_bdt_vars.fraclayer_13 = *fraclayer_norm_13_electron;
+                my_bdt_vars.fraclayer_14 = *fraclayer_norm_14_electron;
+                
+                my_bdt_vars.sumRms = *sumrms_norm_electron;
+                my_bdt_vars.fracLast = *fraclastlayer_norm_electron;
+                my_bdt_vars.xtrl = *xtrl_norm_electron;
 
                 double bdt_est = tmva_reader->EvaluateMVA( "BDT method" );
 
@@ -469,6 +645,7 @@ std::tuple<double, double> get_bdt_efficiencies(
             if (in_energy_range(*(corrected_energy_proton)*gev, emin, emax)) {
                 proton_events += 1;
                 
+                /*
                 my_bdt_vars.rmslayer_norm_1 = *rmslayer_norm_1_proton;
                 my_bdt_vars.rmslayer_norm_2 = *rmslayer_norm_2_proton;
                 my_bdt_vars.rmslayer_norm_3 = *rmslayer_norm_3_proton;
@@ -503,6 +680,41 @@ std::tuple<double, double> get_bdt_efficiencies(
                 my_bdt_vars.fraclastlayer_norm = *fraclastlayer_norm_proton;
                 my_bdt_vars.xtrl_norm = *xtrl_norm_proton;
                 my_bdt_vars.xtrl = *xtrl_proton;
+                */
+
+                my_bdt_vars.rmslayer_1 = *rmslayer_norm_1_proton;
+                my_bdt_vars.rmslayer_2 = *rmslayer_norm_2_proton;
+                my_bdt_vars.rmslayer_3 = *rmslayer_norm_3_proton;
+                my_bdt_vars.rmslayer_4 = *rmslayer_norm_4_proton;
+                my_bdt_vars.rmslayer_5 = *rmslayer_norm_5_proton;
+                my_bdt_vars.rmslayer_6 = *rmslayer_norm_6_proton;
+                my_bdt_vars.rmslayer_7 = *rmslayer_norm_7_proton;
+                my_bdt_vars.rmslayer_8 = *rmslayer_norm_8_proton;
+                my_bdt_vars.rmslayer_9 = *rmslayer_norm_9_proton;
+                my_bdt_vars.rmslayer_10 = *rmslayer_norm_10_proton;
+                my_bdt_vars.rmslayer_11 = *rmslayer_norm_11_proton;
+                my_bdt_vars.rmslayer_12 = *rmslayer_norm_12_proton;
+                my_bdt_vars.rmslayer_13 = *rmslayer_norm_13_proton;
+                my_bdt_vars.rmslayer_14 = *rmslayer_norm_14_proton;
+
+                my_bdt_vars.fraclayer_1 = *fraclayer_norm_1_proton;
+                my_bdt_vars.fraclayer_2 = *fraclayer_norm_2_proton;
+                my_bdt_vars.fraclayer_3 = *fraclayer_norm_3_proton;
+                my_bdt_vars.fraclayer_4 = *fraclayer_norm_4_proton;
+                my_bdt_vars.fraclayer_5 = *fraclayer_norm_5_proton;
+                my_bdt_vars.fraclayer_6 = *fraclayer_norm_6_proton;
+                my_bdt_vars.fraclayer_7 = *fraclayer_norm_7_proton;
+                my_bdt_vars.fraclayer_8 = *fraclayer_norm_8_proton;
+                my_bdt_vars.fraclayer_9 = *fraclayer_norm_9_proton;
+                my_bdt_vars.fraclayer_10 = *fraclayer_norm_10_proton;
+                my_bdt_vars.fraclayer_11 = *fraclayer_norm_11_proton;
+                my_bdt_vars.fraclayer_12 = *fraclayer_norm_12_proton;
+                my_bdt_vars.fraclayer_13 = *fraclayer_norm_13_proton;
+                my_bdt_vars.fraclayer_14 = *fraclayer_norm_14_proton;
+                
+                my_bdt_vars.sumRms = *sumrms_norm_proton;
+                my_bdt_vars.fracLast = *fraclastlayer_norm_proton;
+                my_bdt_vars.xtrl = *xtrl_norm_proton;
 
                 double bdt_est = tmva_reader->EvaluateMVA( "BDT method" );
 
