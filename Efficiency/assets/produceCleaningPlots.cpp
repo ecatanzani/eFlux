@@ -585,7 +585,7 @@ void produceStkCleaningPlotsProjections(
                 {
                     if (mc_proj->Integral(1, idx) <= event_threshold)
                     {
-                        nstk_cuts_20_100.push_back(mc_proj->GetBinCenter(idx+2));
+                        nstk_cuts_20_100.push_back(mc_proj->GetBinCenter(idx+10));
                         nstk_20_100.push_back(data_h_stk_cleaning_20_100->GetXaxis()->GetBinCenter(bidx));
                         max_found = true;
                         break;
@@ -858,7 +858,7 @@ void produceStkCleaningPlotsProjections(
                 {
                     if (mc_proj->Integral(1, idx) <= event_threshold)
                     {
-                        nstk_cuts_100_250.push_back(mc_proj->GetBinCenter(idx+2));
+                        nstk_cuts_100_250.push_back(mc_proj->GetBinCenter(idx+10));
                         nstk_100_250.push_back(data_h_stk_cleaning_20_100->GetXaxis()->GetBinCenter(bidx));
                         max_found = true;
                         break;
@@ -1131,7 +1131,7 @@ void produceStkCleaningPlotsProjections(
                 {
                     if (mc_proj->Integral(1, idx) <= event_threshold)
                     {
-                        nstk_cuts_250_500.push_back(mc_proj->GetBinCenter(idx+2));
+                        nstk_cuts_250_500.push_back(mc_proj->GetBinCenter(idx+10));
                         nstk_250_500.push_back(data_h_stk_cleaning_20_100->GetXaxis()->GetBinCenter(bidx));
                         max_found = true;
                         break;
@@ -1404,7 +1404,7 @@ void produceStkCleaningPlotsProjections(
                 {
                     if (mc_proj->Integral(1, idx) <= event_threshold)
                     {
-                        nstk_cuts_500_1000.push_back(mc_proj->GetBinCenter(idx+2));
+                        nstk_cuts_500_1000.push_back(mc_proj->GetBinCenter(idx+10));
                         nstk_500_1000.push_back(data_h_stk_cleaning_20_100->GetXaxis()->GetBinCenter(bidx));
                         max_found = true;
                         break;
@@ -1672,6 +1672,7 @@ void produceStkCleaningPlotsProjections(
             bool max_found {false};
             if (mc_proj->Integral())
             {
+                /*
                 double event_threshold {mc_proj->Integral()*(1-1e-3)};
                 for (int idx=mc_proj->GetNbinsX(); idx>=1; --idx)
                 {
@@ -1683,6 +1684,18 @@ void produceStkCleaningPlotsProjections(
                         break;
                     }
                 }
+                */
+                for (int idx=mc_proj->GetNbinsX(); idx>=1; --idx)
+                {
+                    if (mc_proj->GetBinContent(idx))
+                    {
+                        nstk_cuts_1000_3000.push_back(mc_proj->GetBinCenter(idx+10));
+                        nstk_1000_3000.push_back(data_h_stk_cleaning_20_100->GetXaxis()->GetBinCenter(bidx));
+                        max_found = true;
+                        break;   
+                    }
+                }
+
             }
 
             if (max_found)
@@ -1945,12 +1958,24 @@ void produceStkCleaningPlotsProjections(
             bool max_found {false};
             if (mc_proj->Integral())
             {
+                /*
                 double event_threshold {mc_proj->Integral()*(1-1e-3)};
                 for (int idx=mc_proj->GetNbinsX(); idx>=1; --idx)
                 {
                     if (mc_proj->Integral(1, idx) <= event_threshold)
                     {
                         nstk_cuts_3000.push_back(mc_proj->GetBinCenter(idx+2));
+                        nstk_3000.push_back(data_h_stk_cleaning_20_100->GetXaxis()->GetBinCenter(bidx));
+                        max_found = true;
+                        break;
+                    }
+                }
+                */
+                for (int idx=mc_proj->GetNbinsX(); idx>=1; --idx)
+                {
+                    if (mc_proj->GetBinContent(idx))
+                    {
+                        nstk_cuts_3000.push_back(mc_proj->GetBinCenter(idx+50));
                         nstk_3000.push_back(data_h_stk_cleaning_20_100->GetXaxis()->GetBinCenter(bidx));
                         max_found = true;
                         break;
@@ -2212,7 +2237,7 @@ void produceStkCleaningPlotsProjections(
         TGraph gr_cuts_250_500 (static_cast<int>(nstk_250_500.size()), &nstk_250_500[0], &nstk_cuts_250_500[0]);
         TGraph gr_cuts_500_1000 (static_cast<int>(nstk_500_1000.size()), &nstk_500_1000[0], &nstk_cuts_500_1000[0]);
         TGraph gr_cuts_1000_3000 (static_cast<int>(nstk_1000_3000.size()), &nstk_1000_3000[0], &nstk_cuts_1000_3000[0]);
-        //TGraph gr_cuts_3000 (static_cast<int>(nstk_3000.size()), &nstk_3000[0], &nstk_cuts_3000[0]);
+        TGraph gr_cuts_3000 (static_cast<int>(nstk_3000.size()), &nstk_3000[0], &nstk_cuts_3000[0]);
         
         TF1 f_cuts_20_100 ("f_cuts_20_100", "[0] + [1]*x", 5, 300);
         TF1 f_cuts_100_250 ("f_cuts_100_250", "[0] + [1]*x", 5, 300);
@@ -2235,36 +2260,36 @@ void produceStkCleaningPlotsProjections(
         gr_cuts_100_250.Fit(&f_cuts_100_250, "Q", "", 10, 100);
         gr_cuts_250_500.Fit(&f_cuts_250_500, "Q", "", 10, 100);
         gr_cuts_500_1000.Fit(&f_cuts_500_1000, "Q", "", 10, 100);
-        gr_cuts_1000_3000.Fit(&f_cuts_1000_3000, "Q", "", 5, nstk_1000_3000.back());
-        //gr_cuts_3000.Fit(&f_cuts_3000, "R");
+        gr_cuts_1000_3000.Fit(&f_cuts_1000_3000, "Q", "", 5, 100);
+        gr_cuts_3000.Fit(&f_cuts_3000, "Q", "", 5, 200);
 
         gr_cuts_20_100.SetLineWidth(2);
         gr_cuts_100_250.SetLineWidth(2);
         gr_cuts_250_500.SetLineWidth(2);
         gr_cuts_500_1000.SetLineWidth(2);
         gr_cuts_1000_3000.SetLineWidth(2);
-        //gr_cuts_3000.SetLineWidth(2);
+        gr_cuts_3000.SetLineWidth(2);
 
         gr_cuts_20_100.SetMarkerStyle(105);
         gr_cuts_100_250.SetMarkerStyle(105);
         gr_cuts_250_500.SetMarkerStyle(105);
         gr_cuts_500_1000.SetMarkerStyle(105);
         gr_cuts_1000_3000.SetMarkerStyle(105);
-        //gr_cuts_3000.SetMarkerStyle(105);
+        gr_cuts_3000.SetMarkerStyle(105);
 
         gr_cuts_20_100.SetName("gr_cuts_20_100");
         gr_cuts_100_250.SetName("gr_cuts_100_250");
         gr_cuts_250_500.SetName("gr_cuts_250_500");
         gr_cuts_500_1000.SetName("gr_cuts_500_1000");
         gr_cuts_1000_3000.SetName("gr_cuts_1000_3000");
-        //gr_cuts_3000.SetName("gr_cuts_3000");
+        gr_cuts_3000.SetName("gr_cuts_3000");
 
         gr_cuts_20_100.SetTitle("nSTK cuts - 20 - 100 GeV; nStkClu1Rm; StkEcore1m");
         gr_cuts_100_250.SetTitle("nSTK cuts - 100 - 250 GeV; nStkClu1Rm; StkEcore1m");
         gr_cuts_250_500.SetTitle("nSTK cuts - 250 - 500 GeV; nStkClu1Rm; StkEcore1m");
         gr_cuts_500_1000.SetTitle("nSTK cuts - 500 GeV - 1 TeV; nStkClu1Rm; StkEcore1m");
         gr_cuts_1000_3000.SetTitle("nSTK cuts - 1 - 3 TeV; nStkClu1Rm; StkEcore1m");
-        //gr_cuts_3000.SetTitle("nSTK cuts - > 3 TeV; nStkClu1Rm; StkEcore1m");
+        gr_cuts_3000.SetTitle("nSTK cuts - > 3 TeV; nStkClu1Rm; StkEcore1m");
 
         TCanvas print_canvas("print_canvas", "print_canvas");
 
@@ -2311,8 +2336,7 @@ void produceStkCleaningPlotsProjections(
         label = TPaveLabel(0.0, 0.97, 0.3, 1, label_title.c_str(), "tlNDC");
         label.Draw();
         print_canvas.Print("stk_cleaning_cuts_parametrization.pdf","Title:STK cleaning cuts");
-
-        /*
+        
         print_canvas.Clear();
         gr_cuts_3000.Draw();
         gPad->SetLogx();
@@ -2320,8 +2344,7 @@ void produceStkCleaningPlotsProjections(
         label_title = std::string("STK cleaning cuts - > 3 TeV cleaning cut");
         label = TPaveLabel(0.0, 0.97, 0.3, 1, label_title.c_str(), "tlNDC");
         label.Draw();
-        print_canvas.Print("stk_cleaning_cuts_parametrization.pdf)","Title:STK cleaning cuts");
-        */
+        print_canvas.Print("stk_cleaning_cuts_parametrization.pdf","Title:STK cleaning cuts");
 
         print_canvas.Clear();
 
@@ -2352,6 +2375,7 @@ void produceStkCleaningPlotsProjections(
         f_cuts_250_500.Draw("same");
         f_cuts_500_1000.Draw("same");
         f_cuts_1000_3000.Draw("same");
+        f_cuts_3000.Draw("same");
 
         gPad->SetLogx();
         gPad->SetLogy();
@@ -2364,8 +2388,7 @@ void produceStkCleaningPlotsProjections(
             auto primitive = (TLegendEntry*)primitiveObj;
             primitive->SetOption("l");
         }
-
-        //f_cuts_3000.Draw("same");
+        
         label_title = std::string("STK cleaning cuts - Cuts parametrizations");
         label = TPaveLabel(0.0, 0.97, 0.3, 1, label_title.c_str(), "tlNDC");
         label.Draw();
@@ -2484,6 +2507,9 @@ void produceStkCleaningPlotsProjections(
 
         data_h_stk_cleaning_3000->Draw();
         mc_h_stk_cleaning_3000->Draw("same, colz");
+        f_cuts_3000.SetLineStyle(2);
+        f_cuts_3000.SetLineColor(kMagenta);
+        f_cuts_3000.Draw("same");
         gPad->SetGrid(1,1);
         gPad->SetLogx();
         gPad->SetLogy();
@@ -2554,6 +2580,7 @@ void produceStkCleaningPlotsProjections(
 
         data_h_stk_cleaning_3000_xtrl_12->Draw();
         mc_h_stk_cleaning_3000_xtrl_12->Draw("same, colz");
+        f_cuts_3000.Draw("same");
         gPad->SetGrid(1,1);
         gPad->SetLogx();
         gPad->SetLogy();
@@ -2624,6 +2651,7 @@ void produceStkCleaningPlotsProjections(
 
         data_h_stk_cleaning_3000_xtrl_12_100->Draw();
         mc_h_stk_cleaning_3000_xtrl_12_100->Draw("same, colz");
+        f_cuts_3000.Draw("same");
         gPad->SetGrid(1,1);
         gPad->SetLogx();
         gPad->SetLogy();
