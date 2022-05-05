@@ -249,10 +249,23 @@ void mcShift(
         }
 
         for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
+            /*
             mean_shift[bin_idx-1] = gaus_fit_2[bin_idx-1].GetParameter(1);
             rms_shift[bin_idx-1] = gaus_fit_2[bin_idx-1].GetParameter(2);
             mean_shift_error[bin_idx -1] = gaus_fit_2[bin_idx-1].GetParError(1);
             rms_shift_error[bin_idx -1] = gaus_fit_2[bin_idx-1].GetParError(2);
+            */
+
+            // Once the peak is fitted, the mean value and the RMS are extracted directly from the histogram from the fit mean value +/- 3 fit sigmas
+            auto h_pointer = mc ? static_cast<TH1D*>(h_classifier_bin[bin_idx-1]->Clone()) : h_classifier_bin_proton_subtracted[bin_idx-1];
+            auto mean_value = gaus_fit_2[bin_idx-1].GetParameter(1);
+            auto sigma_value = gaus_fit_2[bin_idx-1].GetParameter(2);
+            h_pointer->GetXaxis()->SetRangeUser(mean_value - 3*sigma_value, mean_value + 3*sigma_value);
+
+            mean_shift[bin_idx-1] = h_pointer->GetMean();
+            rms_shift[bin_idx-1] = h_pointer->GetRMS();
+            mean_shift_error[bin_idx -1] = h_pointer->GetMeanError();
+            rms_shift_error[bin_idx -1] = h_pointer->GetRMSError();
         }
 
         std::vector<double> bins(energy_nbins);
