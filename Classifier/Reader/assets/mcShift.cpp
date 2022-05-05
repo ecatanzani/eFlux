@@ -179,7 +179,10 @@ void mcShift(
                 std::string histo_name = std::string(h_classifier_bin[bin_idx-1]->GetName()) + "_proton_subtracted";
                 data_proton_linear_fit[bin_idx-1] = TF1(tf1_name.c_str(), "pow(10, [0]+[1]*x)", -1, 1);
                 h_classifier_bin_proton_subtracted[bin_idx-1] = static_cast<TH1D*>(h_classifier_bin[bin_idx-1]->Clone(histo_name.c_str()));
-                h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "QN", "", -0.2, 0);
+                if (bin_idx<=24)
+                    h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "QN", "", -0.3, 0);
+                else
+                    h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "QN", "", -0.4, 0);
                 h_classifier_bin_proton_subtracted[bin_idx-1]->Add(&data_proton_linear_fit[bin_idx-1], -1);
             }
         }
