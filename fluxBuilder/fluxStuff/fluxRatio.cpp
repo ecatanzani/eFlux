@@ -56,7 +56,7 @@ void fluxRatio(
         energy[idx]                     = sample_gr->GetPointX(idx);
         simple_ratio[idx]               = sample_gr->GetPointY(idx) / reference_gr->Eval(energy[idx]);
         simple_ratio_percentage[idx]    = simple_ratio[idx] * 100;
-        ratio[idx]                      = (sample_gr->GetPointY(idx) - reference_gr->Eval(energy[idx]))/sample_gr->GetPointY(idx);
+        ratio[idx]                      = fabs(sample_gr->GetPointY(idx) - reference_gr->Eval(energy[idx]))/reference_gr->Eval(energy[idx]);
         ratio_percentage[idx]           = ratio[idx] * 100;
     }
 
