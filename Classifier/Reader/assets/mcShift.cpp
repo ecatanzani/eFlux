@@ -10,9 +10,17 @@
 #include "TF1.h"
 #include "TKey.h"
 #include "TH1D.h"
+#include "TPDF.h"
+#include "TPad.h"
 #include "TFile.h"
+#include "TStyle.h"
 #include "TGraph.h"
+#include "TChain.h"
+#include "TLegend.h"
+#include "TCanvas.h"
+#include "TPaveLabel.h"
 #include "TGraphErrors.h"
+#include "TLegendEntry.h"
 #include <ROOT/RDataFrame.hxx>
 
 struct energy_config {
@@ -68,48 +76,82 @@ inline std::vector<float> parse_energy_config(const char* config_file) {
     return get_config_info(parse_config_file(config_file)).energy_binning;
 }
 
+inline const std::string get_tree_name(const std::string stream) {
+    const std::string file = stream.substr(0, stream.find('\n'));
+    TFile* input_file = TFile::Open(file.c_str(), "READ");
+    if (!input_file->IsOpen()) {
+        std::cerr << "\n\nError reading input file [" << file << "]\n\n";
+        exit(100);
+    }
+    std::string tree_name;
+    for (TObject* keyAsObject : *input_file->GetListOfKeys()) {
+        auto key = dynamic_cast<TKey*>(keyAsObject);
+        if (!strcmp(key->GetClassName(), "TTree")) {
+            if (!strcmp(key->GetName(), "total_tree")) {
+                tree_name = static_cast<std::string>(key->GetName());
+                break;
+            }
+        }
+    }
+    input_file->Close();
+    return tree_name;
+}
+
+std::shared_ptr<TChain> parse_input_list(const std::string input_list, const bool verbose) {
+
+    auto parse_input_file = [](const std::string input_list) {
+        std::ifstream input_file(input_list.c_str());
+        if (!input_file.is_open())
+        {
+            std::cerr << "\n\nError (100) reading input file list...[" << input_list << "]" << std::endl;
+            exit(100);
+        }
+        std::string input_string((std::istreambuf_iterator<char>(input_file)), (std::istreambuf_iterator<char>()));
+        input_file.close();
+        return input_string;
+    };
+
+    std::istringstream input_stream(parse_input_file(input_list));
+    std::shared_ptr<TChain> evtch;
+    std::string tmp_str;
+    bool first_elm {true};
+    while (input_stream >> tmp_str) {
+        if (first_elm) {
+            evtch = std::make_shared<TChain> (get_tree_name(tmp_str).c_str(), "TMVA data set");
+            first_elm = false;
+        }
+        evtch->Add(tmp_str.c_str());
+        if (verbose)
+            std::cout << "\nAdding " << tmp_str << " to the chain ...";
+    }
+    return evtch;
+}
+
 void mcShift(
-    const char* input_file,
+    const char* input_file_list,
     const char* output_file,
     const char* energy_config_file,
-    const bool verbose = true,
+    const double bdt_cut_value = 0.1,
     const bool mc = false,
     const double energy_th = 20,
-    const unsigned int threads=1) {
+    const unsigned int threads=1,
+    const bool verbose = true) {
 
+        // Build TChain
+        auto chain = parse_input_list(input_file_list, verbose);
+        
         // Extract energy binning from config file
         auto energy_binning = parse_energy_config(energy_config_file);
         auto energy_nbins = (int)energy_binning.size() - 1;
 
         double skew_th = 0.6;
 
-        // Read input file
-        TFile* infile {TFile::Open(input_file, "READ")};
-        if (infile->IsZombie()) {
-            std::cerr << "\n\nError opening input file [" << input_file << "]" << std::endl;
-            exit(100);
-        }
-
-        TIter nextkey(infile->GetListOfKeys());
-        TKey *key {nullptr};
-        std::unique_ptr<TTree> mytree;
-        while ((key=static_cast<TKey*>(nextkey()))) 
-        {
-            TObject *obj {key->ReadObj()};
-            if (obj->IsA()->InheritsFrom(TTree::Class())) {
-                mytree = std::unique_ptr<TTree>(static_cast<TTree*>(obj));
-                break;
-            }
-        }
-
-        if (verbose)
-            std::cout << "\nFound TTree in input file [" << mytree->GetName() << "]";
-
         // Initialize RDF
         ROOT::EnableImplicitMT(threads);
-        ROOT::RDataFrame fr(*mytree);
+        ROOT::RDataFrame fr(*chain);
 
         std::vector<ROOT::RDF::RResultPtr<TH1D>> h_classifier_bin(energy_nbins);
+        std::vector<TH1D*> h_classifier_bin_proton_subtracted(energy_nbins);
 
         const double signal_spectral_index = -3;
         auto get_weight = [signal_spectral_index, &energy_binning] (const double energy_gev) -> double {
@@ -119,22 +161,43 @@ void mcShift(
         // Build the tmva classifier distribution for each bin
         for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
             auto bin_filter = [=](int energy_bin) -> bool { return energy_bin == bin_idx; };
-            h_classifier_bin[bin_idx-1] = !mc ? fr.Filter(bin_filter, {"energy_bin"}).Histo1D<double>("tmva_classifier") : 
+            std::string histo_name = "h_classifier_bin_" + std::to_string(bin_idx);
+            h_classifier_bin[bin_idx-1] = !mc ? fr.Filter(bin_filter, {"energy_bin"}).Histo1D<double>({histo_name.c_str(), histo_name.c_str(), 1000, -1, 1}, "tmva_classifier") : 
                                                 fr.Filter(bin_filter, {"energy_bin"})
-                                                    .Define("simu_energy_gev", [](const double energy) -> double {return energy*0.001;}, {"simu_energy"})
-                                                    .Define("evt_w", get_weight, {"simu_energy_gev"})
-                                                    .Histo1D<double, double>("tmva_classifier", "evt_w");
+                                                    .Define("corr_energy_gev", "energy_corr * 0.001")
+                                                    .Define("evt_w", get_weight, {"corr_energy_gev"})
+                                                    .Histo1D<double, double>({histo_name.c_str(), histo_name.c_str(), 1000, -1, 1}, "tmva_classifier", "evt_w");
+        }
+        
+        std::vector<TF1> gaus_fit_1(energy_nbins), gaus_fit_2(energy_nbins);
+        std::vector<TF1> data_proton_linear_fit(energy_nbins);
+        
+        // Fit proton slope on data
+        if (!mc) {
+            for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
+                std::string tf1_name = "proton_linear_fit_" + std::to_string(bin_idx);
+                std::string histo_name = std::string(h_classifier_bin[bin_idx-1]->GetName()) + "_proton_subtracted";
+                data_proton_linear_fit[bin_idx-1] = TF1(tf1_name.c_str(), "pow(10, [0]+[1]*x)", -1, 1);
+                h_classifier_bin_proton_subtracted[bin_idx-1] = static_cast<TH1D*>(h_classifier_bin[bin_idx-1]->Clone(histo_name.c_str()));
+                h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "QN", "", -0.2, 0);
+                h_classifier_bin_proton_subtracted[bin_idx-1]->Add(&data_proton_linear_fit[bin_idx-1], -1);
+            }
         }
 
-        std::vector<TF1> gaus_fit_1(energy_nbins), gaus_fit_2(energy_nbins);
-        
         // First fit
         double mean {0}, rms {0}, le {0}, he {0};
-        for (auto it=std::begin(h_classifier_bin); it != std::end(h_classifier_bin); ++it) {
-            mean = it->GetPtr()->GetMean();
-            rms = it->GetPtr()->GetRMS();
-            double moda {it->GetPtr()->GetBinCenter(it->GetPtr()->GetMaximumBin())};
-            if (it->GetPtr()->GetSkewness()>skew_th) {
+        for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
+
+            auto h_pointer = mc ? static_cast<TH1D*>(h_classifier_bin[bin_idx-1]->Clone()) : h_classifier_bin_proton_subtracted[bin_idx-1];
+
+            // Set the correct range in BDT classifier (we want to fit signal peak only)
+            h_pointer->GetXaxis()->SetRangeUser(bdt_cut_value, 1);
+
+            mean = h_pointer->GetMean();
+            rms = h_pointer->GetRMS();
+            double moda {h_pointer->GetBinCenter(h_pointer->GetMaximumBin())};
+
+            if (h_pointer->GetSkewness()>skew_th) {
                 le = moda;
                 he = moda + 3*rms;
             }
@@ -142,17 +205,23 @@ void mcShift(
                 le = moda - rms;
                 he = moda + rms;
             }
+
+            // Fit
             TF1 gaus_fit("gaus_fit_lv_1", "gaus", le, he);
-            !mc ? it->GetPtr()->Fit(&gaus_fit, "RQLN") : it->GetPtr()->Fit(&gaus_fit, "RQWLN");
-            gaus_fit_1[std::distance(std::begin(h_classifier_bin), it)] = gaus_fit;
+            !mc ? h_pointer->Fit(&gaus_fit, "RQLN") : h_pointer->Fit(&gaus_fit, "RQWLN");
+            gaus_fit_1[bin_idx-1] = gaus_fit;
+
         }
 
         // Second fit
         double tf1_mean {0}, tf1_rms {0};
-        for (auto it=std::begin(h_classifier_bin); it != std::end(h_classifier_bin); ++it) {
-            tf1_mean = gaus_fit_1[std::distance(std::begin(h_classifier_bin), it)].GetParameter(1);
-            tf1_rms = gaus_fit_1[std::distance(std::begin(h_classifier_bin), it)].GetParameter(2);
-            if (it->GetPtr()->GetSkewness()>skew_th) {
+        for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
+
+            auto h_pointer = mc ? static_cast<TH1D*>(h_classifier_bin[bin_idx-1]->Clone()) : h_classifier_bin_proton_subtracted[bin_idx-1];
+            
+            tf1_mean = gaus_fit_1[bin_idx-1].GetParameter(1);
+            tf1_rms = gaus_fit_1[bin_idx-1].GetParameter(2);
+            if (h_pointer->GetSkewness()>skew_th) {
                 le = tf1_mean;
                 he = tf1_mean + 3*tf1_rms;
             }
@@ -160,9 +229,12 @@ void mcShift(
                 le = tf1_mean-tf1_rms;
                 he = tf1_mean+tf1_rms;
             }
+
+            // Fit
             TF1 gaus_fit("gaus_fit_lv_2", "gaus", le, he);
-            !mc ? it->GetPtr()->Fit(&gaus_fit, "RQLN") : it->GetPtr()->Fit(&gaus_fit, "RQWLN");
-            gaus_fit_2[std::distance(std::begin(h_classifier_bin), it)] = gaus_fit;
+            !mc ? h_pointer->Fit(&gaus_fit, "RQLN") : h_pointer->Fit(&gaus_fit, "RQWLN");
+            gaus_fit_2[bin_idx-1] = gaus_fit;
+
         }
 
         std::vector<double> mean_shift(energy_nbins, 0), mean_shift_error(energy_nbins, 0);
@@ -266,6 +338,11 @@ void mcShift(
             outfile.mkdir(tmp_dir_name.c_str());
             outfile.cd(tmp_dir_name.c_str());
             h_classifier_bin[bidx]->Write();
+            if (!mc) {
+                h_classifier_bin_proton_subtracted[bidx]->GetXaxis()->SetRangeUser(-1, 1);
+                h_classifier_bin_proton_subtracted[bidx]->Write();
+                data_proton_linear_fit[bidx].Write();
+            }
             gaus_fit_1[bidx].Write();
             gaus_fit_2[bidx].Write();
         }
@@ -289,6 +366,64 @@ void mcShift(
         sigma_fit_func.Write();
 
         outfile.Close();
+
+        // Create PDF file for each energy bin
+        
+        // Build canvas
+        TCanvas print_canvas("print_canvas", "print_canvas");
+        print_canvas.SetTicks();
+
+        TPaveLabel label(0.0, 0.95, 0.3, 1, "BDT classifier", "tlNDC");
+
+        for (int bidx = 0; bidx < energy_nbins; ++bidx) {
+            
+            if (mc) {
+                h_classifier_bin[bidx]->SetLineWidth(2);
+                h_classifier_bin[bidx]->SetLineColor(kBlue);
+                gaus_fit_1[bidx].SetLineWidth(2);
+                gaus_fit_1[bidx].SetLineColor(kRed-9);
+                gaus_fit_2[bidx].SetLineWidth(2);
+                gaus_fit_2[bidx].SetLineColor(kRed+1);
+
+                h_classifier_bin[bidx]->Draw();
+                gaus_fit_1[bidx].Draw("same");
+                gaus_fit_2[bidx].Draw("same");
+
+            }
+            else {
+                h_classifier_bin[bidx]->SetLineWidth(2);
+                h_classifier_bin[bidx]->SetLineColor(kBlack);
+                h_classifier_bin_proton_subtracted[bidx]->SetLineWidth(2);
+                h_classifier_bin_proton_subtracted[bidx]->SetLineColor(kBlue);
+                data_proton_linear_fit[bidx].SetLineWidth(2);
+                data_proton_linear_fit[bidx].SetLineColor(kGreen);
+                gaus_fit_1[bidx].SetLineWidth(2);
+                gaus_fit_1[bidx].SetLineColor(kRed-9);
+                gaus_fit_2[bidx].SetLineWidth(2);
+                gaus_fit_2[bidx].SetLineColor(kRed+1);
+
+                h_classifier_bin[bidx]->Draw();
+                h_classifier_bin_proton_subtracted[bidx]->Draw("same");
+                data_proton_linear_fit[bidx].Draw("same");
+                gaus_fit_1[bidx].Draw("same");
+                gaus_fit_2[bidx].Draw("same");
+            }
+
+            gPad->SetLogy();
+            gPad->SetGrid(1,1);
+            gStyle->SetOptStat(0);
+            
+            std::string label_name = "BDT classifier - energy bin " + std::to_string(bidx+1) + " - [" + std::to_string(energy_binning[bidx]) + ", " + std::to_string(energy_binning[bidx+1]) + "] GeV";
+            label = TPaveLabel(0.0, 0.95, 0.3, 1, label_name.c_str(), "tlNDC");
+            label.Draw();
+            gStyle->SetOptTitle(0);
+            if (!bidx)
+                print_canvas.Print("bdt_classifier_summary.pdf(","Title:BDT classifier");
+            else if (bidx==(energy_nbins-1))
+                print_canvas.Print("bdt_classifier_summary.pdf)","Title:BDT classifier");
+            else
+                print_canvas.Print("bdt_classifier_summary.pdf","Title:BDT classifier");
+        }   
     }
 
 
@@ -375,18 +510,20 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitShift(
         TGraphErrors gr_shift(energy.size(), &energy[0], &shift[0], &energy_err[0], &shift_err[0]);
         gr_shift.SetName("gr_shift");
         gr_shift.GetXaxis()->SetTitle("Energy [GeV]");
-        gr_shift.GetYaxis()->SetTitle("shift = data peak position - electron peak position");
+        gr_shift.GetYaxis()->SetTitle("shift = data peak position - (#sigma_{data}/#sigma_{mc}) electron peak position");
 
         TGraphErrors gr_bin_shift(bins.size(), &bins[0], &shift[0], &bins_err[0], &shift_err[0]);
         gr_bin_shift.SetName("gr_bin_shift");
         gr_bin_shift.GetXaxis()->SetTitle("Energy Bin");
-        gr_bin_shift.GetYaxis()->SetTitle("shift = data peak position - electron peak position");
+        gr_bin_shift.GetYaxis()->SetTitle("shift = data peak position - (#sigma_{data}/#sigma_{mc}) electron peak position");
 
         TF1 shift_fit_function("shift_fit_function", "[0]+[1]*log10(x)", energy.front(), energy.back());
         gr_shift.Fit(&shift_fit_function, "Q", "", energy.front(), max_energy_gev);
+        //gr_shift.Fit(&shift_fit_function, "Q", "", 25, max_energy_gev);
 
         TF1 shift_fit_function_bin("shift_fit_function_bin", "pol1", bins.front(), bins.back());
         gr_bin_shift.Fit(&shift_fit_function_bin, "Q", "", bins.front(), 33);
+        //gr_bin_shift.Fit(&shift_fit_function_bin, "Q", "", 8, 33);
 
         return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_shift, shift_fit_function, gr_bin_shift, shift_fit_function_bin);
 
@@ -426,9 +563,11 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitSigmaRatio(
 
         TF1 sigma_ratio_fit_function("sigma_ratio_fit_function", "[0]+[1]*log10(x)", energy.front(), energy.back());
         gr_ratio.Fit(&sigma_ratio_fit_function, "Q", "", energy.front(), max_energy_gev);
+        //gr_ratio.Fit(&sigma_ratio_fit_function, "Q", "", 25, max_energy_gev);
 
         TF1 sigma_ratio_fit_function_bin("sigma_ratio_fit_function_bin", "pol1", bins.front(), bins.back());
         gr_bin_ratio.Fit(&sigma_ratio_fit_function_bin, "Q", "", bins.front(), 33);
+        //gr_bin_ratio.Fit(&sigma_ratio_fit_function_bin, "Q", "", 8, 33);
 
         return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_ratio, sigma_ratio_fit_function, gr_bin_ratio, sigma_ratio_fit_function_bin);
     }
