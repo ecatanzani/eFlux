@@ -19,21 +19,42 @@ bdt::bdt(
     // Initialize TMVA instance
     TMVA::Tools::Instance();
     // Initialize TMVA readers
+    /*
     LE_reader = std::make_shared<TMVA::Reader>();
     ME_reader = std::make_shared<TMVA::Reader>();
     HE_reader = std::make_shared<TMVA::Reader>();
+    */
+    reader_10_100 = std::make_shared<TMVA::Reader>();
+    reader_100_250 = std::make_shared<TMVA::Reader>();
+    reader_250_500 = std::make_shared<TMVA::Reader>();
+    reader_500_1000 = std::make_shared<TMVA::Reader>();
+    reader_1000_3000 = std::make_shared<TMVA::Reader>();
+    reader_3000 = std::make_shared<TMVA::Reader>();
     // Link readers with the variables
+    /*
     link_reader_vars(LE_reader);
     link_reader_vars(ME_reader);
     link_reader_vars(HE_reader);
+    */
+    link_reader_vars(reader_10_100);
+    link_reader_vars(reader_100_250);
+    link_reader_vars(reader_250_500);
+    link_reader_vars(reader_500_1000);
+    link_reader_vars(reader_1000_3000);
+    link_reader_vars(reader_3000);
     // Book MVA
-    bookMVA(LE_reader, le_weights);
-    bookMVA(ME_reader, me_weights);
-    bookMVA(HE_reader, he_weights);
+    bookMVA(reader_10_100, weights_10_100);
+    bookMVA(reader_100_250, weights_100_250);
+    bookMVA(reader_250_500, weights_250_500);
+    bookMVA(reader_500_1000, weights_500_1000);
+    bookMVA(reader_1000_3000, weights_1000_3000);
+    bookMVA(reader_3000, weights_3000);
+    /*
     // Load cosine angular corrections
     load_cosine_corrections(cosine_regularize_path, verbose);
     // Load box-cox lambda corrections
     load_box_cox_corrections(box_cox_regularize_path, verbose);
+    */
 }
 
 std::string bdt::parse_config_file(std::string bdt_config_file)
@@ -59,12 +80,19 @@ void bdt::get_config_info(std::string parsed_config)
 
 	while (input_stream >> tmp_str)
 	{
-		if (!strcmp(tmp_str.c_str(), "low_energy_weights"))             input_stream >> le_weights;
-		if (!strcmp(tmp_str.c_str(), "medium_energy_weights"))          input_stream >> me_weights;
-		if (!strcmp(tmp_str.c_str(), "high_energy_weights"))            input_stream >> he_weights;
-        if (!strcmp(tmp_str.c_str(), "low_energy_classifier_cut"))      {input_stream >> tmp_str; le_c_cut = stod(tmp_str, &sz);}
-        if (!strcmp(tmp_str.c_str(), "medium_energy_classifier_cut"))   {input_stream >> tmp_str; me_c_cut = stod(tmp_str, &sz);}
-        if (!strcmp(tmp_str.c_str(), "high_energy_classifier_cut"))     {input_stream >> tmp_str; he_c_cut = stod(tmp_str, &sz);}
+		if (!strcmp(tmp_str.c_str(), "weights_10_100"))             input_stream >> weights_10_100;
+		if (!strcmp(tmp_str.c_str(), "weights_100_250"))            input_stream >> weights_100_250;
+		if (!strcmp(tmp_str.c_str(), "weights_250_500"))            input_stream >> weights_250_500;
+        if (!strcmp(tmp_str.c_str(), "weights_500_1000"))           input_stream >> weights_500_1000;
+        if (!strcmp(tmp_str.c_str(), "weights_1000_3000"))          input_stream >> weights_1000_3000;
+        if (!strcmp(tmp_str.c_str(), "weights_3000"))               input_stream >> weights_3000;
+
+        if (!strcmp(tmp_str.c_str(), "cut_10_100"))         {input_stream >> tmp_str; cut_10_100 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_100_250"))        {input_stream >> tmp_str; cut_100_250 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_250_500"))        {input_stream >> tmp_str; cut_250_500 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_500_1000"))       {input_stream >> tmp_str; cut_500_1000 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_1000_3000"))      {input_stream >> tmp_str; cut_1000_3000 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_3000"))           {input_stream >> tmp_str; cut_3000 = stod(tmp_str, &sz);}   
 	}
 }
 
@@ -72,9 +100,12 @@ void bdt::PrintWeights() {
 
 	std::cout << "\n\n**** Training Weights ****\n";
 	std::cout << "***********************\n\n";
-	std::cout << "Low Energy  (10 GeV - 100 GeV) : " << le_weights << std::endl;
-	std::cout << "Mean energy (100 GeV - 1 TeV)  : " << me_weights << std::endl;
-	std::cout << "High Energy (1 TeV - 10 TeV)   : " << he_weights << std::endl;
+	std::cout << "Weights  (10 GeV - 100 GeV) : " << weights_10_100 << std::endl;
+    std::cout << "Weights  (100 GeV - 250 GeV) : " << weights_100_250 << std::endl;
+    std::cout << "Weights  (250 GeV - 500 GeV) : " << weights_250_500 << std::endl;
+    std::cout << "Weights  (500 GeV - 1000 GeV) : " << weights_500_1000 << std::endl;
+    std::cout << "Weights  (1000 GeV - 3000 GeV) : " << weights_1000_3000 << std::endl;
+    std::cout << "Weights  (>3000 GeV) : " << weights_3000 << std::endl;
 	std::cout << "\n***********************\n";
 }
 
@@ -144,6 +175,7 @@ void bdt::get_methods() {
 
 void bdt::link_reader_vars(std::shared_ptr<TMVA::Reader> reader)
 {
+    /*
     reader->AddVariable("rmslayer_norm_1", &tmva_vars.rmslayer_norm_1);
     reader->AddVariable("rmslayer_norm_2", &tmva_vars.rmslayer_norm_2);
     reader->AddVariable("rmslayer_norm_3", &tmva_vars.rmslayer_norm_3);
@@ -178,6 +210,42 @@ void bdt::link_reader_vars(std::shared_ptr<TMVA::Reader> reader)
     reader->AddVariable("fraclastlayer_norm", &tmva_vars.fraclastlayer_norm);
     reader->AddVariable("xtrl_norm", &tmva_vars.xtrl_norm);
     reader->AddSpectator("xtrl", &tmva_vars.xtrl);
+    */
+
+    reader->AddVariable("rmslayer_1", &tmva_vars.rmslayer_norm_1);
+    reader->AddVariable("rmslayer_2", &tmva_vars.rmslayer_norm_2);
+    reader->AddVariable("rmslayer_3", &tmva_vars.rmslayer_norm_3);
+    reader->AddVariable("rmslayer_4", &tmva_vars.rmslayer_norm_4);
+    reader->AddVariable("rmslayer_5", &tmva_vars.rmslayer_norm_5);
+    reader->AddVariable("rmslayer_6", &tmva_vars.rmslayer_norm_6);
+    reader->AddVariable("rmslayer_7", &tmva_vars.rmslayer_norm_7);
+    reader->AddVariable("rmslayer_8", &tmva_vars.rmslayer_norm_8);
+    reader->AddVariable("rmslayer_9", &tmva_vars.rmslayer_norm_9);
+    reader->AddVariable("rmslayer_10", &tmva_vars.rmslayer_norm_10);
+    reader->AddVariable("rmslayer_11", &tmva_vars.rmslayer_norm_11);
+    reader->AddVariable("rmslayer_12", &tmva_vars.rmslayer_norm_12);
+    reader->AddVariable("rmslayer_13", &tmva_vars.rmslayer_norm_13);
+    reader->AddVariable("rmslayer_14", &tmva_vars.rmslayer_norm_14);
+
+    reader->AddVariable("fraclayer_1", &tmva_vars.fraclayer_norm_1);
+    reader->AddVariable("fraclayer_2", &tmva_vars.fraclayer_norm_2);
+    reader->AddVariable("fraclayer_3", &tmva_vars.fraclayer_norm_3);
+    reader->AddVariable("fraclayer_4", &tmva_vars.fraclayer_norm_4);
+    reader->AddVariable("fraclayer_5", &tmva_vars.fraclayer_norm_5);
+    reader->AddVariable("fraclayer_6", &tmva_vars.fraclayer_norm_6);
+    reader->AddVariable("fraclayer_7", &tmva_vars.fraclayer_norm_7);
+    reader->AddVariable("fraclayer_8", &tmva_vars.fraclayer_norm_8);
+    reader->AddVariable("fraclayer_9", &tmva_vars.fraclayer_norm_9);
+    reader->AddVariable("fraclayer_10", &tmva_vars.fraclayer_norm_10);
+    reader->AddVariable("fraclayer_11", &tmva_vars.fraclayer_norm_11);
+    reader->AddVariable("fraclayer_12", &tmva_vars.fraclayer_norm_12);
+    reader->AddVariable("fraclayer_13", &tmva_vars.fraclayer_norm_13);
+    reader->AddVariable("fraclayer_14", &tmva_vars.fraclayer_norm_14);
+
+    reader->AddVariable("sumRms", &tmva_vars.sumrms_norm);
+    reader->AddVariable("fracLast", &tmva_vars.fraclastlayer_norm);
+    reader->AddVariable("xtrl", &tmva_vars.xtrl_norm);
+    //reader->AddSpectator("xtrl", &tmva_vars.xtrl);
 }
 
 void bdt::bookMVA(std::shared_ptr<TMVA::Reader> reader, const std::string weights)
@@ -346,6 +414,7 @@ inline double xtrl_computation(const double sumRms, const double lastFracLayer)
 
 void bdt::sync_vars()
 {
+    /*
     tmva_vars.rmslayer_norm_1 = static_cast<float>(vars.rms[0]);
     tmva_vars.rmslayer_norm_2 = static_cast<float>(vars.rms[1]);
     tmva_vars.rmslayer_norm_3 = static_cast<float>(vars.rms[2]);
@@ -380,6 +449,42 @@ void bdt::sync_vars()
     tmva_vars.fraclastlayer_norm = static_cast<float>(vars.fraclastlayer);
     tmva_vars.xtrl_norm = static_cast<float>(vars.xtrl);
     tmva_vars.xtrl = static_cast<float>(vars.xtrl_spectator);
+    */
+
+    tmva_vars.rmslayer_norm_1 = static_cast<float>(vars.rms[0]);
+    tmva_vars.rmslayer_norm_2 = static_cast<float>(vars.rms[1]);
+    tmva_vars.rmslayer_norm_3 = static_cast<float>(vars.rms[2]);
+    tmva_vars.rmslayer_norm_4 = static_cast<float>(vars.rms[3]);
+    tmva_vars.rmslayer_norm_5 = static_cast<float>(vars.rms[4]);
+    tmva_vars.rmslayer_norm_6 = static_cast<float>(vars.rms[5]);
+    tmva_vars.rmslayer_norm_7 = static_cast<float>(vars.rms[6]);
+    tmva_vars.rmslayer_norm_8 = static_cast<float>(vars.rms[7]);
+    tmva_vars.rmslayer_norm_9 = static_cast<float>(vars.rms[8]);
+    tmva_vars.rmslayer_norm_10 = static_cast<float>(vars.rms[9]);
+    tmva_vars.rmslayer_norm_11 = static_cast<float>(vars.rms[10]);
+    tmva_vars.rmslayer_norm_12 = static_cast<float>(vars.rms[11]);
+    tmva_vars.rmslayer_norm_13 = static_cast<float>(vars.rms[12]);
+    tmva_vars.rmslayer_norm_14 = static_cast<float>(vars.rms[13]);
+
+    tmva_vars.fraclayer_norm_1 = static_cast<float>(vars.fraclayer[0]);
+    tmva_vars.fraclayer_norm_2 = static_cast<float>(vars.fraclayer[1]);
+    tmva_vars.fraclayer_norm_3 = static_cast<float>(vars.fraclayer[2]);
+    tmva_vars.fraclayer_norm_4 = static_cast<float>(vars.fraclayer[3]);
+    tmva_vars.fraclayer_norm_5 = static_cast<float>(vars.fraclayer[4]);
+    tmva_vars.fraclayer_norm_6 = static_cast<float>(vars.fraclayer[5]);
+    tmva_vars.fraclayer_norm_7 = static_cast<float>(vars.fraclayer[6]);
+    tmva_vars.fraclayer_norm_8 = static_cast<float>(vars.fraclayer[7]);
+    tmva_vars.fraclayer_norm_9 = static_cast<float>(vars.fraclayer[8]);
+    tmva_vars.fraclayer_norm_10 = static_cast<float>(vars.fraclayer[9]);
+    tmva_vars.fraclayer_norm_11 = static_cast<float>(vars.fraclayer[10]);
+    tmva_vars.fraclayer_norm_12 = static_cast<float>(vars.fraclayer[11]);
+    tmva_vars.fraclayer_norm_13 = static_cast<float>(vars.fraclayer[12]);
+    tmva_vars.fraclayer_norm_14 = static_cast<float>(vars.fraclayer[13]);
+
+    tmva_vars.sumrms_norm = static_cast<float>(vars.sumrms);
+    tmva_vars.fraclastlayer_norm = static_cast<float>(vars.fraclastlayer);
+    tmva_vars.xtrl_norm = static_cast<float>(vars.xtrl);
+    //tmva_vars.xtrl = static_cast<float>(vars.xtrl_spectator);
 }
 
 const double bdt::ComputeMVA(
@@ -397,6 +502,7 @@ const double bdt::ComputeMVA(
         // Reset the variables struct
         vars.Reset();
         
+        /*
         // Initialize with the new event values
         double xtrl = xtrl_computation(sumrms, fraclastlayer);
         vars.corrected_energy_gev = corrected_energy_gev;
@@ -579,8 +685,21 @@ const double bdt::ComputeMVA(
 
         // Sync transformed vars and TMVA classifier vars
         sync_vars();
+        */
+
+        vars.rms = rms;
+        vars.sumrms = sumrms;
+        vars.fraclayer = fraclayer;
+        vars.fraclastlayer = fraclastlayer;
+        vars.xtrl = xtrl_computation(sumrms, fraclastlayer);
+
+        vars.corrected_energy_gev = corrected_energy_gev;
+
+        // Sync transformed vars and TMVA classifier vars
+        sync_vars();
 
         // Compute the MVA
+        /*
         if (vars.corrected_energy_gev>=10 && vars.corrected_energy_gev<100) {
             mva_result = LE_reader->EvaluateMVA(method.c_str());
         }
@@ -590,18 +709,55 @@ const double bdt::ComputeMVA(
         else if (vars.corrected_energy_gev>=1000 && vars.corrected_energy_gev<=10000) {
             mva_result = HE_reader->EvaluateMVA(method.c_str());
         }
+        */
+        if (vars.corrected_energy_gev>=10 && vars.corrected_energy_gev<100) {
+            mva_result = reader_10_100->EvaluateMVA(method.c_str());
+        }
+        else if (vars.corrected_energy_gev>=100 && vars.corrected_energy_gev<250) {
+            mva_result = reader_100_250->EvaluateMVA(method.c_str());
+        }
+        else if (vars.corrected_energy_gev>=250 && vars.corrected_energy_gev<500) {
+            mva_result = reader_250_500->EvaluateMVA(method.c_str());
+        }
+        else if (vars.corrected_energy_gev>=500 && vars.corrected_energy_gev<1000) {
+            mva_result = reader_500_1000->EvaluateMVA(method.c_str());
+        }
+        else if (vars.corrected_energy_gev>=1000 && vars.corrected_energy_gev<3000) {
+            mva_result = reader_1000_3000->EvaluateMVA(method.c_str());
+        }
+        else if (vars.corrected_energy_gev>=3000) {
+            mva_result = reader_3000->EvaluateMVA(method.c_str());
+        }
         
         return mva_result;
     }
 
-const double bdt::GetLowEnergyBDTCut() {
-    return le_c_cut;
+const double bdt::GetBDTCut_10_100()
+{
+    return cut_10_100;
 }
 
-const double bdt::GetMidEnergyBDTCut() {
-    return me_c_cut;
+const double bdt::GetBDTCut_100_250()
+{
+    return cut_100_250;
 }
 
-const double bdt::GetHighEnergyBDTCut() {
-    return he_c_cut;
+const double bdt::GetBDTCut_250_500()
+{
+    return cut_250_500;
+}
+
+const double bdt::GetBDTCut_500_1000()
+{
+    return cut_500_1000;
+}
+
+const double bdt::GetBDTCut_1000_3000()
+{
+    return cut_1000_3000;
+}
+
+const double bdt::GetBDTCut_3000()
+{
+    return cut_3000;
 }

@@ -65,7 +65,7 @@ void buildEfficiency(const in_args input_args)
 		input_args.cosine_regularize_path,
 		input_args.box_cox_regularize_path,
 		input_args.verbose);
-
+    
     // Extract the efficiency correction functions
     auto corrections = extractCorrectionFunctions(input_args.eff_corr_function.c_str());
 
@@ -199,6 +199,7 @@ void buildEfficiency(const in_args input_args)
 
     // Compute BDT cut
     auto get_bdt_cut = [bdt_evt, shift_function, sigma_function, gr_shift, gr_sigma] (const double energy_gev, const int energy_bin) -> double {
+        /*
         double cut {0};
         double cut_corr {0};
 
@@ -214,6 +215,23 @@ void buildEfficiency(const in_args input_args)
         else
             cut_corr = (cut - shift_function->Eval(energy_gev))/sigma_function->Eval(energy_gev);
         return cut_corr;
+        */
+
+        double cut {0};
+        if (energy_gev>=10 && energy_gev<100)
+            cut = bdt_evt->GetBDTCut_10_100();
+        else if (energy_gev>=100 && energy_gev<250)
+            cut = bdt_evt->GetBDTCut_100_250();
+        else if (energy_gev>=250 && energy_gev<500)     
+            cut = bdt_evt->GetBDTCut_250_500();
+        else if (energy_gev>=500 && energy_gev<1000)     
+            cut = bdt_evt->GetBDTCut_500_1000();
+        else if (energy_gev>=1000 && energy_gev<3000)     
+            cut = bdt_evt->GetBDTCut_1000_3000();
+        else if (energy_gev>=3000)     
+            cut = bdt_evt->GetBDTCut_3000();
+
+        return cut;
     };
 
     if (input_args.verbose)
