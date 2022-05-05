@@ -383,31 +383,32 @@ const bool DmpFilterContainer::stk_1rm_cut(
 		if (stk_cleaning_functions.f_stk_correction_20_100 == nullptr)
 		{
 			stk_cleaning_functions.f_stk_correction_20_100 = std::make_shared<TF1>("f_cuts_20_100", "[0] + [1]*x", 5, 300);
-			stk_cleaning_functions.f_stk_correction_20_100->SetParameters(-1693.3133, 394.41844);
+			stk_cleaning_functions.f_stk_correction_20_100->SetParameters(-2124.4397, 443.31209);
 		}
 		if (stk_cleaning_functions.f_stk_correction_100_250 == nullptr)
 		{
 			stk_cleaning_functions.f_stk_correction_100_250 = std::make_shared<TF1>("f_cuts_100_250", "[0] + [1]*x", 5, 300);
-			stk_cleaning_functions.f_stk_correction_100_250->SetParameters(-2307.2126, 485.24149);
+			stk_cleaning_functions.f_stk_correction_100_250->SetParameters(-2884.8569, 545.05582);
 		}
 		if (stk_cleaning_functions.f_stk_correction_250_500 == nullptr)
 		{
 			stk_cleaning_functions.f_stk_correction_250_500 = std::make_shared<TF1>("f_cuts_250_500", "[0] + [1]*x", 5, 300);
-			stk_cleaning_functions.f_stk_correction_250_500->SetParameters(-2456.6841, 543.43938);
+			stk_cleaning_functions.f_stk_correction_250_500->SetParameters(-3204.7800, 611.38045);
 		}
 		if (stk_cleaning_functions.f_stk_correction_500_1000 == nullptr)
 		{
 			stk_cleaning_functions.f_stk_correction_500_1000 = std::make_shared<TF1>("f_cuts_500_1000", "[0] + [1]*x", 5, 300);
-			stk_cleaning_functions.f_stk_correction_500_1000->SetParameters(-2859.7504, 587.49936);
+			stk_cleaning_functions.f_stk_correction_500_1000->SetParameters(-3770.7037, 667.46695);
 		}
 		if (stk_cleaning_functions.f_stk_correction_1000_3000 == nullptr)
 		{
 			stk_cleaning_functions.f_stk_correction_1000_3000 = std::make_shared<TF1>("f_cuts_1000_3000", "[0] + [1]*x", 5, 300);
-			stk_cleaning_functions.f_stk_correction_1000_3000->SetParameters(-502.92267, 449.74620);
+			stk_cleaning_functions.f_stk_correction_1000_3000->SetParameters(-782.66222, 560.06530);
 		}
 		if (stk_cleaning_functions.f_stk_correction_3000 == nullptr)
 		{
 			stk_cleaning_functions.f_stk_correction_3000 = std::make_shared<TF1>("f_cuts_3000", "[0] + [1]*x", 5, 300);
+			stk_cleaning_functions.f_stk_correction_3000->SetParameters(-16393.445, 3308.1187);
 		}
 
 		if (nStkClu1Rm.size() > 1 && stkEcore1Rm.size() > 1)
@@ -423,8 +424,7 @@ const bool DmpFilterContainer::stk_1rm_cut(
 			else if (bgoTotalE_corr * _gev >= 1000 && bgoTotalE_corr * _gev < 3000)
 				passed_stk_1rm_cut = stkEcore1Rm[1] < fabs(stk_cleaning_functions.f_stk_correction_1000_3000->Eval(nStkClu1Rm[1]));
 			else if (bgoTotalE_corr * _gev >= 3000)
-				//passed_stk_1rm_cut = stkEcore1Rm[1] < stk_cleaning_functions.f_stk_correction_3000->Eval(nStkClu1Rm);
-				passed_stk_1rm_cut = true;
+				passed_stk_1rm_cut = stkEcore1Rm[1] < fabs(stk_cleaning_functions.f_stk_correction_3000->Eval(nStkClu1Rm[1]));
 		}
 
 		return passed_stk_1rm_cut;
