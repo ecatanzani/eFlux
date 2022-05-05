@@ -66,13 +66,28 @@ void signal_efficiency(in_args input_args) {
         double cut {0};
         double cut_corr {0};
 
+        /*
         if (energy_gev>=10 && energy_gev<100)
             cut = cl_config->GetLowEnergyBDTCut();
         else if (energy_gev>=100 && energy_gev<1000)
             cut = energy_bin != 32 ? cl_config->GetMidEnergyBDTCut() : cl_config->GetMidEnergyBDTCut() - 0.07;
         else if (energy_gev>=1000 && energy_gev<=10000)     
             cut = cl_config->GetHighEnergyBDTCut();
-        
+        */
+
+        if (energy_gev>=10 && energy_gev<100)
+            cut = cl_config->GetBDTCut_10_100();
+        else if (energy_gev>=100 && energy_gev<250)
+            cut = cl_config->GetBDTCut_100_250();
+        else if (energy_gev>=250 && energy_gev<500)     
+            cut = cl_config->GetBDTCut_250_500();
+        else if (energy_gev>=500 && energy_gev<1000)     
+            cut = cl_config->GetBDTCut_500_1000();
+        else if (energy_gev>=1000 && energy_gev<3000)     
+            cut = cl_config->GetBDTCut_1000_3000();
+        else if (energy_gev>=3000)     
+            cut = cl_config->GetBDTCut_3000();
+
         if (energy_bin<=33)
             cut_corr = (cut - gr_shift->GetPointY(energy_bin-1))/gr_sigma->GetPointY(energy_bin-1); 
         else

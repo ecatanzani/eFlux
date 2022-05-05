@@ -34,13 +34,28 @@ void signal_selection(in_args input_args) {
     auto get_bdt_cut = [cl_config] (const double energy_gev, const int energy_bin) -> double {
         double cut {0};
 
+        /*
         if (energy_gev>=10 && energy_gev<100)
             cut = cl_config->GetLowEnergyBDTCut();
         else if (energy_gev>=100 && energy_gev<1000)
             cut = energy_bin != 32 ? cl_config->GetMidEnergyBDTCut() : cl_config->GetMidEnergyBDTCut() - 0.07;
         else if (energy_gev>=1000 && energy_gev<=10000)     
             cut = cl_config->GetHighEnergyBDTCut();
-        
+        */
+
+        if (energy_gev>=10 && energy_gev<100)
+            cut = cl_config->GetBDTCut_10_100();
+        else if (energy_gev>=100 && energy_gev<250)
+            cut = cl_config->GetBDTCut_100_250();
+        else if (energy_gev>=250 && energy_gev<500)     
+            cut = cl_config->GetBDTCut_250_500();
+        else if (energy_gev>=500 && energy_gev<1000)     
+            cut = cl_config->GetBDTCut_500_1000();
+        else if (energy_gev>=1000 && energy_gev<3000)     
+            cut = cl_config->GetBDTCut_1000_3000();
+        else if (energy_gev>=3000)     
+            cut = cl_config->GetBDTCut_3000();
+
         return cut;
     };
 
