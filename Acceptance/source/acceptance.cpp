@@ -68,9 +68,17 @@ void buildAcceptance(const in_args input_args)
                                                 .Filter("evtfilter_maxRms_cut==true")
                                                 .Histo1D({"h_maxrms", "generated events - max RMS cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
 
+    auto h_sumrms_low_energy = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_sumrms_low_energy_cut==true")
+                                                .Histo1D({"h_sumrms_low_energy", "generated events - sumRms low energy cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+
     auto h_trackselection = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_track_selection_cut==true")
                                                 .Histo1D({"h_trackselection", "generated events - Track Selection cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
+
+    auto h_stk_1_rm = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
+                                                .Filter("evtfilter_stk_1rm_cut==true")
+                                                .Histo1D({"h_stk_1_rm", "generated events - STK 1 RM cut; Real energy [GeV]; counts", energy_nbins, &energy_binning[0]}, "simu_energy_gev");
 
     auto h_trackselection_no_3hit_recover = _data_fr_selected.Define("simu_energy_gev", "simu_energy * 0.001")
                                                 .Filter("evtfilter_track_selection_cut_no_3hit_recover==true")
@@ -113,8 +121,10 @@ void buildAcceptance(const in_args input_args)
     h_bgo_fiducial_het                          ->Sumw2();
     h_nBarLayer13                               ->Sumw2();
     h_maxrms                                    ->Sumw2();
+    h_sumrms_low_energy                         ->Sumw2();
     h_trackselection                            ->Sumw2();
     h_trackselection_no_3hit_recover            ->Sumw2();
+    h_stk_1_rm                                  ->Sumw2();
     h_bgo_stk_selection_inside_psd_fvolume      ->Sumw2();
     h_bgo_stk_selection_outside_psd_fvolume     ->Sumw2();
     h_psdstkmatch                               ->Sumw2();
@@ -137,8 +147,10 @@ void buildAcceptance(const in_args input_args)
     h_bgo_fiducial_het                          ->Write();
     h_nBarLayer13                               ->Write();
     h_maxrms                                    ->Write();
+    h_sumrms_low_energy                         ->Write();  
     h_trackselection                            ->Write();
     h_trackselection_no_3hit_recover            ->Write();
+    h_stk_1_rm                                  ->Write();
     h_bgo_stk_selection_inside_psd_fvolume      ->Write();
     h_bgo_stk_selection_outside_psd_fvolume     ->Write();
     h_psdstkmatch                               ->Write();
