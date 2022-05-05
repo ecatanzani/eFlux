@@ -57,6 +57,7 @@ public:
 	const cuts_conf GetCutsConfigValues();
 	const active_cuts GetActiveCuts();
 
+	/*
 	const std::string GetLEWeights();
 	const std::string GetMEWeights();
 	const std::string GetHEWeights();
@@ -64,6 +65,21 @@ public:
 	const double GetLEClassifierCut();
 	const double GetMEClassifierCut();
 	const double GetHEClassifierCut();
+	*/
+
+	const std::string GetBDTWeights_10_100();
+    const std::string GetBDTWeights_100_250();
+    const std::string GetBDTWeights_250_500();
+    const std::string GetBDTWeights_500_1000();
+    const std::string GetBDTWeights_1000_3000();
+    const std::string GetBDTWeights_3000();
+
+	const double GetBDTCut_10_100();
+    const double GetBDTCut_100_250();
+    const double GetBDTCut_250_500();
+    const double GetBDTCut_500_1000();
+    const double GetBDTCut_1000_3000();
+    const double GetBDTCut_3000();
 
 private:
 	std::string parse_config_file(std::string config_file);
@@ -72,14 +88,31 @@ private:
 	cuts_conf cuts;
 	active_cuts a_cuts;
 
+	/*
 	std::string le_weights;
 	std::string me_weights;
 	std::string he_weights;
+	*/
 
+	std::string weights_10_100;
+	std::string weights_100_250;
+	std::string weights_250_500;
+    std::string weights_500_1000;
+    std::string weights_1000_3000;
+    std::string weights_3000;
+
+	/*
 	double le_c_cut {0};
 	double me_c_cut {0};
 	double he_c_cut {0};
+	*/
 
+	double cut_10_100 {0};
+    double cut_100_250 {0};
+    double cut_250_500 {0};
+    double cut_500_1000 {0};
+    double cut_1000_3000 {0};
+    double cut_3000 {0};
 };
 
 #endif

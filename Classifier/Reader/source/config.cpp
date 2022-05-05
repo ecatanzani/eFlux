@@ -183,6 +183,7 @@ void config::get_local_config_info(std::string parsed_config) {
 	std::istringstream input_stream(parsed_config);
 	std::string::size_type sz;
 
+	/*
 	while (input_stream >> tmp_str)
 	{
 		// Load cuts variables
@@ -201,6 +202,24 @@ void config::get_local_config_info(std::string parsed_config) {
 			input_stream >> tmp_str;
 			he_c_cut = stod(tmp_str, &sz); 
 		}
+	}
+	*/
+
+	while (input_stream >> tmp_str)
+	{
+		if (!strcmp(tmp_str.c_str(), "weights_10_100"))             input_stream >> weights_10_100;
+		if (!strcmp(tmp_str.c_str(), "weights_100_250"))            input_stream >> weights_100_250;
+		if (!strcmp(tmp_str.c_str(), "weights_250_500"))            input_stream >> weights_250_500;
+        if (!strcmp(tmp_str.c_str(), "weights_500_1000"))           input_stream >> weights_500_1000;
+        if (!strcmp(tmp_str.c_str(), "weights_1000_3000"))          input_stream >> weights_1000_3000;
+        if (!strcmp(tmp_str.c_str(), "weights_3000"))               input_stream >> weights_3000;
+
+        if (!strcmp(tmp_str.c_str(), "cut_10_100"))         {input_stream >> tmp_str; cut_10_100 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_100_250"))        {input_stream >> tmp_str; cut_100_250 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_250_500"))        {input_stream >> tmp_str; cut_250_500 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_500_1000"))       {input_stream >> tmp_str; cut_500_1000 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_1000_3000"))      {input_stream >> tmp_str; cut_1000_3000 = stod(tmp_str, &sz);}
+        if (!strcmp(tmp_str.c_str(), "cut_3000"))           {input_stream >> tmp_str; cut_3000 = stod(tmp_str, &sz);}   
 	}
 }
 
@@ -255,6 +274,7 @@ const active_cuts config::GetActiveCuts()
 	return a_cuts;
 }
 
+/*
 const std::string config::GetLEWeights() {
 	return le_weights;
 }
@@ -267,6 +287,81 @@ const std::string config::GetHEWeights() {
 	return he_weights;
 }
 
+const double config::GetLEClassifierCut() {
+	return le_c_cut;
+}
+
+const double config::GetMEClassifierCut() {
+	return me_c_cut;
+}
+
+const double config::GetHEClassifierCut() {
+	return he_c_cut;
+}
+
+*/
+
+const std::string config::GetBDTWeights_10_100()
+{
+	return weights_10_100;
+}
+
+const std::string config::GetBDTWeights_100_250()
+{
+	return weights_100_250;
+}
+
+const std::string config::GetBDTWeights_250_500()
+{
+	return weights_250_500;
+}
+
+const std::string config::GetBDTWeights_500_1000()
+{
+	return weights_500_1000;
+}
+
+const std::string config::GetBDTWeights_1000_3000()
+{
+	return weights_1000_3000;
+}
+
+const std::string config::GetBDTWeights_3000()
+{
+	return weights_3000;
+}
+
+const double config::GetBDTCut_10_100()
+{
+	return cut_10_100;
+}
+
+const double config::GetBDTCut_100_250()
+{
+	return cut_100_250;
+}
+
+const double config::GetBDTCut_250_500()
+{
+	return cut_250_500;
+}
+
+const double config::GetBDTCut_500_1000()
+{
+	return cut_500_1000;
+}
+
+const double config::GetBDTCut_1000_3000()
+{
+	return cut_1000_3000;
+}
+
+const double config::GetBDTCut_3000()
+{
+	return cut_3000;
+}
+
+/*
 void config::PrintWeights() {
 
 	std::cout << "\n\n**** Training Weights ****\n";
@@ -279,15 +374,25 @@ void config::PrintWeights() {
 	std::cout << "High Energy classifier cut : " << he_c_cut << std::endl;
 	std::cout << "\n***********************\n";
 }
+*/
 
-const double config::GetLEClassifierCut() {
-	return le_c_cut;
-}
+void config::PrintWeights() {
 
-const double config::GetMEClassifierCut() {
-	return me_c_cut;
-}
+	std::cout << "\n\n**** Training Weights ****\n";
+	std::cout << "***********************\n\n";
+	std::cout << "Weights 10 GeV - 100 GeV: " << weights_10_100 << std::endl;
+	std::cout << "Weights 100 GeV - 250 GeV: " << weights_100_250 << std::endl;
+	std::cout << "Weights 250 GeV - 500 GeV: " << weights_250_500 << std::endl;
+	std::cout << "Weights 500 GeV - 1 TeV: " << weights_500_1000 << std::endl;
+	std::cout << "Weights 1 TeV - 3 TeV: " << weights_1000_3000 << std::endl;
+	std::cout << "Weights 3 TeV - 10 TeV: " << weights_3000 << std::endl;
 
-const double config::GetHEClassifierCut() {
-	return he_c_cut;
+
+	std::cout << "Energy classifier cut  10 GeV - 100 GeV: " << cut_10_100 << std::endl;
+	std::cout << "Energy classifier cut 100 GeV - 250 GeV: " << cut_100_250 << std::endl;
+	std::cout << "Energy classifier cut 250 GeV - 500 GeV: " << cut_250_500 << std::endl;
+	std::cout << "Energy classifier cut 500 GeV - 1 TeV: " << cut_500_1000 << std::endl;
+	std::cout << "Energy classifier cut 1 TeV - 3 TeV: " << cut_1000_3000 << std::endl;
+	std::cout << "Energy classifier cut 3 TeV - 10 TeV: " << cut_3000 << std::endl;
+	std::cout << "\n***********************\n";
 }
