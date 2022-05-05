@@ -15,26 +15,25 @@ inline std::shared_ptr<TH1D> GetHistoFromFile(const char* path, const char* hist
     std::shared_ptr<TH1D> histo = std::shared_ptr<TH1D>(static_cast<TH1D*>(infile->Get(histo_name)));
 
     if (verbose)
-        std::cout << "\nFound TTree in input file [" << histo->GetName() << "] --> [" << path << "]";
+        std::cout << "\nFound TH1D in input file [" << histo->GetName() << "] --> [" << path << "]";
 
     return histo;
 }
 
 void buildBackgrounndEstimation(
     const char* rejected_proton_data,
-    const char* bdt_background_fraction,
-    const char* xtrl_tight_background_fraction,
-    const char* xtrl_loose_background_fraction,
+    const char* background_fraction,
     const char* output_file,
     const bool verbose) {
 
         if (verbose)
             std::cout << "\n\nReading input files... " << std::endl;
 
-        auto h_bdt_proton_fraction              = GetHistoFromFile(bdt_background_fraction, "h_bdt_proton_fraction", verbose);
-        auto h_xtrl_tight_proton_fraction       = GetHistoFromFile(xtrl_tight_background_fraction, "h_xtrl_tight_proton_fraction", verbose);
-        auto h_xtrl_loose_proton_fraction       = GetHistoFromFile(xtrl_loose_background_fraction, "h_xtrl_loose_proton_fraction", verbose);
-        auto h_bdt_proton_not_passed            = GetHistoFromFile(rejected_proton_data, "h_proton_not_passed", verbose);
+        auto h_bdt_proton_fraction              = GetHistoFromFile(background_fraction, "h_bdt_proton_fraction", verbose);
+        auto h_xtrl_tight_proton_fraction       = GetHistoFromFile(background_fraction, "h_xtrl_tight_proton_fraction", verbose);
+        auto h_xtrl_loose_proton_fraction       = GetHistoFromFile(background_fraction, "h_xtrl_loose_proton_fraction", verbose);
+
+        auto h_bdt_proton_not_passed            = GetHistoFromFile(rejected_proton_data, "h_bdt_proton_not_passed", verbose);
         auto h_xtrl_proton_not_passed           = GetHistoFromFile(rejected_proton_data, "h_xtrl_proton_not_passed", verbose);
         
         auto h_bdt_background                   = static_cast<TH1D*>(h_bdt_proton_not_passed->Clone("h_bdt_background"));
