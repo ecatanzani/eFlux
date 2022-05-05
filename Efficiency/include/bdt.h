@@ -165,9 +165,12 @@ public:
 		const std::vector<float> &energy_binning,
 		const TVector3& bgo_direction);
 
-    const double GetLowEnergyBDTCut();
-    const double GetMidEnergyBDTCut();
-    const double GetHighEnergyBDTCut();
+    const double GetBDTCut_10_100();
+    const double GetBDTCut_100_250();
+    const double GetBDTCut_250_500();
+    const double GetBDTCut_500_1000();
+    const double GetBDTCut_1000_3000();
+    const double GetBDTCut_3000();
 
 private:
 	std::string parse_config_file(std::string bdt_config_file);
@@ -179,21 +182,30 @@ private:
 	void load_cosine_corrections(std::string cosine_regularize_path, const bool verbose);
 	void load_box_cox_corrections(std::string box_cox_regularize_path, const bool verbose);
 	
-	std::string le_weights;
-	std::string me_weights;
-	std::string he_weights;
+	std::string weights_10_100;
+	std::string weights_100_250;
+	std::string weights_250_500;
+    std::string weights_500_1000;
+    std::string weights_1000_3000;
+    std::string weights_3000;
 
-    double le_c_cut {0};
-    double me_c_cut {0};
-    double he_c_cut {0};
+    double cut_10_100 {0};
+    double cut_100_250 {0};
+    double cut_250_500 {0};
+    double cut_500_1000 {0};
+    double cut_1000_3000 {0};
+    double cut_3000 {0};
 	
 	std::string method;
 	int energy_nbins;
 	std::map<std::string, int> methods_map;
 
-	std::shared_ptr<TMVA::Reader> LE_reader;
-    std::shared_ptr<TMVA::Reader> ME_reader;
-    std::shared_ptr<TMVA::Reader> HE_reader;
+	std::shared_ptr<TMVA::Reader> reader_10_100;
+    std::shared_ptr<TMVA::Reader> reader_100_250;
+    std::shared_ptr<TMVA::Reader> reader_250_500;
+    std::shared_ptr<TMVA::Reader> reader_500_1000;
+    std::shared_ptr<TMVA::Reader> reader_1000_3000;
+    std::shared_ptr<TMVA::Reader> reader_3000;
 
 	cosine_correction_functions cosine_corrections;
 	best_lambda box_cox_correction_parameters;
