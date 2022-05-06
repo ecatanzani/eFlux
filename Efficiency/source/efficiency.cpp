@@ -245,6 +245,9 @@ void buildEfficiency(const in_args input_args)
         return geographic_latitude>=-20 && geographic_latitude<=20 ? 1/512. : 1/2048.;
     };
 
+    // Reverse BDT cut
+    const bool reverse_bdt_cut {false};
+
     // Trigger histos
     auto h_trigger_efficiency_accepted_het_over_let_tight_xtrl = mc_file ? 
                                             fr.Filter("trigger_efficiency_preselection==1 && trigger_efficiency_preselection_is_het==1")
@@ -390,7 +393,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_let_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
 
                                             :
@@ -400,7 +403,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Define("trigger_w", get_let_prescale, {"geo_lat"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_let_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
@@ -410,7 +413,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
 
                                             :
@@ -420,7 +423,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Define("trigger_w", get_unb_prescale, {"geo_lat"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_over_unb_bdt", "HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
@@ -430,7 +433,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_let_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
 
                                             :
@@ -441,7 +444,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("trigger_w", [&get_let_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_let_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_let_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     auto h_trigger_efficiency_accepted_het_unb_bdt = mc_file ? 
@@ -450,7 +453,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_unb_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev")
 
                                             :
@@ -461,7 +464,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("trigger_w", [&get_unb_prescale](const bool is_het, const double geo_lat) -> double { if (is_het) return get_unb_prescale(geo_lat); else return 1;}, {"trigger_efficiency_preselection_is_het", "geo_lat"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_trigger_efficiency_accepted_het_unb_bdt", "LET + HET Trigger", energy_nbins, &energy_binning[0]}, "corr_energy_gev", "trigger_w");
 
     // MaxRMS histos
@@ -496,7 +499,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_maxrms_efficiency_accepted_bdt", "HET Trigger + MaxRMS Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_maxrms_efficiency_total_bdt = fr.Filter("maxrms_efficiency_preselection==1")
@@ -504,7 +507,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_maxrms_efficiency_total_bdt", "HET Trigger + MaxRMS", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // nbarlayer13 histos
@@ -539,7 +542,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_nbarlayer13_efficiency_accepted_bdt", "HET Trigger + nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_nbarlayer13_efficiency_total_bdt = fr.Filter("nbarlayer13_efficiency_preselection==1")
@@ -547,7 +550,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_nbarlayer13_efficiency_total_bdt", "HET Trigger + nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // MaxRMS and nbarlayer13 histos
@@ -581,7 +584,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_accepted_bdt", "HET Trigger + maxrms & nbarlayer13 Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_maxrms_and_nbarlayer13_efficiency_total_bdt = fr.Filter("maxrms_and_nbarlayer13_efficiency_preselection==1")
@@ -589,7 +592,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_maxrms_and_nbarlayer13_efficiency_total_bdt", "HET Trigger + maxrms & nbarlayer13", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // sumRMS low energy histos
@@ -623,7 +626,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_sumrms_low_energy_efficiency_accepted_bdt", "HET Trigger + sumrms low energy cut Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_sumrms_low_energy_efficiency_total_bdt = fr.Filter("sumrms_low_energy_cut_efficiency_preselection==1")
@@ -631,7 +634,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_sumrms_low_energy_efficiency_total_bdt", "HET Trigger + sumrms low energy cut", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // Track Selection histos
@@ -666,7 +669,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_track_efficiency_accepted_bdt", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_track_efficiency_total_bdt = fr.Filter("track_efficiency_preselection==1")
@@ -674,7 +677,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_track_efficiency_total_bdt", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // STK 1 RM cut
@@ -709,7 +712,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_stk_1rm_efficiency_accepted_bdt", "HET Trigger + STK 1 RM Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_stk_1rm_efficiency_total_bdt = fr.Filter("stk_1rm_cut_efficiency_preselection==1")
@@ -717,7 +720,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_stk_1rm_efficiency_total_bdt", "HET Trigger + STK 1 RM Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // Clusters on first STK layer
@@ -792,7 +795,7 @@ void buildEfficiency(const in_args input_args)
                                                         .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                                         .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                                         .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                                        .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                                        .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                                         .Histo1D({"h_clusters_on_first_STK_layer_within_psd_fvolume_accepted_bdt", "Track Selection + PSD fvolume + STK clusters on first layer", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
@@ -801,7 +804,7 @@ void buildEfficiency(const in_args input_args)
                                                         .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                                         .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                                         .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                                        .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                                        .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                                         .Histo1D({"h_clusters_on_first_STK_layer_within_psd_fvolume_total_bdt", "Track Selection + PSD fvolume", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
@@ -811,7 +814,7 @@ void buildEfficiency(const in_args input_args)
                                                         .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                                         .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                                         .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                                        .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                                        .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                                         .Histo1D({"h_clusters_on_first_STK_layer_outside_psd_fvolume_accepted_bdt", "Track Selection + PSD fvolume + STK clusters on first layer", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt =  fr.Filter("track_efficiency_preselection==1 && track_efficiency_preselection_accepted==1")
@@ -820,7 +823,7 @@ void buildEfficiency(const in_args input_args)
                                                         .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                                         .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                                         .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                                        .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                                        .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                                         .Histo1D({"h_clusters_on_first_STK_layer_outside_psd_fvolume_total_bdt", "Track Selection + PSD fvolume", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // Track Selection histos within STK fiducial volume
@@ -853,7 +856,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_track_efficiency_stk_fvolume_accepted_bdt", "HET Trigger + Track Selection Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_track_efficiency_stk_fvolume_total_bdt = fr.Filter("track_efficiency_preselection==1 && evtfilter_stk_fiducial_volume==1")
@@ -861,7 +864,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_track_efficiency_stk_fvolume_total_bdt", "HET Trigger + Track Selection", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // PSD-STK match histos
@@ -895,7 +898,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_psdstkmatch_efficiency_accepted_bdt", "HET Trigger + PSD-STK Match Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_psdstkmatch_efficiency_total_bdt = fr.Filter("psdstkmatch_efficiency_preselection==1")
@@ -903,7 +906,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_psdstkmatch_efficiency_total_bdt", "HET Trigger + PSD-STK Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // PSD charge histos
@@ -937,7 +940,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_psdcharge_efficiency_accepted_bdt", "HET Trigger + PSD Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_psdcharge_efficiency_total_bdt = fr.Filter("psdcharge_efficiency_preselection==1")
@@ -945,7 +948,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_psdcharge_efficiency_total_bdt", "HET Trigger + PSD Charge Match", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // STK charge histos
@@ -979,7 +982,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_stkcharge_efficiency_accepted_bdt", "HET Trigger + STK Charge Accepted", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     auto h_stkcharge_efficiency_total_bdt = fr.Filter("stkcharge_efficiency_preselection==1 && STK_chargeX!=-999 && STK_chargeY!=-999")
@@ -987,7 +990,7 @@ void buildEfficiency(const in_args input_args)
                                             .Define("bdt_evt", compute_bdt, {"rmsLayer", "sumRms", "fracLayer", "fracLast_13", "corr_energy_gev", "BGOrec_trajectoryDirection2D"})
                                             .Define("energy_bin", get_energy_bin, {"corr_energy_gev"})
                                             .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
-                                            .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"bdt_evt", "bdt_cut"})
+                                            .Filter([reverse_bdt_cut] (const double tmva_value, const double tmva_cut) {return !reverse_bdt_cut ? tmva_value > tmva_cut : tmva_value < tmva_cut; }, {"bdt_evt", "bdt_cut"})
                                             .Histo1D({"h_stkcharge_efficiency_total_bdt", "HET Trigger + STK Charge", energy_nbins, &energy_binning[0]}, {"corr_energy_gev"});
 
     // XTRL vs STK cosine histo
