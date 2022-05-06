@@ -68,23 +68,50 @@ void bin_flux(in_args input_args) {
     TMVA::Tools::Instance();
     auto methods_map = GetTMVAMethods(input_args.learning_method);
 
+    /*
     std::shared_ptr<TMVA::Reader> tmva_LE_reader = std::make_shared<TMVA::Reader>();
     std::shared_ptr<TMVA::Reader> tmva_ME_reader = std::make_shared<TMVA::Reader>();
     std::shared_ptr<TMVA::Reader> tmva_HE_reader = std::make_shared<TMVA::Reader>();
+    */
+
+    std::shared_ptr<TMVA::Reader> tmva_reader_10_100 = std::make_shared<TMVA::Reader>();
+    std::shared_ptr<TMVA::Reader> tmva_reader_100_250 = std::make_shared<TMVA::Reader>();
+    std::shared_ptr<TMVA::Reader> tmva_reader_250_500 = std::make_shared<TMVA::Reader>();
+    std::shared_ptr<TMVA::Reader> tmva_reader_500_1000 = std::make_shared<TMVA::Reader>();
+    std::shared_ptr<TMVA::Reader> tmva_reader_1000_3000 = std::make_shared<TMVA::Reader>();
+    std::shared_ptr<TMVA::Reader> tmva_reader_3000 = std::make_shared<TMVA::Reader>();
 
     // Declare BDT and DATA variables
     bdt_vars tmva_vars;
     data_vars vars;
 
     // Attach variables to reader
+    /*
     addVariableToReader(tmva_LE_reader, tmva_vars);
     addVariableToReader(tmva_ME_reader, tmva_vars);
     addVariableToReader(tmva_HE_reader, tmva_vars);
+    */
 
+    addVariableToReader(tmva_reader_10_100, tmva_vars);
+    addVariableToReader(tmva_reader_100_250, tmva_vars);
+    addVariableToReader(tmva_reader_250_500, tmva_vars);
+    addVariableToReader(tmva_reader_500_1000, tmva_vars);
+    addVariableToReader(tmva_reader_1000_3000, tmva_vars);
+    addVariableToReader(tmva_reader_3000, tmva_vars);
+
+    /*
     tmva_LE_reader->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetLEWeights()).c_str());
     tmva_ME_reader->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetMEWeights()).c_str());
     tmva_HE_reader->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetHEWeights()).c_str());
-    
+    */
+
+    tmva_reader_10_100->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetBDTWeights_10_100()).c_str());
+    tmva_reader_100_250->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetBDTWeights_100_250()).c_str());
+    tmva_reader_250_500->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetBDTWeights_250_500()).c_str());
+    tmva_reader_500_1000->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetBDTWeights_500_1000()).c_str());
+    tmva_reader_1000_3000->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetBDTWeights_1000_3000()).c_str());
+    tmva_reader_3000->BookMVA(input_args.learning_method.c_str(), (bdt_config->GetBDTWeights_3000()).c_str());
+
     linkTreeVariables(list_parser->GetEvtTree(), vars);
 
     // Extract the acceptance in the corresponding energy bin
@@ -134,6 +161,7 @@ void bin_flux(in_args input_args) {
         // Filter the event to be contained in the selected energy bin
         if (vars.energy_bin==(int)input_args.energy_bin) {
 
+            /*
             if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100)
                 tmva_classifier = tmva_LE_reader->EvaluateMVA(input_args.learning_method.c_str());
             
@@ -142,6 +170,20 @@ void bin_flux(in_args input_args) {
             
             else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<=10000)
                 tmva_classifier = tmva_HE_reader->EvaluateMVA(input_args.learning_method.c_str());
+            */
+
+            if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100)
+                tmva_classifier = tmva_reader_10_100->EvaluateMVA(input_args.learning_method.c_str());
+            else if (vars.evt_corr_energy*gev>=100 && vars.evt_corr_energy*gev<250)
+                tmva_classifier = tmva_reader_100_250->EvaluateMVA(input_args.learning_method.c_str());
+            else if (vars.evt_corr_energy*gev>=250 && vars.evt_corr_energy*gev<500)
+                tmva_classifier = tmva_reader_250_500->EvaluateMVA(input_args.learning_method.c_str());
+            else if (vars.evt_corr_energy*gev>=500 && vars.evt_corr_energy*gev<1000)
+                tmva_classifier = tmva_reader_500_1000->EvaluateMVA(input_args.learning_method.c_str());
+            else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<3000)
+                tmva_classifier = tmva_reader_1000_3000->EvaluateMVA(input_args.learning_method.c_str());
+            else if (vars.evt_corr_energy*gev>=3000 && vars.evt_corr_energy*gev<=10000)
+                tmva_classifier = tmva_reader_3000->EvaluateMVA(input_args.learning_method.c_str());
 
             // Loop over the bdt cuts tuples
             for (auto &cut : bdt_cuts)
@@ -174,19 +216,19 @@ void bin_flux(in_args input_args) {
 
     // Build the final graphs
     std::unique_ptr<TGraph> gr_flux_bdt                                 = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_bdt_we                              = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_bdt_we                        = std::make_unique<TGraphErrors>();
     std::unique_ptr<TGraph> gr_flux_bdt_eff_corr                        = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_bdt_eff_corr_we                     = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_bdt_eff_corr_we               = std::make_unique<TGraphErrors>();
 
     std::unique_ptr<TGraph> gr_flux_xtrl                                = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_xtrl_we                             = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_xtrl_we                       = std::make_unique<TGraphErrors>();
 
     std::unique_ptr<TGraph> gr_flux_E3_bdt                              = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_E3_bdt_we                           = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_E3_bdt_we                     = std::make_unique<TGraphErrors>();
     std::unique_ptr<TGraph> gr_flux_E3_bdt_eff_corr                     = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_E3_bdt_eff_corr_we                  = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_E3_bdt_eff_corr_we            = std::make_unique<TGraphErrors>();
     std::unique_ptr<TGraph> gr_flux_E3_xtrl                             = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_E3_xtrl_we                          = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_E3_xtrl_we                    = std::make_unique<TGraphErrors>();
 
     std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl                          = std::make_unique<TGraph2D>();
     std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl_eff_corr                 = std::make_unique<TGraph2D>();
@@ -195,7 +237,7 @@ void bin_flux(in_args input_args) {
     std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl_eff_corr              = std::make_unique<TGraph2D>();
 
     std::unique_ptr<TGraph> gr_efficiency                               = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_efficiency_we                            = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_efficiency_we                      = std::make_unique<TGraphErrors>();
     
     // Fill graphs
     for (size_t idx = 0; idx < bdt_cuts.size(); ++idx) {

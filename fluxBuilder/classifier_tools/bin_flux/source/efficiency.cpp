@@ -57,22 +57,49 @@ const std::vector<std::tuple<double, double, double>> compute_efficiency(
         TMVA::Tools::Instance();
         auto methods_map = GetTMVAMethods(learning_method);
 
+        /*
         std::shared_ptr<TMVA::Reader> tmva_LE_reader = std::make_shared<TMVA::Reader>();
         std::shared_ptr<TMVA::Reader> tmva_ME_reader = std::make_shared<TMVA::Reader>();
         std::shared_ptr<TMVA::Reader> tmva_HE_reader = std::make_shared<TMVA::Reader>();
+        */
+
+        std::shared_ptr<TMVA::Reader> tmva_reader_10_100 = std::make_shared<TMVA::Reader>();
+        std::shared_ptr<TMVA::Reader> tmva_reader_100_250 = std::make_shared<TMVA::Reader>();
+        std::shared_ptr<TMVA::Reader> tmva_reader_250_500 = std::make_shared<TMVA::Reader>();
+        std::shared_ptr<TMVA::Reader> tmva_reader_500_1000 = std::make_shared<TMVA::Reader>();
+        std::shared_ptr<TMVA::Reader> tmva_reader_1000_3000 = std::make_shared<TMVA::Reader>();
+        std::shared_ptr<TMVA::Reader> tmva_reader_3000 = std::make_shared<TMVA::Reader>();
 
         // Declare BDT and DATA variables
         bdt_vars tmva_vars;
         data_vars vars;
 
         // Attach variables to reader
+        /*
         addVariableToReader(tmva_LE_reader, tmva_vars);
         addVariableToReader(tmva_ME_reader, tmva_vars);
         addVariableToReader(tmva_HE_reader, tmva_vars);
+        */
 
+        addVariableToReader(tmva_reader_10_100, tmva_vars);
+        addVariableToReader(tmva_reader_100_250, tmva_vars);
+        addVariableToReader(tmva_reader_250_500, tmva_vars);
+        addVariableToReader(tmva_reader_500_1000, tmva_vars);
+        addVariableToReader(tmva_reader_1000_3000, tmva_vars);
+        addVariableToReader(tmva_reader_3000, tmva_vars);
+
+        /*
         tmva_LE_reader->BookMVA(learning_method, (bdt_config->GetLEWeights()).c_str());
         tmva_ME_reader->BookMVA(learning_method, (bdt_config->GetMEWeights()).c_str());
         tmva_HE_reader->BookMVA(learning_method, (bdt_config->GetHEWeights()).c_str());
+        */
+
+        tmva_reader_10_100->BookMVA(learning_method.c_str(), (bdt_config->GetBDTWeights_10_100()).c_str());
+        tmva_reader_100_250->BookMVA(learning_method.c_str(), (bdt_config->GetBDTWeights_100_250()).c_str());
+        tmva_reader_250_500->BookMVA(learning_method.c_str(), (bdt_config->GetBDTWeights_250_500()).c_str());
+        tmva_reader_500_1000->BookMVA(learning_method.c_str(), (bdt_config->GetBDTWeights_500_1000()).c_str());
+        tmva_reader_1000_3000->BookMVA(learning_method.c_str(), (bdt_config->GetBDTWeights_1000_3000()).c_str());
+        tmva_reader_3000->BookMVA(learning_method.c_str(), (bdt_config->GetBDTWeights_3000()).c_str());
 
         // Lionk variables to the MC TChain
         double simu_energy {0};
@@ -139,6 +166,7 @@ const std::vector<std::tuple<double, double, double>> compute_efficiency(
             // Filter the event to be contained in the selected energy bin
             if (vars.energy_bin == (int)energy_bin) {
                 
+                /*
                 if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100) 
                     tmva_classifier = tmva_LE_reader->EvaluateMVA(learning_method.c_str());
                 
@@ -147,6 +175,20 @@ const std::vector<std::tuple<double, double, double>> compute_efficiency(
                 
                 else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<=10000)
                     tmva_classifier = tmva_HE_reader->EvaluateMVA(learning_method.c_str());
+                */
+
+                if (vars.evt_corr_energy*gev>=10 && vars.evt_corr_energy*gev<100)
+                    tmva_classifier = tmva_reader_10_100->EvaluateMVA(learning_method.c_str());
+                else if (vars.evt_corr_energy*gev>=100 && vars.evt_corr_energy*gev<250)
+                    tmva_classifier = tmva_reader_100_250->EvaluateMVA(learning_method.c_str());
+                else if (vars.evt_corr_energy*gev>=250 && vars.evt_corr_energy*gev<500)
+                    tmva_classifier = tmva_reader_250_500->EvaluateMVA(learning_method.c_str());
+                else if (vars.evt_corr_energy*gev>=500 && vars.evt_corr_energy*gev<1000)
+                    tmva_classifier = tmva_reader_500_1000->EvaluateMVA(learning_method.c_str());
+                else if (vars.evt_corr_energy*gev>=1000 && vars.evt_corr_energy*gev<3000)
+                    tmva_classifier = tmva_reader_1000_3000->EvaluateMVA(learning_method.c_str());
+                else if (vars.evt_corr_energy*gev>=3000 && vars.evt_corr_energy*gev<=10000)
+                    tmva_classifier = tmva_reader_3000->EvaluateMVA(learning_method.c_str());
 
                 for (auto &cut : efficiency_values)
                     if (tmva_classifier < get_bdt_cut(std::get<0>(cut), vars.evt_corr_energy*gev, vars.energy_bin))
