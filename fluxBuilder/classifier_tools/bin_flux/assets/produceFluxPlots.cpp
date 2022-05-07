@@ -75,6 +75,7 @@ void produceFluxPlots(
     const char* input_flux_file, 
     const char* output_flux_file, 
     const char* energy_config_file,
+    const bool logy,
     const bool verbose) {
     
     // Extract energy binning from config file
@@ -92,9 +93,9 @@ void produceFluxPlots(
     std::vector<std::shared_ptr<TGraphErrors>> flux_graphs (energy_nbins);
 
     for (int bidx=0; bidx<energy_nbins; ++bidx) {
-        std::string gr_name = "energybin_" + std::to_string(bidx+1) + "/gr_flux_bdt_eff_corr_we_energybin_" + std::to_string(bidx+1);
+        std::string gr_name = "energybin_" + std::to_string(bidx+1) + "/gr_flux_E3_bdt_eff_corr_energybin_" + std::to_string(bidx+1);
         flux_graphs_eff_corrected_we[bidx] = std::shared_ptr<TGraphErrors>(static_cast<TGraphErrors*>(input_file.Get(gr_name.c_str())));
-        gr_name = "energybin_" + std::to_string(bidx+1) + "/gr_flux_bdt_energybin_" + std::to_string(bidx+1);
+        gr_name = "energybin_" + std::to_string(bidx+1) + "/gr_flux_E3_bdt_energybin_" + std::to_string(bidx+1);
         flux_graphs[bidx] = std::shared_ptr<TGraphErrors>(static_cast<TGraphErrors*>(input_file.Get(gr_name.c_str())));
 
         flux_graphs[bidx]->SetLineWidth(2);
@@ -114,10 +115,21 @@ void produceFluxPlots(
     TPaveLabel label(0.0, 0.95, 0.3, 1, "BDT classifier", "tlNDC");
 
     for (int bidx = 0; bidx < energy_nbins; ++bidx) {
+        if (bidx)
+            print_canvas.Clear();
+
         flux_graphs[bidx]->Draw();
         flux_graphs_eff_corrected_we[bidx]->Draw("same");
         
         gPad->SetGrid(1,1);
+        if (logy) {
+            gPad->SetLogy();
+            gPad->Update(); 
+            flux_graphs[bidx]->SetMinimum(1);
+            flux_graphs[bidx]->SetMaximum(1e+5); 
+            gPad->Update();
+        }
+        
         std::string label_name = "Flux samples - energy bin " + std::to_string(bidx+1) + " - [" + std::to_string(energy_binning[bidx]) + ", " + std::to_string(energy_binning[bidx+1]) + "] GeV";
         label = TPaveLabel(0.0, 0.95, 0.3, 1, label_name.c_str(), "tlNDC");
         label.Draw();
