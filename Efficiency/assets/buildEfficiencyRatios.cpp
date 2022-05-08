@@ -269,7 +269,7 @@ void buildEfficiencyRatios(
         f_ratio_trigger_eff_het_over_let_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_trigger_eff_het_over_let_bdt->SetMinimum(0.7);
+        gr_ratio_trigger_eff_het_over_let_bdt->SetMinimum(0);
         gr_ratio_trigger_eff_het_over_let_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -292,7 +292,7 @@ void buildEfficiencyRatios(
         f_ratio_trigger_eff_het_over_unb_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_trigger_eff_het_over_unb_bdt->SetMinimum(0.7);
+        gr_ratio_trigger_eff_het_over_unb_bdt->SetMinimum(0);
         gr_ratio_trigger_eff_het_over_unb_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -315,7 +315,7 @@ void buildEfficiencyRatios(
         f_ratio_maxrms_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_maxrms_eff_bdt->SetMinimum(0.9);
+        gr_ratio_maxrms_eff_bdt->SetMinimum(0);
         gr_ratio_maxrms_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -338,7 +338,7 @@ void buildEfficiencyRatios(
         f_ratio_nbarlayer13_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_nbarlayer13_eff_bdt->SetMinimum(0.9);
+        gr_ratio_nbarlayer13_eff_bdt->SetMinimum(0);
         gr_ratio_nbarlayer13_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -361,7 +361,7 @@ void buildEfficiencyRatios(
         f_ratio_maxrms_and_nbarlayer13_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_maxrms_and_nbarlayer13_eff_bdt->SetMinimum(0.9);
+        gr_ratio_maxrms_and_nbarlayer13_eff_bdt->SetMinimum(0);
         gr_ratio_maxrms_and_nbarlayer13_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -384,7 +384,7 @@ void buildEfficiencyRatios(
         f_ratio_sumrms_low_energy_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_sumrms_low_energy_eff_bdt->SetMinimum(0.9);
+        gr_ratio_sumrms_low_energy_eff_bdt->SetMinimum(0);
         gr_ratio_sumrms_low_energy_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -407,7 +407,7 @@ void buildEfficiencyRatios(
         f_ratio_track_selection_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_track_selection_eff_bdt->SetMinimum(0.9);
+        gr_ratio_track_selection_eff_bdt->SetMinimum(0);
         gr_ratio_track_selection_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -430,7 +430,7 @@ void buildEfficiencyRatios(
         f_ratio_track_selection_eff_within_stk_fvolume_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_track_selection_eff_within_stk_fvolume_bdt->SetMinimum(0.9);
+        gr_ratio_track_selection_eff_within_stk_fvolume_bdt->SetMinimum(0);
         gr_ratio_track_selection_eff_within_stk_fvolume_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -453,7 +453,7 @@ void buildEfficiencyRatios(
         f_ratio_stk_1_rm_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_stk_1_rm_eff_bdt->SetMinimum(0.9);
+        gr_ratio_stk_1_rm_eff_bdt->SetMinimum(0);
         gr_ratio_stk_1_rm_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -476,7 +476,7 @@ void buildEfficiencyRatios(
         f_ratio_psd_stk_match_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_psd_stk_match_eff_bdt->SetMinimum(0.9);
+        gr_ratio_psd_stk_match_eff_bdt->SetMinimum(0);
         gr_ratio_psd_stk_match_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -499,7 +499,7 @@ void buildEfficiencyRatios(
         f_ratio_psd_charge_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_psd_charge_eff_bdt->SetMinimum(0.9);
+        gr_ratio_psd_charge_eff_bdt->SetMinimum(0);
         gr_ratio_psd_charge_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
@@ -522,7 +522,7 @@ void buildEfficiencyRatios(
         f_ratio_stk_charge_eff_bdt.Draw("same");
 
         gPad->Update(); 
-        gr_ratio_stk_charge_eff_bdt->SetMinimum(0.9);
+        gr_ratio_stk_charge_eff_bdt->SetMinimum(0);
         gr_ratio_stk_charge_eff_bdt->SetMaximum(1.1); 
         gPad->Update();
 
