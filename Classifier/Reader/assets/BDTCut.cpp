@@ -623,4 +623,126 @@ void MergeMCDataBDT(
         gStyle->SetOptTitle(0);
         print_canvas.Print("bdt_classifier_data_mc.pdf)","Title:BDT classifier - 3 TeV - 10 TeV");
 
+        // Save plots on ROOT canvas
+        TFile out_file(output_file, "RECREATE");
+        TCanvas out_canvas("bdt_classifier_data_mc_comparison", "bdt_classifier_data_mc_comparison");
+
+        out_canvas.Divide(3, 2);
+
+        out_canvas.cd(1);
+
+        data_h_tmva_classifier_20_100->Draw();
+        mc_electron_h_tmva_classifier_20_100->Draw("same, histo");
+        mc_proton_h_tmva_classifier_20_100->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        out_canvas.cd(2);
+
+        data_h_tmva_classifier_100_250->Draw();
+        mc_electron_h_tmva_classifier_100_250->Draw("same, histo");
+        mc_proton_h_tmva_classifier_100_250->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        out_canvas.cd(3);
+
+        data_h_tmva_classifier_250_500->Draw();
+        mc_electron_h_tmva_classifier_250_500->Draw("same, histo");
+        mc_proton_h_tmva_classifier_250_500->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        out_canvas.cd(4);
+
+        data_h_tmva_classifier_500_1000->Draw();
+        mc_electron_h_tmva_classifier_500_1000->Draw("same, histo");
+        mc_proton_h_tmva_classifier_500_1000->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        out_canvas.cd(5);
+
+        data_h_tmva_classifier_1000_3000->Draw();
+        mc_electron_h_tmva_classifier_1000_3000->Draw("same, histo");
+        mc_proton_h_tmva_classifier_1000_3000->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        out_canvas.cd(6);
+
+        data_h_tmva_classifier_3000->Draw();
+        mc_electron_h_tmva_classifier_3000->Draw("same, histo");
+        mc_proton_h_tmva_classifier_3000->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        out_canvas.Write();
+        out_file.Close();
     }
