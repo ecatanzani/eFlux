@@ -1,6 +1,7 @@
 #include "energy_config.h"
 #include "list_parser.h"
 #include "efficiency.h"
+#include "background.h"
 #include "bin_flux.h"
 #include "bdtutils.h"
 #include "config.h"
@@ -207,37 +208,58 @@ void bin_flux(in_args input_args) {
         bdt_config,
         input_args.learning_method,
         bdt_cuts, 
-        input_args.simu_input_list, 
+        input_args.e_simu_input_list, 
         input_args.eff_corr_function, 
         input_args.energy_bin,
         energy_binning,
         input_args.verbose, 
         input_args.threads);
 
+    // Estimate the background contamnination a given energy bin
+    auto background_contamination = estimate_background(
+        input_args.p_background_fit, 
+        bdt_cuts, 
+        input_args.energy_bin, 
+        input_args.verbose, 
+        input_args.threads);
+
     // Build the final graphs
+
+    // BDT TGraph
     std::unique_ptr<TGraph> gr_flux_bdt                                 = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_bdt_we                        = std::make_unique<TGraphErrors>();
-    std::unique_ptr<TGraph> gr_flux_bdt_eff_corr                        = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_bdt_eff_corr_we               = std::make_unique<TGraphErrors>();
-
-    std::unique_ptr<TGraph> gr_flux_xtrl                                = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_xtrl_we                       = std::make_unique<TGraphErrors>();
-
     std::unique_ptr<TGraph> gr_flux_E3_bdt                              = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_E3_bdt_we                     = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraph> gr_flux_bdt_eff_corr                        = std::make_unique<TGraph>();
     std::unique_ptr<TGraph> gr_flux_E3_bdt_eff_corr                     = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_bdt_eff_corr_b_subtracted           = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_E3_bdt_eff_corr_b_subtracted        = std::make_unique<TGraph>();
+    
+    // BDT TGraphErrors
+    std::unique_ptr<TGraphErrors> gr_flux_bdt_we                        = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_E3_bdt_we                     = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_bdt_eff_corr_we               = std::make_unique<TGraphErrors>();
     std::unique_ptr<TGraphErrors> gr_flux_E3_bdt_eff_corr_we            = std::make_unique<TGraphErrors>();
-    std::unique_ptr<TGraph> gr_flux_E3_xtrl                             = std::make_unique<TGraph>();
-    std::unique_ptr<TGraphErrors> gr_flux_E3_xtrl_we                    = std::make_unique<TGraphErrors>();
 
-    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl                          = std::make_unique<TGraph2D>();
-    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl_eff_corr                 = std::make_unique<TGraph2D>();
-
-    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl                       = std::make_unique<TGraph2D>();
-    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl_eff_corr              = std::make_unique<TGraph2D>();
-
+    // BDT efficiency
     std::unique_ptr<TGraph> gr_efficiency                               = std::make_unique<TGraph>();
     std::unique_ptr<TGraphErrors> gr_efficiency_we                      = std::make_unique<TGraphErrors>();
+
+    // BDT background estimation
+    std::unique_ptr<TGraph> gr_background_contamination                 = std::make_unique<TGraph>();
+
+    // XTRL TGraph
+    std::unique_ptr<TGraph> gr_flux_xtrl                                = std::make_unique<TGraph>();
+    std::unique_ptr<TGraph> gr_flux_E3_xtrl                             = std::make_unique<TGraph>();
+
+    // XTRL TGraphErrors
+    std::unique_ptr<TGraphErrors> gr_flux_xtrl_we                       = std::make_unique<TGraphErrors>();
+    std::unique_ptr<TGraphErrors> gr_flux_E3_xtrl_we                    = std::make_unique<TGraphErrors>();
+
+    // BDT XTRL TGraph
+    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl                          = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl                       = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_bdt_xtrl_eff_corr                 = std::make_unique<TGraph2D>();
+    std::unique_ptr<TGraph2D> gr_flux_E3_bdt_xtrl_eff_corr              = std::make_unique<TGraph2D>();
+    
     
     // Fill graphs
     for (size_t idx = 0; idx < bdt_cuts.size(); ++idx) {
@@ -261,9 +283,15 @@ void bin_flux(in_args input_args) {
         double eff              = std::get<1>(efficiencies[idx]);
         double eff_err          = std::get<2>(efficiencies[idx]);
 
+        double background       = std::get<1>(background_contamination[idx]);
+        //double background_err   = 0;
+
         if (eff) {
             double flux_ec              = flux/eff;
             double flux_E3_ec           = flux_ec*pow(energy_wtsydp, 3);
+
+            double flux_ec_b_sub        = (flux - background)/eff;
+            double flux_E3_ec_b_sub     = flux_ec_b_sub*pow(energy_wtsydp, 3); 
 
             flux_err                    = sqrt(
                                                 pow(sqrt(std::get<1>(bdt_cuts[idx]))/input_args.exposure*acceptance*energy_bin_width*eff, 2) + 
@@ -272,20 +300,25 @@ void bin_flux(in_args input_args) {
                                         );
             flux_E3_err                 = flux_err*pow(energy_wtsydp, 3);
             
-            gr_flux_bdt_eff_corr        ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec);
+            gr_flux_bdt_eff_corr                        ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec);
             
-            gr_flux_bdt_eff_corr_we     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec);
-            gr_flux_bdt_eff_corr_we     ->SetPointError((int)idx, 0, flux_err);
+            gr_flux_bdt_eff_corr_we                     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec);
+            gr_flux_bdt_eff_corr_we                     ->SetPointError((int)idx, 0, flux_err);
             
-            gr_flux_E3_bdt_eff_corr     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec);
+            gr_flux_E3_bdt_eff_corr                     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec);
 
-            gr_flux_E3_bdt_eff_corr_we  ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec);
-            gr_flux_E3_bdt_eff_corr_we  ->SetPointError((int)idx, 0, flux_E3_err);
+            gr_flux_E3_bdt_eff_corr_we                  ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec);
+            gr_flux_E3_bdt_eff_corr_we                  ->SetPointError((int)idx, 0, flux_E3_err);
+
+            gr_flux_bdt_eff_corr_b_subtracted           ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_ec_b_sub);
+            gr_flux_E3_bdt_eff_corr_b_subtracted        ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux_E3_ec_b_sub);
         }
 
         gr_efficiency                   ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), eff);
         gr_efficiency_we                ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), eff);
         gr_efficiency_we                ->SetPointError((int)idx, 0, eff_err);
+
+        gr_background_contamination     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), background);
 
         // XTRL
         flux                            = std::get<1>(xtrl_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
@@ -345,6 +378,11 @@ void bin_flux(in_args input_args) {
     gr_flux_bdt_eff_corr->GetXaxis()->SetTitle("BDT");
     gr_flux_bdt_eff_corr->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
 
+    gr_flux_bdt_eff_corr_b_subtracted->SetName((std::string("gr_flux_bdt_eff_corr_b_subtracted_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_eff_corr_b_subtracted->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_bdt_eff_corr_b_subtracted->GetXaxis()->SetTitle("BDT");
+    gr_flux_bdt_eff_corr_b_subtracted->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
+
     gr_flux_bdt_eff_corr_we->SetName((std::string("gr_flux_bdt_eff_corr_we_energybin_") + std::to_string(input_args.energy_bin)).c_str());
     gr_flux_bdt_eff_corr_we->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
     gr_flux_bdt_eff_corr_we->GetXaxis()->SetTitle("BDT");
@@ -379,7 +417,12 @@ void bin_flux(in_args input_args) {
     gr_flux_E3_bdt_eff_corr_we->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
     gr_flux_E3_bdt_eff_corr_we->GetXaxis()->SetTitle("BDT");
     gr_flux_E3_bdt_eff_corr_we->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
-    
+
+    gr_flux_E3_bdt_eff_corr_b_subtracted->SetName((std::string("gr_flux_E3_bdt_eff_corr_b_subtracted_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_eff_corr_b_subtracted->SetTitle((std::string("All-Electron Flux vs. BDT cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_flux_E3_bdt_eff_corr_b_subtracted->GetXaxis()->SetTitle("BDT");
+    gr_flux_E3_bdt_eff_corr_b_subtracted->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+
     gr_flux_E3_xtrl->SetName((std::string("gr_flux_E3_xtrl_energybin_") + std::to_string(input_args.energy_bin)).c_str());
     gr_flux_E3_xtrl->SetTitle((std::string("All-Electron Flux vs. XTRL cut for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
     gr_flux_E3_xtrl->GetXaxis()->SetTitle("XTRL");
@@ -424,6 +467,11 @@ void bin_flux(in_args input_args) {
     gr_efficiency_we->GetXaxis()->SetTitle("BDT");
     gr_efficiency_we->GetYaxis()->SetTitle("Efficiency");
 
+    gr_background_contamination->SetName((std::string("gr_background_contamination_energybin_") + std::to_string(input_args.energy_bin)).c_str());
+    gr_background_contamination->SetTitle((std::string("BDT background contamination for energy bin ") + std::to_string(input_args.energy_bin)).c_str());
+    gr_background_contamination->GetXaxis()->SetTitle("BDT");
+    gr_background_contamination->GetYaxis()->SetTitle("Background estimation");
+
     // Write to output file
     TFile *outfile = TFile::Open(input_args.output_path.c_str(), "RECREATE");
     if (outfile->IsZombie()) {
@@ -436,26 +484,32 @@ void bin_flux(in_args input_args) {
     outfile->cd(out_dir_name.c_str());
 
     gr_flux_bdt                             ->Write();
-    gr_flux_bdt_we                          ->Write();
+    gr_flux_E3_bdt                          ->Write();
     gr_flux_bdt_eff_corr                    ->Write();
+    gr_flux_E3_bdt_eff_corr                 ->Write();
+    gr_flux_bdt_eff_corr_b_subtracted       ->Write();
+    gr_flux_E3_bdt_eff_corr_b_subtracted    ->Write();
+
+    gr_flux_bdt_we                          ->Write();
+    gr_flux_E3_bdt_we                       ->Write();
     gr_flux_bdt_eff_corr_we                 ->Write();
+    gr_flux_E3_bdt_eff_corr_we              ->Write();
+    
+    gr_efficiency                           ->Write();
+    gr_efficiency_we                        ->Write();
+
+    gr_background_contamination             ->Write();
 
     gr_flux_xtrl                            ->Write();
-    gr_flux_xtrl_we                         ->Write();  
-    gr_flux_E3_bdt                          ->Write();
-    gr_flux_E3_bdt_we                       ->Write();
-    gr_flux_E3_bdt_eff_corr                 ->Write();
-    gr_flux_E3_bdt_eff_corr_we              ->Write();
     gr_flux_E3_xtrl                         ->Write();
+
+    gr_flux_xtrl_we                         ->Write();  
     gr_flux_E3_xtrl_we                      ->Write();
 
     gr_flux_bdt_xtrl                        ->Write();
     gr_flux_bdt_xtrl_eff_corr               ->Write();
     gr_flux_E3_bdt_xtrl                     ->Write();
     gr_flux_E3_bdt_xtrl_eff_corr            ->Write();
-
-    gr_efficiency                           ->Write();
-    gr_efficiency_we                        ->Write();
     
     outfile->Close();
 }

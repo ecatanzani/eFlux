@@ -12,7 +12,8 @@
 struct in_args
 {
     std::string input_list;
-	std::string simu_input_list;
+	std::string e_simu_input_list;
+	std::string p_background_fit;
 	const char* energy_config_file;
 	const char* bdt_config_file;
 	const char* acceptance_file;

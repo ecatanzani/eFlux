@@ -101,7 +101,7 @@ const std::vector<std::tuple<double, double, double>> compute_efficiency(
         tmva_reader_1000_3000->BookMVA(learning_method.c_str(), (bdt_config->GetBDTWeights_1000_3000()).c_str());
         tmva_reader_3000->BookMVA(learning_method.c_str(), (bdt_config->GetBDTWeights_3000()).c_str());
 
-        // Lionk variables to the MC TChain
+        // Link variables to the MC TChain
         double simu_energy {0};
         linkTreeVariables(mc_list_parser->GetEvtTree(), vars);
         mc_list_parser->GetEvtTree()->SetBranchAddress("simu_energy", &simu_energy);
