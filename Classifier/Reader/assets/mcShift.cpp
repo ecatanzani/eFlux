@@ -384,6 +384,25 @@ void mcShift(
 
         outfile.Close();
 
+        // Save linear background functions for each energy bin
+        if (!mc) {
+            TFile function_outfile("proton_background_function_output.root", "RECREATE");
+            if (function_outfile.IsZombie()) {
+                std::cerr << "\n\nError writing output ROOT file [" << "proton_background_function_output.root" << "]\n\n";
+                exit(100);
+            }
+
+            for (int bidx = 0; bidx < energy_nbins; ++bidx) {
+                std::string tmp_dir_name = std::string("energybin_") + std::to_string(bidx + 1);
+                function_outfile.mkdir(tmp_dir_name.c_str());
+                function_outfile.cd(tmp_dir_name.c_str());
+                data_proton_linear_fit[bidx].Write();
+                h_classifier_bin[bidx]->Write();
+            }
+
+            function_outfile.Close();
+        }
+
         // Create PDF file for each energy bin
         
         // Build canvas
