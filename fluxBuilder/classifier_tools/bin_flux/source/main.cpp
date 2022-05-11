@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 	if (opt.getValue("output") || opt.getValue('o')) 			input_args.output_path = expand_output_path(opt, opt.getValue('o'));
 	if (opt.getValue("outputdir") || opt.getValue('d')) 		input_args.output_path = expand_output_path(opt, opt.getValue('d'));
 	if (opt.getFlag("verbose") || opt.getFlag('v')) 			input_args.verbose = opt.getFlag('v');
-	if (opt.getValue("parallel") || opt.getValue('p'))			input_args.threads =  std::stoul(opt.getValue('y'), nullptr, 0);
+	if (opt.getValue("parallel") || opt.getValue('y'))			input_args.threads =  std::stoul(opt.getValue('y'), nullptr, 0);
 	if (opt.getValue("method") || opt.getValue('m'))			input_args.learning_method = opt.getValue('m');
 
 	if (!input_args.output_path.empty())
