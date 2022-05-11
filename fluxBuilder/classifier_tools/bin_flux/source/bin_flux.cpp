@@ -290,7 +290,7 @@ void bin_flux(in_args input_args) {
             double flux_ec              = flux/eff;
             double flux_E3_ec           = flux_ec*pow(energy_wtsydp, 3);
 
-            double flux_ec_b_sub        = (flux - background)/eff;
+            double flux_ec_b_sub        = flux/eff - background;
             double flux_E3_ec_b_sub     = flux_ec_b_sub*pow(energy_wtsydp, 3); 
 
             flux_err                    = sqrt(
