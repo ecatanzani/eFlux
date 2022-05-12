@@ -262,9 +262,11 @@ void produceFluxPlots(
         TGraphErrors gr_best_point_fec_b_sub(bp_ex_f_ec_b_sub.size(), bp_x_f_ec_b_sub.data(), bp_y_f_ec_b_sub.data(), bp_ex_f_ec_b_sub.data(), bp_ey_f_ec_b_sub.data());
 
         gr_best_point_fec.SetLineWidth(2);
+        gr_best_point_fec.SetMarkerStyle(20);
         gr_best_point_fec.SetLineColor(kGreen+2);
 
         gr_best_point_fec_b_sub.SetLineWidth(2);
+        gr_best_point_fec_b_sub.SetMarkerStyle(20);
         gr_best_point_fec_b_sub.SetLineColor(kOrange+2);
 
         gr_best_point_fec.Draw("P");
