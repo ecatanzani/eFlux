@@ -262,6 +262,12 @@ void produceFluxPlots(
             flux_graphs[bidx]->SetMaximum(1e+5); 
             gPad->Update();
         }
+        else {
+            gPad->Update(); 
+            flux_graphs[bidx]->SetMinimum(0);
+            flux_graphs[bidx]->SetMaximum(300); 
+            gPad->Update();
+        }
         
         std::string label_name = "Flux samples - energy bin " + std::to_string(bidx+1) + " - [" + std::to_string(energy_binning[bidx]) + ", " + std::to_string(energy_binning[bidx+1]) + "] GeV";
         label = TPaveLabel(0.0, 0.95, 0.3, 1, label_name.c_str(), "tlNDC");
