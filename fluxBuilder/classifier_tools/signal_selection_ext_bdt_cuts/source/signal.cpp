@@ -39,16 +39,18 @@ inline std::vector<double> extract_bdt_cut_values(const char* ext_tree_path, con
 
     // Extract the TTree
     std::unique_ptr<TTreeReader> bdt_reader {std::make_unique<TTreeReader>(get_tree_name(ext_tree_path), &input_file)};
-
-    TTreeReaderValue<double> f_ec_X(*bdt_reader, "f_ec_X");
+    
     /*
+    TTreeReaderValue<double> f_ec_X(*bdt_reader, "f_ec_X");
     TTreeReaderValue<double> f_ec_Y(*bdt_reader, "f_ec_Y");
     TTreeReaderValue<double> f_ec_err(*bdt_reader, "f_ec_err");
+    */
     TTreeReaderValue<double> f_ec_b_sub_X(*bdt_reader, "f_ec_b_sub_X");
+    /*
     TTreeReaderValue<double> f_ec_b_sub_Y(*bdt_reader, "f_ec_b_sub_Y");
     TTreeReaderValue<double> f_ec_b_sub_err(*bdt_reader, "f_ec_b_sub_err");
     */
-   
+
     unsigned int energy_bin_idx {0};
 
     while (bdt_reader->Next()) {
