@@ -265,6 +265,8 @@ void bin_flux(in_args input_args) {
     for (size_t idx = 0; idx < bdt_cuts.size(); ++idx) {
 
         // BDT
+
+        // Build the flux
         double flux             = std::get<1>(bdt_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
         double flux_err         = sqrt(
                                         pow(sqrt(std::get<1>(bdt_cuts[idx]))/input_args.exposure*acceptance*energy_bin_width, 2) + 
@@ -272,6 +274,9 @@ void bin_flux(in_args input_args) {
                                 );
         double flux_E3          = flux*pow(energy_wtsydp, 3);
         double flux_E3_err      = flux_err*pow(energy_wtsydp, 3);
+
+        // Build the flux subtracting the background
+        double flux_b_sub       = (std::get<1>(bdt_cuts[idx]) - std::get<1>(background_contamination[idx]))/(input_args.exposure*acceptance*energy_bin_width);
         
         gr_flux_bdt             ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux);
         gr_flux_bdt_we          ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), flux);
@@ -283,14 +288,11 @@ void bin_flux(in_args input_args) {
         double eff              = std::get<1>(efficiencies[idx]);
         double eff_err          = std::get<2>(efficiencies[idx]);
 
-        double background       = std::get<1>(background_contamination[idx]);
-        //double background_err   = 0;
-
         if (eff) {
             double flux_ec              = flux/eff;
             double flux_E3_ec           = flux_ec*pow(energy_wtsydp, 3);
 
-            double flux_ec_b_sub        = flux/eff - background;
+            double flux_ec_b_sub        = flux_b_sub/eff;
             double flux_E3_ec_b_sub     = flux_ec_b_sub*pow(energy_wtsydp, 3); 
 
             flux_err                    = sqrt(
@@ -318,7 +320,7 @@ void bin_flux(in_args input_args) {
         gr_efficiency_we                ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), eff);
         gr_efficiency_we                ->SetPointError((int)idx, 0, eff_err);
 
-        gr_background_contamination     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), background);
+        gr_background_contamination     ->SetPoint((int)idx, std::get<0>(bdt_cuts[idx]), std::get<1>(background_contamination[idx]));
 
         // XTRL
         flux                            = std::get<1>(xtrl_cuts[idx])/(input_args.exposure*acceptance*energy_bin_width);
