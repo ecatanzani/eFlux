@@ -104,7 +104,8 @@ void buildEfficiency(
     const char* input_file,
     const char* output_file,
     const char* energy_config_file,
-    const bool verbose) {
+    const bool verbose,
+    const bool use_mode) {
 
         // Extract energy binning from config file
         auto energy_binning = parse_energy_config(energy_config_file);
@@ -566,6 +567,53 @@ void buildEfficiency(
         clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose      ->SetStatisticOption(TEfficiency::kBUniform);
         clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt         ->SetStatisticOption(TEfficiency::kBUniform);
         clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt        ->SetStatisticOption(TEfficiency::kBUniform);
+
+        if (use_mode) {
+            // Use mode instead of mean value for the efficiency
+            trigger_eff_het_over_let_xtrl_tight                     ->SetPosteriorMode();
+            trigger_eff_het_over_unb_xtrl_tight                     ->SetPosteriorMode();
+            maxrms_eff_xtrl_tight                                   ->SetPosteriorMode();
+            nbarlayer13_eff_xtrl_tight                              ->SetPosteriorMode();
+            maxrms_and_nbarlayer13_eff_xtrl_tight                   ->SetPosteriorMode();
+            sumrms_low_energy_eff_xtrl_tight                        ->SetPosteriorMode();
+            track_selection_eff_xtrl_tight                          ->SetPosteriorMode();
+            track_selection_eff_within_stk_fvolume_xtrl_tight       ->SetPosteriorMode();
+            stk_1_rm_eff_xtrl_tight                                 ->SetPosteriorMode();
+            psd_stk_match_eff_xtrl_tight                            ->SetPosteriorMode();
+            psd_charge_eff_xtrl_tight                               ->SetPosteriorMode();
+            stk_charge_eff_xtrl_tight                               ->SetPosteriorMode();
+            trigger_eff_het_over_let_xtrl_loose                     ->SetPosteriorMode();
+            trigger_eff_het_over_unb_xtrl_loose                     ->SetPosteriorMode();
+            maxrms_eff_xtrl_loose                                   ->SetPosteriorMode();
+            nbarlayer13_eff_xtrl_loose                              ->SetPosteriorMode();
+            maxrms_and_nbarlayer13_eff_xtrl_loose                   ->SetPosteriorMode();
+            sumrms_low_energy_eff_xtrl_loose                        ->SetPosteriorMode();
+            track_selection_eff_xtrl_loose                          ->SetPosteriorMode();
+            track_selection_eff_within_stk_fvolume_xtrl_loose       ->SetPosteriorMode();
+            stk_1_rm_eff_xtrl_loose                                 ->SetPosteriorMode();
+            psd_stk_match_eff_xtrl_loose                            ->SetPosteriorMode();
+            psd_charge_eff_xtrl_loose                               ->SetPosteriorMode();
+            stk_charge_eff_xtrl_loose                               ->SetPosteriorMode();
+            trigger_eff_het_over_let_bdt                            ->SetPosteriorMode();
+            trigger_eff_het_over_unb_bdt                            ->SetPosteriorMode();
+            maxrms_eff_bdt                                          ->SetPosteriorMode();
+            nbarlayer13_eff_bdt                                     ->SetPosteriorMode();
+            maxrms_and_nbarlayer13_eff_bdt                          ->SetPosteriorMode();
+            sumrms_low_energy_eff_bdt                               ->SetPosteriorMode();
+            track_selection_eff_bdt                                 ->SetPosteriorMode();
+            track_selection_eff_within_stk_fvolume_bdt              ->SetPosteriorMode();
+            stk_1_rm_eff_bdt                                        ->SetPosteriorMode();
+            psd_stk_match_eff_bdt                                   ->SetPosteriorMode();
+            psd_charge_eff_bdt                                      ->SetPosteriorMode();
+            stk_charge_eff_bdt                                      ->SetPosteriorMode();
+
+            clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_tight       ->SetPosteriorMode();
+            clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_tight      ->SetPosteriorMode();
+            clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_loose       ->SetPosteriorMode();
+            clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_loose      ->SetPosteriorMode();
+            clusters_on_first_stk_layer_eff_within_psd_fvolume_xtrl_bdt         ->SetPosteriorMode();
+            clusters_on_first_stk_layer_eff_outside_psd_fvolume_xtrl_bdt        ->SetPosteriorMode();
+        }
 
         trigger_eff_het_over_let_xtrl_tight                 ->SetName("trigger_eff_het_over_let_xtrl_tight");
         trigger_eff_het_over_unb_xtrl_tight                 ->SetName("trigger_eff_het_over_unb_xtrl_tight");
