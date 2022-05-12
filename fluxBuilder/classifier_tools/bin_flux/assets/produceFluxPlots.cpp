@@ -10,6 +10,7 @@
 #include <limits>
 #include <tuple>
 
+#include "TTree.h"
 #include "TPDF.h"
 #include "TPad.h"
 #include "TFile.h"
@@ -79,7 +80,7 @@ inline std::vector<float> parse_energy_config(const char* config_file) {
 
 void produceFluxPlots(
     const char* input_flux_file, 
-    const char* output_flux_file, 
+    const char* output_flux_bestcuts_file, 
     const char* energy_config_file,
     const bool logy,
     const bool verbose) {
@@ -202,7 +203,15 @@ void produceFluxPlots(
     }
     
     input_file.Close();
-    
+
+    // Vectors to store best points for each energy bin
+    std::vector<double> best_p_X_f_ec (energy_nbins, -1);
+    std::vector<double> best_p_Y_f_ec (energy_nbins, -1);
+    std::vector<double> best_p_err_f_ec (energy_nbins, -1);
+    std::vector<double> best_p_X_f_ec_b_sub (energy_nbins, -1);
+    std::vector<double> best_p_Y_f_ec_b_sub (energy_nbins, -1);
+    std::vector<double> best_p_err_f_ec_b_sub (energy_nbins, -1);
+
     // Build canvas
     TCanvas print_canvas("print_canvas", "print_canvas");
     print_canvas.SetTicks();
@@ -219,6 +228,13 @@ void produceFluxPlots(
 
         auto best_point_coordinates = getBestPointCoordinates(flux_graphs_eff_corrected[bidx]);
         auto best_point_coordinates_b_sub = getBestPointCoordinates(flux_graphs_eff_corrected_b_sub[bidx]);
+
+        best_p_X_f_ec[bidx] = std::get<0>(best_point_coordinates);
+        best_p_Y_f_ec[bidx] = std::get<1>(best_point_coordinates);
+        best_p_err_f_ec[bidx] = std::get<2>(best_point_coordinates);
+        best_p_X_f_ec_b_sub[bidx] = std::get<0>(best_point_coordinates_b_sub);
+        best_p_Y_f_ec_b_sub[bidx] = std::get<1>(best_point_coordinates_b_sub);
+        best_p_err_f_ec_b_sub[bidx] = std::get<2>(best_point_coordinates_b_sub);
 
         /*
         TMarker marker(best_point_coordinates.first, best_point_coordinates.second, 41);
@@ -281,5 +297,39 @@ void produceFluxPlots(
         else
             print_canvas.Print("flux_samples_summary.pdf","Title:BDT classifier");
     }
+
+    // Build final TTree with best point coordinates
+
+    TFile best_cuts(output_flux_bestcuts_file, "RECREATE");
+    if (!best_cuts.IsOpen()) {
+        std::cout << "Error writing output ROT file [" << output_flux_bestcuts_file << "]\n\n";
+        exit(100);
+    }
+
+    TTree best_cuts_tree("best_cuts_tree", "best_cuts_tree");
+    
+    double f_ec_X, f_ec_Y, f_ec_err;
+    double f_ec_b_sub_X, f_ec_b_sub_Y, f_ec_b_sub_err;
+
+    best_cuts_tree.Branch("f_ec_X", &f_ec_X, "f_ec_X/D");
+    best_cuts_tree.Branch("f_ec_Y", &f_ec_Y, "f_ec_Y/D");
+    best_cuts_tree.Branch("f_ec_err", &f_ec_err, "f_ec_err/D");
+
+    best_cuts_tree.Branch("f_ec_b_sub_X", &f_ec_b_sub_X, "f_ec_b_sub_X/D");
+    best_cuts_tree.Branch("f_ec_b_sub_Y", &f_ec_b_sub_Y, "f_ec_b_sub_Y/D");
+    best_cuts_tree.Branch("f_ec_b_sub_err", &f_ec_b_sub_err, "f_ec_b_sub_err/D");
+
+    for (int bidx = 0; bidx < energy_nbins; ++bidx) {
+        f_ec_X = best_p_X_f_ec[bidx];
+        f_ec_Y = best_p_Y_f_ec[bidx];
+        f_ec_err = best_p_err_f_ec[bidx];
+        f_ec_b_sub_X = best_p_X_f_ec_b_sub[bidx];
+        f_ec_b_sub_Y = best_p_Y_f_ec_b_sub[bidx];
+        f_ec_b_sub_err = best_p_err_f_ec_b_sub[bidx];
+    
+        best_cuts_tree.Fill();
+    }
+
+    best_cuts.Close();
 
 }
