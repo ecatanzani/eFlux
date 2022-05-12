@@ -130,7 +130,7 @@ void produceFluxPlots(
             double min_diff {std::numeric_limits<double>::max()};
 
             for (auto& elm : pmean) {
-                if (elm.first > 0 && elm.first < 0.4) {
+                if (elm.first > -0.4 && elm.first < 0.4) {
                     if (elm.second < min_diff) {
                         min_diff = elm.second;
                         best_bdt = elm.first;
@@ -153,6 +153,7 @@ void produceFluxPlots(
     }
 
     std::vector<std::shared_ptr<TGraph>> flux_graphs_eff_corrected (energy_nbins);
+    std::vector<std::shared_ptr<TGraph>> flux_graphs_eff_corrected_b_sub (energy_nbins);
     std::vector<std::shared_ptr<TGraph>> flux_graphs (energy_nbins);
 
     for (int bidx=0; bidx<energy_nbins; ++bidx) {
@@ -160,6 +161,8 @@ void produceFluxPlots(
         flux_graphs_eff_corrected[bidx] = std::shared_ptr<TGraph>(static_cast<TGraph*>(input_file.Get(gr_name.c_str())));
         gr_name = "energybin_" + std::to_string(bidx+1) + "/gr_flux_E3_bdt_energybin_" + std::to_string(bidx+1);
         flux_graphs[bidx] = std::shared_ptr<TGraph>(static_cast<TGraph*>(input_file.Get(gr_name.c_str())));
+        gr_name = "energybin_" + std::to_string(bidx+1) + "/gr_flux_E3_bdt_eff_corr_b_subtracted_energybin_" + std::to_string(bidx+1);
+        flux_graphs_eff_corrected_b_sub[bidx] = std::shared_ptr<TGraph>(static_cast<TGraph*>(input_file.Get(gr_name.c_str())));
 
         flux_graphs[bidx]->SetLineWidth(2);
         flux_graphs[bidx]->SetLineColor(kBlack);
@@ -167,6 +170,9 @@ void produceFluxPlots(
         flux_graphs_eff_corrected[bidx]->SetLineWidth(2);
         flux_graphs_eff_corrected[bidx]->SetLineColor(kRed+2);
         flux_graphs_eff_corrected[bidx]->SetMarkerColor(kRed+2);
+        flux_graphs_eff_corrected_b_sub[bidx]->SetLineWidth(2);
+        flux_graphs_eff_corrected_b_sub[bidx]->SetLineColor(kBlue+2);
+        flux_graphs_eff_corrected_b_sub[bidx]->SetMarkerColor(kBlue+2);
     }
     
     input_file.Close();
@@ -183,12 +189,19 @@ void produceFluxPlots(
 
         flux_graphs[bidx]->Draw();
         flux_graphs_eff_corrected[bidx]->Draw("same");
+        flux_graphs_eff_corrected_b_sub[bidx]->Draw("same");
 
         auto best_point_coordinates = getBestPointCoordinates(flux_graphs_eff_corrected[bidx]);
+        auto best_point_coordinates_b_sub = getBestPointCoordinates(flux_graphs_eff_corrected_b_sub[bidx]);
+
         TMarker marker(best_point_coordinates.first, best_point_coordinates.second, 41);
+        TMarker marker_b_sub(best_point_coordinates_b_sub.first, best_point_coordinates_b_sub.second, 41);
         marker.SetMarkerColor(kGreen+2);
         marker.SetMarkerSize(2);
         marker.Draw("same");
+        marker_b_sub.SetMarkerColor(kOrange+2);
+        marker_b_sub.SetMarkerSize(2);
+        marker_b_sub.Draw("same");
         
         gPad->SetGrid(1,1);
         if (logy) {
