@@ -83,6 +83,7 @@ void produceFluxPlots(
     const char* output_flux_bestcuts_file, 
     const char* energy_config_file,
     const bool logy,
+    const bool draw_bestpoint_errors,
     const bool verbose) {
     
     // Extract energy binning from config file
@@ -116,7 +117,9 @@ void produceFluxPlots(
             std::for_each (std::begin(p), std::end(p), [&](const double val) {
                 accum += std::pow((val - mean), 2);
             });
-            return sqrt(accum/static_cast<double>(v.size()-1));
+            double _std {sqrt(accum/static_cast<double>(v.size()-1))};
+            double _std_mean = _std/sqrt(v.size());
+            return _std_mean;
         };
 
         // Loop over graph points
@@ -222,6 +225,10 @@ void produceFluxPlots(
         if (bidx)
             print_canvas.Clear();
 
+        flux_graphs[bidx]->SetTitle("flux (not corrected)");
+        flux_graphs_eff_corrected[bidx]->SetTitle("flux (se)");
+        flux_graphs_eff_corrected_b_sub[bidx]->SetTitle("flux (se + bs)");
+
         flux_graphs[bidx]->Draw();
         flux_graphs_eff_corrected[bidx]->Draw("same");
         flux_graphs_eff_corrected_b_sub[bidx]->Draw("same");
@@ -258,15 +265,25 @@ void produceFluxPlots(
         std::vector<double> bp_ex_f_ec_b_sub {std::get<2>(best_point_coordinates_b_sub)};
         std::vector<double> bp_ey_f_ec_b_sub {0.};
 
+        if (!draw_bestpoint_errors) {
+            bp_ex_f_ec[0] = 0;
+            bp_ex_f_ec_b_sub[0] = 0;
+        }
+
         TGraphErrors gr_best_point_fec(bp_ex_f_ec.size(), bp_x_f_ec.data(), bp_y_f_ec.data(), bp_ex_f_ec.data(), bp_ey_f_ec.data());
         TGraphErrors gr_best_point_fec_b_sub(bp_ex_f_ec_b_sub.size(), bp_x_f_ec_b_sub.data(), bp_y_f_ec_b_sub.data(), bp_ex_f_ec_b_sub.data(), bp_ey_f_ec_b_sub.data());
 
+        gr_best_point_fec.SetTitle("BDT cut (se)");
+        gr_best_point_fec_b_sub.SetTitle("BDT cut (se + bs)");
+
         gr_best_point_fec.SetLineWidth(2);
         gr_best_point_fec.SetMarkerStyle(20);
+        gr_best_point_fec.SetMarkerColor(kGreen+2);
         gr_best_point_fec.SetLineColor(kGreen+2);
 
         gr_best_point_fec_b_sub.SetLineWidth(2);
         gr_best_point_fec_b_sub.SetMarkerStyle(20);
+        gr_best_point_fec_b_sub.SetMarkerColor(kOrange+2);
         gr_best_point_fec_b_sub.SetLineColor(kOrange+2);
 
         gr_best_point_fec.Draw("P");
@@ -292,6 +309,15 @@ void produceFluxPlots(
         label.Draw();
         gStyle->SetOptTitle(0);
 
+        auto legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
         if (!bidx)
             print_canvas.Print("flux_samples_summary.pdf(","Title:BDT classifier");
         else if (bidx==(energy_nbins-1))
@@ -312,6 +338,7 @@ void produceFluxPlots(
     
     double f_ec_X, f_ec_Y, f_ec_err;
     double f_ec_b_sub_X, f_ec_b_sub_Y, f_ec_b_sub_err;
+    int energy_bin;
 
     best_cuts_tree.Branch("f_ec_X", &f_ec_X, "f_ec_X/D");
     best_cuts_tree.Branch("f_ec_Y", &f_ec_Y, "f_ec_Y/D");
@@ -321,6 +348,8 @@ void produceFluxPlots(
     best_cuts_tree.Branch("f_ec_b_sub_Y", &f_ec_b_sub_Y, "f_ec_b_sub_Y/D");
     best_cuts_tree.Branch("f_ec_b_sub_err", &f_ec_b_sub_err, "f_ec_b_sub_err/D");
 
+    best_cuts_tree.Branch("energy_bin", &energy_bin, "energy_bin/I");
+
     for (int bidx = 0; bidx < energy_nbins; ++bidx) {
         f_ec_X = best_p_X_f_ec[bidx];
         f_ec_Y = best_p_Y_f_ec[bidx];
@@ -328,9 +357,12 @@ void produceFluxPlots(
         f_ec_b_sub_X = best_p_X_f_ec_b_sub[bidx];
         f_ec_b_sub_Y = best_p_Y_f_ec_b_sub[bidx];
         f_ec_b_sub_err = best_p_err_f_ec_b_sub[bidx];
+        energy_bin = bidx + 1;
     
         best_cuts_tree.Fill();
     }
+
+    best_cuts_tree.Write();
 
     best_cuts.Close();
 
