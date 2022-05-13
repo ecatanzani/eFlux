@@ -82,7 +82,7 @@ void signal_selection(in_args input_args) {
 
     if (input_args.verbose) std::cout << "\n\nAnlysis running...\n\n";
 
-    auto get_bdt_cut = [bdt_cuts] (const int energy_bin) -> double {
+    auto get_bdt_cut = [&bdt_cuts] (const int energy_bin) -> double {
         return bdt_cuts[energy_bin-1];
     };
 
@@ -91,7 +91,7 @@ void signal_selection(in_args input_args) {
     };
 
     auto h_bdt_selection = _data_fr.Define("corr_energy_gev", "energy_corr * 0.001")
-                                    .Define("bdt_cut", get_bdt_cut, {"corr_energy_gev", "energy_bin"})
+                                    .Define("bdt_cut", get_bdt_cut, {"energy_bin"})
                                     .Filter([] (const double tmva_value, const double tmva_cut) {return tmva_value > tmva_cut; }, {"tmva_classifier", "bdt_cut"})
                                     .Histo1D<double>({"h_bdt_selection", "BDT event selection; BGO Corr energy [GeV]; entries", energy_nbins, &energy_binning[0]}, "corr_energy_gev");
 
