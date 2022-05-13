@@ -19,8 +19,10 @@
 #include "TLegend.h"
 #include "TCanvas.h"
 #include "TPaveLabel.h"
+#include "TFitResult.h"
 #include "TGraphErrors.h"
 #include "TLegendEntry.h"
+#include "TFitResultPtr.h"
 #include <ROOT/RDataFrame.hxx>
 
 struct energy_config {
@@ -150,8 +152,9 @@ void mcShift(
         ROOT::EnableImplicitMT(threads);
         ROOT::RDataFrame fr(*chain);
 
-        std::vector<ROOT::RDF::RResultPtr<TH1D>> h_classifier_bin(energy_nbins);
-        std::vector<TH1D*> h_classifier_bin_proton_subtracted(energy_nbins);
+        std::vector<ROOT::RDF::RResultPtr<TH1D>> h_classifier_bin (energy_nbins);
+        std::vector<TH1D*> h_classifier_bin_proton_subtracted (energy_nbins);
+        std::vector<TFitResultPtr> h_classifier_bin_fit_result (energy_nbins);
 
         const double signal_spectral_index = -3;
         auto get_weight = [signal_spectral_index, &energy_binning] (const double energy_gev) -> double {
@@ -176,13 +179,15 @@ void mcShift(
         if (!mc) {
             for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
                 std::string tf1_name = "proton_linear_fit_" + std::to_string(bin_idx);
+                std::string fit_result_name = "proton_linear_fit_result_" + std::to_string(bin_idx);
                 std::string histo_name = std::string(h_classifier_bin[bin_idx-1]->GetName()) + "_proton_subtracted";
                 data_proton_linear_fit[bin_idx-1] = TF1(tf1_name.c_str(), "pow(10, [0]+[1]*x)", -1, 1);
                 h_classifier_bin_proton_subtracted[bin_idx-1] = static_cast<TH1D*>(h_classifier_bin[bin_idx-1]->Clone(histo_name.c_str()));
                 if (bin_idx<=24)
-                    h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "QN", "", -0.2, 0);
+                    h_classifier_bin_fit_result[bin_idx-1] = static_cast<TFitResultPtr>(h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "SQN", "", -0.2, 0));
                 else
-                    h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "QN", "", -0.4, 0);
+                    h_classifier_bin_fit_result[bin_idx-1] = static_cast<TFitResultPtr>(h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "SQN", "", -0.4, 0));
+                h_classifier_bin_fit_result[bin_idx-1]->SetName(fit_result_name.c_str());
                 h_classifier_bin_proton_subtracted[bin_idx-1]->Add(&data_proton_linear_fit[bin_idx-1], -1);
             }
         }
@@ -359,6 +364,7 @@ void mcShift(
                 h_classifier_bin_proton_subtracted[bidx]->GetXaxis()->SetRangeUser(-1, 1);
                 h_classifier_bin_proton_subtracted[bidx]->Write();
                 data_proton_linear_fit[bidx].Write();
+                h_classifier_bin_fit_result[bidx]->Write();
             }
             gaus_fit_1[bidx].Write();
             gaus_fit_2[bidx].Write();
