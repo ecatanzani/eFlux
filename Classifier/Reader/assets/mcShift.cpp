@@ -186,7 +186,7 @@ void mcShift(
                 if (bin_idx<=24)
                     h_classifier_bin_fit_result[bin_idx-1] = static_cast<TFitResultPtr>(h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "SQN", "", -0.2, 0));
                 else
-                    h_classifier_bin_fit_result[bin_idx-1] = static_cast<TFitResultPtr>(h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "SQN", "", -0.4, 0));
+                    h_classifier_bin_fit_result[bin_idx-1] = static_cast<TFitResultPtr>(h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "SQNL", "", -0.4, -0.2));
                 h_classifier_bin_fit_result[bin_idx-1]->SetName(fit_result_name.c_str());
                 h_classifier_bin_proton_subtracted[bin_idx-1]->Add(&data_proton_linear_fit[bin_idx-1], -1);
             }
