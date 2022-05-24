@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iostream>
 
+#include "TF1.h"
 #include "TKey.h"
 #include "TH1D.h"
 #include "TFile.h"
@@ -14,14 +15,7 @@ struct energy_config {
     std::size_t n_bins;
     double min_event_energy {-999};
     double max_event_energy {-999};
-    std::vector<float> energy_binning;
-    
-    void createLogBinning() {
-        energy_binning = std::vector<float>(n_bins + 1, 0);
-        double log_interval {(log10(max_event_energy)-log10(min_event_energy))/n_bins};
-        for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
-            energy_binning[bIdx] = pow(10, log10(min_event_energy) + bIdx * log_interval);
-    }
+    std::vector<double> energy_binning;
 };
 
 inline std::string parse_config_file(const char* config_file) {
@@ -39,37 +33,53 @@ inline std::string parse_config_file(const char* config_file) {
 
 inline energy_config get_config_info(const std::string parsed_config) {
 	energy_config config_pars;
+    
     std::string tmp_str;
 	std::istringstream input_stream(parsed_config);
 	std::string::size_type sz;
-	while (input_stream >> tmp_str)
-	{
-		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
-			input_stream >> config_pars.n_bins;
-		if (!strcmp(tmp_str.c_str(), "min_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.min_event_energy = stod(tmp_str, &sz);
+	
+    int introduction {4};
+	int elm_in_row {5};
+    std::vector<std::string> row;
+
+	int column_counter {0};
+    int line_counter {0};
+
+    while (input_stream >> tmp_str) {
+
+        if (!line_counter) {
+			// This is the first line... we are not interested in it
+			++column_counter;
+			if (column_counter==introduction) {
+				++line_counter;
+				column_counter = 0;
+			}
 		}
-		if (!strcmp(tmp_str.c_str(), "max_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.max_event_energy = stod(tmp_str, &sz);
+		else {
+			// This is a general line...
+			row.push_back(tmp_str);
+			++column_counter;
+			
+			if (column_counter == elm_in_row) {
+
+				// The row of the binning has been completed... let's extract the info
+				if (line_counter==1) 
+					config_pars.energy_binning.push_back(stod(row[2], &sz));
+				config_pars.energy_binning.push_back(stod(row.back(), &sz));
+
+				// Reset
+				column_counter = 0;
+				++line_counter;
+				row.clear();
+			}
 		}
-	}
-    config_pars.createLogBinning();
+    }
+    
     return config_pars;
 }
 
-inline std::vector<float> parse_energy_config(const char* config_file) {
+inline std::vector<double> parse_energy_config(const char* config_file) {
     return get_config_info(parse_config_file(config_file)).energy_binning;
-}
-
-inline double wtsydp(const double minene, const double maxene, const double index)
-{
-    auto dene = maxene - minene;
-    if (index != -1)
-        return pow(fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene)), 1. / index);
-    else
-        return dene / log(maxene / minene);
 }
 
 inline std::shared_ptr<TH1D> extractHistoFromFile(const char* file, const bool verbose) {
@@ -96,11 +106,53 @@ inline std::shared_ptr<TH1D> extractHistoFromFile(const char* file, const bool v
     return myhisto;
 }
 
+inline double wtsydp(const double minene, const double maxene, const double index)
+{
+    auto dene = maxene - minene;
+    if (index != -1)
+        return pow(fabs((pow(maxene, index + 1) - pow(minene, index + 1)) / ((index + 1) * dene)), 1. / index);
+    else
+        return dene / log(maxene / minene);
+}
+
+inline void add_systematics_from_eff(TGraphErrors &h_e_counts, TGraphErrors& h_e_counts_E3, const char* efficiency_ratios) {
+    TFile input_eff_ratios(efficiency_ratios, "READ");
+    if (!input_eff_ratios.IsOpen()) {
+        std::cerr << "\n\nError opening input file [" << efficiency_ratios << "]\n\n";
+        exit(100);
+    }
+
+    auto f_ratio_trigger_eff_het_over_unb_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_trigger_eff_het_over_unb_bdt"));
+    auto f_ratio_maxrms_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_maxrms_eff_bdt"));
+    auto f_ratio_nbarlayer13_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_nbarlayer13_eff_bdt"));
+    auto f_ratio_track_selection_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_track_selection_eff_bdt"));
+    auto f_ratio_psd_stk_match_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_psd_stk_match_eff_bdt"));
+    auto f_ratio_psd_charge_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_psd_charge_eff_bdt"));
+    auto f_ratio_stk_charge_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_stk_charge_eff_bdt"));
+
+    auto get_sys = [&](const double energy_gev) -> double {
+        double sys_trigger          {pow(1 - f_ratio_trigger_eff_het_over_unb_bdt->Eval(energy_gev), 2)};
+        double sys_maxrms           {pow(1 - f_ratio_maxrms_eff_bdt->Eval(energy_gev), 2)};
+        double sys_nbarlayer13      {pow(1 - f_ratio_nbarlayer13_eff_bdt->Eval(energy_gev), 2)};
+        double sys_psd_stk_match    {pow(1 - f_ratio_psd_stk_match_eff_bdt->Eval(energy_gev), 2)};
+        double sys_psd_charge       {pow(1 - f_ratio_psd_charge_eff_bdt->Eval(energy_gev), 2)};
+        double sys_stk_charge       {pow(1 - f_ratio_stk_charge_eff_bdt->Eval(energy_gev), 2)};
+        return sqrt(sys_trigger + sys_maxrms + sys_nbarlayer13 + sys_psd_stk_match + sys_psd_charge + sys_stk_charge);
+    };
+
+    for (int pidx=0; pidx<h_e_counts.GetN(); ++pidx) {
+        h_e_counts.SetPointError(pidx, 0., h_e_counts.GetErrorY(pidx) + h_e_counts.GetErrorY(pidx)*get_sys(h_e_counts.GetPointX(pidx)));
+        h_e_counts_E3.SetPointError(pidx, 0., h_e_counts_E3.GetErrorY(pidx) + h_e_counts_E3.GetErrorY(pidx)*get_sys(h_e_counts_E3.GetPointX(pidx)));
+    }
+}
+
 void buildFlux(
     const char* e_counts_input_file,
     const char* e_acc_input_file,
     const char* signal_efficiency,
+    const char* background_contamination,
     const char* energy_config_file,
+    const char* efficiency_ratios,
     const double exposure_time = 140143948.911,
     const char* output_file = "flux.root",
     const bool verbose = true) {
@@ -113,10 +165,14 @@ void buildFlux(
         auto energy_nbins = (int)energy_binning.size() - 1;
 
         // Extract info from input files
-        auto h_e_counts = extractHistoFromFile(e_counts_input_file, verbose);
-        auto h_e_acc = extractHistoFromFile(e_acc_input_file, verbose);
-        auto h_signal_eff = extractHistoFromFile(signal_efficiency, verbose);
+        auto h_e_counts     = extractHistoFromFile(e_counts_input_file, verbose);
+        auto h_e_acc        = extractHistoFromFile(e_acc_input_file, verbose);
+        auto h_signal_eff   = extractHistoFromFile(signal_efficiency, verbose);
+        auto h_back_cont    = extractHistoFromFile(background_contamination, verbose);
 
+        // Correct for the background contamination
+        h_e_counts->Add(h_back_cont.get(), -1);
+        
         // Correct for the efficiency
         h_e_counts->Divide(h_signal_eff.get());
 
@@ -142,7 +198,7 @@ void buildFlux(
                 h_e_counts_E3->SetBinError(bIdx, h_e_counts_E3->GetBinError(bIdx)*pow(h_e_counts_E3->GetXaxis()->GetBinCenter(bIdx), 3));
             }
         }
-        
+
         // Build TGraphs
         std::vector<double> energy                          (h_e_counts->GetNbinsX(), 0);
         std::vector<double> energy_err                      (h_e_counts->GetNbinsX(), 0);
@@ -187,6 +243,11 @@ void buildFlux(
         h_e_counts->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
 
         h_e_counts_E3->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+
+        // Add systematics
+        add_systematics_from_eff(gr_flux, gr_flux_E3, efficiency_ratios);
+
+        outfile->cd();
 
         h_e_counts->Write();
         h_e_counts_E3->Write();
