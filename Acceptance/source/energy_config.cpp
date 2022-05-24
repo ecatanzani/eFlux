@@ -1,4 +1,3 @@
-#include "binning.h"
 #include "energy_config.h"
 
 energy_config::energy_config(const std::string working_dir)
@@ -7,10 +6,9 @@ energy_config::energy_config(const std::string working_dir)
     const std::string config_file_name = "energy_config.conf";
     const auto tmp_config = working_dir.substr(0, working_dir.find("/Collector/config")) + local_path;
     get_config_info(parse_config_file(tmp_config, config_file_name));
-    energy_binning = createLogBinning(
-		min_event_energy,
-		max_event_energy,
-		n_bins);
+	n_bins = energy_binning.size()-1;
+	min_event_energy = energy_binning.front();
+	max_event_energy = energy_binning.back();
 } 
 
 std::string energy_config::parse_config_file(
@@ -36,22 +34,43 @@ void energy_config::get_config_info(const std::string parsed_config)
 	std::string tmp_str;
 	std::istringstream input_stream(parsed_config);
 	std::string::size_type sz;
+	
+	int introduction {4};
+	int elm_in_row {5};
+    std::vector<std::string> row;
 
-	while (input_stream >> tmp_str)
-	{
-		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
-			input_stream >> n_bins;
-		if (!strcmp(tmp_str.c_str(), "min_event_energy"))
-		{
-			input_stream >> tmp_str;
-			min_event_energy = stod(tmp_str, &sz);
+	int column_counter {0};
+    int line_counter {0};
+
+	while (input_stream >> tmp_str) {
+
+        if (!line_counter) {
+			// This is the first line... we are not interested in it
+			++column_counter;
+			if (column_counter==introduction) {
+				++line_counter;
+				column_counter = 0;
+			}
 		}
-		if (!strcmp(tmp_str.c_str(), "max_event_energy"))
-		{
-			input_stream >> tmp_str;
-			max_event_energy = stod(tmp_str, &sz);
+		else {
+			// This is a general line...
+			row.push_back(tmp_str);
+			++column_counter;
+			
+			if (column_counter == elm_in_row) {
+
+				// The row of the binning has been completed... let's extract the info
+				if (line_counter==1) 
+					energy_binning.push_back(stod(row[2], &sz));
+				energy_binning.push_back(stod(row.back(), &sz));
+
+				// Reset
+				column_counter = 0;
+				++line_counter;
+				row.clear();
+			}
 		}
-	}
+    }
 }
 
 void energy_config::PrintActiveFilters()
@@ -64,7 +83,7 @@ void energy_config::PrintActiveFilters()
 	std::cout << "\n****************************\n\n";
 }
 
-std::vector<float> energy_config::GetEnergyBinning()
+std::vector<double> energy_config::GetEnergyBinning()
 {
 	return energy_binning;
 }

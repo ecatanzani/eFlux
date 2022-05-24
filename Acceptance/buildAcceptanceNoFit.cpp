@@ -14,16 +14,15 @@
 
 const double generation_vertex_radius = 1.381976597885342;
 
-std::vector<double> getEnergyBinning(const char* config_file);
-std::vector<double> createLogBinning(const double eMin, const double eMax, const std::size_t n_bins);
+std::vector<double> getEnergyBinning(const char* energy_config_file);
 double wtsydp(const double minene, const double maxene, const double index);
 
 void buildAcceptance(
-    const char* acc_config_file,
+    const char* energy_config_file,
     const char* full_acceptance_histos, 
     const char* output_file = "acceptance.root")
 {
-    auto energy_binning = getEnergyBinning(acc_config_file);
+    auto energy_binning = getEnergyBinning(energy_config_file);
 
     TFile* input_file = TFile::Open(full_acceptance_histos, "READ");
     if (input_file->IsZombie())
@@ -404,40 +403,49 @@ std::vector<double> getEnergyBinning(const char* config_file)
 		(std::istreambuf_iterator<char>(input_file)),
 		(std::istreambuf_iterator<char>()));
 	input_file.close();
+    
     std::string tmp_str;
 	std::istringstream input_stream(input_string);
 	std::string::size_type sz;
 
-    while (input_stream >> tmp_str)
-	{
-		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
-			input_stream >> n_bins;
-		if (!strcmp(tmp_str.c_str(), "min_event_energy"))
-		{
-			input_stream >> tmp_str;
-			min_event_energy = stod(tmp_str, &sz);
+    int introduction {4};
+	int elm_in_row {5};
+    std::vector<std::string> row;
+
+	int column_counter {0};
+    int line_counter {0};
+
+    while (input_stream >> tmp_str) {
+
+        if (!line_counter) {
+			// This is the first line... we are not interested in it
+			++column_counter;
+			if (column_counter==introduction) {
+				++line_counter;
+				column_counter = 0;
+			}
 		}
-		if (!strcmp(tmp_str.c_str(), "max_event_energy"))
-		{
-			input_stream >> tmp_str;
-			max_event_energy = stod(tmp_str, &sz);
+		else {
+			// This is a general line...
+			row.push_back(tmp_str);
+			++column_counter;
+			
+			if (column_counter == elm_in_row) {
+
+				// The row of the binning has been completed... let's extract the info
+				if (line_counter==1) 
+					energy_binning.push_back(stod(row[2], &sz));
+				energy_binning.push_back(stod(row.back(), &sz));
+
+				// Reset
+				column_counter = 0;
+				++line_counter;
+				row.clear();
+			}
 		}
-	}
+    }
 
-    return createLogBinning(min_event_energy, max_event_energy, n_bins);
-}   
-
-std::vector<double> createLogBinning(
-    const double eMin,
-	const double eMax,
-	const std::size_t n_bins)
-{
-    std::vector<double> binning(n_bins+1, 0);
-	double log_interval = (log10(eMax) - log10(eMin)) / n_bins;
-	for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
-		binning[bIdx] = pow(10, log10(eMin) + bIdx * log_interval);
-
-	return binning;
+    return energy_binning;
 }
 
 double wtsydp(const double minene, const double maxene, const double index)
