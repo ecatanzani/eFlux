@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 	opt.addUsage(" -h  --help                  .......... Prints this help");
 	opt.addUsage(" -i  --input                 .......... <path_to_DATA_input_list>                            .......... (*) Input DATA file list");
 	opt.addUsage(" -e  --simu_electron         .......... <path_to_electron_MC_input_list>                     .......... (*) Input electron MC file list");
-	opt.addUsage(" -p  --proton_fit            .......... <path_to_proton_fit_file>                            .......... (*) Input proton Mbackground linear fit");
+	opt.addUsage(" -p  --proton_fit            .......... <path_to_proton_fit_file>                            .......... (*) Input proton background linear fit");
 	opt.addUsage(" -c  --config                .......... <path_to_software_config_dir>                        .......... (*) eFlux energy config file");
 	opt.addUsage(" -b  --config-bdt            .......... <path_to_bdt_config_file>                            .......... BDT config file");
 	opt.addUsage(" -a  --acceptance            .......... <path_to_acceptance_ROOT_file>                       .......... (*) DAMPE acceptance ROOT file");

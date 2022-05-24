@@ -39,7 +39,7 @@ const std::vector<std::tuple<double, double, double>> compute_efficiency(
     const std::string mc_file_list,
     const char* mc_correction_function,
     const unsigned int energy_bin,
-    std::vector<float>& energy_binning,
+    std::vector<double>& energy_binning,
     const bool verbose,
     const unsigned int threads) {
 
@@ -140,7 +140,7 @@ const std::vector<std::tuple<double, double, double>> compute_efficiency(
 
         auto get_bdt_cut = [shift_function, sigma_function, gr_shift, gr_sigma] (const double cut, const double energy_gev, const int energy_bin) -> double {
             double cut_corr {0};
-            if (energy_bin<=33)
+            if (energy_bin<=27)
                 cut_corr = (cut - gr_shift->GetPointY(energy_bin-1))/gr_sigma->GetPointY(energy_bin-1); 
             else
                 cut_corr = (cut - shift_function->Eval(energy_gev))/sigma_function->Eval(energy_gev);

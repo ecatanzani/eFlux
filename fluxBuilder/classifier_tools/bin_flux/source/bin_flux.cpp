@@ -298,7 +298,7 @@ void bin_flux(in_args input_args) {
             flux_err                    = sqrt(
                                                 pow(sqrt(std::get<1>(bdt_cuts[idx]))/input_args.exposure*acceptance*energy_bin_width*eff, 2) + 
                                                 pow(std::get<1>(bdt_cuts[idx])*acceptance_err/(input_args.exposure*energy_bin_width*eff*pow(acceptance, 2)), 2) +
-                                                pow(std::get<1>(bdt_cuts[idx])*eff_err/(input_args.exposure*energy_bin_width*eff*acceptance*pow(eff, 2)), 2)
+                                                pow(std::get<1>(bdt_cuts[idx])*eff_err/(input_args.exposure*energy_bin_width*acceptance*pow(eff, 2)), 2)
                                         );
             flux_E3_err                 = flux_err*pow(energy_wtsydp, 3);
             

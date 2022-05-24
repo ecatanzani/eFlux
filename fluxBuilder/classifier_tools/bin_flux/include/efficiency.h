@@ -14,7 +14,7 @@ extern const std::vector<std::tuple<double, double, double>> compute_efficiency(
     const std::string mc_file_list,
     const char* mc_correction_function,
     const unsigned int energy_bin,
-    std::vector<float>& energy_binning,
+    std::vector<double>& energy_binning,
     const bool verbose,
     const unsigned int threads);
 
