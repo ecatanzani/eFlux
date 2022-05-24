@@ -95,9 +95,9 @@ void buildAllEleFluxComparison(
         gr_input_flux->GetXaxis()->SetLimits(20, 1e+4);
         gr_input_flux->SetMinimum(0);
         gr_input_flux->SetMaximum(300);
-
-        gr_input_flux->Draw("AP");
-        gr_input_reference->Draw("P");
+        
+        gr_input_reference->Draw("AP");
+        gr_input_flux->Draw("P");
 
         gPad->SetLogx();
         gPad->SetGrid(1,1);
