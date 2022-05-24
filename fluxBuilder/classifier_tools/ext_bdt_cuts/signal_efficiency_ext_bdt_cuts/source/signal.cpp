@@ -116,7 +116,7 @@ void signal_efficiency(in_args input_args) {
     auto get_bdt_cut = [&bdt_cuts, shift_function, sigma_function, gr_shift, gr_sigma] (const double energy_gev, const int energy_bin) -> double {
         double cut {bdt_cuts[energy_bin-1]};
         double cut_corr {0};
-        if (energy_bin<=33)
+        if (energy_bin<=27)
             cut_corr = (cut - gr_shift->GetPointY(energy_bin-1))/gr_sigma->GetPointY(energy_bin-1); 
         else
             cut_corr = (cut - shift_function->Eval(energy_gev))/sigma_function->Eval(energy_gev);
