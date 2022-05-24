@@ -11,7 +11,7 @@
 #include "TTreeReaderValue.h"
 #include <ROOT/RDataFrame.hxx>
 
-#define _NO_STK_CHARGE true
+#define _NO_STK_CHARGE false
 struct best_lambda
 {
     std::vector<std::vector<double>> rms;
@@ -189,6 +189,7 @@ void tmva_vars(
     std::cout << "\nPreselected events: " << *(_fr_preselected.Count());
     std::cout << "\n\n********************";
 
+    #if 0
     auto lambda_select = getLambdaBestValues(lambda_tree, energy_nbins, verbose);
 
     // Regularize SumRMS and ELF using angular distributions
@@ -367,7 +368,7 @@ void tmva_vars(
                         .Define("fraclastlayer_norm", normalize_fraclastlayer, {"fraclastlayer_gauss", "energy_bin"})
                         .Define("xtrl_norm", normalize_xtrl, {"xtrl_gauss", "energy_bin"});
 
-    auto fr_tmva = fr_norm.Define("rmslayer_norm_1", "rmslayer_norm[0]")
+    auto fr_tmva = fr_gauss.Define("rmslayer_norm_1", "rmslayer_norm[0]")
                             .Define("rmslayer_norm_2", "rmslayer_norm[1]")
                             .Define("rmslayer_norm_3", "rmslayer_norm[2]")
                             .Define("rmslayer_norm_4", "rmslayer_norm[3]")
@@ -412,6 +413,38 @@ void tmva_vars(
                             .Define("fraclayer_norm_13", "fraclayer_norm[12]")
                             .Define("fraclayer_norm_14", "fraclayer_norm[13]")
                             
+                            .Define("fraclayer_1", "fracLayer[0]")
+                            .Define("fraclayer_2", "fracLayer[1]")
+                            .Define("fraclayer_3", "fracLayer[2]")
+                            .Define("fraclayer_4", "fracLayer[3]")
+                            .Define("fraclayer_5", "fracLayer[4]")
+                            .Define("fraclayer_6", "fracLayer[5]")
+                            .Define("fraclayer_7", "fracLayer[6]")
+                            .Define("fraclayer_8", "fracLayer[7]")
+                            .Define("fraclayer_9", "fracLayer[8]")
+                            .Define("fraclayer_10", "fracLayer[9]")
+                            .Define("fraclayer_11", "fracLayer[10]")
+                            .Define("fraclayer_12", "fracLayer[11]")
+                            .Define("fraclayer_13", "fracLayer[12]")
+                            .Define("fraclayer_14", "fracLayer[13]");
+    #endif
+
+    auto fr_tmva = _fr_preselected
+                            .Define("rmslayer_1", "rmsLayer[0]")
+                            .Define("rmslayer_2", "rmsLayer[1]")
+                            .Define("rmslayer_3", "rmsLayer[2]")
+                            .Define("rmslayer_4", "rmsLayer[3]")
+                            .Define("rmslayer_5", "rmsLayer[4]")
+                            .Define("rmslayer_6", "rmsLayer[5]")
+                            .Define("rmslayer_7", "rmsLayer[6]")
+                            .Define("rmslayer_8", "rmsLayer[7]")
+                            .Define("rmslayer_9", "rmsLayer[8]")
+                            .Define("rmslayer_10", "rmsLayer[9]")
+                            .Define("rmslayer_11", "rmsLayer[10]")
+                            .Define("rmslayer_12", "rmsLayer[11]")
+                            .Define("rmslayer_13", "rmsLayer[12]")
+                            .Define("rmslayer_14", "rmsLayer[13]")
+
                             .Define("fraclayer_1", "fracLayer[0]")
                             .Define("fraclayer_2", "fracLayer[1]")
                             .Define("fraclayer_3", "fracLayer[2]")
