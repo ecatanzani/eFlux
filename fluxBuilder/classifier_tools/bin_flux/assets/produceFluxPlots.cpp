@@ -29,14 +29,7 @@ struct energy_config {
     std::size_t n_bins;
     double min_event_energy {-999};
     double max_event_energy {-999};
-    std::vector<float> energy_binning;
-    
-    void createLogBinning() {
-        energy_binning = std::vector<float>(n_bins + 1, 0);
-        double log_interval {(log10(max_event_energy)-log10(min_event_energy))/n_bins};
-        for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
-            energy_binning[bIdx] = pow(10, log10(min_event_energy) + bIdx * log_interval);
-    }
+    std::vector<double> energy_binning;
 };
 
 inline std::string parse_config_file(const char* config_file) {
@@ -54,27 +47,52 @@ inline std::string parse_config_file(const char* config_file) {
 
 inline energy_config get_config_info(const std::string parsed_config) {
 	energy_config config_pars;
+    
     std::string tmp_str;
 	std::istringstream input_stream(parsed_config);
 	std::string::size_type sz;
-	while (input_stream >> tmp_str)
-	{
-		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
-			input_stream >> config_pars.n_bins;
-		if (!strcmp(tmp_str.c_str(), "min_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.min_event_energy = stod(tmp_str, &sz);
+
+    int introduction {4};
+	int elm_in_row {5};
+    std::vector<std::string> row;
+
+	int column_counter {0};
+    int line_counter {0};
+    
+	while (input_stream >> tmp_str) {
+
+        if (!line_counter) {
+			// This is the first line... we are not interested in it
+			++column_counter;
+			if (column_counter==introduction) {
+				++line_counter;
+				column_counter = 0;
+			}
 		}
-		if (!strcmp(tmp_str.c_str(), "max_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.max_event_energy = stod(tmp_str, &sz);
+		else {
+			// This is a general line...
+			row.push_back(tmp_str);
+			++column_counter;
+			
+			if (column_counter == elm_in_row) {
+
+				// The row of the binning has been completed... let's extract the info
+				if (line_counter==1) 
+					config_pars.energy_binning.push_back(stod(row[2], &sz));
+				config_pars.energy_binning.push_back(stod(row.back(), &sz));
+
+				// Reset
+				column_counter = 0;
+				++line_counter;
+				row.clear();
+			}
 		}
-	}
-    config_pars.createLogBinning();
+    }
+
     return config_pars;
 }
 
-inline std::vector<float> parse_energy_config(const char* config_file) {
+inline std::vector<double> parse_energy_config(const char* config_file) {
     return get_config_info(parse_config_file(config_file)).energy_binning;
 }
 
@@ -82,16 +100,17 @@ void produceFluxPlots(
     const char* input_flux_file, 
     const char* output_flux_bestcuts_file, 
     const char* energy_config_file,
-    const bool logy,
-    const bool draw_bestpoint_errors,
-    const bool verbose) {
+    const int number_of_steps = 50,
+    const bool logy = true,
+    const bool draw_bestpoint_errors = false,
+    const bool verbose = true) {
     
     // Extract energy binning from config file
     auto energy_binning = parse_energy_config(energy_config_file);
     auto energy_nbins = (int)energy_binning.size() - 1;
 
     // Find best point in energy bin
-    auto getBestPointCoordinates = [](std::shared_ptr<TGraph> gr, int steps = 50) -> std::tuple<double, double, double> {
+    auto getBestPointCoordinates = [](std::shared_ptr<TGraph> gr, int steps) -> std::tuple<double, double, double> {
         
         std::vector<std::pair<double, double>> pstack;      // Collection of tmp points
         std::vector<std::pair<double, double>> pmean;       // Collection of mean values, each one in a 2*steps points
@@ -108,18 +127,14 @@ void produceFluxPlots(
 
         // Evaluate std on std::vector<std::pair<double, double>>
         auto vstd = [&reference_point](const std::vector<std::pair<double, double>> &v) -> double {
-            std::vector<double> p;
-            for (auto& elm : v)
-                p.push_back(elm.second);
-
-            double mean {std::accumulate(std::begin(p), std::end(p), 0.0)/static_cast<double>(v.size())};
+            double reference_flux = reference_point.second;
             double accum {0};
-            std::for_each (std::begin(p), std::end(p), [&](const double val) {
-                accum += std::pow((val - mean), 2);
+            std::for_each (std::begin(v), std::end(v), [&](const std::pair<double, double> tmp_flux) {
+                accum += std::pow((tmp_flux.second - reference_flux), 2);
             });
-            double _std {sqrt(accum/static_cast<double>(v.size()-1))};
-            double _std_mean = _std/sqrt(v.size());
-            return _std_mean;
+            double std_flux {sqrt(accum/static_cast<double>(v.size()-1))};
+            //double std_flux_mean = std_flux/sqrt(v.size());
+            return std_flux;
         };
 
         // Loop over graph points
@@ -168,7 +183,7 @@ void produceFluxPlots(
                     }
                 }
             }
-
+            
             return std::make_tuple(best_bdt, gr->Eval(best_bdt), err);
         };
         
@@ -233,8 +248,8 @@ void produceFluxPlots(
         flux_graphs_eff_corrected[bidx]->Draw("same");
         flux_graphs_eff_corrected_b_sub[bidx]->Draw("same");
 
-        auto best_point_coordinates = getBestPointCoordinates(flux_graphs_eff_corrected[bidx]);
-        auto best_point_coordinates_b_sub = getBestPointCoordinates(flux_graphs_eff_corrected_b_sub[bidx]);
+        auto best_point_coordinates = getBestPointCoordinates(flux_graphs_eff_corrected[bidx], number_of_steps);
+        auto best_point_coordinates_b_sub = getBestPointCoordinates(flux_graphs_eff_corrected_b_sub[bidx], number_of_steps);
 
         best_p_X_f_ec[bidx] = std::get<0>(best_point_coordinates);
         best_p_Y_f_ec[bidx] = std::get<1>(best_point_coordinates);
@@ -257,13 +272,13 @@ void produceFluxPlots(
         // Instead of TMarker I use TGraph with a single point. This permits to add errors along X axis
         std::vector<double> bp_x_f_ec {std::get<0>(best_point_coordinates)};
         std::vector<double> bp_y_f_ec {std::get<1>(best_point_coordinates)};
-        std::vector<double> bp_ex_f_ec {std::get<2>(best_point_coordinates)};
-        std::vector<double> bp_ey_f_ec {0.};
+        std::vector<double> bp_ex_f_ec {0.};
+        std::vector<double> bp_ey_f_ec {std::get<2>(best_point_coordinates)};
 
         std::vector<double> bp_x_f_ec_b_sub {std::get<0>(best_point_coordinates_b_sub)};
         std::vector<double> bp_y_f_ec_b_sub {std::get<1>(best_point_coordinates_b_sub)};
-        std::vector<double> bp_ex_f_ec_b_sub {std::get<2>(best_point_coordinates_b_sub)};
-        std::vector<double> bp_ey_f_ec_b_sub {0.};
+        std::vector<double> bp_ex_f_ec_b_sub {0.};
+        std::vector<double> bp_ey_f_ec_b_sub {std::get<2>(best_point_coordinates_b_sub)};
 
         if (!draw_bestpoint_errors) {
             bp_ex_f_ec[0] = 0;
