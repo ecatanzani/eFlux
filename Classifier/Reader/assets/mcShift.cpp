@@ -29,14 +29,7 @@ struct energy_config {
     std::size_t n_bins;
     double min_event_energy {-999};
     double max_event_energy {-999};
-    std::vector<float> energy_binning;
-    
-    void createLogBinning() {
-        energy_binning = std::vector<float>(n_bins + 1, 0);
-        double log_interval {(log10(max_event_energy)-log10(min_event_energy))/n_bins};
-        for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
-            energy_binning[bIdx] = pow(10, log10(min_event_energy) + bIdx * log_interval);
-    }
+    std::vector<double> energy_binning;
 };
 
 inline std::string parse_config_file(const char* config_file) {
@@ -54,27 +47,52 @@ inline std::string parse_config_file(const char* config_file) {
 
 inline energy_config get_config_info(const std::string parsed_config) {
 	energy_config config_pars;
+    
     std::string tmp_str;
 	std::istringstream input_stream(parsed_config);
 	std::string::size_type sz;
-	while (input_stream >> tmp_str)
-	{
-		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
-			input_stream >> config_pars.n_bins;
-		if (!strcmp(tmp_str.c_str(), "min_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.min_event_energy = stod(tmp_str, &sz);
+
+    int introduction {4};
+	int elm_in_row {5};
+    std::vector<std::string> row;
+
+	int column_counter {0};
+    int line_counter {0};
+    
+	while (input_stream >> tmp_str) {
+
+        if (!line_counter) {
+			// This is the first line... we are not interested in it
+			++column_counter;
+			if (column_counter==introduction) {
+				++line_counter;
+				column_counter = 0;
+			}
 		}
-		if (!strcmp(tmp_str.c_str(), "max_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.max_event_energy = stod(tmp_str, &sz);
+		else {
+			// This is a general line...
+			row.push_back(tmp_str);
+			++column_counter;
+			
+			if (column_counter == elm_in_row) {
+
+				// The row of the binning has been completed... let's extract the info
+				if (line_counter==1) 
+					config_pars.energy_binning.push_back(stod(row[2], &sz));
+				config_pars.energy_binning.push_back(stod(row.back(), &sz));
+
+				// Reset
+				column_counter = 0;
+				++line_counter;
+				row.clear();
+			}
 		}
-	}
-    config_pars.createLogBinning();
+    }
+
     return config_pars;
 }
 
-inline std::vector<float> parse_energy_config(const char* config_file) {
+inline std::vector<double> parse_energy_config(const char* config_file) {
     return get_config_info(parse_config_file(config_file)).energy_binning;
 }
 
@@ -181,12 +199,86 @@ void mcShift(
                 std::string tf1_name = "proton_linear_fit_" + std::to_string(bin_idx);
                 std::string fit_result_name = "proton_linear_fit_result_" + std::to_string(bin_idx);
                 std::string histo_name = std::string(h_classifier_bin[bin_idx-1]->GetName()) + "_proton_subtracted";
+                // Define the fit function in the whole BDT range [-1, 1]
                 data_proton_linear_fit[bin_idx-1] = TF1(tf1_name.c_str(), "pow(10, [0]+[1]*x)", -1, 1);
+                // Clone the data histo - cloned one will be used to subtract proton background TF1
                 h_classifier_bin_proton_subtracted[bin_idx-1] = static_cast<TH1D*>(h_classifier_bin[bin_idx-1]->Clone(histo_name.c_str()));
-                if (bin_idx<=24)
-                    h_classifier_bin_fit_result[bin_idx-1] = static_cast<TFitResultPtr>(h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "SQN", "", -0.2, 0));
-                else
-                    h_classifier_bin_fit_result[bin_idx-1] = static_cast<TFitResultPtr>(h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "SQNL", "", -0.4, -0.2));
+                
+                // Set the fit interval accordingly to the energy bin
+                double le {-0.2};
+                double he {0};
+
+                if (bin_idx<18) {
+                    le = -0.2;
+                    he = 0;
+                }
+                else if (bin_idx>=18 && bin_idx<24) {
+                    le = -0.4;
+                    he = 0;
+                }
+
+                // Hign energy bins
+                else if (bin_idx==28) {
+                    // Fix this
+                    le = -0.3;
+                    he = -0.2;
+                }
+                else if (bin_idx==29) {
+                    // Fix this
+                    le = -0.3;
+                    he = -0.1;
+                }
+                else if (bin_idx==30) {
+                    // Fix this
+                    le = -0.3;
+                    he = -0.15;
+                }
+                else if (bin_idx==31) {
+                    // Fix this
+                    le = -0.3;
+                    he = -0.15;
+                }
+                else if (bin_idx==32) {
+                    le = -0.2;
+                    he = 0;
+                }
+                else if (bin_idx==34) {
+                    le = -0.25;
+                    he = -0.1;
+                }
+                else if (bin_idx==35) {
+                    le = -0.3;
+                    he = -0.;
+                }
+                else if (bin_idx==36) {
+                    le = -0.3;
+                    he = -0.1;
+                }
+                else if (bin_idx==37) {
+                    le = -0.25;
+                    he = -0.15;
+                }
+                else if (bin_idx==38) {
+                    le = -0.3;
+                    he = -0.1;
+                }
+                else if (bin_idx==39) {
+                    le = -0.4;
+                    he = -0.2;
+                }
+                else {
+                    le = -0.4;
+                    he = -0.2;
+                }
+
+                TF1 tmp_function("tmp_function", "pow(10, [0]+[1]*x)", -1, 1);
+                h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&tmp_function, "SQN", "", le, he);
+                // Move the parameters of the tmp function to the final TF1 as starting parameters
+                for (int pidx=0; pidx<tmp_function.GetNpar(); ++pidx)
+                    data_proton_linear_fit[bin_idx-1].SetParameter(pidx, tmp_function.GetParameter(pidx));
+                // Fit the energy bin with the log-likelihood
+                h_classifier_bin_fit_result[bin_idx-1] = static_cast<TFitResultPtr>(h_classifier_bin_proton_subtracted[bin_idx-1]->Fit(&data_proton_linear_fit[bin_idx-1], "SQNL", "", le, he));
+
                 h_classifier_bin_fit_result[bin_idx-1]->SetName(fit_result_name.c_str());
                 h_classifier_bin_proton_subtracted[bin_idx-1]->Add(&data_proton_linear_fit[bin_idx-1], -1);
             }
@@ -255,7 +347,7 @@ void mcShift(
 
         for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
            
-            if (mc || (!mc && bin_idx<33)) {
+            if (mc || (!mc && bin_idx<28)) {
                 mean_shift[bin_idx-1] = gaus_fit_2[bin_idx-1].GetParameter(1);
                 rms_shift[bin_idx-1] = gaus_fit_2[bin_idx-1].GetParameter(2);
                 mean_shift_error[bin_idx -1] = gaus_fit_2[bin_idx-1].GetParError(1);
@@ -525,7 +617,8 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitPeakPositionDifference(
 std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitShift(
     const char* mc_file,
     const char* data_file,
-    const double max_energy_gev = 800) {
+    const double max_energy_gev,
+    const int max_energy_bin) {
 
         auto gr_mean_electron_mc = extractGR(mc_file, "gr_mean_full_interval");
         auto gr_mean_data = extractGR(data_file, "gr_mean_full_interval");
@@ -564,7 +657,7 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitShift(
         //gr_shift.Fit(&shift_fit_function, "Q", "", 25, max_energy_gev);
 
         TF1 shift_fit_function_bin("shift_fit_function_bin", "pol1", bins.front(), bins.back());
-        gr_bin_shift.Fit(&shift_fit_function_bin, "Q", "", bins.front(), 33);
+        gr_bin_shift.Fit(&shift_fit_function_bin, "Q", "", bins.front(), max_energy_bin);
         //gr_bin_shift.Fit(&shift_fit_function_bin, "Q", "", 8, 33);
 
         return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_shift, shift_fit_function, gr_bin_shift, shift_fit_function_bin);
@@ -574,7 +667,8 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitShift(
 std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitSigmaRatio(
     const char* mc_file,
     const char* data_file,
-    const double max_energy_gev = 800) {
+    const double max_energy_gev,
+    const int max_energy_bin) {
 
         auto gr_electron_mc = extractGR(mc_file, "gr_sigma_full_interval");
         auto gr_data = extractGR(data_file, "gr_sigma_full_interval");
@@ -608,7 +702,7 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitSigmaRatio(
         //gr_ratio.Fit(&sigma_ratio_fit_function, "Q", "", 25, max_energy_gev);
 
         TF1 sigma_ratio_fit_function_bin("sigma_ratio_fit_function_bin", "pol1", bins.front(), bins.back());
-        gr_bin_ratio.Fit(&sigma_ratio_fit_function_bin, "Q", "", bins.front(), 33);
+        gr_bin_ratio.Fit(&sigma_ratio_fit_function_bin, "Q", "", bins.front(), max_energy_bin);
         //gr_bin_ratio.Fit(&sigma_ratio_fit_function_bin, "Q", "", 8, 33);
 
         return std::tuple<TGraphErrors, TF1, TGraphErrors, TF1>(gr_ratio, sigma_ratio_fit_function, gr_bin_ratio, sigma_ratio_fit_function_bin);
@@ -618,15 +712,16 @@ void calculateCorrection(
     const char* mc_file,
     const char* data_file,
     const char* output_file,
-    const double max_energy_gev = 800) {
+    const double max_energy_gev = 1000,
+    const int max_energy_bin = 27) {
 
         TGraphErrors gr_shift, gr_sigma_ratio;
         TGraphErrors gr_shift_bin, gr_sigma_ratio_bin;
         TF1 shift_fit_func, sigma_ratio_fit_func;
         TF1 shift_fit_func_bin, sigma_ratio_fit_func_bin;
 
-        std::tie(gr_shift, shift_fit_func, gr_shift_bin, shift_fit_func_bin) = fitShift(mc_file, data_file, max_energy_gev);
-        std::tie(gr_sigma_ratio, sigma_ratio_fit_func, gr_sigma_ratio_bin, sigma_ratio_fit_func_bin) = fitSigmaRatio(mc_file, data_file, max_energy_gev);
+        std::tie(gr_shift, shift_fit_func, gr_shift_bin, shift_fit_func_bin) = fitShift(mc_file, data_file, max_energy_gev, max_energy_bin);
+        std::tie(gr_sigma_ratio, sigma_ratio_fit_func, gr_sigma_ratio_bin, sigma_ratio_fit_func_bin) = fitSigmaRatio(mc_file, data_file, max_energy_gev, max_energy_bin);
 
         TFile outfile(output_file, "RECREATE");
         if (outfile.IsZombie()) {
