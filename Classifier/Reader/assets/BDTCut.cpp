@@ -74,14 +74,7 @@ struct energy_config {
     std::size_t n_bins;
     double min_event_energy {-999};
     double max_event_energy {-999};
-    std::vector<float> energy_binning;
-    
-    void createLogBinning() {
-        energy_binning = std::vector<float>(n_bins + 1, 0);
-        double log_interval {(log10(max_event_energy)-log10(min_event_energy))/n_bins};
-        for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
-            energy_binning[bIdx] = pow(10, log10(min_event_energy) + bIdx * log_interval);
-    }
+    std::vector<double> energy_binning;
 };
 
 inline std::string parse_config_file(const char* config_file) {
@@ -99,27 +92,52 @@ inline std::string parse_config_file(const char* config_file) {
 
 inline energy_config get_config_info(const std::string parsed_config) {
 	energy_config config_pars;
+    
     std::string tmp_str;
 	std::istringstream input_stream(parsed_config);
 	std::string::size_type sz;
-	while (input_stream >> tmp_str)
-	{
-		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
-			input_stream >> config_pars.n_bins;
-		if (!strcmp(tmp_str.c_str(), "min_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.min_event_energy = stod(tmp_str, &sz);
+
+    int introduction {4};
+	int elm_in_row {5};
+    std::vector<std::string> row;
+
+	int column_counter {0};
+    int line_counter {0};
+    
+	while (input_stream >> tmp_str) {
+
+        if (!line_counter) {
+			// This is the first line... we are not interested in it
+			++column_counter;
+			if (column_counter==introduction) {
+				++line_counter;
+				column_counter = 0;
+			}
 		}
-		if (!strcmp(tmp_str.c_str(), "max_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.max_event_energy = stod(tmp_str, &sz);
+		else {
+			// This is a general line...
+			row.push_back(tmp_str);
+			++column_counter;
+			
+			if (column_counter == elm_in_row) {
+
+				// The row of the binning has been completed... let's extract the info
+				if (line_counter==1) 
+					config_pars.energy_binning.push_back(stod(row[2], &sz));
+				config_pars.energy_binning.push_back(stod(row.back(), &sz));
+
+				// Reset
+				column_counter = 0;
+				++line_counter;
+				row.clear();
+			}
 		}
-	}
-    config_pars.createLogBinning();
+    }
+
     return config_pars;
 }
 
-inline std::vector<float> parse_energy_config(const char* config_file) {
+inline std::vector<double> parse_energy_config(const char* config_file) {
     return get_config_info(parse_config_file(config_file)).energy_binning;
 }
 
@@ -744,5 +762,127 @@ void MergeMCDataBDT(
         }
 
         out_canvas.Write();
+
+        TCanvas out_canvas_20_100("bdt_classifier_data_mc_comparison_20_100", "bdt_classifier_data_mc_comparison_20_100", 500, 500);
+
+        data_h_tmva_classifier_20_100->Draw();
+        mc_electron_h_tmva_classifier_20_100->Draw("same, histo");
+        mc_proton_h_tmva_classifier_20_100->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        TCanvas out_canvas_100_250("bdt_classifier_data_mc_comparison_100_250", "bdt_classifier_data_mc_comparison_100_250", 500, 500);
+
+        data_h_tmva_classifier_100_250->Draw();
+        mc_electron_h_tmva_classifier_100_250->Draw("same, histo");
+        mc_proton_h_tmva_classifier_100_250->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        TCanvas out_canvas_250_500("bdt_classifier_data_mc_comparison_250_500", "bdt_classifier_data_mc_comparison_250_500", 500, 500);
+
+        data_h_tmva_classifier_250_500->Draw();
+        mc_electron_h_tmva_classifier_250_500->Draw("same, histo");
+        mc_proton_h_tmva_classifier_250_500->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        TCanvas out_canvas_500_1000("bdt_classifier_data_mc_comparison_500_1000", "bdt_classifier_data_mc_comparison_500_1000", 500, 500);
+
+        data_h_tmva_classifier_500_1000->Draw();
+        mc_electron_h_tmva_classifier_500_1000->Draw("same, histo");
+        mc_proton_h_tmva_classifier_500_1000->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        TCanvas out_canvas_1000_3000("bdt_classifier_data_mc_comparison_1000_3000", "bdt_classifier_data_mc_comparison_1000_3000", 500, 500);
+
+        data_h_tmva_classifier_1000_3000->Draw();
+        mc_electron_h_tmva_classifier_1000_3000->Draw("same, histo");
+        mc_proton_h_tmva_classifier_1000_3000->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        TCanvas out_canvas_3000_10000("bdt_classifier_data_mc_comparison_3000_10000", "bdt_classifier_data_mc_comparison_3000_10000", 500, 500);
+
+        data_h_tmva_classifier_3000->Draw();
+        mc_electron_h_tmva_classifier_3000->Draw("same, histo");
+        mc_proton_h_tmva_classifier_3000->Draw("same, histo");
+
+        gPad->SetLogy();
+        gPad->SetGrid(1,1);
+        gStyle->SetOptStat(0);
+
+        legend = print_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            primitive->SetOption("l");
+        }
+
+        out_canvas_20_100.Write();
+        out_canvas_100_250.Write();
+        out_canvas_250_500.Write();
+        out_canvas_500_1000.Write();
+        out_canvas_1000_3000.Write();
+        out_canvas_3000_10000.Write();
+
         out_file.Close();
     }
