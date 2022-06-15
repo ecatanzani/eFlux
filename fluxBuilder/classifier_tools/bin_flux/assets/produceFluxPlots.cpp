@@ -103,7 +103,8 @@ void produceFluxPlots(
     const int number_of_steps = 50,
     const bool logy = true,
     const bool draw_bestpoint_errors = false,
-    const bool verbose = true) {
+    const bool verbose = true,
+    const bool justroot = false) {
     
     // Extract energy binning from config file
     auto energy_binning = parse_energy_config(energy_config_file);
@@ -132,7 +133,7 @@ void produceFluxPlots(
             std::for_each (std::begin(v), std::end(v), [&](const std::pair<double, double> tmp_flux) {
                 accum += std::pow((tmp_flux.second - reference_flux), 2);
             });
-            double std_flux {sqrt(accum/static_cast<double>(v.size()-1))};
+            double std_flux {sqrt(accum/static_cast<double>(v.size()))};
             //double std_flux_mean = std_flux/sqrt(v.size());
             return std_flux;
         };
@@ -231,14 +232,17 @@ void produceFluxPlots(
     std::vector<double> best_p_err_f_ec_b_sub (energy_nbins, -1);
 
     // Build canvas
+    std::vector<TCanvas*> canvas_collection (energy_nbins);
     TCanvas print_canvas("print_canvas", "print_canvas");
     print_canvas.SetTicks();
 
     TPaveLabel label(0.0, 0.95, 0.3, 1, "BDT classifier", "tlNDC");
 
     for (int bidx = 0; bidx < energy_nbins; ++bidx) {
-        if (bidx)
+        if (bidx) {
+            print_canvas.cd();
             print_canvas.Clear();
+        }
 
         flux_graphs[bidx]->SetTitle("flux (not corrected)");
         flux_graphs_eff_corrected[bidx]->SetTitle("flux (se)");
@@ -281,8 +285,8 @@ void produceFluxPlots(
         std::vector<double> bp_ey_f_ec_b_sub {std::get<2>(best_point_coordinates_b_sub)};
 
         if (!draw_bestpoint_errors) {
-            bp_ex_f_ec[0] = 0;
-            bp_ex_f_ec_b_sub[0] = 0;
+            bp_ey_f_ec[0] = 0;
+            bp_ey_f_ec_b_sub[0] = 0;
         }
 
         TGraphErrors gr_best_point_fec(bp_ex_f_ec.size(), bp_x_f_ec.data(), bp_y_f_ec.data(), bp_ex_f_ec.data(), bp_ey_f_ec.data());
@@ -305,18 +309,20 @@ void produceFluxPlots(
         gr_best_point_fec_b_sub.Draw("P");
 
         gPad->SetGrid(1,1);
-        if (logy) {
-            gPad->SetLogy();
-            gPad->Update(); 
-            flux_graphs[bidx]->SetMinimum(1);
-            flux_graphs[bidx]->SetMaximum(1e+5); 
-            gPad->Update();
-        }
-        else {
-            gPad->Update(); 
-            flux_graphs[bidx]->SetMinimum(0);
-            flux_graphs[bidx]->SetMaximum(300); 
-            gPad->Update();
+        if (!justroot) {
+            if (logy) {
+                gPad->SetLogy();
+                gPad->Update(); 
+                flux_graphs[bidx]->SetMinimum(1);
+                flux_graphs[bidx]->SetMaximum(1e+5); 
+                gPad->Update();
+            }
+            else {
+                gPad->Update(); 
+                flux_graphs[bidx]->SetMinimum(0);
+                flux_graphs[bidx]->SetMaximum(300); 
+                gPad->Update();
+            }
         }
         
         std::string label_name = "Flux samples - energy bin " + std::to_string(bidx+1) + " - [" + std::to_string(energy_binning[bidx]) + ", " + std::to_string(energy_binning[bidx+1]) + "] GeV";
@@ -339,13 +345,51 @@ void produceFluxPlots(
             print_canvas.Print("flux_samples_summary.pdf)","Title:BDT classifier");
         else
             print_canvas.Print("flux_samples_summary.pdf","Title:BDT classifier");
+
+
+        // Custom TCanvas
+        TCanvas custom_canvas((std::string("canvas_")+std::to_string(bidx)).c_str(), (std::string("canvas_")+std::to_string(bidx)).c_str(), 500, 500);
+        custom_canvas.cd();
+
+        flux_graphs[bidx]->SetTitle("flux (not corrected)");
+        flux_graphs_eff_corrected_b_sub[bidx]->SetTitle("flux (background + eff correction)");
+
+        flux_graphs[bidx]->SetLineColor(kBlack);
+        flux_graphs_eff_corrected_b_sub[bidx]->SetLineColor(kRed);
+
+        flux_graphs[bidx]->SetLineWidth(2);
+        flux_graphs_eff_corrected_b_sub[bidx]->SetLineWidth(2);
+
+        flux_graphs[bidx]->Draw();
+        flux_graphs_eff_corrected_b_sub[bidx]->Draw("same");
+        
+        gr_best_point_fec_b_sub.SetTitle("BDT - Best Cut Value");
+        gr_best_point_fec_b_sub.SetMarkerColor(kBlue);
+        gr_best_point_fec_b_sub.Draw("P");
+
+        gPad->SetGrid(1,1);
+        gPad->SetLogy();
+
+        legend = custom_canvas.BuildLegend();
+        legend->SetBorderSize(0);
+        legend->SetFillStyle(0);
+        for (auto primitiveObj :  *(legend->GetListOfPrimitives()))
+        {
+            auto primitive = (TLegendEntry*)primitiveObj;
+            if (!strncmp(primitive->GetLabel(), "BDT - Best Cut Value", strlen("BDT - Best Cut Value")))
+                primitive->SetOption("p");
+            else
+                primitive->SetOption("l");
+        }
+
+        canvas_collection[bidx] = static_cast<TCanvas*>(custom_canvas.DrawClone());
+        canvas_collection[bidx]->SetName((std::string("canvas_")+std::to_string(bidx)).c_str());
     }
 
     // Build final TTree with best point coordinates
-
     TFile best_cuts(output_flux_bestcuts_file, "RECREATE");
     if (!best_cuts.IsOpen()) {
-        std::cout << "Error writing output ROT file [" << output_flux_bestcuts_file << "]\n\n";
+        std::cout << "Error writing output ROOT file [" << output_flux_bestcuts_file << "]\n\n";
         exit(100);
     }
 
@@ -365,6 +409,9 @@ void produceFluxPlots(
 
     best_cuts_tree.Branch("energy_bin", &energy_bin, "energy_bin/I");
 
+    if (verbose)
+        std::cout << "\n\nSystematics connedted to the BDT best point\n\n";
+
     for (int bidx = 0; bidx < energy_nbins; ++bidx) {
         f_ec_X = best_p_X_f_ec[bidx];
         f_ec_Y = best_p_Y_f_ec[bidx];
@@ -372,13 +419,61 @@ void produceFluxPlots(
         f_ec_b_sub_X = best_p_X_f_ec_b_sub[bidx];
         f_ec_b_sub_Y = best_p_Y_f_ec_b_sub[bidx];
         f_ec_b_sub_err = best_p_err_f_ec_b_sub[bidx];
+
+        if (verbose)
+            std::cout << "\nEnergy bin " << bidx+1 << ": syst: " << f_ec_b_sub_err << " -> [%]: " << 100*(f_ec_b_sub_err/f_ec_b_sub_Y);
+
+        if (bidx==24)       // bin number 25
+            f_ec_b_sub_X = 0;
+        else if (bidx==27)  // bin number 28
+            f_ec_b_sub_X = 0.2;
+
+        # if 0
+        // Exceptions
+        if (bidx==23)       // bin number 24
+            f_ec_b_sub_X = 0.05;
+        else if (bidx==26)  // bin number 27
+            f_ec_b_sub_X = 0.17;
+
+        else if (bidx==30)  // bin number 31
+            f_ec_b_sub_X = 0;
+        else if (bidx==31)  // bin number 32
+            f_ec_b_sub_X = 0.15;
+
+        /*
+        else if (bidx==32)  // bin number 33
+            f_ec_b_sub_X = 0.2;
+        */
+        else if (bidx==33)  // bin number 34
+            f_ec_b_sub_X = 0.2;
+        else if (bidx==34)  // bin number 35
+            f_ec_b_sub_X = 0.2;
+
+        else if (bidx==39)  // bin number 40
+            f_ec_b_sub_X = 0.15;
+        else if (bidx==40)  // bin number 41
+            f_ec_b_sub_X = 0.2;
+        #endif
+
         energy_bin = bidx + 1;
     
         best_cuts_tree.Fill();
     }
 
     best_cuts_tree.Write();
-
+    
     best_cuts.Close();
+
+    TFile canvas_out_file("canvas.root", "RECREATE");
+    if (!canvas_out_file.IsOpen()) {
+        std::cout << "Error writing output ROOT file [canvas.root] \n\n";
+        exit(100);
+    }
+
+    for (auto canvas : canvas_collection) {
+        canvas->Write();
+    }
+
+    canvas_out_file.Close();
 
 }
