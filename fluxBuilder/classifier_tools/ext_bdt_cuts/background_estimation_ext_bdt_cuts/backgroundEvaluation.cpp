@@ -175,15 +175,17 @@ void backgroundEvaluation(
 
             // Evaluate the background contamination in each energy bin
             double bacground_contamination = background_fit->Integral(bdt_cuts[energy_bin_idx], 1.0)/h_data_bin_width;
-            double bacground_contamination_err = background_fit->IntegralError(
+            double bacground_contamination_fit_err = background_fit->IntegralError(
                 bdt_cuts[energy_bin_idx], 
                 1.0, 
                 background_fit_result->GetParams(), 
                 background_fit_result->GetCovarianceMatrix().GetMatrixArray())/h_data_bin_width;
+            double background_contamination_stat_err = sqrt(bacground_contamination);
+            double background_contamination_err = sqrt(pow(background_contamination_stat_err, 2) + pow(bacground_contamination_fit_err, 2));
 
             // Fill the background histo
             h_background.SetBinContent(energy_bin_idx+1, bacground_contamination);
-            h_background.SetBinError(energy_bin_idx+1, bacground_contamination_err);
+            h_background.SetBinError(energy_bin_idx+1, background_contamination_err);
         }
         
         TFile foutput(output_file, "RECREATE");
