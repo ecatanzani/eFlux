@@ -16,14 +16,7 @@ struct energy_config {
     std::size_t n_bins;
     double min_event_energy {-999};
     double max_event_energy {-999};
-    std::vector<float> energy_binning;
-    
-    void createLogBinning() {
-        energy_binning = std::vector<float>(n_bins + 1, 0);
-        double log_interval {(log10(max_event_energy)-log10(min_event_energy))/n_bins};
-        for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
-            energy_binning[bIdx] = pow(10, log10(min_event_energy) + bIdx * log_interval);
-    }
+    std::vector<double> energy_binning;
 };
 
 inline std::string parse_config_file(const char* config_file) {
@@ -41,46 +34,53 @@ inline std::string parse_config_file(const char* config_file) {
 
 inline energy_config get_config_info(const std::string parsed_config) {
 	energy_config config_pars;
+    
     std::string tmp_str;
 	std::istringstream input_stream(parsed_config);
 	std::string::size_type sz;
-	while (input_stream >> tmp_str)
-	{
-		if (!strcmp(tmp_str.c_str(), "n_energy_bins"))
-			input_stream >> config_pars.n_bins;
-		if (!strcmp(tmp_str.c_str(), "min_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.min_event_energy = stod(tmp_str, &sz);
+
+    int introduction {4};
+	int elm_in_row {5};
+    std::vector<std::string> row;
+
+	int column_counter {0};
+    int line_counter {0};
+    
+	while (input_stream >> tmp_str) {
+
+        if (!line_counter) {
+			// This is the first line... we are not interested in it
+			++column_counter;
+			if (column_counter==introduction) {
+				++line_counter;
+				column_counter = 0;
+			}
 		}
-		if (!strcmp(tmp_str.c_str(), "max_event_energy")) {
-			input_stream >> tmp_str;
-			config_pars.max_event_energy = stod(tmp_str, &sz);
+		else {
+			// This is a general line...
+			row.push_back(tmp_str);
+			++column_counter;
+			
+			if (column_counter == elm_in_row) {
+
+				// The row of the binning has been completed... let's extract the info
+				if (line_counter==1) 
+					config_pars.energy_binning.push_back(stod(row[2], &sz));
+				config_pars.energy_binning.push_back(stod(row.back(), &sz));
+
+				// Reset
+				column_counter = 0;
+				++line_counter;
+				row.clear();
+			}
 		}
-	}
-    config_pars.createLogBinning();
+    }
+
     return config_pars;
 }
 
-inline std::vector<float> parse_energy_config(const char* config_file) {
+inline std::vector<double> parse_energy_config(const char* config_file) {
     return get_config_info(parse_config_file(config_file)).energy_binning;
-}
-
-std::vector<float> createLogBinning(const double eMin, const double eMax, const std::size_t n_bins) {
-	std::vector<float> binning(n_bins + 1, 0);
-	double log_interval = (log10(eMax) - log10(eMin)) / n_bins;
-	for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
-		binning[bIdx] = pow(10, log10(eMin) + bIdx * log_interval);
-	return binning;
-}
-
-std::vector<float> createLinearBinning(float a, float b, std::size_t N) {
-	float h = (b - a) / static_cast<float>(N);
-	std::vector<float> xs(N + 1);
-	std::vector<float>::iterator x;
-	float val;
-	for (x = xs.begin(), val = a; x != xs.end(); ++x, val += h)
-		*x = val;
-	return xs;
 }
 
 inline const std::string get_tree_name(const std::string stream) {
