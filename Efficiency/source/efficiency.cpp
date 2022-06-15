@@ -1731,8 +1731,8 @@ void buildEfficiency(const in_args input_args)
                                                         .Histo2D({"h_psd_charge_3000_xtrl_12_100", "PSD charge; PSD X Charge; PSD Y Charge", 200, 0, 50, 200, 0, 50}, "PSD_chargeX", "PSD_chargeY");     
 
     // STK cleaning cuts after all cuts
-    auto createLogBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<float> {
-        std::vector<float> binning (n_bins + 1, 0);
+    auto createLogBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<double> {
+        std::vector<double> binning (n_bins + 1, 0);
         double log_interval = (log10(max) - log10(min)) / n_bins;
         for (unsigned int bIdx = 0; bIdx <= n_bins; ++bIdx)
             binning[bIdx] = pow(10, log10(min) + bIdx * log_interval);
@@ -1861,12 +1861,12 @@ void buildEfficiency(const in_args input_args)
 
     
     // Rvalue variable
-    auto createLinearBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<float>
+    auto createLinearBinning = [](const double min, const double max, const std::size_t n_bins) -> std::vector<double>
     {
-        float h = (max - min) / n_bins;
-        std::vector<float> xs(n_bins + 1);
-        std::vector<float>::iterator x;
-        float val;
+        double h = (max - min) / n_bins;
+        std::vector<double> xs(n_bins + 1);
+        std::vector<double>::iterator x;
+        double val;
         for (x = xs.begin(), val = min; x != xs.end(); ++x, val += h)
             *x = val;
 

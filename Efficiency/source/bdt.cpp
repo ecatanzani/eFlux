@@ -493,7 +493,7 @@ const double bdt::ComputeMVA(
     const std::vector<double> &fraclayer,
     const double fraclastlayer,
     const double corrected_energy_gev,
-    const std::vector<float> &energy_binning,
+    const std::vector<double> &energy_binning,
     const TVector3& bgo_direction)
     {
         // Initialize mva value

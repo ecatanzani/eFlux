@@ -7,12 +7,13 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
 class energy_config
 {
 public:
     energy_config(const std::string energy_config_file);
     ~energy_config(){};
-    std::vector<float> GetEnergyBinning();
+    std::vector<double> GetEnergyBinning();
     const double GetMinEvtEnergy();
     const double GetMaxEvtEnergy();
     void PrintActiveFilters();
@@ -24,7 +25,7 @@ private:
     std::size_t n_bins;
     double min_event_energy {-999};
     double max_event_energy {-999};
-    std::vector<float> energy_binning;
+    std::vector<double> energy_binning;
 };
 
 #endif
