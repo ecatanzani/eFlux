@@ -183,11 +183,21 @@ void mcShift(
         for (int bin_idx = 1; bin_idx <= energy_nbins; ++bin_idx) {
             auto bin_filter = [=](int energy_bin) -> bool { return energy_bin == bin_idx; };
             std::string histo_name = "h_classifier_bin_" + std::to_string(bin_idx);
-            h_classifier_bin[bin_idx-1] = !mc ? fr.Filter(bin_filter, {"energy_bin"}).Histo1D<double>({histo_name.c_str(), histo_name.c_str(), 1000, -1, 1}, "tmva_classifier") : 
-                                                fr.Filter(bin_filter, {"energy_bin"})
+
+            if (mc)
+                h_classifier_bin[bin_idx-1] = fr.Filter(bin_filter, {"energy_bin"})
                                                     .Define("corr_energy_gev", "energy_corr * 0.001")
                                                     .Define("evt_w", get_weight, {"corr_energy_gev"})
-                                                    .Histo1D<double, double>({histo_name.c_str(), histo_name.c_str(), 1000, -1, 1}, "tmva_classifier", "evt_w");
+                                                    .Histo1D<double, double>({histo_name.c_str(), histo_name.c_str(), 1000, -1, 1}, "tmva_classifier", "evt_w");  
+            else {  
+                int nbins {1};
+                if (bin_idx<=28)
+                    nbins = 1000;
+                else
+                    nbins = 500;
+
+                h_classifier_bin[bin_idx-1] = fr.Filter(bin_filter, {"energy_bin"}).Histo1D<double>({histo_name.c_str(), histo_name.c_str(), nbins, -1, 1}, "tmva_classifier");  
+            }                         
         }
         
         std::vector<TF1> gaus_fit_1(energy_nbins), gaus_fit_2(energy_nbins);
@@ -205,6 +215,9 @@ void mcShift(
                 h_classifier_bin_proton_subtracted[bin_idx-1] = static_cast<TH1D*>(h_classifier_bin[bin_idx-1]->Clone(histo_name.c_str()));
                 
                 // Set the fit interval accordingly to the energy bin
+
+                /*
+                OLD METHOD
                 double le {-0.2};
                 double he {0};
 
@@ -261,6 +274,73 @@ void mcShift(
                 else if (bin_idx==38) {
                     le = -0.3;
                     he = -0.1;
+                }
+                else if (bin_idx==39) {
+                    le = -0.4;
+                    he = -0.2;
+                }
+                else {
+                    le = -0.4;
+                    he = -0.2;
+                }
+                */
+
+                double le {-0.2};
+                double he {0};
+
+                if (bin_idx<18) {
+                    le = -0.2;
+                    he = 0;
+                }
+                else if (bin_idx>=18 && bin_idx<24) {
+                    le = -0.4;
+                    he = 0;
+                }
+
+                // Hign energy bins
+                else if (bin_idx==28) {
+                    // Fix this
+                    le = -0.3;
+                    he = -0.2;
+                }
+                else if (bin_idx==29) {
+                    // Fix this
+                    le = -0.3;
+                    he = -0.1;
+                }
+                else if (bin_idx==30) {
+                    // Fix this
+                    le = -0.2;
+                    he = 0.2;
+                }
+                else if (bin_idx==31) {
+                    // Fix this
+                    le = -0.3;
+                    he = -0.15;
+                }
+                else if (bin_idx==32) {
+                    le = -0.2;
+                    he = 0.2;
+                }
+                else if (bin_idx==34) {
+                    le = -0.25;
+                    he = -0.1;
+                }
+                else if (bin_idx==35) {
+                    le = -0.2;
+                    he = 0.2;
+                }
+                else if (bin_idx==36) {
+                    le = -0.4;
+                    he = 0;
+                }
+                else if (bin_idx==37) {
+                    le = -0.25;
+                    he = -0.15;
+                }
+                else if (bin_idx==38) {
+                    le = -0.4;
+                    he = -0.2;
                 }
                 else if (bin_idx==39) {
                     le = -0.4;
@@ -684,7 +764,8 @@ std::tuple<TGraphErrors, TF1, TGraphErrors, TF1> fitSigmaRatio(
             energy_err.push_back(0);
             bins_err.push_back(0);
             point_ratio.push_back(gr_data->GetPointY(idx_p) / gr_electron_mc->GetPointY(idx_p));
-            point_ratio_err.push_back(sqrt(pow(gr_data->GetErrorY(idx_p), 2) + pow(gr_electron_mc->GetErrorY(idx_p), 2)));
+            //point_ratio_err.push_back(sqrt(pow(gr_data->GetErrorY(idx_p), 2) + pow(gr_electron_mc->GetErrorY(idx_p), 2)));
+            point_ratio_err.push_back((1./gr_electron_mc->GetPointY(idx_p))*sqrt(pow(gr_data->GetErrorY(idx_p), 2) + pow(gr_data->GetPointY(idx_p)*gr_electron_mc->GetErrorY(idx_p), 2)));
         }
 
         TGraphErrors gr_ratio(energy.size(), &energy[0], &point_ratio[0], &energy_err[0], &point_ratio_err[0]);
