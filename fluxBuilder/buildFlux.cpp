@@ -101,7 +101,7 @@ inline std::shared_ptr<TH1D> extractHistoFromFile(const char* file, const bool v
     }
 
     if (verbose)
-        std::cout << "\nFound TTree in input file [" << myhisto->GetName() << "] --> [" << file << "]";
+        std::cout << "\nFound TH1D in input file [" << myhisto->GetName() << "] --> [" << file << "]";
     
     return myhisto;
 }
@@ -115,46 +115,17 @@ inline double wtsydp(const double minene, const double maxene, const double inde
         return dene / log(maxene / minene);
 }
 
-inline void add_systematics_from_eff(TGraphErrors &h_e_counts, TGraphErrors& h_e_counts_E3, const char* efficiency_ratios) {
-    TFile input_eff_ratios(efficiency_ratios, "READ");
-    if (!input_eff_ratios.IsOpen()) {
-        std::cerr << "\n\nError opening input file [" << efficiency_ratios << "]\n\n";
-        exit(100);
-    }
-
-    auto f_ratio_trigger_eff_het_over_unb_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_trigger_eff_het_over_unb_bdt"));
-    auto f_ratio_maxrms_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_maxrms_eff_bdt"));
-    auto f_ratio_nbarlayer13_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_nbarlayer13_eff_bdt"));
-    auto f_ratio_track_selection_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_track_selection_eff_bdt"));
-    auto f_ratio_psd_stk_match_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_psd_stk_match_eff_bdt"));
-    auto f_ratio_psd_charge_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_psd_charge_eff_bdt"));
-    auto f_ratio_stk_charge_eff_bdt = static_cast<TF1*>(input_eff_ratios.Get("f_ratio_stk_charge_eff_bdt"));
-
-    auto get_sys = [&](const double energy_gev) -> double {
-        double sys_trigger          {pow(1 - f_ratio_trigger_eff_het_over_unb_bdt->Eval(energy_gev), 2)};
-        double sys_maxrms           {pow(1 - f_ratio_maxrms_eff_bdt->Eval(energy_gev), 2)};
-        double sys_nbarlayer13      {pow(1 - f_ratio_nbarlayer13_eff_bdt->Eval(energy_gev), 2)};
-        double sys_psd_stk_match    {pow(1 - f_ratio_psd_stk_match_eff_bdt->Eval(energy_gev), 2)};
-        double sys_psd_charge       {pow(1 - f_ratio_psd_charge_eff_bdt->Eval(energy_gev), 2)};
-        double sys_stk_charge       {pow(1 - f_ratio_stk_charge_eff_bdt->Eval(energy_gev), 2)};
-        return sqrt(sys_trigger + sys_maxrms + sys_nbarlayer13 + sys_psd_stk_match + sys_psd_charge + sys_stk_charge);
-    };
-
-    for (int pidx=0; pidx<h_e_counts.GetN(); ++pidx) {
-        h_e_counts.SetPointError(pidx, 0., h_e_counts.GetErrorY(pidx) + h_e_counts.GetErrorY(pidx)*get_sys(h_e_counts.GetPointX(pidx)));
-        h_e_counts_E3.SetPointError(pidx, 0., h_e_counts_E3.GetErrorY(pidx) + h_e_counts_E3.GetErrorY(pidx)*get_sys(h_e_counts_E3.GetPointX(pidx)));
-    }
-}
-
 void buildFlux(
     const char* e_counts_input_file,
     const char* e_acc_input_file,
     const char* signal_efficiency,
     const char* background_contamination,
     const char* energy_config_file,
-    const char* efficiency_ratios,
+    const char* bdt_best_point_syst_file,
+    const char* efficiency_syst_file,
     const double exposure_time = 140143948.911,
     const char* output_file = "flux.root",
+    const bool add_systematics = false,
     const bool verbose = true) {
 
         if (verbose)
@@ -170,7 +141,12 @@ void buildFlux(
         auto h_signal_eff   = extractHistoFromFile(signal_efficiency, verbose);
         auto h_back_cont    = extractHistoFromFile(background_contamination, verbose);
 
-        // Correct for the background contamination
+        h_e_counts->Sumw2();
+        h_e_acc->Sumw2();
+        h_signal_eff->Sumw2();
+        h_back_cont->Sumw2();
+
+        // Subtract the background contamination
         h_e_counts->Add(h_back_cont.get(), -1);
         
         // Correct for the efficiency
@@ -183,21 +159,33 @@ void buildFlux(
         h_e_counts->Scale(1/exposure_time);
 
         // divide by the energy bin width
-        for (int bIdx {0}; bIdx<=h_e_counts->GetNbinsX(); ++bIdx) {
+        for (int bIdx {1}; bIdx<=h_e_counts->GetNbinsX(); ++bIdx) {
             if(h_e_counts->GetBinContent(bIdx)) {
                 h_e_counts->SetBinContent(bIdx, static_cast<double>(h_e_counts->GetBinContent(bIdx))/h_e_counts->GetBinWidth(bIdx));
                 h_e_counts->SetBinError(bIdx, static_cast<double>(h_e_counts->GetBinError(bIdx))/h_e_counts->GetBinWidth(bIdx));
             }
         }
 
+        // Correct for the efficiency systematics
+        auto h_efficiency_syst = extractHistoFromFile(efficiency_syst_file, verbose);
+        
+        for (int bIdx {1}; bIdx<=h_e_counts->GetNbinsX(); ++bIdx)
+            h_e_counts->SetBinError(bIdx, sqrt(pow(h_e_counts->GetBinError(bIdx), 2) + pow(h_e_counts->GetBinContent(bIdx)*h_efficiency_syst->GetBinError(bIdx)/100., 2)));
+
         // Build flux multiplied by E^3
         auto h_e_counts_E3 = static_cast<TH1D*>(h_e_counts->Clone("h_e_counts_E3"));
-        for (int bIdx {0}; bIdx<=h_e_counts_E3->GetNbinsX(); ++bIdx) {
+        for (int bIdx {1}; bIdx<=h_e_counts_E3->GetNbinsX(); ++bIdx) {
             if(h_e_counts_E3->GetBinContent(bIdx)) {
                 h_e_counts_E3->SetBinContent(bIdx, h_e_counts_E3->GetBinContent(bIdx)*pow(h_e_counts_E3->GetXaxis()->GetBinCenter(bIdx), 3));
                 h_e_counts_E3->SetBinError(bIdx, h_e_counts_E3->GetBinError(bIdx)*pow(h_e_counts_E3->GetXaxis()->GetBinCenter(bIdx), 3));
             }
         }
+
+        // Correct for the BDT best point efficiency systematic
+        auto h_bdt_bestpoint_syst = extractHistoFromFile(bdt_best_point_syst_file, verbose);
+        
+        for (int bIdx {1}; bIdx<=h_e_counts->GetNbinsX(); ++bIdx)
+            h_e_counts_E3->SetBinError(bIdx, sqrt(pow(h_e_counts_E3->GetBinError(bIdx), 2) + pow(h_bdt_bestpoint_syst->GetBinError(bIdx), 2)));
 
         // Build TGraphs
         std::vector<double> energy                          (h_e_counts->GetNbinsX(), 0);
@@ -243,9 +231,6 @@ void buildFlux(
         h_e_counts->GetYaxis()->SetTitle("Flux [s^{-1}E^{-1}st^{-1}]");
 
         h_e_counts_E3->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
-
-        // Add systematics
-        add_systematics_from_eff(gr_flux, gr_flux_E3, efficiency_ratios);
 
         outfile->cd();
 
