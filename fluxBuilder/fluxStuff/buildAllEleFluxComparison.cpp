@@ -41,7 +41,8 @@ void buildAllEleFluxComparison(
             graph->SetName("gr_flux_ratio");
             graph->SetTitle("Flux ratio");
             graph->GetXaxis()->SetTitle("Energy [GeV]");
-            graph->GetYaxis()->SetTitle("(flux - DAMPE Nature)/err [#sigma]");
+            //graph->GetYaxis()->SetTitle("(flux - DAMPE Nature)/err [#sigma]");
+            graph->GetYaxis()->SetTitle("relative difference [#sigma]");
 
             return graph;
         };
@@ -59,7 +60,7 @@ void buildAllEleFluxComparison(
         gr_input_flux->SetMarkerColor(kRed);
         gr_input_flux->SetMarkerStyle(20);
 
-        gr_input_flux->SetTitle("DAMPE (2016/01 - 2021/11)");
+        gr_input_flux->SetTitle("This Work (2016/01 - 2021/11)");
 
         input_flux.Close();
 
@@ -74,7 +75,7 @@ void buildAllEleFluxComparison(
         gr_input_reference->SetMarkerColor(kBlue);
         gr_input_reference->SetMarkerStyle(20);
 
-        gr_input_reference->SetTitle("DAMPE Nature (2017)");
+        gr_input_reference->SetTitle("DAMPE (Nature 2017)");
 
         input_reference.Close();
 
@@ -89,13 +90,16 @@ void buildAllEleFluxComparison(
         }
 
         // Create output canvas
-        TCanvas output_canvas("output_canvas", "output_canvas");
+        TCanvas output_canvas("output_canvas", "output_canvas", 500, 500);
         output_canvas.SetTicks();
 
-        gr_input_flux->GetXaxis()->SetLimits(20, 1e+4);
-        gr_input_flux->SetMinimum(0);
-        gr_input_flux->SetMaximum(300);
+        gr_input_reference->GetXaxis()->SetLimits(20, 1e+4);
+        gr_input_reference->SetMinimum(0);
+        gr_input_reference->SetMaximum(300);
         
+        gr_input_reference->GetXaxis()->SetTitle("Energy [GeV]");
+        gr_input_reference->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+
         gr_input_reference->Draw("AP");
         gr_input_flux->Draw("P");
 
@@ -113,7 +117,7 @@ void buildAllEleFluxComparison(
 
         output_canvas.Write();
 
-        TCanvas output_canvas_ratio("output_canvas_ratio", "output_canvas_ratio");
+        TCanvas output_canvas_ratio("output_canvas_ratio", "output_canvas_ratio", 500, 500);
         output_canvas_ratio.SetTicks();
 
         gr_ratio_sigma->SetMinimum(-5);
