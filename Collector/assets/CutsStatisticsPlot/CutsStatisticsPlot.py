@@ -23,9 +23,12 @@ def BuildPlot(input_dir: str, output_file: str, raw_only: bool, verbose: bool):
         'bgo_fiducial': [],
         'nbarlayer13': [],
         'maxrms': [],
+        'sumrms_low_energy_cut': [],
         'track_selection': [],
+        'stk_1rm': [],
         'psd_stk_match': [],
-        'psd_charge': []
+        'psd_charge': [],
+        'stk_charge': []
     }
 
     # Sort folders in order to have an ordinate dictionary of values
@@ -51,23 +54,29 @@ def BuildPlot(input_dir: str, output_file: str, raw_only: bool, verbose: bool):
             if root_tree_name is not None:
                 rdf = ROOT.RDataFrame(root_tree_name, root_filename)
                 stats['raw_events'].append(rdf.Count().GetValue())
-                stats['bgo_fiducial'].append(rdf.Filter('evtfilter_BGO_fiducial==1').Count().GetValue())
+                stats['bgo_fiducial'].append(rdf.Filter('evtfilter_BGO_fiducial_HET==1').Count().GetValue())
                 stats['nbarlayer13'].append(rdf.Filter('evtfilter_nBarLayer13_cut==1').Count().GetValue())
                 stats['maxrms'].append(rdf.Filter('evtfilter_maxRms_cut==1').Count().GetValue())
+                stats['sumrms_low_energy_cut'].append(rdf.Filter('evtfilter_sumrms_low_energy_cut==1').Count().GetValue())
                 stats['track_selection'].append(rdf.Filter('evtfilter_track_selection_cut==1').Count().GetValue())
+                stats['stk_1rm'].append(rdf.Filter('evtfilter_stk_1rm_cut==1').Count().GetValue())
                 stats['psd_stk_match'].append(rdf.Filter('evtfilter_psd_stk_match_cut==1').Count().GetValue())
                 stats['psd_charge'].append(rdf.Filter('evtfilter_psd_charge_cut==1').Count().GetValue())
+                stats['stk_charge'].append(rdf.Filter('evtfilter_stk_charge_cut==1').Count().GetValue())
             
     # build the histo
     rcParams.update({'figure.autolayout': True})
     plt.plot(stats['dates'], stats['raw_events'], label="total counts", color="dimgray")
     if not raw_only:
-        plt.plot(stats['dates'], stats['bgo_fiducial'], label="BGO fiducial cut", color="cornflowerblue")
+        plt.plot(stats['dates'], stats['bgo_fiducial'], label="BGO fiducial cut", color="royalblue")
         plt.plot(stats['dates'], stats['nbarlayer13'], label="nBarLayer13 cut", color="darkorange")
         plt.plot(stats['dates'], stats['maxrms'], label="max RMS cut", color="forestgreen")
+        plt.plot(stats['dates'], stats['sumrms_low_energy_cut'], label="sumRMS low energy cut", color="mediumturquoise")
         plt.plot(stats['dates'], stats['track_selection'], label="Track Selection cut", color="crimson")
+        plt.plot(stats['dates'], stats['stk_1rm'], label="Track Selection cut", color="coral")
         plt.plot(stats['dates'], stats['psd_stk_match'], label="PSD/STK match cut", color="blueviolet")
         plt.plot(stats['dates'], stats['psd_charge'], label="PSD charge cut", color="saddlebrown")
+        plt.plot(stats['dates'], stats['stk_charge'], label="PSD charge cut", color="gold")
         
         plt.yscale('log')
         plt.ylim(10, 1e+8)
