@@ -5,9 +5,14 @@ from tqdm import tqdm
 from argparse import ArgumentParser
 
 def ExtractDateFromFile(file: str) -> datetime.date:
+    '''
     year = int(file[file.rfind('/2A/')+4:file.rfind('/2A/')+8])
     month = int(file[file.rfind('/2A/')+8:file.rfind('/2A/')+10])
     day = int(file[file.rfind('/2A/')+10:file.rfind('/2A/')+12])
+    '''
+    year = int(file[file.rfind('_OBS_')+5:file.rfind('_OBS_')+9])
+    month = int(file[file.rfind('_OBS_')+9:file.rfind('_OBS_')+11])
+    day = int(file[file.rfind('_OBS_')+11:file.rfind('_OBS_')+13])
     return datetime.date(year, month, day)
 
 def WiteListOnFile(list: list, list_date: datetime.date, output: str) -> str:
