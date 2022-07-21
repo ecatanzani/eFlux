@@ -2427,6 +2427,121 @@ void produceStkCleaningPlotsProjections(
 
         func_out_file->Close();
 
+        TFile *stk_1rm_cut = TFile::Open("stk_1rm_cut.root", "RECREATE"); 
+
+        TCanvas canvas_20_100("canvas_20_100", "canvas_20_100", 500, 500);
+        TCanvas canvas_100_250("canvas_100_250", "canvas_100_250", 500, 500);
+        TCanvas canvas_250_500("canvas_250_500", "canvas_250_500", 500, 500);
+        TCanvas canvas_500_1000("canvas_500_1000", "canvas_500_1000", 500, 500);
+        TCanvas canvas_1000_3000("canvas_1000_3000", "canvas_1000_3000", 500, 500);
+        TCanvas canvas_3000("canvas_3000", "canvas_3000", 500, 500);
+
+        canvas_20_100.cd();
+
+        data_h_stk_cleaning_20_100->SetMarkerColor(kRed);
+        mc_h_stk_cleaning_20_100->SetMarkerColor(kBlue);
+
+        data_h_stk_cleaning_20_100->Draw();
+        mc_h_stk_cleaning_20_100->Draw("same");
+
+        f_cuts_20_100.SetLineStyle(2);
+        f_cuts_20_100.SetLineWidth(3);
+        f_cuts_20_100.SetLineColor(kGreen+1);
+        f_cuts_20_100.Draw("same");
+        gPad->SetGrid(1,1);
+        gPad->SetLogx();
+        gPad->SetLogy();
+        gStyle->SetOptStat(0);
+
+        canvas_100_250.cd();
+
+        data_h_stk_cleaning_100_250->SetMarkerColor(kRed);
+        mc_h_stk_cleaning_100_250->SetMarkerColor(kBlue);
+
+        data_h_stk_cleaning_100_250->Draw();
+        mc_h_stk_cleaning_100_250->Draw("same");
+        f_cuts_100_250.SetLineStyle(2);
+        f_cuts_100_250.SetLineWidth(3);
+        f_cuts_100_250.SetLineColor(kGreen+1);
+        f_cuts_100_250.Draw("same");
+        gPad->SetGrid(1,1);
+        gPad->SetLogx();
+        gPad->SetLogy();
+        gStyle->SetOptStat(0);
+
+        canvas_250_500.cd();
+
+        data_h_stk_cleaning_250_500->SetMarkerColor(kRed);
+        mc_h_stk_cleaning_250_500->SetMarkerColor(kBlue);
+
+        data_h_stk_cleaning_250_500->Draw();
+        mc_h_stk_cleaning_250_500->Draw("same");
+        f_cuts_250_500.SetLineStyle(2);
+        f_cuts_250_500.SetLineWidth(3);
+        f_cuts_250_500.SetLineColor(kGreen+1);
+        f_cuts_250_500.Draw("same");
+        gPad->SetGrid(1,1);
+        gPad->SetLogx();
+        gPad->SetLogy();
+        gStyle->SetOptStat(0);
+
+        canvas_500_1000.cd();
+
+        data_h_stk_cleaning_500_1000->SetMarkerColor(kRed);
+        mc_h_stk_cleaning_500_1000->SetMarkerColor(kBlue);
+
+        data_h_stk_cleaning_500_1000->Draw();
+        mc_h_stk_cleaning_500_1000->Draw("same");
+        f_cuts_500_1000.SetLineStyle(2);
+        f_cuts_500_1000.SetLineWidth(3);
+        f_cuts_500_1000.SetLineColor(kGreen+1);
+        f_cuts_500_1000.Draw("same");
+        gPad->SetGrid(1,1);
+        gPad->SetLogx();
+        gPad->SetLogy();
+        gStyle->SetOptStat(0);
+
+        canvas_1000_3000.cd();
+
+        data_h_stk_cleaning_1000_3000->SetMarkerColor(kRed);
+        mc_h_stk_cleaning_1000_3000->SetMarkerColor(kBlue);
+
+        data_h_stk_cleaning_1000_3000->Draw();
+        mc_h_stk_cleaning_1000_3000->Draw("same");
+        f_cuts_1000_3000.SetLineStyle(2);
+        f_cuts_1000_3000.SetLineWidth(3);
+        f_cuts_1000_3000.SetLineColor(kGreen+1);
+        f_cuts_1000_3000.Draw("same");
+        gPad->SetGrid(1,1);
+        gPad->SetLogx();
+        gPad->SetLogy();
+        gStyle->SetOptStat(0);
+
+        canvas_3000.cd();
+
+        data_h_stk_cleaning_3000->SetMarkerColor(kRed);
+        mc_h_stk_cleaning_3000->SetMarkerColor(kBlue);
+
+        data_h_stk_cleaning_3000->Draw();
+        mc_h_stk_cleaning_3000->Draw("same");
+        f_cuts_3000.SetLineStyle(2);
+        f_cuts_3000.SetLineWidth(3);
+        f_cuts_3000.SetLineColor(kGreen+1);
+        f_cuts_3000.Draw("same");
+        gPad->SetGrid(1,1);
+        gPad->SetLogx();
+        gPad->SetLogy();
+        gStyle->SetOptStat(0);
+
+        canvas_20_100.Write();
+        canvas_100_250.Write();
+        canvas_250_500.Write();
+        canvas_500_1000.Write();
+        canvas_1000_3000.Write();
+        canvas_3000.Write();
+
+        stk_1rm_cut->Close();
+
         print_canvas.Clear();
 
 
