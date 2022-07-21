@@ -10,6 +10,7 @@
 #include <limits>
 #include <tuple>
 
+#include "TAxis.h"
 #include "TTree.h"
 #include "TPDF.h"
 #include "TPad.h"
@@ -351,7 +352,9 @@ void produceFluxPlots(
         TCanvas custom_canvas((std::string("canvas_")+std::to_string(bidx)).c_str(), (std::string("canvas_")+std::to_string(bidx)).c_str(), 500, 500);
         custom_canvas.cd();
 
-        flux_graphs[bidx]->SetTitle("flux (not corrected)");
+        flux_graphs[bidx]->GetYaxis()->SetTitle("E^{3} #times Raw flux (GeV^{2} [m^{2} sr s]^{-1})");
+
+        flux_graphs[bidx]->SetTitle("raw flux (not corrected)");
         flux_graphs_eff_corrected_b_sub[bidx]->SetTitle("flux (background + eff correction)");
 
         flux_graphs[bidx]->SetLineColor(kBlack);
