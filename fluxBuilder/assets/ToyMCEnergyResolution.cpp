@@ -165,6 +165,9 @@ void ToyMCEnergyResolution(
 
         // Extract the acceptance
         auto h_acceptance = extractHistoFromFile(acceptance_file, verbose);
+        for (int bidx=1; bidx<=h_acceptance->GetNbinsX(); ++bidx)
+            h_acceptance->SetBinError(bidx, 0);
+            
         h_acceptance->Sumw2();
 
         // Create output file
