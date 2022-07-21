@@ -148,21 +148,47 @@ void buildFlux(
 
         // Subtract the background contamination
         h_e_counts->Add(h_back_cont.get(), -1);
+
+        auto h_flux_stat_err = static_cast<TH1D*>(h_e_counts->Clone("h_flux_stat_err"));
+
+        std::cout << "\nErr: " << h_flux_stat_err->GetBinError(10) << std::endl;
         
         // Correct for the efficiency
         h_e_counts->Divide(h_signal_eff.get());
 
+        for (int bIdx {1}; bIdx<=h_e_counts->GetNbinsX(); ++bIdx) {
+            h_flux_stat_err->SetBinContent(bIdx, h_flux_stat_err->GetBinContent(bIdx) / h_signal_eff->GetBinContent(bIdx));
+            h_flux_stat_err->SetBinError(bIdx, h_flux_stat_err->GetBinError(bIdx) / h_signal_eff->GetBinContent(bIdx));
+        }
+
         // Divide by the acceptance
         h_e_counts->Divide(h_e_acc.get());
 
+        for (int bIdx {1}; bIdx<=h_e_counts->GetNbinsX(); ++bIdx) {
+            h_flux_stat_err->SetBinContent(bIdx, h_flux_stat_err->GetBinContent(bIdx) / h_e_acc->GetBinContent(bIdx));
+            h_flux_stat_err->SetBinError(bIdx, h_flux_stat_err->GetBinError(bIdx) / h_e_acc->GetBinContent(bIdx));
+        }
+
         // Scale by the exposure-time
         h_e_counts->Scale(1/exposure_time);
+
+        for (int bIdx {1}; bIdx<=h_e_counts->GetNbinsX(); ++bIdx) {
+            h_flux_stat_err->SetBinContent(bIdx, h_flux_stat_err->GetBinContent(bIdx) / exposure_time);
+            h_flux_stat_err->SetBinError(bIdx, h_flux_stat_err->GetBinError(bIdx) / exposure_time);
+        }
 
         // divide by the energy bin width
         for (int bIdx {1}; bIdx<=h_e_counts->GetNbinsX(); ++bIdx) {
             if(h_e_counts->GetBinContent(bIdx)) {
                 h_e_counts->SetBinContent(bIdx, static_cast<double>(h_e_counts->GetBinContent(bIdx))/h_e_counts->GetBinWidth(bIdx));
                 h_e_counts->SetBinError(bIdx, static_cast<double>(h_e_counts->GetBinError(bIdx))/h_e_counts->GetBinWidth(bIdx));
+            }
+        }
+
+        for (int bIdx {1}; bIdx<=h_flux_stat_err->GetNbinsX(); ++bIdx) {
+            if(h_flux_stat_err->GetBinContent(bIdx)) {
+                h_flux_stat_err->SetBinContent(bIdx, static_cast<double>(h_flux_stat_err->GetBinContent(bIdx))/h_flux_stat_err->GetBinWidth(bIdx));
+                h_flux_stat_err->SetBinError(bIdx, static_cast<double>(h_flux_stat_err->GetBinError(bIdx))/h_flux_stat_err->GetBinWidth(bIdx));
             }
         }
 
@@ -178,6 +204,15 @@ void buildFlux(
             if(h_e_counts_E3->GetBinContent(bIdx)) {
                 h_e_counts_E3->SetBinContent(bIdx, h_e_counts_E3->GetBinContent(bIdx)*pow(h_e_counts_E3->GetXaxis()->GetBinCenter(bIdx), 3));
                 h_e_counts_E3->SetBinError(bIdx, h_e_counts_E3->GetBinError(bIdx)*pow(h_e_counts_E3->GetXaxis()->GetBinCenter(bIdx), 3));
+            }
+        }
+
+        // Build flux multiplied by E^3
+        auto h_flux_stat_err_E3 = static_cast<TH1D*>(h_flux_stat_err->Clone("h_flux_stat_err_E3"));
+        for (int bIdx {1}; bIdx<=h_flux_stat_err_E3->GetNbinsX(); ++bIdx) {
+            if(h_flux_stat_err_E3->GetBinContent(bIdx)) {
+                h_flux_stat_err_E3->SetBinContent(bIdx, h_flux_stat_err_E3->GetBinContent(bIdx)*pow(h_flux_stat_err_E3->GetXaxis()->GetBinCenter(bIdx), 3));
+                h_flux_stat_err_E3->SetBinError(bIdx, h_flux_stat_err_E3->GetBinError(bIdx)*pow(h_flux_stat_err_E3->GetXaxis()->GetBinCenter(bIdx), 3));
             }
         }
 
@@ -197,13 +232,47 @@ void buildFlux(
         std::vector<double> flux_E3                         (h_e_counts->GetNbinsX(), 0);
         std::vector<double> flux_E3_err                     (h_e_counts->GetNbinsX(), 0);
 
+        // Statistic flux uncertainty
+        std::vector<double> flux_E3_stu                         (h_e_counts->GetNbinsX(), 0);
+        std::vector<double> flux_E3_err_stu                     (h_e_counts->GetNbinsX(), 0);
+
         for (unsigned int idx=0; idx<energy.size(); ++idx) {
             energy[idx]         = wtsydp(energy_binning[idx], energy_binning[idx+1], -3);
             flux[idx]           = h_e_counts->GetBinContent(idx+1);
             flux_err[idx]       = h_e_counts->GetBinError(idx+1);
             flux_E3[idx]        = h_e_counts_E3->GetBinContent(idx+1);
             flux_E3_err[idx]    = h_e_counts_E3->GetBinError(idx+1);
+
+            flux_E3_stu[idx]        = h_flux_stat_err_E3->GetBinContent(idx+1);
+            flux_E3_err_stu[idx]    = h_flux_stat_err_E3->GetBinError(idx+1);
         }
+         
+        /*
+        for (unsigned int idx=0; idx<energy.size(); ++idx) {
+            std::cout << "\nbin: " << idx+1 << "\tFlux/FluxStat: " << flux_E3[idx] << " / " << flux_E3_stu[idx] << "\t flux err/flux stat err: " << flux_E3_err[idx] << " / " << flux_E3_err_stu[idx];
+        }
+        */
+
+        // Divide flux by E^3
+        for (int bIdx {1}; bIdx<=h_flux_stat_err_E3->GetNbinsX(); ++bIdx) {
+            if(h_flux_stat_err_E3->GetBinContent(bIdx)) {
+                h_flux_stat_err_E3->SetBinContent(bIdx, h_flux_stat_err_E3->GetBinContent(bIdx)/pow(h_flux_stat_err_E3->GetXaxis()->GetBinCenter(bIdx), 3));
+                h_flux_stat_err_E3->SetBinError(bIdx, h_flux_stat_err_E3->GetBinError(bIdx)/pow(h_flux_stat_err_E3->GetXaxis()->GetBinCenter(bIdx), 3));
+            }
+        }
+
+        for (unsigned int idx=0; idx<energy.size(); ++idx) {
+            flux_E3_stu[idx]        = h_flux_stat_err_E3->GetBinContent(idx+1);
+            flux_E3_err_stu[idx]    = h_flux_stat_err_E3->GetBinError(idx+1);
+        }
+
+        for (unsigned int idx=0; idx<energy.size(); ++idx) {
+            auto err_tot = flux_E3_err[idx] / pow(h_flux_stat_err_E3->GetXaxis()->GetBinCenter(idx+1), 3);
+            auto stat = flux_E3_err_stu[idx];
+            auto syst = sqrt(pow(err_tot, 2) - pow(stat, 2));
+            std::cout << "\nbin: " << idx+1 << "\tFlux: " << flux_E3_stu[idx] << "\t tot err: " << err_tot << "\t stat: " << stat << "\t syst: " << syst;
+        }
+
 
         TGraphErrors gr_flux(energy.size(), &energy[0], &flux[0], &energy_err[0], &flux_err[0]);
         TGraphErrors gr_flux_E3(energy.size(), &energy[0], &flux_E3[0], &energy_err[0], &flux_E3_err[0]);
