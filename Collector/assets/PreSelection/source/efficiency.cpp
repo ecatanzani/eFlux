@@ -128,7 +128,7 @@ void psd_charge_efficiency(
         psd_cluster_match clu_matching;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
         psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
 
         if (check_trigger(evt_header)) {
@@ -219,7 +219,7 @@ void psd_stk_matching_efficiency(
         psd_cluster_match clu_matching;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
         psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
 
         if (check_trigger(evt_header)) {
@@ -297,7 +297,7 @@ void stk_track_efficiency(
         best_track event_best_track;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
 
         if (check_trigger(evt_header)) {
 
@@ -364,7 +364,7 @@ void nbarlayer13_efficiency(
         psd_cluster_match clu_matching;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
         psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
 
         if (check_trigger(evt_header)) {
@@ -455,7 +455,7 @@ void maxrms_efficiency(
         psd_cluster_match clu_matching;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
         psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
 
         if (check_trigger(evt_header)) {

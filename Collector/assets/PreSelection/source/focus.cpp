@@ -15,7 +15,7 @@
 #include <vector>
 #include <tuple>
 
-#include "Dmp/DmpStruct.h"
+#include "Dmp/DmpGeoStruct.h"
 
 #include "DmpEvtHeader.h"
 #include "DmpEvtBgoHits.h"

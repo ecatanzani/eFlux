@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "Dmp/DmpStruct.h"
+#include "Dmp/DmpGeoStruct.h"
 
 #include "TFile.h"
 

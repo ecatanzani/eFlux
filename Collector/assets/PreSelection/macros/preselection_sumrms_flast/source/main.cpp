@@ -1,5 +1,5 @@
 #include "main.h"
-#include "lateral.h"
+#include "preselection.h"
 
 #include "anyoption.h"
 
@@ -77,13 +77,13 @@ int main(int argc, char **argv)
 		if (input_pars.verbose) {
 			input_pars.ExpandArgs();
         }
-        buildLateralDistributions(
+        preselection(
 			input_pars.input_path.c_str(), 
 			input_pars.output_path.c_str(), 
 			input_pars.verbose, 
 			input_pars.mc_flag, 
 			input_pars.threads,
-			input_pars.energy_config_file,
+			input_pars.energy_config_file.c_str(),
 			input_pars.input_spectral_index);
 	}	
 	else

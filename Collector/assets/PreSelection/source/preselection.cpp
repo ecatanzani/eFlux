@@ -14,7 +14,7 @@
 #include <memory>
 #include <vector>
 
-#include "Dmp/DmpStruct.h"
+#include "Dmp/DmpGeoStruct.h"
 
 #include "DmpEvtHeader.h"
 #include "DmpEvtBgoHits.h"
@@ -266,6 +266,20 @@ void preselection(const in_pars &input_pars) {
                     evt_corr_energy_gev,
                     ps_histos,
                     cuts_config);
+
+                /*
+                // Remove not showering events using the sumrms low energy cut
+                lateral_showering_distributions_after_sumrms_clean_cut(
+                    bgohits, 
+                    bgorec, 
+                    evt_header,
+                    evt_energy, 
+                    evt_corr_energy, 
+                    evt_energy_gev, 
+                    evt_corr_energy_gev,
+                    ps_histos,
+                    cuts_config);
+                */
 
                 // Remove lateral and large showering events as last cut
                 lateral_showering_distributions_lastcut(

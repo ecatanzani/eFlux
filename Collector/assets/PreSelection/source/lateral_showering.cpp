@@ -6,7 +6,7 @@
 #include "Dmp/DmpBgoContainer.h"
 #include "Dmp/DmpStkContainer.h"
 #include "Dmp/DmpPsdContainer.h"
-#include "Dmp/DmpStruct.h"
+#include "Dmp/DmpGeoStruct.h"
 
 void lateral_showering_distributions(
     std::shared_ptr<DmpEvtBgoHits> bgohits, 
@@ -32,7 +32,7 @@ void lateral_showering_distributions(
             auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
 
             if (bgofiducial_cut) {
-                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
+                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarIndex(13), evt_energy);
 
                 if (nbarlayer13_cut) {
                     auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (cuts_config->GetCutsConfig()).bgo_shower_width);
@@ -62,6 +62,65 @@ void lateral_showering_distributions(
         }
     }
 
+/*
+void lateral_showering_distributions_after_sumrms_clean_cut(
+    std::shared_ptr<DmpEvtBgoHits> bgohits, 
+    std::shared_ptr<DmpEvtBgoRec> bgorec, 
+    std::shared_ptr<DmpEvtHeader> evt_header,
+    const double evt_energy, 
+    const double evt_corr_energy,
+    const double evt_energy_gev, 
+    const double evt_corr_energy_gev, 
+    std::shared_ptr<histos> ps_histos,
+    std::shared_ptr<config> cuts_config) {
+
+        std::unique_ptr<DmpBgoContainer> bgoVault = std::make_unique<DmpBgoContainer>();
+        
+        bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
+
+        if (check_trigger(evt_header)) {
+
+            auto maxelayer_cut = maxElayer_cut(bgoVault->GetLayerEnergies(), (cuts_config->GetCutsConfig()).bgo_max_energy_ratio, evt_energy);
+            auto maxbarlayer_cut = maxBarLayer_cut(bgoVault->GetLayerBarNumber(), bgoVault->GetiMaxLayer(), bgoVault->GetIdxBarMaxLayer());
+            auto bgotrack_cut = BGOTrackContainment_cut(bgoVault->GetBGOslope(), bgoVault->GetBGOintercept(), (cuts_config->GetCutsConfig()).bgo_shower_axis_delta);
+
+            auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
+
+            if (bgofiducial_cut) {
+                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarIndex(13), evt_energy);
+
+                if (nbarlayer13_cut) {
+                    auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (cuts_config->GetCutsConfig()).bgo_shower_width);
+
+                    if (maxrms_cut) {
+
+                        if ()
+
+                        auto weight {ps_histos->GetWeight()};
+                        
+                        ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                        if (evt_corr_energy_gev>=20 && evt_corr_energy_gev<100)
+                            ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_20_100->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                        else if (evt_corr_energy_gev>=100 && evt_corr_energy_gev<250)
+                            ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_100_250->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                        else if (evt_corr_energy_gev>=250 && evt_corr_energy_gev<500)
+                            ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_250_500->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                        else if (evt_corr_energy_gev>=500 && evt_corr_energy_gev<1000)
+                            ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_500_1000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                        else if (evt_corr_energy_gev>=1000 && evt_corr_energy_gev<3000)
+                            ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_1000_3000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                        else if (evt_corr_energy_gev>=3000 && evt_corr_energy_gev<5000)
+                            ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_3000_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                        else if (evt_corr_energy_gev>=5000)
+                            ps_histos->h_BGOrec_sumRms_flast_after_remove_lateral_and_showering_5000->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
+                    }
+                }
+            }
+        }
+    }
+
+*/
+
 void lateral_showering_distributions_lastcut(
     std::shared_ptr<DmpEvtBgoHits> bgohits, 
     std::shared_ptr<DmpEvtBgoRec> bgorec, 
@@ -84,7 +143,7 @@ void lateral_showering_distributions_lastcut(
         psd_cluster_match clu_matching;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
         psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
 
         if (check_trigger(evt_header)) {
@@ -167,7 +226,7 @@ void lateral_showering_distributions_lastcut(
                                     ps_histos->h_BGOrec_sumRms_flast_5000_lateral_showering_lastcut->Fill(bgoVault->GetSumRMS(), bgoVault->GetSingleFracLayer(13), weight);
 
                                 // Fill efficiency histos
-                                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
+                                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarIndex(13), evt_energy);
                                 auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (cuts_config->GetCutsConfig()).bgo_shower_width);
                             }
                         }
@@ -197,7 +256,7 @@ const bool isNumberOfLastLayerBarsTooHigh(
         psd_cluster_match clu_matching;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
         psdVault->scanPSDHits(psdhits, (cuts_config->GetCutsConfig()).psd_min_energy);
 
         if (check_trigger(evt_header)) {
@@ -246,7 +305,7 @@ const bool isNumberOfLastLayerBarsTooHigh(
                             auto stkcharge_cut = stk_charge_cut(stkclusters, event_best_track, (cuts_config->GetCutsConfig()).STK_single_charge);
 
                             if (stkcharge_cut)
-                                isNumberOfLastLayerBarsTooHigh = ! nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
+                                isNumberOfLastLayerBarsTooHigh = ! nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarIndex(13), evt_energy);
                         }
                     }
                 }

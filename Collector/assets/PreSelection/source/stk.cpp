@@ -5,7 +5,7 @@
 
 #include "Dmp/DmpBgoContainer.h"
 #include "Dmp/DmpStkContainer.h"
-#include "Dmp/DmpStruct.h"
+#include "Dmp/DmpGeoStruct.h"
 
 #include "DmpStkTrackHelper.h"
 
@@ -28,7 +28,7 @@ void stk_distributions(
         best_track event_best_track;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (cuts_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
 
         if (check_trigger(evt_header)) {
 
@@ -39,7 +39,7 @@ void stk_distributions(
             auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
 
             if (bgofiducial_cut) {
-                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
+                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarIndex(13), evt_energy);
                 if (nbarlayer13_cut) {
                     auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (cuts_config->GetCutsConfig()).bgo_shower_width);
 
@@ -438,7 +438,7 @@ std::tuple<bool, DmpStkTrack> get_best_track(
         best_track event_best_track;
 
         bgoVault->scanBGOHits(bgohits, bgorec, bgorec->GetTotalEnergy(), (_config->GetCutsConfig()).bgo_layer_min_energy);
-        stkVault->scanSTKHits(stkclusters);
+        stkVault->scanSTKHits(stkclusters, stktracks, bgoVault->GetBGOslope(), bgoVault->GetBGOintercept());
 
         bool isTrackInteresting {false};
 
@@ -451,7 +451,7 @@ std::tuple<bool, DmpStkTrack> get_best_track(
             auto bgofiducial_cut = maxelayer_cut && maxbarlayer_cut && bgotrack_cut;
 
             if (bgofiducial_cut) {
-                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarNumber(13), evt_energy);
+                auto nbarlayer13_cut = nBarLayer13_cut(bgohits, bgoVault->GetSingleLayerBarIndex(13), evt_energy);
                 if (nbarlayer13_cut) {
                     auto maxrms_cut = maxRms_cut(bgoVault->GetELayer(), bgoVault->GetRmsLayer(), evt_energy, (_config->GetCutsConfig()).bgo_shower_width);
 

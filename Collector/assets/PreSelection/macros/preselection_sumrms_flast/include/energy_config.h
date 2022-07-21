@@ -11,7 +11,7 @@
 class energy_config
 {
 public:
-    energy_config(const std::string energy_config_file);
+    energy_config(const char* energy_config_file);
     ~energy_config(){};
     std::vector<double> GetEnergyBinning();
     const double GetMinEvtEnergy();

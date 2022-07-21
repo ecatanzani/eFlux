@@ -29,7 +29,7 @@ void DmpPsdContainer::scanPSDHits(
 			if (first_hit)
 			{
 				eMaxBarPsd[layerID] = hitE;
-				iMaxBarPsd[layerID] = layerBarIndexPsd[layerID].size() - 1;
+				iMaxBarPsd[layerID] = layerBarIndexPsd[layerID].size() -1;
 				first_hit = false;
 			}
 			else
@@ -37,7 +37,7 @@ void DmpPsdContainer::scanPSDHits(
 				if (hitE > eMaxBarPsd[layerID])
 				{
 					eMaxBarPsd[layerID] = hitE;
-					iMaxBarPsd[layerID] = layerBarIndexPsd[layerID].size() - 1;
+					iMaxBarPsd[layerID] = layerBarIndexPsd[layerID].size() -1;
 				}
 			}
 		}
@@ -181,4 +181,26 @@ const unsigned int DmpPsdContainer::getPsdNclustersX()
 const unsigned int DmpPsdContainer::getPsdNclustersY()
 {
 	return nPsdClustersY;
+}
+
+void DmpPsdContainer::Reset()
+{
+	layerBarIndexPsd 					= std::vector<std::vector<short>>(DAMPE_psd_nLayers, std::vector<short>());
+	layerBarNumberPsd 					= std::vector<std::vector<short>>(DAMPE_psd_nLayers, std::vector<short>());
+	layerBarEnergyPsd 					= std::vector<std::vector<double>>(DAMPE_psd_nLayers, std::vector<double>());
+	layerBarUsedPsd 					= std::vector<std::vector<short>>(DAMPE_psd_nLayers, std::vector<short>());
+	psdCluster_idxBeg 					= std::vector<std::vector<short>>(DAMPE_psd_nLayers, std::vector<short>());
+	psdCluster_length 					= std::vector<std::vector<short>>(DAMPE_psd_nLayers, std::vector<short>());
+	psdCluster_idxMaxE 					= std::vector<std::vector<short>>(DAMPE_psd_nLayers, std::vector<short>());
+	psdCluster_E 						= std::vector<std::vector<double>>(DAMPE_psd_nLayers, std::vector<double>());
+	psdCluster_maxE	 					= std::vector<std::vector<double>>(DAMPE_psd_nLayers, std::vector<double>());
+	psdCluster_maxEcoordinate 			= std::vector<std::vector<double>>(DAMPE_psd_nLayers, std::vector<double>());
+	psdCluster_coordinate 				= std::vector<std::vector<double>>(DAMPE_psd_nLayers, std::vector<double>());
+	psdCluster_Z 						= std::vector<std::vector<double>>(DAMPE_psd_nLayers, std::vector<double>());
+	hitZ 								= std::vector<double>();
+	globalBarID 						= std::vector<short>();
+
+	nPsdClusters 						= 0;
+	nPsdClustersX 						= 0;
+	nPsdClustersY 						= 0;
 }

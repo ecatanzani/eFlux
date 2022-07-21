@@ -580,17 +580,17 @@ class histos {
             bool h_simu {false};
             int energy_nbins {0};
 
-            std::vector<float> energy_binning;
-            std::vector<float> energy_fraction_bins;
-            std::vector<float> bars_energy_bins;
-            std::vector<float> bars_2d_energy_bins;
-            std::vector<float> number_of_bars_last_layer;
-            std::vector<float> max_rms_bins;
-            std::vector<float> sumRms_binning;
-            std::vector<float> flast_binning;
-            std::vector<float> stk_track_binning;
-            std::vector<float> stk_ntracks_binning;
-            std::vector<float> psd_clusters_binning;
+            std::vector<double> energy_binning;
+            std::vector<double> energy_fraction_bins;
+            std::vector<double> bars_energy_bins;
+            std::vector<double> bars_2d_energy_bins;
+            std::vector<double> number_of_bars_last_layer;
+            std::vector<double> max_rms_bins;
+            std::vector<double> sumRms_binning;
+            std::vector<double> flast_binning;
+            std::vector<double> stk_track_binning;
+            std::vector<double> stk_ntracks_binning;
+            std::vector<double> psd_clusters_binning;
 
 };
 

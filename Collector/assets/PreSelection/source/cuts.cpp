@@ -1,6 +1,6 @@
 #include "cuts.h"
 
-#include "Dmp/DmpStruct.h"
+#include "Dmp/DmpGeoStruct.h"
 
 #include "DmpStkTrack.h"
 #include "DmpStkTrackHelper.h"
@@ -72,16 +72,16 @@ const bool BGOTrackContainment_cut(
 
 const bool nBarLayer13_cut(
     std::shared_ptr<DmpEvtBgoHits> bgohits, 
-    std::vector<short> layerBarNumber, 
+    const std::vector<short> layerBarIndex, 
     const double bgoTotalE) {
 
         bool passed_nBarLayer13_cut = false;
         unsigned int nTriggeredBGO_13_bars = 0;
         double _GeV = 0.001;
 
-        for (auto it = layerBarNumber.begin(); it != layerBarNumber.end(); ++it) {
-            auto ihit = *it;
-            auto hitE = (bgohits->fEnergy)[ihit];
+        for (auto it = std::begin(layerBarIndex); it != std::end(layerBarIndex); ++it)
+        {
+            auto hitE = (bgohits->fEnergy)[*it];
             if (hitE > 10)
                 ++nTriggeredBGO_13_bars;
         }
@@ -112,6 +112,28 @@ const bool maxRms_cut(
 
         return passed_maxRms_cut;
     }
+
+const bool sumrms_low_energy_cut(
+	const double bgoTotalE,
+	const double sumrms,
+	const double bgo_direction_cosine) {
+        
+		bool passed_sumrms_low_energy_cut {true};
+		double _GeV {0.001};
+
+		if (bgoTotalE*_GeV < 100)
+		{
+			if (sumrms < (270 - 100 * pow(bgo_direction_cosine, 6)))
+				passed_sumrms_low_energy_cut = false;
+		}
+		else if (bgoTotalE*_GeV >= 100 && bgoTotalE*_GeV < 250)
+		{
+			if (sumrms < (800 - 600 * pow(bgo_direction_cosine, 1.2)))
+				passed_sumrms_low_energy_cut = false;
+		}
+		
+		return passed_sumrms_low_energy_cut;
+	}
 
 inline void link_ladders(std::vector<int> &LadderToLayer) {
 	for (int ilad = 0; ilad < nSTKladders; ++ilad) {

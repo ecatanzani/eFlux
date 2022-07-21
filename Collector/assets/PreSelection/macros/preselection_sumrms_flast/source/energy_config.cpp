@@ -1,8 +1,8 @@
 #include "energy_config.h"
 
-energy_config::energy_config(const std::string energy_config_file)
+energy_config::energy_config(const char* energy_config_file)
 {
-    get_config_info(parse_config_file(energy_config_file.c_str()));
+    get_config_info(parse_config_file(energy_config_file));
 	n_bins = energy_binning.size()-1;
 	min_event_energy = energy_binning.front();
 	max_event_energy = energy_binning.back();

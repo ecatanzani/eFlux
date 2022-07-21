@@ -13,7 +13,7 @@
 #include "DmpEvtBgoRec.h"
 #include "DmpStkTrack.h"
 
-#include "Dmp/DmpStruct.h"
+#include "Dmp/DmpGeoStruct.h"
 
 struct best_track {
 	int n_points = -999;
@@ -71,7 +71,7 @@ extern const bool BGOTrackContainment_cut(
 
 extern const bool nBarLayer13_cut(
     std::shared_ptr<DmpEvtBgoHits> bgohits, 
-    std::vector<short> layerBarNumber, 
+    const std::vector<short> layerBarIndex,
     const double bgoTotalE);
 
 extern const bool maxRms_cut(
@@ -79,6 +79,11 @@ extern const bool maxRms_cut(
 	const std::vector<double> rmsLayer,
 	const double bgoTotalE,
 	const double max_rms_shower_width);
+
+extern const bool sumrms_low_energy_cut(
+	const double bgoTotalE,
+	const double sumrms,
+	const double bgo_direction_cosine);
 
 extern const bool track_selection_cut(
 	const std::shared_ptr<DmpEvtBgoRec> bgorec,

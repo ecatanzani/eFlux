@@ -8,14 +8,14 @@
 #include <fstream>
 #include <sstream>
 
-extern std::vector<float> createLogBinning(
+extern std::vector<double> createLogBinning(
 	const double eMin, 
 	const double eMax, 
 	const size_t n_bins);
 
-extern std::vector<float> createLinearBinning(
-	float a, 
-	float b, 
+extern std::vector<double> createLinearBinning(
+	double a, 
+	double b, 
 	std::size_t N);
 
 #endif
