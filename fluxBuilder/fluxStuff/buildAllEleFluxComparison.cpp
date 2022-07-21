@@ -98,7 +98,8 @@ void buildAllEleFluxComparison(
         gr_input_reference->SetMaximum(300);
         
         gr_input_reference->GetXaxis()->SetTitle("Energy [GeV]");
-        gr_input_reference->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+        //gr_input_reference->GetYaxis()->SetTitle("Flux E^{3}*[s^{-1}E^{-1}st^{-1}]");
+        gr_input_reference->GetYaxis()->SetTitle("E^{3} #times #Phi (GeV^{2} [m^{2} sr s]^{-1})");
 
         gr_input_reference->Draw("AP");
         gr_input_flux->Draw("P");
