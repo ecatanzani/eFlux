@@ -336,19 +336,19 @@ void MergeMCDataBDT(
         mc_electron_h_tmva_classifier_1000_3000         ->SetLineWidth(2);
         mc_electron_h_tmva_classifier_3000              ->SetLineWidth(2);
 
-        mc_electron_h_tmva_classifier_20_100            ->SetLineColor(kBlue+2);
-        mc_electron_h_tmva_classifier_100_250           ->SetLineColor(kBlue+2);
-        mc_electron_h_tmva_classifier_250_500           ->SetLineColor(kBlue+2);
-        mc_electron_h_tmva_classifier_500_1000          ->SetLineColor(kBlue+2);
-        mc_electron_h_tmva_classifier_1000_3000         ->SetLineColor(kBlue+2);
-        mc_electron_h_tmva_classifier_3000              ->SetLineColor(kBlue+2);
+        mc_electron_h_tmva_classifier_20_100            ->SetLineColor(kGreen+2);
+        mc_electron_h_tmva_classifier_100_250           ->SetLineColor(kGreen+2);
+        mc_electron_h_tmva_classifier_250_500           ->SetLineColor(kGreen+2);
+        mc_electron_h_tmva_classifier_500_1000          ->SetLineColor(kGreen+2);
+        mc_electron_h_tmva_classifier_1000_3000         ->SetLineColor(kGreen+2);
+        mc_electron_h_tmva_classifier_3000              ->SetLineColor(kGreen+2);
 
-        mc_electron_h_tmva_classifier_20_100            ->SetMarkerColor(kBlue+2);
-        mc_electron_h_tmva_classifier_100_250           ->SetMarkerColor(kBlue+2);
-        mc_electron_h_tmva_classifier_250_500           ->SetMarkerColor(kBlue+2);
-        mc_electron_h_tmva_classifier_500_1000          ->SetMarkerColor(kBlue+2);
-        mc_electron_h_tmva_classifier_1000_3000         ->SetMarkerColor(kBlue+2);
-        mc_electron_h_tmva_classifier_3000              ->SetMarkerColor(kBlue+2);
+        mc_electron_h_tmva_classifier_20_100            ->SetMarkerColor(kGreen+2);
+        mc_electron_h_tmva_classifier_100_250           ->SetMarkerColor(kGreen+2);
+        mc_electron_h_tmva_classifier_250_500           ->SetMarkerColor(kGreen+2);
+        mc_electron_h_tmva_classifier_500_1000          ->SetMarkerColor(kGreen+2);
+        mc_electron_h_tmva_classifier_1000_3000         ->SetMarkerColor(kGreen+2);
+        mc_electron_h_tmva_classifier_3000              ->SetMarkerColor(kGreen+2);
 
         mc_electron_h_tmva_classifier_20_100            ->SetDirectory(0);
         mc_electron_h_tmva_classifier_100_250           ->SetDirectory(0);
@@ -498,7 +498,11 @@ void MergeMCDataBDT(
         print_canvas.SetTicks();
 
         // 20 GeV - 100 GeV plot
-        data_h_tmva_classifier_20_100->Draw();
+        data_h_tmva_classifier_20_100->SetMarkerStyle(20);
+        data_h_tmva_classifier_20_100->SetMarkerSize(0.8);
+        data_h_tmva_classifier_20_100->SetMarkerColor(kBlack);
+
+        data_h_tmva_classifier_20_100->Draw("PE");
         mc_electron_h_tmva_classifier_20_100->Draw("same, histo");
         mc_proton_h_tmva_classifier_20_100->Draw("same, histo");
 
@@ -522,9 +526,13 @@ void MergeMCDataBDT(
         print_canvas.Print("bdt_classifier_data_mc.pdf(","Title:BDT classifier - 20 GeV - 100 GeV");
 
         // 100 GeV - 250 GeV plot
-        data_h_tmva_classifier_100_250->Draw();
-        mc_electron_h_tmva_classifier_100_250->Draw("same, histo");
-        mc_proton_h_tmva_classifier_100_250->Draw("same, histo");
+        data_h_tmva_classifier_100_250->SetMarkerStyle(20);
+        data_h_tmva_classifier_100_250->SetMarkerSize(0.8);
+        data_h_tmva_classifier_100_250->SetMarkerColor(kBlack);
+
+        data_h_tmva_classifier_100_250->Draw("PE");
+        mc_electron_h_tmva_classifier_100_250->Draw("same, hist");
+        mc_proton_h_tmva_classifier_100_250->Draw("same, hist");
 
         if (logy)
             gPad->SetLogy();
@@ -546,9 +554,13 @@ void MergeMCDataBDT(
         print_canvas.Print("bdt_classifier_data_mc.pdf","Title:BDT classifier - 100 GeV - 250 GeV");
 
         // 250 GeV - 500 GeV plot
-        data_h_tmva_classifier_250_500->Draw();
-        mc_electron_h_tmva_classifier_250_500->Draw("same, histo");
-        mc_proton_h_tmva_classifier_250_500->Draw("same, histo");
+        data_h_tmva_classifier_250_500->SetMarkerStyle(20);
+        data_h_tmva_classifier_250_500->SetMarkerSize(0.8);
+        data_h_tmva_classifier_250_500->SetMarkerColor(kBlack);
+
+        data_h_tmva_classifier_250_500->Draw("PE");
+        mc_electron_h_tmva_classifier_250_500->Draw("same, hist");
+        mc_proton_h_tmva_classifier_250_500->Draw("same, hist");
 
         if (logy)
             gPad->SetLogy();
@@ -570,9 +582,13 @@ void MergeMCDataBDT(
         print_canvas.Print("bdt_classifier_data_mc.pdf","Title:BDT classifier - 250 GeV - 500 GeV");
 
         // 500 GeV - 1 TeV plot
-        data_h_tmva_classifier_500_1000->Draw();
-        mc_electron_h_tmva_classifier_500_1000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_500_1000->Draw("same, histo");
+        data_h_tmva_classifier_500_1000->SetMarkerStyle(20);
+        data_h_tmva_classifier_500_1000->SetMarkerSize(0.8);
+        data_h_tmva_classifier_500_1000->SetMarkerColor(kBlack);
+
+        data_h_tmva_classifier_500_1000->Draw("PE");
+        mc_electron_h_tmva_classifier_500_1000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_500_1000->Draw("same, hist");
 
         if (logy)
             gPad->SetLogy();
@@ -594,9 +610,13 @@ void MergeMCDataBDT(
         print_canvas.Print("bdt_classifier_data_mc.pdf","Title:BDT classifier - 500 GeV - 1 TeV");
 
         // 1 TeV - 3 TeV plot
-        data_h_tmva_classifier_1000_3000->Draw();
-        mc_electron_h_tmva_classifier_1000_3000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_1000_3000->Draw("same, histo");
+        data_h_tmva_classifier_1000_3000->SetMarkerStyle(20);
+        data_h_tmva_classifier_1000_3000->SetMarkerSize(0.8);
+        data_h_tmva_classifier_1000_3000->SetMarkerColor(kBlack);
+
+        data_h_tmva_classifier_1000_3000->Draw("PE");
+        mc_electron_h_tmva_classifier_1000_3000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_1000_3000->Draw("same, hist");
 
         if (logy)
             gPad->SetLogy();
@@ -618,9 +638,13 @@ void MergeMCDataBDT(
         print_canvas.Print("bdt_classifier_data_mc.pdf","Title:BDT classifier - 1 TeV - 3 TeV");
 
         // 3 TeV plot
-        data_h_tmva_classifier_3000->Draw();
-        mc_electron_h_tmva_classifier_3000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_3000->Draw("same, histo");
+        data_h_tmva_classifier_3000->SetMarkerStyle(20);
+        data_h_tmva_classifier_3000->SetMarkerSize(0.8);
+        data_h_tmva_classifier_3000->SetMarkerColor(kBlack);
+
+        data_h_tmva_classifier_3000->Draw("PE");
+        mc_electron_h_tmva_classifier_3000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_3000->Draw("same, hist");
 
         if (logy)
             gPad->SetLogy();
@@ -650,8 +674,8 @@ void MergeMCDataBDT(
         out_canvas.cd(1);
 
         data_h_tmva_classifier_20_100->Draw();
-        mc_electron_h_tmva_classifier_20_100->Draw("same, histo");
-        mc_proton_h_tmva_classifier_20_100->Draw("same, histo");
+        mc_electron_h_tmva_classifier_20_100->Draw("same, hist");
+        mc_proton_h_tmva_classifier_20_100->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -669,8 +693,8 @@ void MergeMCDataBDT(
         out_canvas.cd(2);
 
         data_h_tmva_classifier_100_250->Draw();
-        mc_electron_h_tmva_classifier_100_250->Draw("same, histo");
-        mc_proton_h_tmva_classifier_100_250->Draw("same, histo");
+        mc_electron_h_tmva_classifier_100_250->Draw("same, hist");
+        mc_proton_h_tmva_classifier_100_250->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -688,8 +712,8 @@ void MergeMCDataBDT(
         out_canvas.cd(3);
 
         data_h_tmva_classifier_250_500->Draw();
-        mc_electron_h_tmva_classifier_250_500->Draw("same, histo");
-        mc_proton_h_tmva_classifier_250_500->Draw("same, histo");
+        mc_electron_h_tmva_classifier_250_500->Draw("same, hist");
+        mc_proton_h_tmva_classifier_250_500->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -707,8 +731,8 @@ void MergeMCDataBDT(
         out_canvas.cd(4);
 
         data_h_tmva_classifier_500_1000->Draw();
-        mc_electron_h_tmva_classifier_500_1000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_500_1000->Draw("same, histo");
+        mc_electron_h_tmva_classifier_500_1000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_500_1000->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -726,8 +750,8 @@ void MergeMCDataBDT(
         out_canvas.cd(5);
 
         data_h_tmva_classifier_1000_3000->Draw();
-        mc_electron_h_tmva_classifier_1000_3000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_1000_3000->Draw("same, histo");
+        mc_electron_h_tmva_classifier_1000_3000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_1000_3000->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -745,8 +769,8 @@ void MergeMCDataBDT(
         out_canvas.cd(6);
 
         data_h_tmva_classifier_3000->Draw();
-        mc_electron_h_tmva_classifier_3000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_3000->Draw("same, histo");
+        mc_electron_h_tmva_classifier_3000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_3000->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -765,9 +789,18 @@ void MergeMCDataBDT(
 
         TCanvas out_canvas_20_100("bdt_classifier_data_mc_comparison_20_100", "bdt_classifier_data_mc_comparison_20_100", 500, 500);
 
-        data_h_tmva_classifier_20_100->Draw();
-        mc_electron_h_tmva_classifier_20_100->Draw("same, histo");
-        mc_proton_h_tmva_classifier_20_100->Draw("same, histo");
+        data_h_tmva_classifier_20_100->SetLineColor(kBlack);
+        data_h_tmva_classifier_20_100->SetLineWidth(2);
+        data_h_tmva_classifier_20_100->SetMarkerStyle(20);
+        data_h_tmva_classifier_20_100->SetMarkerSize(0.8);
+        data_h_tmva_classifier_20_100->SetMarkerColor(kBlack);
+
+        mc_electron_h_tmva_classifier_20_100->SetLineWidth(3);
+        mc_proton_h_tmva_classifier_20_100->SetLineWidth(3);
+
+        data_h_tmva_classifier_20_100->Draw("PE");
+        mc_electron_h_tmva_classifier_20_100->Draw("same, hist");
+        mc_proton_h_tmva_classifier_20_100->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -784,9 +817,18 @@ void MergeMCDataBDT(
 
         TCanvas out_canvas_100_250("bdt_classifier_data_mc_comparison_100_250", "bdt_classifier_data_mc_comparison_100_250", 500, 500);
 
-        data_h_tmva_classifier_100_250->Draw();
-        mc_electron_h_tmva_classifier_100_250->Draw("same, histo");
-        mc_proton_h_tmva_classifier_100_250->Draw("same, histo");
+        data_h_tmva_classifier_100_250->SetLineColor(kBlack);
+        data_h_tmva_classifier_100_250->SetLineWidth(2);
+        data_h_tmva_classifier_100_250->SetMarkerStyle(20);
+        data_h_tmva_classifier_100_250->SetMarkerSize(0.8);
+        data_h_tmva_classifier_100_250->SetMarkerColor(kBlack);
+
+        mc_electron_h_tmva_classifier_100_250->SetLineWidth(3);
+        mc_proton_h_tmva_classifier_100_250->SetLineWidth(3);
+
+        data_h_tmva_classifier_100_250->Draw("PE");
+        mc_electron_h_tmva_classifier_100_250->Draw("same, hist");
+        mc_proton_h_tmva_classifier_100_250->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -803,9 +845,18 @@ void MergeMCDataBDT(
 
         TCanvas out_canvas_250_500("bdt_classifier_data_mc_comparison_250_500", "bdt_classifier_data_mc_comparison_250_500", 500, 500);
 
-        data_h_tmva_classifier_250_500->Draw();
-        mc_electron_h_tmva_classifier_250_500->Draw("same, histo");
-        mc_proton_h_tmva_classifier_250_500->Draw("same, histo");
+        data_h_tmva_classifier_250_500->SetLineColor(kBlack);
+        data_h_tmva_classifier_250_500->SetLineWidth(2);
+        data_h_tmva_classifier_250_500->SetMarkerStyle(20);
+        data_h_tmva_classifier_250_500->SetMarkerSize(0.8);
+        data_h_tmva_classifier_250_500->SetMarkerColor(kBlack);
+
+        mc_electron_h_tmva_classifier_250_500->SetLineWidth(3);
+        mc_proton_h_tmva_classifier_250_500->SetLineWidth(3);
+
+        data_h_tmva_classifier_250_500->Draw("PE");
+        mc_electron_h_tmva_classifier_250_500->Draw("same, hist");
+        mc_proton_h_tmva_classifier_250_500->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -822,9 +873,18 @@ void MergeMCDataBDT(
 
         TCanvas out_canvas_500_1000("bdt_classifier_data_mc_comparison_500_1000", "bdt_classifier_data_mc_comparison_500_1000", 500, 500);
 
-        data_h_tmva_classifier_500_1000->Draw();
-        mc_electron_h_tmva_classifier_500_1000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_500_1000->Draw("same, histo");
+        data_h_tmva_classifier_500_1000->SetLineColor(kBlack);
+        data_h_tmva_classifier_500_1000->SetLineWidth(2);
+        data_h_tmva_classifier_500_1000->SetMarkerStyle(20);
+        data_h_tmva_classifier_500_1000->SetMarkerSize(0.8);
+        data_h_tmva_classifier_500_1000->SetMarkerColor(kBlack);
+
+        mc_electron_h_tmva_classifier_500_1000->SetLineWidth(3);
+        mc_proton_h_tmva_classifier_500_1000->SetLineWidth(3);
+
+        data_h_tmva_classifier_500_1000->Draw("PE");
+        mc_electron_h_tmva_classifier_500_1000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_500_1000->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -841,9 +901,18 @@ void MergeMCDataBDT(
 
         TCanvas out_canvas_1000_3000("bdt_classifier_data_mc_comparison_1000_3000", "bdt_classifier_data_mc_comparison_1000_3000", 500, 500);
 
-        data_h_tmva_classifier_1000_3000->Draw();
-        mc_electron_h_tmva_classifier_1000_3000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_1000_3000->Draw("same, histo");
+        data_h_tmva_classifier_1000_3000->SetLineColor(kBlack);
+        data_h_tmva_classifier_1000_3000->SetLineWidth(2);
+        data_h_tmva_classifier_1000_3000->SetMarkerStyle(20);
+        data_h_tmva_classifier_1000_3000->SetMarkerSize(0.8);
+        data_h_tmva_classifier_1000_3000->SetMarkerColor(kBlack);
+
+        mc_electron_h_tmva_classifier_1000_3000->SetLineWidth(3);
+        mc_proton_h_tmva_classifier_1000_3000->SetLineWidth(3);
+
+        data_h_tmva_classifier_1000_3000->Draw("PE");
+        mc_electron_h_tmva_classifier_1000_3000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_1000_3000->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
@@ -860,9 +929,18 @@ void MergeMCDataBDT(
 
         TCanvas out_canvas_3000_10000("bdt_classifier_data_mc_comparison_3000_10000", "bdt_classifier_data_mc_comparison_3000_10000", 500, 500);
 
-        data_h_tmva_classifier_3000->Draw();
-        mc_electron_h_tmva_classifier_3000->Draw("same, histo");
-        mc_proton_h_tmva_classifier_3000->Draw("same, histo");
+        data_h_tmva_classifier_3000->SetLineColor(kBlack);
+        data_h_tmva_classifier_3000->SetLineWidth(2);
+        data_h_tmva_classifier_3000->SetMarkerStyle(20);
+        data_h_tmva_classifier_3000->SetMarkerSize(0.8);
+        data_h_tmva_classifier_3000->SetMarkerColor(kBlack);
+
+        mc_electron_h_tmva_classifier_3000->SetLineWidth(3);
+        mc_proton_h_tmva_classifier_3000->SetLineWidth(3);
+
+        data_h_tmva_classifier_3000->Draw("PE");
+        mc_electron_h_tmva_classifier_3000->Draw("same, hist");
+        mc_proton_h_tmva_classifier_3000->Draw("same, hist");
 
         gPad->SetLogy();
         gPad->SetGrid(1,1);
