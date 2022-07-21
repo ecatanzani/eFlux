@@ -14,14 +14,14 @@
 const double generation_vertex_radius = 1.381976597885342;
 const int npx = 100000;
 const int nGFitLoops = 10000;
-const double chiSQLLimit = 0.000001;
+const double chiSQLLimit = 0.0000001;
 
 std::vector<double> getEnergyBinning(const char* config_file);
 std::vector<double> createLogBinning(const double eMin, const double eMax, const std::size_t n_bins);
 double wtsydp(const double minene, const double maxene, const double index);
 void tmpFit(std::shared_ptr<TF1> fitter_func, TGraphErrors &gr);
 void tmpFit(TF1 &fitter_func, TH1D* histo);
-void setStartingParameters(TF1 &oldFitter, TF1 &newFitter);
+void setStartingParameters(TF1 &oldFitter, TF1 &newFitter, bool soft=false);
 
 double logisticFunction(double *x, double *par);
 double logisticFunction_st1(double *x, double *par);
@@ -145,9 +145,9 @@ void buildAcceptance(
     gr_geometric_factor.Fit("fitter_func_geometric_factor", "IRQ");
 
     // First stage fit
-    TF1 fitter_func_geometric_trigger_st0("fitter_func_geometric_trigger_st0", logisticFunction, fit_func_min, fit_func_max, 2);
-    TF1 fitter_func_bgo_fiducial_st0("fitter_func_bgo_fiducial_st0", logisticFunction, fit_func_min, fit_func_max, 2);
-    TF1 fitter_func_all_cuts_st0("fitter_func_all_cuts_st0", logisticFunction, fit_func_min, fit_func_max, 2);
+    TF1 fitter_func_geometric_trigger_st0("fitter_func_geometric_trigger_st0", logisticFunction, fit_func_min, fit_func_max, 3);
+    TF1 fitter_func_bgo_fiducial_st0("fitter_func_bgo_fiducial_st0", logisticFunction, fit_func_min, fit_func_max, 3);
+    TF1 fitter_func_all_cuts_st0("fitter_func_all_cuts_st0", logisticFunction, fit_func_min, fit_func_max, 3);
 
     fitter_func_geometric_trigger_st0.SetLineColor(kOrange-3);
     fitter_func_bgo_fiducial_st0.SetLineColor(kOrange-3);
@@ -166,9 +166,9 @@ void buildAcceptance(
     tmpFit(fitter_func_all_cuts_st0, h_acc_all_cut);
 
     // Second stage fit
-    TF1 fitter_func_geometric_trigger_st1("fitter_func_geometric_trigger_st1", logisticFunction_st1, fit_func_min, fit_func_max, 4);
-    TF1 fitter_func_bgo_fiducial_st1("fitter_func_bgo_fiducial_st1", logisticFunction_st1, fit_func_min, fit_func_max, 4);
-    TF1 fitter_func_all_cuts_st1("fitter_func_all_cuts_st1", logisticFunction_st1, fit_func_min, fit_func_max, 4);
+    TF1 fitter_func_geometric_trigger_st1("fitter_func_geometric_trigger_st1", logisticFunction_st1, fit_func_min, fit_func_max, 5);
+    TF1 fitter_func_bgo_fiducial_st1("fitter_func_bgo_fiducial_st1", logisticFunction_st1, fit_func_min, fit_func_max, 5);
+    TF1 fitter_func_all_cuts_st1("fitter_func_all_cuts_st1", logisticFunction_st1, fit_func_min, fit_func_max, 5);
 
     setStartingParameters(fitter_func_geometric_trigger_st0, fitter_func_geometric_trigger_st1);
     setStartingParameters(fitter_func_bgo_fiducial_st0, fitter_func_bgo_fiducial_st1);
@@ -187,9 +187,9 @@ void buildAcceptance(
     tmpFit(fitter_func_all_cuts_st1, h_acc_all_cut);
 
     // Third stage fit
-    TF1 fitter_func_geometric_trigger_st2("fitter_func_geometric_trigger_st2", logisticFunction_st2, fit_func_min, fit_func_max, 6);
-    TF1 fitter_func_bgo_fiducial_st2("fitter_func_bgo_fiducial_st2", logisticFunction_st2, fit_func_min, fit_func_max, 6);
-    TF1 fitter_func_all_cuts_st2("fitter_func_all_cuts_st2", logisticFunction_st2, fit_func_min, fit_func_max, 6);
+    TF1 fitter_func_geometric_trigger_st2("fitter_func_geometric_trigger_st2", logisticFunction_st2, fit_func_min, fit_func_max, 7);
+    TF1 fitter_func_bgo_fiducial_st2("fitter_func_bgo_fiducial_st2", logisticFunction_st2, fit_func_min, fit_func_max, 7);
+    TF1 fitter_func_all_cuts_st2("fitter_func_all_cuts_st2", logisticFunction_st2, fit_func_min, fit_func_max, 7);
 
     setStartingParameters(fitter_func_geometric_trigger_st1, fitter_func_geometric_trigger_st2);
     setStartingParameters(fitter_func_bgo_fiducial_st1, fitter_func_bgo_fiducial_st2);
@@ -206,11 +206,11 @@ void buildAcceptance(
     tmpFit(fitter_func_geometric_trigger_st2, h_acc_geometric_trigger);
     tmpFit(fitter_func_bgo_fiducial_st2, h_acc_bgo_fiducial);
     tmpFit(fitter_func_all_cuts_st2, h_acc_all_cut);
-
+    
     // Fourth stage fit
-    TF1 fitter_func_geometric_trigger_st3("fitter_func_geometric_trigger_st3", logisticFunction_st3, fit_func_min, fit_func_max, 7);
-    TF1 fitter_func_bgo_fiducial_st3("fitter_func_bgo_fiducial_st3", logisticFunction_st3, fit_func_min, fit_func_max, 7);
-    TF1 fitter_func_all_cuts_st3("fitter_func_all_cuts_st3", logisticFunction_st3, fit_func_min, fit_func_max, 7);
+    TF1 fitter_func_geometric_trigger_st3("fitter_func_geometric_trigger_st3", logisticFunction_st3, fit_func_min, fit_func_max, 9);
+    TF1 fitter_func_bgo_fiducial_st3("fitter_func_bgo_fiducial_st3", logisticFunction_st3, fit_func_min, fit_func_max, 9);
+    TF1 fitter_func_all_cuts_st3("fitter_func_all_cuts_st3", logisticFunction_st3, fit_func_min, fit_func_max, 9);
 
     setStartingParameters(fitter_func_geometric_trigger_st2, fitter_func_geometric_trigger_st3);
     setStartingParameters(fitter_func_bgo_fiducial_st2, fitter_func_bgo_fiducial_st3);
@@ -229,9 +229,9 @@ void buildAcceptance(
     tmpFit(fitter_func_all_cuts_st3, h_acc_all_cut);
 
     // Fifth stage fit
-    TF1 fitter_func_geometric_trigger_st4("fitter_func_geometric_trigger_st4", logisticFunction_st4, fit_func_min, fit_func_max, 8);
-    TF1 fitter_func_bgo_fiducial_st4("fitter_func_bgo_fiducial_st4", logisticFunction_st4, fit_func_min, fit_func_max, 8);
-    TF1 fitter_func_all_cuts_st4("fitter_func_all_cuts_st4", logisticFunction_st4, fit_func_min, fit_func_max, 8);
+    TF1 fitter_func_geometric_trigger_st4("fitter_func_geometric_trigger_st4", logisticFunction_st4, fit_func_min, fit_func_max, 12);
+    TF1 fitter_func_bgo_fiducial_st4("fitter_func_bgo_fiducial_st4", logisticFunction_st4, fit_func_min, fit_func_max, 12);
+    TF1 fitter_func_all_cuts_st4("fitter_func_all_cuts_st4", logisticFunction_st4, fit_func_min, fit_func_max, 12);
 
     setStartingParameters(fitter_func_geometric_trigger_st3, fitter_func_geometric_trigger_st4);
     setStartingParameters(fitter_func_bgo_fiducial_st3, fitter_func_bgo_fiducial_st4);
@@ -248,16 +248,16 @@ void buildAcceptance(
     tmpFit(fitter_func_geometric_trigger_st4, h_acc_geometric_trigger);
     tmpFit(fitter_func_bgo_fiducial_st4, h_acc_bgo_fiducial);
     tmpFit(fitter_func_all_cuts_st4, h_acc_all_cut);
-
+    
     // Sixth stage fit
-    TF1 fitter_func_geometric_trigger_st5("fitter_func_geometric_trigger_st5", logisticFunction_st5, fit_func_min, fit_func_max, 9);
-    TF1 fitter_func_bgo_fiducial_st5("fitter_func_bgo_fiducial_st5", logisticFunction_st5, fit_func_min, fit_func_max, 9);
-    TF1 fitter_func_all_cuts_st5("fitter_func_all_cuts_st5", logisticFunction_st5, fit_func_min, fit_func_max, 9);
-
+    TF1 fitter_func_geometric_trigger_st5("fitter_func_geometric_trigger_st5", logisticFunction_st5, fit_func_min, fit_func_max, 13);
+    TF1 fitter_func_bgo_fiducial_st5("fitter_func_bgo_fiducial_st5", logisticFunction_st5, fit_func_min, fit_func_max, 13);
+    TF1 fitter_func_all_cuts_st5("fitter_func_all_cuts_st5", logisticFunction_st5, fit_func_min, fit_func_max, 13);
+    
     setStartingParameters(fitter_func_geometric_trigger_st4, fitter_func_geometric_trigger_st5);
     setStartingParameters(fitter_func_bgo_fiducial_st4, fitter_func_bgo_fiducial_st5);
     setStartingParameters(fitter_func_all_cuts_st4, fitter_func_all_cuts_st5);
-
+   
     fitter_func_geometric_trigger_st5.SetLineColor(kBlue-7);
     fitter_func_bgo_fiducial_st5.SetLineColor(kBlue-7);
     fitter_func_all_cuts_st5.SetLineColor(kBlue-7);
@@ -270,14 +270,15 @@ void buildAcceptance(
     tmpFit(fitter_func_bgo_fiducial_st5, h_acc_bgo_fiducial);
     tmpFit(fitter_func_all_cuts_st5, h_acc_all_cut);
 
+    /*
     // Seventh stage fit
-    TF1 fitter_func_geometric_trigger_st6("fitter_func_geometric_trigger_st6", logisticFunction_st6, fit_func_min, fit_func_max, 10);
-    TF1 fitter_func_bgo_fiducial_st6("fitter_func_bgo_fiducial_st6", logisticFunction_st6, fit_func_min, fit_func_max, 10);
-    TF1 fitter_func_all_cuts_st6("fitter_func_all_cuts_st6", logisticFunction_st6, fit_func_min, fit_func_max, 10);
+    TF1 fitter_func_geometric_trigger_st6("fitter_func_geometric_trigger_st6", logisticFunction_st6, fit_func_min, fit_func_max, 14);
+    TF1 fitter_func_bgo_fiducial_st6("fitter_func_bgo_fiducial_st6", logisticFunction_st6, fit_func_min, fit_func_max, 14);
+    TF1 fitter_func_all_cuts_st6("fitter_func_all_cuts_st6", logisticFunction_st6, fit_func_min, fit_func_max, 14);
 
-    setStartingParameters(fitter_func_geometric_trigger_st5, fitter_func_geometric_trigger_st6);
-    setStartingParameters(fitter_func_bgo_fiducial_st5, fitter_func_bgo_fiducial_st6);
-    setStartingParameters(fitter_func_all_cuts_st5, fitter_func_all_cuts_st6);
+    setStartingParameters(fitter_func_geometric_trigger_st5, fitter_func_geometric_trigger_st6, true);
+    setStartingParameters(fitter_func_bgo_fiducial_st5, fitter_func_bgo_fiducial_st6, true);
+    setStartingParameters(fitter_func_all_cuts_st5, fitter_func_all_cuts_st6, true);
 
     fitter_func_geometric_trigger_st6.SetLineColor(kRed-7);
     fitter_func_bgo_fiducial_st6.SetLineColor(kRed-7);
@@ -292,13 +293,13 @@ void buildAcceptance(
     tmpFit(fitter_func_all_cuts_st6, h_acc_all_cut);
 
     // Eighth stage fit
-    TF1 fitter_func_geometric_trigger_st7("fitter_func_geometric_trigger_st7", logisticFunction_st7, fit_func_min, fit_func_max, 12);
-    TF1 fitter_func_bgo_fiducial_st7("fitter_func_bgo_fiducial_st7", logisticFunction_st7, fit_func_min, fit_func_max, 12);
-    TF1 fitter_func_all_cuts_st7("fitter_func_all_cuts_st7", logisticFunction_st7, fit_func_min, fit_func_max, 12);
+    TF1 fitter_func_geometric_trigger_st7("fitter_func_geometric_trigger_st7", logisticFunction_st7, fit_func_min, fit_func_max, 17);
+    TF1 fitter_func_bgo_fiducial_st7("fitter_func_bgo_fiducial_st7", logisticFunction_st7, fit_func_min, fit_func_max, 17);
+    TF1 fitter_func_all_cuts_st7("fitter_func_all_cuts_st7", logisticFunction_st7, fit_func_min, fit_func_max, 17);
 
-    setStartingParameters(fitter_func_geometric_trigger_st6, fitter_func_geometric_trigger_st7);
-    setStartingParameters(fitter_func_bgo_fiducial_st6, fitter_func_bgo_fiducial_st7);
-    setStartingParameters(fitter_func_all_cuts_st6, fitter_func_all_cuts_st7);
+    setStartingParameters(fitter_func_geometric_trigger_st6, fitter_func_geometric_trigger_st7, true);
+    setStartingParameters(fitter_func_bgo_fiducial_st6, fitter_func_bgo_fiducial_st7, true);
+    setStartingParameters(fitter_func_all_cuts_st6, fitter_func_all_cuts_st7, true);
 
     fitter_func_geometric_trigger_st7.SetLineColor(kPink-7);
     fitter_func_bgo_fiducial_st7.SetLineColor(kPink-7);
@@ -313,13 +314,13 @@ void buildAcceptance(
     tmpFit(fitter_func_all_cuts_st7, h_acc_all_cut);
 
     // Ninth stage fit
-    TF1 fitter_func_geometric_trigger_st8("fitter_func_geometric_trigger_st8", logisticFunction_st8, fit_func_min, fit_func_max, 14);
-    TF1 fitter_func_bgo_fiducial_st8("fitter_func_bgo_fiducial_st8", logisticFunction_st8, fit_func_min, fit_func_max, 14);
-    TF1 fitter_func_all_cuts_st8("fitter_func_all_cuts_st8", logisticFunction_st8, fit_func_min, fit_func_max, 14);
+    TF1 fitter_func_geometric_trigger_st8("fitter_func_geometric_trigger_st8", logisticFunction_st8, fit_func_min, fit_func_max, 20);
+    TF1 fitter_func_bgo_fiducial_st8("fitter_func_bgo_fiducial_st8", logisticFunction_st8, fit_func_min, fit_func_max, 20);
+    TF1 fitter_func_all_cuts_st8("fitter_func_all_cuts_st8", logisticFunction_st8, fit_func_min, fit_func_max, 20);
 
-    setStartingParameters(fitter_func_geometric_trigger_st7, fitter_func_geometric_trigger_st8);
-    setStartingParameters(fitter_func_bgo_fiducial_st7, fitter_func_bgo_fiducial_st8);
-    setStartingParameters(fitter_func_all_cuts_st7, fitter_func_all_cuts_st8);
+    setStartingParameters(fitter_func_geometric_trigger_st7, fitter_func_geometric_trigger_st8, true);
+    setStartingParameters(fitter_func_bgo_fiducial_st7, fitter_func_bgo_fiducial_st8, true);
+    setStartingParameters(fitter_func_all_cuts_st7, fitter_func_all_cuts_st8, true);
 
     fitter_func_geometric_trigger_st8.SetLineColor(kGreen+4);
     fitter_func_bgo_fiducial_st8.SetLineColor(kGreen+4);
@@ -334,13 +335,13 @@ void buildAcceptance(
     tmpFit(fitter_func_all_cuts_st8, h_acc_all_cut);
 
     // Tenth stage fit
-    TF1 fitter_func_geometric_trigger_st9("fitter_func_geometric_trigger_st9", logisticFunction_st9, fit_func_min, fit_func_max, 16);
-    TF1 fitter_func_bgo_fiducial_st9("fitter_func_bgo_fiducial_st9", logisticFunction_st9, fit_func_min, fit_func_max, 16);
-    TF1 fitter_func_all_cuts_st9("fitter_func_all_cuts_st9", logisticFunction_st9, fit_func_min, fit_func_max, 16);
+    TF1 fitter_func_geometric_trigger_st9("fitter_func_geometric_trigger_st9", logisticFunction_st9, fit_func_min, fit_func_max, 23);
+    TF1 fitter_func_bgo_fiducial_st9("fitter_func_bgo_fiducial_st9", logisticFunction_st9, fit_func_min, fit_func_max, 23);
+    TF1 fitter_func_all_cuts_st9("fitter_func_all_cuts_st9", logisticFunction_st9, fit_func_min, fit_func_max, 23);
 
-    setStartingParameters(fitter_func_geometric_trigger_st8, fitter_func_geometric_trigger_st9);
-    setStartingParameters(fitter_func_bgo_fiducial_st8, fitter_func_bgo_fiducial_st9);
-    setStartingParameters(fitter_func_all_cuts_st8, fitter_func_all_cuts_st9);
+    setStartingParameters(fitter_func_geometric_trigger_st8, fitter_func_geometric_trigger_st9, true);
+    setStartingParameters(fitter_func_bgo_fiducial_st8, fitter_func_bgo_fiducial_st9, true);
+    setStartingParameters(fitter_func_all_cuts_st8, fitter_func_all_cuts_st9, true);
 
     fitter_func_geometric_trigger_st9.SetLineColor(kCyan-3);
     fitter_func_bgo_fiducial_st9.SetLineColor(kCyan-3);
@@ -353,6 +354,8 @@ void buildAcceptance(
     tmpFit(fitter_func_geometric_trigger_st9, h_acc_geometric_trigger);
     tmpFit(fitter_func_bgo_fiducial_st9, h_acc_bgo_fiducial);
     tmpFit(fitter_func_all_cuts_st9, h_acc_all_cut);
+
+    */
 
     TFile* outfile = TFile::Open(output_file, "RECREATE");
     if (outfile->IsZombie())
@@ -379,10 +382,12 @@ void buildAcceptance(
     fitter_func_geometric_trigger_st3.Write();
     fitter_func_geometric_trigger_st4.Write();
     fitter_func_geometric_trigger_st5.Write();
+    /*
     fitter_func_geometric_trigger_st6.Write();
     fitter_func_geometric_trigger_st7.Write();
     fitter_func_geometric_trigger_st8.Write();
     fitter_func_geometric_trigger_st9.Write();
+    */
 
     outfile->mkdir("BGOFiducialVolume");
     outfile->cd("BGOFiducialVolume");
@@ -395,10 +400,12 @@ void buildAcceptance(
     fitter_func_bgo_fiducial_st3.Write();
     fitter_func_bgo_fiducial_st4.Write();
     fitter_func_bgo_fiducial_st5.Write();
+    /*
     fitter_func_bgo_fiducial_st6.Write();
     fitter_func_bgo_fiducial_st7.Write();
     fitter_func_bgo_fiducial_st8.Write();
     fitter_func_bgo_fiducial_st9.Write();
+    */
 
     outfile->mkdir("AllCuts");
     outfile->cd("AllCuts");
@@ -411,10 +418,12 @@ void buildAcceptance(
     fitter_func_all_cuts_st3.Write();
     fitter_func_all_cuts_st4.Write();
     fitter_func_all_cuts_st5.Write();
+    /*
     fitter_func_all_cuts_st6.Write();
     fitter_func_all_cuts_st7.Write();
     fitter_func_all_cuts_st8.Write();
     fitter_func_all_cuts_st9.Write();
+    */
     
     outfile->Close();
 
@@ -483,10 +492,11 @@ double wtsydp(const double minene, const double maxene, const double index)
         return dene / log(maxene / minene);
 }
 
-void setStartingParameters(TF1 &oldFitter, TF1 &newFitter)
-{
-    for (int pIdx = 0; pIdx < oldFitter.GetNpar(); ++pIdx)
-        newFitter.SetParameter(pIdx, oldFitter.GetParameter(pIdx));
+void setStartingParameters(TF1 &oldFitter, TF1 &newFitter, bool soft)
+{   
+    double start_value = !soft ? 1 : 0.001;
+    for (int pIdx = 0; pIdx < newFitter.GetNpar(); ++pIdx)
+        pIdx<oldFitter.GetNpar() ? newFitter.SetParameter(pIdx, oldFitter.GetParameter(pIdx)) : newFitter.SetParameter(pIdx, start_value);
 }
 
 void tmpFit(std::shared_ptr<TF1> fitter_func, TGraphErrors &gr)
@@ -533,72 +543,62 @@ void tmpFit(TF1 &fitter_func, TH1D* histo)
     }
 }
 
-double logisticFunction(double *x, double *par)
-{
+double logisticFunction(double *x, double *par) { // 3 pars 
     double xx = log10(x[0]+1);
-    double logistic = par[0] / (1 + TMath::Exp(-par[1]*xx));
+    double logistic = par[0] / (1 + TMath::Exp(-par[1]*xx + par[2]));
     return logistic;
 }
 
-double logisticFunction_st1(double *x, double *par)
-{
+double logisticFunction_st1(double *x, double *par) { // 5 pars
     double xx = log10(x[0]+1);
-    double logistic = par[0] / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3]));
+    double logistic = par[0] / (1 + par[3]*TMath::Exp(-(par[1]*xx + par[4]*TMath::Power(xx, 2)) + par[2]));
     return logistic;
 }
 
-double logisticFunction_st2(double *x, double *par)
-{
+double logisticFunction_st2(double *x, double *par) { // 7 pars
     double xx = log10(x[0]+1);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2) ) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3]));
+    double logistic = (par[0] + par[5]*xx) / (1 + par[3]*TMath::Exp(-(par[1]*xx + par[4]*TMath::Power(xx, 2) + par[6]*TMath::Power(xx, 3)) + par[2]));
     return logistic;
 }
 
-double logisticFunction_st3(double *x, double *par)
-{
+double logisticFunction_st3(double *x, double *par) { // 9 pars
     double xx = log10(x[0]+1);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2)) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) ));
+    double logistic = (par[0] + par[5]*xx) / (1 + par[3]*TMath::Exp(-(par[1]*xx + par[4]*TMath::Power(xx, 2) + par[6]*TMath::Power(xx, 3) + par[7]*TMath::Power(xx, 4) + par[8]) + par[2]));
     return logistic;
 }
 
-double logisticFunction_st4(double *x, double *par)
-{
+double logisticFunction_st4(double *x, double *par) { // 12 pars
     double xx = log10(x[0]+1);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2)) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) + par[7]*TMath::Power(xx,4) ));
+    double logistic = (par[0] + par[5]*xx + par[11]*TMath::Power(xx, 2)) / (1 + (par[3]+par[9]*xx+par[10]*TMath::Power(xx, 2))*TMath::Exp(-(par[1]*xx + par[4]*TMath::Power(xx, 2) + par[6]*TMath::Power(xx, 3) + par[7]*TMath::Power(xx, 4) + par[8]) + par[2]));
     return logistic;
 }
 
-double logisticFunction_st5(double *x, double *par)
-{
+double logisticFunction_st5(double *x, double *par) { // 13 pars
     double xx = log10(x[0]+1);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2) + par[8] * TMath::Power(xx, 3)) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) + par[7]*TMath::Power(xx,4) ));
+    double logistic = (par[0] + par[5]*xx + par[11]*TMath::Power(xx, 2) + par[12]*TMath::Power(xx, 4)) / (1 + (par[3]+par[9]*xx+par[10]*TMath::Power(xx, 2))*TMath::Exp(-(par[1]*xx + par[4]*TMath::Power(xx, 2) + par[6]*TMath::Power(xx, 3) + par[7]*TMath::Power(xx, 4) + par[8]) + par[2]));
     return logistic;
 }
 
-double logisticFunction_st6(double *x, double *par)
-{
+double logisticFunction_st6(double *x, double *par) { // 14 pars
     double xx = log10(x[0]+1);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2) + par[8] * TMath::Power(xx, 3) + par[9]*TMath::Power(xx, 4)) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) + par[7]*TMath::Power(xx,4) ));
+    double logistic = (par[0] + par[4]*xx + par[5]*TMath::Power(xx, 2) + par[10]*TMath::Power(xx, 3) + par[11]*TMath::Power(xx, 4)) / (par[3] + (par[2] + par[7]*xx + par[8]*TMath::Power(xx, 2))*TMath::Exp(-par[1]*xx + par[6]*TMath::Power(xx, 2) + par[9]*TMath::Power(xx, 3) + par[12]*TMath::Power(xx, 4) + par[13]*TMath::Power(xx, 5)));
     return logistic;
 }
 
-double logisticFunction_st7(double *x, double *par)
-{
+double logisticFunction_st7(double *x, double *par) { // 17 pars
     double xx = log10(x[0]+1);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2) + par[8] * TMath::Power(xx, 3) + par[9]*TMath::Power(xx, 4) + par[10]*TMath::Power(xx, 5) + par[11]*TMath::Power(xx, 7) ) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) + par[7]*TMath::Power(xx,4) ));
+    double logistic = (par[0] + par[4]*xx + par[5]*TMath::Power(xx, 2) + par[10]*TMath::Power(xx, 3) + par[11]*TMath::Power(xx, 4)) / (par[3] + (par[2] + par[7]*xx + par[8]*TMath::Power(xx, 2))*TMath::Exp(-par[1]*xx + par[6]*TMath::Power(xx, 2) + par[9]*TMath::Power(xx, 3) + par[12]*TMath::Power(xx, 4) + par[13]*TMath::Power(xx, 5) + par[14]*TMath::Power(xx, 6) + par[15]*TMath::Power(xx, 7) + par[16]*TMath::Power(xx, 8)));
     return logistic;
 }
 
-double logisticFunction_st8(double *x, double *par)
-{
+double logisticFunction_st8(double *x, double *par) { // 20 pars
     double xx = log10(x[0]+1);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2) + par[8] * TMath::Power(xx, 3) + par[9]*TMath::Power(xx, 4) + par[10]*TMath::Power(xx, 5) + par[11]*TMath::Power(xx, 7) + par[12]*TMath::Power(xx, 9) + par[13]*TMath::Power(xx, 11)) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) + par[7]*TMath::Power(xx,4) ));
+    double logistic = (par[0] + par[4]*xx + par[5]*TMath::Power(xx, 2) + par[10]*TMath::Power(xx, 3) + par[11]*TMath::Power(xx, 4) + par[17]*TMath::Power(xx, 5)) / (par[3] + (par[2] + par[7]*xx + par[8]*TMath::Power(xx, 2))*TMath::Exp(-par[1]*xx + par[6]*TMath::Power(xx, 2) + par[9]*TMath::Power(xx, 3) + par[12]*TMath::Power(xx, 4) + par[13]*TMath::Power(xx, 5) + par[14]*TMath::Power(xx, 6) + par[15]*TMath::Power(xx, 7) + par[16]*TMath::Power(xx, 8) + par[18]*TMath::Power(xx, 10) + par[19]*TMath::Power(xx, 11)));
     return logistic;
 }
 
-double logisticFunction_st9(double *x, double *par)
-{
+double logisticFunction_st9(double *x, double *par) { // 23 pars
     double xx = log10(x[0]+1);
-    double logistic = (par[0] + par[4] * xx + par[5] * TMath::Power(xx,2) + par[8] * TMath::Power(xx, 3) + par[9]*TMath::Power(xx, 4) + par[10]*TMath::Power(xx, 5) + par[11]*TMath::Power(xx, 7) + par[12]*TMath::Power(xx, 9) + par[13]*TMath::Power(xx, 11) + par[14]*TMath::Power(xx, 13) + par[15]*TMath::Power(xx, 16)) / (1 + TMath::Exp(-par[1] * xx + par[2]*TMath::Power(xx,2) + par[3] + par[6]*TMath::Power(xx,3) + par[7]*TMath::Power(xx,4) ));
+    double logistic = (par[0] + par[4]*xx + par[5]*TMath::Power(xx, 2) + par[10]*TMath::Power(xx, 3) + par[11]*TMath::Power(xx, 4) + par[17]*TMath::Power(xx, 5)) / (par[3] + (par[2] + par[7]*xx + par[8]*TMath::Power(xx, 2))*TMath::Exp(-par[1]*xx + par[6]*TMath::Power(xx, 2) + par[9]*TMath::Power(xx, 3) + par[12]*TMath::Power(xx, 4) + par[13]*TMath::Power(xx, 5) + par[14]*TMath::Power(xx, 6) + par[15]*TMath::Power(xx, 7) + par[16]*TMath::Power(xx, 8) + par[18]*TMath::Power(xx, 10) + par[19]*TMath::Power(xx, 11) + par[20]*TMath::Power(xx, 12) + par[21]*TMath::Power(xx, 15) + par[22]*TMath::Power(xx, 20)));
     return logistic;
 }
