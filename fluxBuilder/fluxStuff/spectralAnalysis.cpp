@@ -1,8 +1,11 @@
-#include <iostream>
+#include <tuple>
 #include <memory>
 #include <vector>
+#include <cstring>
+#include <fstream>
+#include <sstream>
 #include <numeric>
-#include <tuple>
+#include <iostream>
 
 #include "TF1.h"
 #include "TAxis.h"
@@ -12,6 +15,77 @@
 #include "TCanvas.h"
 #include "TMultiGraph.h"
 #include "TGraphErrors.h"
+
+struct energy_config {
+    std::size_t n_bins;
+    double min_event_energy {-999};
+    double max_event_energy {-999};
+    std::vector<double> energy_binning;
+};
+
+inline std::string parse_config_file(const char* config_file) {
+	std::ifstream input_file(config_file);
+	if (!input_file.is_open()) {
+		std::cerr << "\nInput config file not found [" << config_file << "]\n\n";
+		exit(100);
+	}
+	std::string input_string(
+		(std::istreambuf_iterator<char>(input_file)),
+		(std::istreambuf_iterator<char>()));
+	input_file.close();
+	return input_string;
+}
+
+inline energy_config get_config_info(const std::string parsed_config) {
+	energy_config config_pars;
+    
+    std::string tmp_str;
+	std::istringstream input_stream(parsed_config);
+	std::string::size_type sz;
+
+    int introduction {4};
+	int elm_in_row {5};
+    std::vector<std::string> row;
+
+	int column_counter {0};
+    int line_counter {0};
+    
+	while (input_stream >> tmp_str) {
+
+        if (!line_counter) {
+			// This is the first line... we are not interested in it
+			++column_counter;
+			if (column_counter==introduction) {
+				++line_counter;
+				column_counter = 0;
+			}
+		}
+		else {
+			// This is a general line...
+			row.push_back(tmp_str);
+			++column_counter;
+			
+			if (column_counter == elm_in_row) {
+
+				// The row of the binning has been completed... let's extract the info
+				if (line_counter==1) 
+					config_pars.energy_binning.push_back(stod(row[2], &sz));
+				config_pars.energy_binning.push_back(stod(row.back(), &sz));
+
+				// Reset
+				column_counter = 0;
+				++line_counter;
+				row.clear();
+			}
+		}
+    }
+
+    return config_pars;
+}
+
+inline std::vector<double> parse_energy_config(const char* config_file) {
+    return get_config_info(parse_config_file(config_file)).energy_binning;
+}
 
 // Sliding window technique using 3 (not-independent) points
 void spectralAnalysis_3PNI(
@@ -102,9 +176,14 @@ void spectralAnalysis_3PNI(
 void spectralAnalysisNP(
     const char* input_flux_file,
     const char* output_file,
+    const char* energy_config_file,
     const int npoints = 5,
     const bool verbose = true,
     const bool remove_first_points = true) {
+
+        // Extract energy binning from config file
+        std::vector<double> energy_binning = parse_energy_config(energy_config_file);
+        std::vector<double> cut_binning;
 
         // Extract flux graph
         TFile flux_file(input_flux_file, "READ");
@@ -116,8 +195,30 @@ void spectralAnalysisNP(
         const char* flux_file_name = "gr_flux_E3";
         TGraphErrors* flux_graph = static_cast<TGraphErrors*>(flux_file.Get(flux_file_name));
         if (remove_first_points) {
-            flux_graph->RemovePoint(0);
-            flux_graph->RemovePoint(1);
+            if (npoints==3) {
+                flux_graph->RemovePoint(0);
+                flux_graph->RemovePoint(1);
+                
+                for (size_t idx {2}; idx<energy_binning.size(); ++idx) {
+                    cut_binning.push_back(energy_binning[idx]);
+                }
+
+                if (verbose) {
+                    std::cout << "\n\nYou have selected 3-points. First two flux points have been deleted to evenly group the others";
+                    std::cout << "\nThe energy binning starts at " << cut_binning.front() << " GeV\n";
+                }
+            }
+            if (npoints==4) {
+                flux_graph->RemovePoint(0);
+                for (size_t idx {1}; idx<energy_binning.size(); ++idx) {
+                    cut_binning.push_back(energy_binning[idx]);
+                }
+
+                if (verbose) {
+                    std::cout << "\n\nYou have selected 4-points. First point has been deleted to evenly group the others";
+                    std::cout << "\nThe energy binning starts at " << cut_binning.front() << " GeV\n";
+                }
+            }
         }
 
         std::vector<double> energy;
@@ -135,7 +236,7 @@ void spectralAnalysisNP(
         std::vector<double> flux_tmp;
         std::vector<double> flux_err_tmp;
 
-        auto fit_points = [&energy_tmp, &energy_err_tmp, &flux_tmp, &flux_err_tmp, &npoints, &iteration] (
+        auto fit_points = [&energy_tmp, &energy_err_tmp, &flux_tmp, &flux_err_tmp, &npoints, &iteration, &cut_binning] (
             std::vector<double> &energy, 
             std::vector<double> &energy_err,
             std::vector<double> &spectral_index,
@@ -156,9 +257,12 @@ void spectralAnalysisNP(
                 gr_tmp->GetXaxis()->SetTitle("Energy [GeV]");
                 std::shared_ptr<TF1> fitfunc_tmp = std::make_shared<TF1>("fitfunc_tmp", "pow(x,3) * pow(10, ([0] + [1]*log10(x)))", energy_tmp.front(), energy_tmp.back());
                 gr_tmp->Fit(fitfunc_tmp.get(), "QIR");
-
-                //double mean_energy = std::accumulate(energy_tmp.begin(), energy_tmp.end(), 0.) / energy_tmp.size();
-                double wtsydp_energy = wtsydp(energy_tmp.front(), energy_tmp.back(), fitfunc_tmp->GetParameter(1));
+                
+                int energy_bin_low_value_idx = npoints*(iteration -1);
+                int energy_bin_high_value_idx = energy_bin_low_value_idx + npoints;
+                double energy_bin_low_value = cut_binning[energy_bin_low_value_idx];
+                double energy_bin_high_value = cut_binning[energy_bin_high_value_idx];
+                double wtsydp_energy = wtsydp(energy_bin_low_value, energy_bin_high_value, fitfunc_tmp->GetParameter(1));
 
                 //energy.push_back(mean_energy);
                 energy.push_back(wtsydp_energy);
@@ -169,7 +273,7 @@ void spectralAnalysisNP(
                 spectral_index_graphs.push_back(gr_tmp);
                 spectral_index_functions.push_back(fitfunc_tmp);
 
-                std::cout << "\nEmin: " << energy_tmp.front() << " (GeV) - Emax: " << energy_tmp.back() << " (GeV) - WTSYDP: " << wtsydp_energy << " (GeV) - " << fitfunc_tmp->GetParameter(1) << " +- " << fitfunc_tmp->GetParError(1);
+                std::cout << "\nEmin: " << energy_bin_low_value << " (GeV) - Emax: " << energy_bin_high_value << " (GeV) - WTSYDP: " << wtsydp_energy << " (GeV) - " << fitfunc_tmp->GetParameter(1) << " +- " << fitfunc_tmp->GetParError(1);
             };
 
         // Loop over the points to fit the spectrum
