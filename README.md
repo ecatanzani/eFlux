@@ -144,7 +144,7 @@ This is an example of the configuration file with some default values.
 ```markdown
 ---DataSets default params
 
-farmAddress         root://xrootd-dampe.cloud.ba.infn.it//
+farmAddress         root://farm_address//
 simu_XRDFS_path     /MC/reco/
 geometry            6r0p0
 simu_eMin           1
